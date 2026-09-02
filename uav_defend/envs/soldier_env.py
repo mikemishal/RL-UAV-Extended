@@ -23,6 +23,7 @@ from gymnasium import spaces
 from uav_defend.config.env_config import EnvConfig
 from uav_defend.tracking import EnemyKalmanFilter
 from uav_defend.dynamics.constrained_point_mass import advance_velocity
+from uav_defend.obstacles import ObstacleLayout, generate_layout
 
 
 class SoldierEnv(gym.Env):
@@ -272,6 +273,12 @@ class SoldierEnv(gym.Env):
         self._rng_soldier: np.random.Generator | None = None
         self._rng_enemy_motion: np.random.Generator | None = None
         self._rng_sensor: np.random.Generator | None = None
+        # Dedicated obstacle RNG stream (journal extension; see reset()).
+        # Never shared with the four streams above -- see
+        # test_obstacle_env_integration.py's baseline-reproduction regression
+        # test for the property this separation guarantees.
+        self._rng_obstacles: np.random.Generator | None = None
+        self._obstacle_layout: ObstacleLayout = ObstacleLayout()
         
         # Kalman filter for enemy tracking (initialized on first detection)
         self._kf: EnemyKalmanFilter | None = None
@@ -324,6 +331,13 @@ class SoldierEnv(gym.Env):
         self._rng_soldier = np.random.default_rng(soldier_seed)
         self._rng_enemy_motion = np.random.default_rng(enemy_seed)
         self._rng_sensor = np.random.default_rng(sensor_seed)
+        # Obstacle RNG (journal extension): spawned AFTER the four streams
+        # above so their entropy/output is bit-for-bit unchanged regardless
+        # of whether obstacles are enabled (numpy SeedSequence.spawn() calls
+        # on the same sequence never alter earlier children -- see
+        # test_obstacle_env_integration.py).
+        (obstacle_seed,) = seed_seq.spawn(1)
+        self._rng_obstacles = np.random.default_rng(obstacle_seed)
         
         # Initialize soldier at the origin, on the ground (z = 0)
         self._soldier_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
@@ -360,6 +374,19 @@ class SoldierEnv(gym.Env):
             self.config.enemy_max_climb_rate,
         )
         self._enemy_vel = initial_enemy_vel.astype(np.float32)
+        
+        # Obstacle layout (journal extension): DATA ONLY in this phase --
+        # does not affect movement, detection, reward, or termination.
+        # Generated from its own dedicated RNG stream (see above), using
+        # the now-known enemy spawn position for spawn-clearance rejection
+        # in "random" mode.
+        self._obstacle_layout = generate_layout(
+            config=self.config,
+            rng=self._rng_obstacles,
+            asset_position=self._soldier_pos,
+            defender_position=self._defender_pos,
+            enemy_spawn_position=self._enemy_pos,
+        )
         
         # Reset per-step dynamics diagnostics (see _advance_velocity)
         self._defender_dynamics_info = {
@@ -1390,6 +1417,11 @@ class SoldierEnv(gym.Env):
             "defender_standby": defender_standby,
             "controller_action_executed": controller_action_executed,
             "just_detected": just_detected,
+            # Obstacle diagnostics (journal extension; NOT part of the RL
+            # observation in this phase -- see uav_defend/obstacles/).
+            "obstacles_enabled": self.config.obstacles_enabled,
+            "obstacle_count": len(self._obstacle_layout),
+            "obstacle_layout": self._obstacle_layout.to_dict(),
         }
     
     def render(self) -> np.ndarray | None:
