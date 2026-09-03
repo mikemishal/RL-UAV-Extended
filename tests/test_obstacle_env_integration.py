@@ -163,6 +163,194 @@ def test_obstacles_enabled_does_not_perturb_four_exogenous_rng_streams():
             _assert_records_identical(baseline, with_obstacles)
 
 
+# --- Step 10: SoldierEnv collision detection (Phase 2) ----------------------
+
+def _wall_config(**overrides) -> EnvConfig:
+    defaults = dict(
+        obstacles_enabled=True, obstacle_layout_mode="fixed",
+        # A wide, thin wall (x in [-15,-5], y in [-40,40], z in [0,4]) so
+        # that a crossing is detected regardless of lateral weave/evasion
+        # deviation in the hostile's autonomous pursuit motion model.
+        obstacle_fixed_spec=((-10.0, 0.0, 2.0, 5.0, 40.0, 2.0),),
+        defender_standby_until_detection=False,
+    )
+    defaults.update(overrides)
+    return EnvConfig(**defaults)
+
+
+def test_defender_crossing_obstacle_is_detected():
+    env = SoldierEnv(config=_wall_config())
+    env.reset(seed=1)
+    env._defender_pos = np.array([-30.0, 0.0, 2.0], dtype=np.float32)
+    env._defender_vel = np.zeros(3, dtype=np.float32)
+    collided = False
+    for _ in range(10):
+        _, _, term, trunc, info = env.step(np.array([1.0, 0.0, 0.0], dtype=np.float32))
+        collided = collided or info["defender_obstacle_collision"]
+        if term or trunc:
+            break
+    assert collided
+
+
+def test_hostile_crossing_obstacle_is_detected():
+    env = SoldierEnv(config=_wall_config())
+    env.reset(seed=1)
+    env._enemy_pos = np.array([-30.0, 0.0, 2.0], dtype=np.float32)
+    env._enemy_vel = np.array([12.0, 0.0, 0.0], dtype=np.float32)
+    collided = False
+    for _ in range(10):
+        _, _, term, trunc, info = env.step(np.zeros(3, dtype=np.float32))
+        collided = collided or info["enemy_obstacle_collision"]
+        if term or trunc:
+            break
+    assert collided
+
+
+def test_collision_does_not_terminate_episode_or_alter_reward():
+    """A collision must be a pure diagnostic in Phase 2: termination and
+    reward must be identical whether or not a collision occurred, for the
+    same physical trajectory."""
+    baseline_env = SoldierEnv(config=EnvConfig(defender_standby_until_detection=False))
+    obstacle_env = SoldierEnv(config=_wall_config())
+    baseline_env.reset(seed=1)
+    obstacle_env.reset(seed=1)
+    for env in (baseline_env, obstacle_env):
+        env._defender_pos = np.array([-30.0, 0.0, 2.0], dtype=np.float32)
+        env._defender_vel = np.zeros(3, dtype=np.float32)
+    for _ in range(10):
+        _, r_base, term_base, trunc_base, _ = baseline_env.step(np.array([1.0, 0.0, 0.0], dtype=np.float32))
+        _, r_obs, term_obs, trunc_obs, info_obs = obstacle_env.step(np.array([1.0, 0.0, 0.0], dtype=np.float32))
+        assert r_base == r_obs
+        assert term_base == term_obs
+        assert trunc_base == trunc_obs
+        if term_base or trunc_base:
+            break
+
+
+def test_collision_does_not_modify_trajectory():
+    """Positions/velocities must be identical to the no-obstacle baseline
+    even while a collision is being flagged (Phase 2 never blocks motion)."""
+    baseline_env = SoldierEnv(config=EnvConfig(defender_standby_until_detection=False))
+    obstacle_env = SoldierEnv(config=_wall_config())
+    baseline_env.reset(seed=1)
+    obstacle_env.reset(seed=1)
+    for env in (baseline_env, obstacle_env):
+        env._defender_pos = np.array([-30.0, 0.0, 2.0], dtype=np.float32)
+        env._defender_vel = np.zeros(3, dtype=np.float32)
+    for _ in range(10):
+        _, _, term_base, trunc_base, info_base = baseline_env.step(np.array([1.0, 0.0, 0.0], dtype=np.float32))
+        _, _, term_obs, trunc_obs, info_obs = obstacle_env.step(np.array([1.0, 0.0, 0.0], dtype=np.float32))
+        assert np.array_equal(info_base["defender_pos"], info_obs["defender_pos"])
+        assert np.array_equal(info_base["defender_vel"], info_obs["defender_vel"])
+        if term_base or trunc_base:
+            break
+
+
+def test_collision_count_and_event_semantics():
+    """Remaining inside/overlapping an obstacle across multiple steps must
+    count as ONE event, not once per step."""
+    env = SoldierEnv(config=_wall_config())
+    env.reset(seed=1)
+    env._defender_pos = np.array([-30.0, 0.0, 2.0], dtype=np.float32)
+    env._defender_vel = np.zeros(3, dtype=np.float32)
+    counts = []
+    for _ in range(10):
+        _, _, term, trunc, info = env.step(np.array([1.0, 0.0, 0.0], dtype=np.float32))
+        counts.append(info["defender_collision_count"])
+        if term or trunc:
+            break
+    # The count must be non-decreasing and, since there is exactly one
+    # obstacle astride the straight-line path, must saturate at 1 -- not
+    # increment again on every subsequent overlapping step.
+    assert counts == sorted(counts)
+    assert max(counts) == 1
+    first_hit = counts.index(1)
+    assert all(c == 1 for c in counts[first_hit:])
+
+
+def test_no_collision_when_flying_above_obstacle():
+    cfg = _wall_config()
+    env = SoldierEnv(config=cfg)
+    env.reset(seed=1)
+    # Fly well above the obstacle's top (z=4) in a straight line across its
+    # x/y footprint.
+    env._defender_pos = np.array([-30.0, 0.0, 20.0], dtype=np.float32)
+    env._defender_vel = np.zeros(3, dtype=np.float32)
+    collided = False
+    for _ in range(10):
+        _, _, term, trunc, info = env.step(np.array([1.0, 0.0, 0.0], dtype=np.float32))
+        collided = collided or info["defender_obstacle_collision"]
+        if term or trunc:
+            break
+    assert not collided
+
+
+def test_minimum_clearance_diagnostic_correct():
+    cfg = _wall_config()
+    env = SoldierEnv(config=cfg)
+    _, info = env.reset(seed=1)
+    # Origin (0,0,0) to nearest face of obstacle spanning x in [-15,-5]: 5.0
+    assert np.isclose(info["defender_min_obstacle_clearance"], 5.0)
+
+
+# --- Part A: pre-detection standby collision-semantics fix ------------------
+
+def test_standby_synchronization_not_reported_as_swept_defender_collision():
+    """Part A fix: while the defender is held in pre-detection standby, its
+    position is synchronized onto the just-moved soldier as bookkeeping,
+    NOT physical UAV flight. A thin obstacle sits exactly on the straight
+    line between the defender's previous position and the newly synced
+    soldier position, but neither endpoint is inside the obstacle --
+    before the fix this would have been misreported as a swept collision
+    ("flying through a wall"); after the fix it must not be."""
+    p0 = np.array([0.0, 0.0, 0.0], dtype=np.float32)
+    p1 = np.array([4.0, 0.0, 0.0], dtype=np.float32)
+    cfg = EnvConfig(
+        obstacles_enabled=True, obstacle_layout_mode="fixed",
+        # Thin wall crossing the p0->p1 line at its midpoint (x=2), while
+        # containing neither p0 (x=0) nor p1 (x=4).
+        obstacle_fixed_spec=((2.0, 0.0, 5.0, 0.3, 5.0, 5.0),),
+        # defender_standby_until_detection defaults to True.
+    )
+    env = SoldierEnv(config=cfg)
+    env.reset(seed=1)
+    env._soldier_pos = p0.copy()
+    env._defender_pos = p0.copy()
+    env._defender_vel = np.zeros(3, dtype=np.float32)
+    # Force a controlled, deterministic soldier displacement (bypassing the
+    # stochastic random walk) so the scenario is exact and reproducible.
+    env._move_soldier = lambda: setattr(env, "_soldier_pos", p1.copy())
+
+    _, _, _, _, info = env.step(np.zeros(3, dtype=np.float32))
+
+    assert info["controller_action_executed"] is False  # still in standby
+    assert np.array_equal(info["defender_pos"], p1)     # synced onto the soldier
+    assert info["defender_obstacle_collision"] is False  # NOT a fictitious swept strike
+    assert info["defender_collision_count"] == 0
+
+
+def test_controller_executed_motion_through_same_obstacle_is_still_detected():
+    """Retained: once the controller is actually in control (post-
+    detection, or legacy mode), REAL swept defender motion through the same
+    obstacle placement must still be detected -- the Part A fix only
+    suppresses the pre-detection bookkeeping synchronization, not genuine
+    flight."""
+    cfg = EnvConfig(
+        obstacles_enabled=True, obstacle_layout_mode="fixed",
+        obstacle_fixed_spec=((2.0, 0.0, 5.0, 0.3, 5.0, 5.0),),
+        defender_standby_until_detection=False,  # legacy mode: action always executed
+    )
+    env = SoldierEnv(config=cfg)
+    env.reset(seed=1)
+    env._defender_pos = np.array([0.0, 0.0, 5.0], dtype=np.float32)
+    env._defender_vel = np.zeros(3, dtype=np.float32)
+
+    _, _, _, _, info = env.step(np.array([1.0, 0.0, 0.0], dtype=np.float32))
+
+    assert info["controller_action_executed"] is True
+    assert info["defender_obstacle_collision"] is True
+
+
 if __name__ == "__main__":
     import inspect
     module = sys.modules[__name__]
@@ -173,3 +361,4 @@ if __name__ == "__main__":
         passed += 1
         print(f"PASS {fn.__name__}")
     print(f"\n{passed}/{len(test_fns)} tests passed")
+

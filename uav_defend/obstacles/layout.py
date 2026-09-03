@@ -25,6 +25,20 @@ from uav_defend.obstacles.geometry import AABBObstacle
 
 
 @dataclass(frozen=True)
+class LayoutSegmentIntersection:
+    """Result of `ObstacleLayout.first_segment_intersection()`: the
+    earliest (smallest `t_enter`) intersection along the segment, across
+    every obstacle in the layout. `obstacle_index` is `None` iff
+    `intersects` is False."""
+
+    intersects: bool
+    obstacle_index: int | None = None
+    t_enter: float | None = None
+    t_exit: float | None = None
+    point: np.ndarray | None = None
+
+
+@dataclass(frozen=True)
 class ObstacleLayout:
     """An immutable collection of `AABBObstacle` instances."""
 
@@ -74,6 +88,22 @@ class ObstacleLayout:
                 return i
         return None
 
+    def first_segment_intersection(self, start, end) -> LayoutSegmentIntersection:
+        """Swept-motion collision query: the EARLIEST intersection (by
+        `t_enter`) of the segment `start` -> `end` against any obstacle in
+        the layout -- the physically correct "first contact" when a fast
+        entity's motion could tunnel through or graze multiple obstacles in
+        one simulation step."""
+        best: LayoutSegmentIntersection | None = None
+        for i, o in enumerate(self.obstacles):
+            result = o.segment_intersection(start, end)
+            if result.intersects and (best is None or result.t_enter < best.t_enter):
+                best = LayoutSegmentIntersection(
+                    intersects=True, obstacle_index=i,
+                    t_enter=result.t_enter, t_exit=result.t_exit, point=result.point,
+                )
+        return best if best is not None else LayoutSegmentIntersection(intersects=False)
+
     def to_dict(self) -> dict:
         """Deterministic, JSON/CSV-friendly serialization for logging."""
         return {
@@ -95,14 +125,36 @@ def _validate_within_domain(obstacle: AABBObstacle, config: EnvConfig) -> None:
         )
 
 
-def _fixed_layout(config: EnvConfig) -> ObstacleLayout:
+def _fixed_layout(
+    config: EnvConfig,
+    asset_position=None,
+    defender_position=None,
+    enemy_spawn_position=None,
+) -> ObstacleLayout:
     obstacles = []
     for spec in config.obstacle_fixed_spec:
         cx, cy, cz, hx, hy, hz = spec
         obstacle = AABBObstacle.from_center_half_extents((cx, cy, cz), (hx, hy, hz))
         _validate_within_domain(obstacle, config)
         obstacles.append(obstacle)
-    return ObstacleLayout(obstacles=tuple(obstacles))
+    layout = ObstacleLayout(obstacles=tuple(obstacles))
+
+    # Fixed layouts intentionally do NOT apply the configurable clearance
+    # margins (obstacle_clearance_from_asset/spawn) -- a fixed scenario may
+    # deliberately place an obstacle close to an entity. However containment
+    # (distance == 0) is never allowed for any entity's initial position.
+    for label, point in (
+        ("protected asset", asset_position),
+        ("defender", defender_position),
+        ("hostile UAV spawn", enemy_spawn_position),
+    ):
+        if point is not None and layout.contains_point(point):
+            raise ValueError(
+                f"invalid fixed obstacle layout: the {label} initial position "
+                f"{tuple(float(x) for x in np.asarray(point, dtype=np.float64))} lies inside "
+                "(or exactly on the boundary of) a fixed obstacle"
+            )
+    return layout
 
 
 def _random_layout(
@@ -191,7 +243,7 @@ def generate_layout(
     if not config.obstacles_enabled or config.obstacle_layout_mode == "none":
         return ObstacleLayout(obstacles=())
     if config.obstacle_layout_mode == "fixed":
-        return _fixed_layout(config)
+        return _fixed_layout(config, asset_position, defender_position, enemy_spawn_position)
     if config.obstacle_layout_mode == "random":
         return _random_layout(config, rng, asset_position, defender_position, enemy_spawn_position)
     raise ValueError(f"unknown obstacle_layout_mode: {config.obstacle_layout_mode!r}")

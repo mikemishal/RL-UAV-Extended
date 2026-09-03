@@ -279,6 +279,27 @@ class SoldierEnv(gym.Env):
         # test for the property this separation guarantees.
         self._rng_obstacles: np.random.Generator | None = None
         self._obstacle_layout: ObstacleLayout = ObstacleLayout()
+
+        # Obstacle collision/clearance diagnostics (journal extension,
+        # Phase 2). DIAGNOSTIC ONLY in this phase: never affects movement,
+        # reward, or termination (see step()/reset()).
+        self._defender_obstacle_collision: bool = False
+        self._enemy_obstacle_collision: bool = False
+        self._defender_collision_obstacle_index: int | None = None
+        self._enemy_collision_obstacle_index: int | None = None
+        self._defender_collision_point: np.ndarray | None = None
+        self._enemy_collision_point: np.ndarray | None = None
+        self._defender_min_obstacle_clearance: float = float("inf")
+        self._enemy_min_obstacle_clearance: float = float("inf")
+        # Collision EVENT counters: an "outside -> collision" transition
+        # counts once; continued occupancy of the same (or any) obstacle on
+        # subsequent steps is NOT re-counted until clearance is regained.
+        self._defender_collision_count: int = 0
+        self._enemy_collision_count: int = 0
+        self._defender_ever_collided: bool = False
+        self._enemy_ever_collided: bool = False
+        self._defender_was_in_collision: bool = False
+        self._enemy_was_in_collision: bool = False
         
         # Kalman filter for enemy tracking (initialized on first detection)
         self._kf: EnemyKalmanFilter | None = None
@@ -387,6 +408,26 @@ class SoldierEnv(gym.Env):
             defender_position=self._defender_pos,
             enemy_spawn_position=self._enemy_pos,
         )
+
+        # Reset per-episode collision/clearance diagnostics (Phase 2).
+        # Initial positions are validated (both "random" via clearance
+        # margins and "fixed" via hard containment rejection in
+        # generate_layout()) to never begin inside an obstacle, so the
+        # initial collision flags below are always False by construction.
+        self._defender_obstacle_collision = self._obstacle_layout.contains_point(self._defender_pos)
+        self._enemy_obstacle_collision = self._obstacle_layout.contains_point(self._enemy_pos)
+        self._defender_collision_obstacle_index = self._obstacle_layout.containing_obstacle_index(self._defender_pos)
+        self._enemy_collision_obstacle_index = self._obstacle_layout.containing_obstacle_index(self._enemy_pos)
+        self._defender_collision_point = None
+        self._enemy_collision_point = None
+        self._defender_min_obstacle_clearance = self._obstacle_layout.min_clearance(self._defender_pos)
+        self._enemy_min_obstacle_clearance = self._obstacle_layout.min_clearance(self._enemy_pos)
+        self._defender_collision_count = 0
+        self._enemy_collision_count = 0
+        self._defender_ever_collided = False
+        self._enemy_ever_collided = False
+        self._defender_was_in_collision = self._defender_obstacle_collision
+        self._enemy_was_in_collision = self._enemy_obstacle_collision
         
         # Reset per-step dynamics diagnostics (see _advance_velocity)
         self._defender_dynamics_info = {
@@ -531,6 +572,13 @@ class SoldierEnv(gym.Env):
         standby_mode = self.config.defender_standby_until_detection
         detected_at_step_start = self._enemy_detected
 
+        # Positions BEFORE this step's motion (journal extension, Phase 2):
+        # needed for swept-motion obstacle-collision detection below, since
+        # checking only the endpoint position can miss a fast entity
+        # tunneling through a thin obstacle within one dt.
+        defender_prev_pos = self._defender_pos.copy()
+        enemy_prev_pos = self._enemy_pos.copy()
+
         # A. Move soldier stochastically (uncontrolled) -- unchanged model.
         self._move_soldier()
 
@@ -579,6 +627,53 @@ class SoldierEnv(gym.Env):
         else:
             self._move_defender(action)
             controller_action_executed = True
+
+        # Swept-motion obstacle-collision diagnostics (journal extension,
+        # Phase 2). DIAGNOSTIC ONLY: does not stop movement, modify
+        # position/velocity, terminate the episode, or alter reward -- see
+        # module-level design notes in uav_defend/obstacles/.
+        #
+        # Phase-2 semantic fix: while the defender is held in pre-detection
+        # standby (controller_action_executed=False), synchronizing its
+        # position onto the just-moved soldier is bookkeeping, NOT physical
+        # UAV flight -- the segment (previous defender position) -> (synced
+        # soldier position) must NOT be swept-tested, or a fictitious
+        # "flight through a wall" could be reported even though the
+        # defender never actually flew anywhere. In that case we test only
+        # the current (synchronized) position for containment (a
+        # zero-length segment), never the bookkeeping displacement. Once
+        # controller_action_executed=True, normal swept-motion checking
+        # against the real pre-step position resumes.
+        if controller_action_executed:
+            defender_collision_segment_start = defender_prev_pos
+        else:
+            defender_collision_segment_start = self._defender_pos
+        defender_collision = self._obstacle_layout.first_segment_intersection(
+            defender_collision_segment_start, self._defender_pos
+        )
+        enemy_collision = self._obstacle_layout.first_segment_intersection(enemy_prev_pos, self._enemy_pos)
+
+        self._defender_obstacle_collision = defender_collision.intersects
+        self._enemy_obstacle_collision = enemy_collision.intersects
+        self._defender_collision_obstacle_index = defender_collision.obstacle_index
+        self._enemy_collision_obstacle_index = enemy_collision.obstacle_index
+        self._defender_collision_point = defender_collision.point
+        self._enemy_collision_point = enemy_collision.point
+        self._defender_min_obstacle_clearance = self._obstacle_layout.min_clearance(self._defender_pos)
+        self._enemy_min_obstacle_clearance = self._obstacle_layout.min_clearance(self._enemy_pos)
+
+        # Collision EVENT counting: only an "outside -> collision" transition
+        # increments the count. An entity that remains inside/overlapping an
+        # obstacle across multiple steps (possible in Phase 2 since motion is
+        # never blocked) is counted once, not once per step.
+        if self._defender_obstacle_collision and not self._defender_was_in_collision:
+            self._defender_collision_count += 1
+            self._defender_ever_collided = True
+        self._defender_was_in_collision = self._defender_obstacle_collision
+        if self._enemy_obstacle_collision and not self._enemy_was_in_collision:
+            self._enemy_collision_count += 1
+            self._enemy_ever_collided = True
+        self._enemy_was_in_collision = self._enemy_obstacle_collision
 
         self._step_count += 1
         
@@ -1422,6 +1517,28 @@ class SoldierEnv(gym.Env):
             "obstacles_enabled": self.config.obstacles_enabled,
             "obstacle_count": len(self._obstacle_layout),
             "obstacle_layout": self._obstacle_layout.to_dict(),
+            # Obstacle collision/clearance diagnostics (Phase 2). DIAGNOSTIC
+            # ONLY -- does not affect reward or termination in this phase.
+            # Clearance is +inf when there are no obstacles (chosen
+            # consistently over None to simplify minimum-distance math).
+            "defender_obstacle_collision": self._defender_obstacle_collision,
+            "enemy_obstacle_collision": self._enemy_obstacle_collision,
+            "defender_collision_obstacle_index": self._defender_collision_obstacle_index,
+            "enemy_collision_obstacle_index": self._enemy_collision_obstacle_index,
+            "defender_collision_point": (
+                self._defender_collision_point.copy() if self._defender_collision_point is not None else None
+            ),
+            "enemy_collision_point": (
+                self._enemy_collision_point.copy() if self._enemy_collision_point is not None else None
+            ),
+            "defender_min_obstacle_clearance": self._defender_min_obstacle_clearance,
+            "enemy_min_obstacle_clearance": self._enemy_min_obstacle_clearance,
+            # Collision EVENT counts (outside -> collision transitions only;
+            # see step() for the exact definition), not per-step occupancy.
+            "defender_collision_count": self._defender_collision_count,
+            "enemy_collision_count": self._enemy_collision_count,
+            "defender_ever_collided": self._defender_ever_collided,
+            "enemy_ever_collided": self._enemy_ever_collided,
         }
     
     def render(self) -> np.ndarray | None:
@@ -1437,6 +1554,26 @@ class SoldierEnv(gym.Env):
         size = 100
         frame = np.zeros((size, size, 3), dtype=np.uint8)
         L = self.config.L
+
+        # Draw obstacle footprints (journal extension, Phase 2): this
+        # renderer is fundamentally 2-D/top-down, so obstacles are drawn as
+        # filled x/y-footprint rectangles UNDER the entity markers below.
+        # Shade encodes height (taller obstacle -> darker gray) as a simple
+        # height annotation without adding a 3-D rendering dependency.
+        for obstacle in self._obstacle_layout:
+            x_min, x_max = np.clip(
+                np.round([(obstacle.min_corner[0] + L) / (2 * L) * (size - 1),
+                          (obstacle.max_corner[0] + L) / (2 * L) * (size - 1)]).astype(int),
+                0, size - 1,
+            )
+            y_min, y_max = np.clip(
+                np.round([(obstacle.min_corner[1] + L) / (2 * L) * (size - 1),
+                          (obstacle.max_corner[1] + L) / (2 * L) * (size - 1)]).astype(int),
+                0, size - 1,
+            )
+            height_frac = float(np.clip(obstacle.max_corner[2] / max(self.config.max_altitude, self.config.eps), 0.0, 1.0))
+            shade = int(round(150 - 90 * height_frac))  # taller obstacle -> darker gray
+            frame[y_min:y_max + 1, x_min:x_max + 1] = [shade, shade, shade]
         
         # Draw soldier as blue square
         if self._soldier_pos is not None:
