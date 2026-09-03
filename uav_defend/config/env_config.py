@@ -177,6 +177,29 @@ class EnvConfig:
     # "fixed" mode only: tuple of (center_x, center_y, center_z, half_x, half_y, half_z) per obstacle
     obstacle_fixed_spec: tuple[tuple[float, float, float, float, float, float], ...] = ()
 
+    # =========================================================================
+    # Obstacle-compatible exogenous motion (journal extension, Phase 3):
+    #
+    # Protected asset: the existing planar Gaussian random-walk PROPOSAL is
+    # unchanged (same RNG draw, same sequence). If the proposed displacement
+    # would enter/cross an obstacle footprint, the displacement is REJECTED
+    # (soldier holds its previous valid position for that step) -- never
+    # resampled, so the soldier RNG stream is never perturbed by obstacles.
+    #
+    # Hostile UAS (Phase 3B): a deterministic, RNG-free, short-horizon local
+    # obstacle-navigation layer (see uav_defend/obstacles/avoidance.py) can
+    # temporarily redirect the hostile's base guidance command (pursuit +
+    # weave + heading noise + defender evasion) when that base command is
+    # predicted -- under the SAME constrained point-mass dynamics used
+    # elsewhere -- to collide with an obstacle. OFF BY DEFAULT
+    # (enemy_obstacle_avoidance_enabled=False) so Phase-2 hostile
+    # trajectories are reproduced exactly unless explicitly enabled.
+    # =========================================================================
+    enemy_obstacle_avoidance_enabled: bool = False
+    enemy_obstacle_clearance: float = 2.0                  # m; inflates obstacles for candidate bypass targets
+    enemy_obstacle_prediction_horizon_steps: int = 12       # simulation steps of short-horizon collision prediction
+    enemy_obstacle_release_steps: int = 4                  # consecutive collision-free checks required to release avoidance
+
     def __post_init__(self) -> None:
         """Validate altitude and dynamics configuration."""
         if self.enemy_spawn_altitude_min < 0:
@@ -301,3 +324,17 @@ class EnvConfig:
                 raise ValueError(
                     f"obstacle_fixed_spec half-extents must be > 0, got {spec}"
                 )
+
+        if self.enemy_obstacle_clearance < 0:
+            raise ValueError(
+                f"enemy_obstacle_clearance must be >= 0, got {self.enemy_obstacle_clearance}"
+            )
+        if self.enemy_obstacle_prediction_horizon_steps < 1:
+            raise ValueError(
+                "enemy_obstacle_prediction_horizon_steps must be >= 1, got "
+                f"{self.enemy_obstacle_prediction_horizon_steps}"
+            )
+        if self.enemy_obstacle_release_steps < 1:
+            raise ValueError(
+                f"enemy_obstacle_release_steps must be >= 1, got {self.enemy_obstacle_release_steps}"
+            )

@@ -148,9 +148,24 @@ def test_obstacles_disabled_reproduces_conference_baseline_multi_seed():
 def test_obstacles_enabled_does_not_perturb_four_exogenous_rng_streams():
     """CRITICAL: enabling obstacles (which consumes its own dedicated RNG
     stream) must not change ANY random number consumed by the four
-    pre-existing streams (spawn, soldier, enemy motion, sensor) -- i.e. the
-    full trajectory must remain identical whether or not obstacles are
-    enabled, for several seeds and obstacle counts."""
+    pre-existing streams (spawn, soldier, enemy motion, sensor).
+
+    NOTE (Phase 3 update): as of the journal-extension Phase 3, obstacles
+    can legitimately couple back into the SIMULATED TRAJECTORY (the
+    protected asset's motion is blocked by obstacles it walks into; the
+    hostile's motion includes an obstacle-avoidance term when explicitly
+    enabled). So the earlier Phase-1/2-era assertion of bit-identical
+    trajectories no longer holds in general and is NOT what this test
+    should check. The critical invariant this test protects -- that the
+    5th (obstacle) RNG stream never perturbs the 4 pre-existing streams --
+    is instead verified directly against the RNG generators themselves:
+    after running matched episodes, drawing one further raw sample from
+    each of the four original generators must yield identical values,
+    proving identical draw COUNT and CONTENT regardless of whether
+    obstacles were enabled (and regardless of whether the soldier's motion
+    was ever blocked in the process; hostile avoidance is left disabled
+    here, matching this test's config, so its own dynamics are unaffected
+    too -- see test_enemy_obstacle_avoidance.py for that regression)."""
     baseline_config = EnvConfig()
     for seed in (0, 7, 2024):
         for obstacle_count in (1, 10, 25):
@@ -158,9 +173,33 @@ def test_obstacles_enabled_does_not_perturb_four_exogenous_rng_streams():
                 obstacles_enabled=True, obstacle_layout_mode="random",
                 obstacle_count=obstacle_count, obstacle_clearance_from_asset=3.0,
             )
-            baseline = _run_episode(baseline_config, seed)
-            with_obstacles = _run_episode(obstacle_config, seed)
-            _assert_records_identical(baseline, with_obstacles)
+            env_baseline = SoldierEnv(config=baseline_config)
+            env_obstacle = SoldierEnv(config=obstacle_config)
+
+            policy_baseline = GreedyInterceptPolicy()
+            policy_obstacle = GreedyInterceptPolicy()
+            policy_baseline.reset()
+            policy_obstacle.reset()
+
+            obs_b, info_b = env_baseline.reset(seed=seed)
+            obs_o, info_o = env_obstacle.reset(seed=seed)
+            for _ in range(200):
+                action_b = policy_baseline.act(obs_b, info_b)
+                action_o = policy_obstacle.act(obs_o, info_o)
+                obs_b, _, term_b, trunc_b, info_b = env_baseline.step(action_b)
+                obs_o, _, term_o, trunc_o, info_o = env_obstacle.step(action_o)
+                if term_b or trunc_b or term_o or trunc_o:
+                    break
+
+            # Draw one further raw sample from each of the four original
+            # exogenous RNG streams and require exact equality: this can
+            # only hold if the obstacle stream (and any obstacle-coupled
+            # motion) consumed exactly zero draws from these generators.
+            for attr in ("_rng_spawn", "_rng_soldier", "_rng_enemy_motion", "_rng_sensor"):
+                draw_b = getattr(env_baseline, attr).normal(size=4)
+                draw_o = getattr(env_obstacle, attr).normal(size=4)
+                assert np.array_equal(draw_b, draw_o), f"{attr} diverged"
+
 
 
 # --- Step 10: SoldierEnv collision detection (Phase 2) ----------------------
