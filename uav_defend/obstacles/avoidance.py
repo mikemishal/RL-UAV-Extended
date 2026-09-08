@@ -85,13 +85,19 @@ class BypassCandidate:
 
 @dataclass(frozen=True)
 class CandidateEvaluation:
-    """One candidate after simulation, ready for lexicographic selection."""
+    """One candidate after simulation, ready for lexicographic selection.
+
+    `meets_clearance` records whether `min_clearance` satisfies the
+    configured `enemy_obstacle_clearance` requirement -- clearance is a
+    safety REQUIREMENT (see `evaluate_and_select_candidate`), not a
+    quantity to be maximized without limit."""
 
     mode: str
     direction: np.ndarray
     waypoint: np.ndarray
     collision: bool
     min_clearance: float
+    meets_clearance: bool
     progress: float
     angular_deviation: float
     order_index: int
@@ -182,15 +188,116 @@ def _lateral_axis(u_base: np.ndarray, eps: float) -> np.ndarray:
     return _unit(raw, np.array([1.0, 0.0]), eps)
 
 
+def _inflated_footprint_xy(obstacle: AABBObstacle, clearance: float) -> tuple[float, float, float, float]:
+    """The obstacle's horizontal (x, y) AABB footprint inflated by
+    `clearance` on every side -- a NAVIGATION/reasoning device only (the
+    physical `AABBObstacle` itself is never modified). Returns
+    (xmin, xmax, ymin, ymax)."""
+    return (
+        float(obstacle.min_corner[0] - clearance), float(obstacle.max_corner[0] + clearance),
+        float(obstacle.min_corner[1] - clearance), float(obstacle.max_corner[1] + clearance),
+    )
+
+
+def _segment_clips_rectangle_xy(
+    p0_xy: np.ndarray, p1_xy: np.ndarray, xmin: float, xmax: float, ymin: float, ymax: float, tol: float,
+) -> bool:
+    """True iff the straight segment `p0_xy` -> `p1_xy` enters the STRICT
+    interior of the axis-aligned rectangle at some point strictly before
+    reaching `p1_xy` (2-D slab method). Merely touching the boundary
+    exactly at the destination `p1_xy` itself (e.g. arriving at one of the
+    rectangle's own corners) does NOT count as "clipping" -- only genuine
+    entry before that point does."""
+    p0 = np.asarray(p0_xy, dtype=np.float64)
+    p1 = np.asarray(p1_xy, dtype=np.float64)
+    direction = p1 - p0
+    bounds = ((xmin, xmax), (ymin, ymax))
+    t_min, t_max = 0.0, 1.0
+    for axis in range(2):
+        lo, hi = bounds[axis]
+        if abs(direction[axis]) < tol:
+            if p0[axis] < lo - tol or p0[axis] > hi + tol:
+                return False  # parallel to this axis and outside the slab: never intersects
+            continue
+        t1 = (lo - p0[axis]) / direction[axis]
+        t2 = (hi - p0[axis]) / direction[axis]
+        if t1 > t2:
+            t1, t2 = t2, t1
+        t_min = max(t_min, t1)
+        t_max = min(t_max, t2)
+        if t_min > t_max + tol:
+            return False
+    return t_min < 1.0 - tol
+
+
+def _corner_side(u_h_unit: np.ndarray, p_xy: np.ndarray, corner_xy: np.ndarray, eps: float) -> str | None:
+    """Classify `corner_xy` as "left" or "right" of the approach direction
+    `u_h_unit`, using the sign of the 2-D cross product
+    cross(u_base_xy, corner_xy - p_xy). None for the (rare, near-degenerate)
+    case where the corner lies almost exactly along the approach axis."""
+    to_corner = corner_xy - p_xy
+    cross = u_h_unit[0] * to_corner[1] - u_h_unit[1] * to_corner[0]
+    if cross > eps:
+        return "left"
+    if cross < -eps:
+        return "right"
+    return None
+
+
+def _visible_corner_waypoint(
+    position: np.ndarray, obstacle: AABBObstacle, u_base: np.ndarray, clearance: float, mode: str, eps: float,
+) -> np.ndarray | None:
+    """Geometry-aware horizontal bypass target: the nearest corner of the
+    clearance-inflated obstacle footprint that is (a) on the requested
+    `mode` ("left"/"right") side of the approach direction `u_base`, and
+    (b) directly reachable in a straight line from the mover's current
+    horizontal position WITHOUT the path itself clipping the inflated
+    footprint first (a corner can individually have full clearance while
+    the straight approach path to it still cuts through the margin --
+    this is exactly the defect this function fixes; see the Phase-3D
+    report). Returns None if no such corner exists (falls back to the
+    center-offset formula -- see `_horizontal_bypass_candidate`)."""
+    xmin, xmax, ymin, ymax = _inflated_footprint_xy(obstacle, clearance)
+    corners = (
+        np.array([xmin, ymin]), np.array([xmax, ymin]),
+        np.array([xmax, ymax]), np.array([xmin, ymax]),
+    )
+    p_xy = np.asarray(position[:2], dtype=np.float64)
+    u_h_unit = _unit(np.asarray(u_base[:2], dtype=np.float64), np.array([1.0, 0.0]), eps)
+
+    reachable = []
+    for corner in corners:
+        if _corner_side(u_h_unit, p_xy, corner, eps) != mode:
+            continue
+        if _segment_clips_rectangle_xy(p_xy, corner, xmin, xmax, ymin, ymax, tol=eps):
+            continue  # this corner is occluded: a straight line to it clips the box first
+        reachable.append(corner)
+
+    if not reachable:
+        return None
+    # Deterministic tie-break for the (rare) case of multiple reachable
+    # corners on the same side: nearest first.
+    reachable.sort(key=lambda c: float(np.linalg.norm(c - p_xy)))
+    return reachable[0]
+
+
 def _horizontal_bypass_candidate(
     position: np.ndarray, obstacle: AABBObstacle, u_base: np.ndarray, clearance: float, mode: str, eps: float,
 ) -> BypassCandidate:
-    lateral = _lateral_axis(u_base, eps)
-    sign = 1.0 if mode == "left" else -1.0
-    lateral_extent = (
-        abs(lateral[0]) * obstacle.half_extents[0] + abs(lateral[1]) * obstacle.half_extents[1] + clearance
-    )
-    target_xy = obstacle.center[:2] + sign * lateral * lateral_extent
+    """Geometry-aware tangent-corner horizontal bypass target (Phase 3D):
+    a visible corner of the clearance-inflated footprint on the requested
+    side, reachable without the straight approach path itself clipping the
+    inflated margin. Falls back to the Phase-3C center-offset formula only
+    in the rare degenerate case where no corner qualifies (e.g. the mover
+    is already essentially on top of the obstacle)."""
+    target_xy = _visible_corner_waypoint(position, obstacle, u_base, clearance, mode, eps)
+    if target_xy is None:
+        lateral = _lateral_axis(u_base, eps)
+        sign = 1.0 if mode == "left" else -1.0
+        lateral_extent = (
+            abs(lateral[0]) * obstacle.half_extents[0] + abs(lateral[1]) * obstacle.half_extents[1] + clearance
+        )
+        target_xy = obstacle.center[:2] + sign * lateral * lateral_extent
     waypoint = np.array([target_xy[0], target_xy[1], position[2]], dtype=np.float64)
     direction = _direction_to(position, waypoint, fallback=u_base, eps=eps)
     return BypassCandidate(mode=mode, direction=direction, waypoint=waypoint)
@@ -235,6 +342,33 @@ def generate_bypass_candidates(
     return candidates
 
 
+# Candidate safety categories used by `candidate_category`/`candidate_sort_key`.
+CATEGORY_SAFE = 0                    # collision-free AND meets_clearance
+CATEGORY_MARGIN_DEFICIENT = 1        # collision-free BUT below required_clearance
+CATEGORY_COLLIDING = 2
+
+
+def candidate_category(evaluation: CandidateEvaluation) -> int:
+    """Classify one evaluated candidate into CATEGORY_SAFE /
+    CATEGORY_MARGIN_DEFICIENT / CATEGORY_COLLIDING (see
+    `evaluate_and_select_candidate`'s docstring for the full rule)."""
+    if evaluation.collision:
+        return CATEGORY_COLLIDING
+    return CATEGORY_SAFE if evaluation.meets_clearance else CATEGORY_MARGIN_DEFICIENT
+
+
+def candidate_sort_key(evaluation: CandidateEvaluation):
+    """Lexicographic sort key implementing the category-dependent ranking
+    (category is always the primary key; `min()` over this key picks the
+    best candidate -- see `evaluate_and_select_candidate`)."""
+    category = candidate_category(evaluation)
+    if category == CATEGORY_SAFE:
+        return (category, -evaluation.progress, evaluation.angular_deviation, -evaluation.min_clearance, evaluation.order_index)
+    if category == CATEGORY_MARGIN_DEFICIENT:
+        return (category, -evaluation.min_clearance, -evaluation.progress, evaluation.angular_deviation, evaluation.order_index)
+    return (category, -evaluation.min_clearance, evaluation.order_index)  # CATEGORY_COLLIDING
+
+
 def evaluate_and_select_candidate(
     position: np.ndarray,
     velocity: np.ndarray,
@@ -244,15 +378,39 @@ def evaluate_and_select_candidate(
     target_position: np.ndarray,
     limits: DynamicsLimits,
     horizon_steps: int,
+    required_clearance: float,
 ) -> tuple[CandidateEvaluation, bool]:
     """Simulate every candidate with the real constrained dynamics and pick
-    one via a LEXICOGRAPHIC rule (no tuned weights):
+    one via a LEXICOGRAPHIC rule (no tuned weights, no scoring function).
 
-        1. collision-free preferred over colliding
-        2. larger minimum predicted clearance
-        3. greater progress toward `target_position`
-        4. smaller angular deviation from `u_base`
-        5. fixed candidate order (left, right, climb) as final tie-break
+    Clearance is treated as a safety REQUIREMENT, not a quantity to
+    maximize without limit (an unconstrained "maximize clearance" rule
+    tends to always prefer a straight-up climb, since climbing away from
+    the obstacle's footprint typically yields the largest raw clearance --
+    safe, but unnecessarily conservative for mission progress). Every
+    candidate is classified into one of three categories
+    (`candidate_category`):
+
+        A. SAFE: collision-free AND min_clearance >= required_clearance
+        B. COLLISION-FREE BUT MARGIN-DEFICIENT: collision-free AND
+           min_clearance < required_clearance
+        C. COLLIDING
+
+    Selection (`candidate_sort_key`, category always primary):
+
+        - If any SAFE candidates exist, choose among them by:
+            1. greatest progress toward `target_position`
+            2. smaller angular deviation from `u_base`
+            3. larger minimum clearance
+            4. fixed candidate order (left, right, climb) as final tie-break
+        - Else if any collision-free (margin-deficient) candidates exist,
+          choose among them by:
+            1. larger minimum clearance
+            2. greatest progress
+            3. smaller angular deviation
+            4. fixed order
+        - Else (every candidate collides), choose the candidate with
+          maximum predicted clearance; `fallback_used` is True.
 
     Returns (best_evaluation, fallback_used) -- `fallback_used` is True
     iff even the best candidate is still predicted to collide (i.e. no
@@ -275,15 +433,13 @@ def evaluate_and_select_candidate(
             waypoint=candidate.waypoint,
             collision=prediction.collision,
             min_clearance=prediction.min_clearance,
+            meets_clearance=(not prediction.collision) and prediction.min_clearance >= required_clearance,
             progress=progress,
             angular_deviation=angular_deviation,
             order_index=order_index,
         ))
 
-    def _key(e: CandidateEvaluation):
-        return (0 if not e.collision else 1, -e.min_clearance, -e.progress, e.angular_deviation, e.order_index)
-
-    best = min(evaluations, key=_key)
+    best = min(evaluations, key=candidate_sort_key)
     return best, best.collision
 
 
@@ -396,7 +552,7 @@ class ObstacleAvoidancePlanner:
         obstacle = layout[self.obstacle_index]
         candidates = generate_bypass_candidates(position, obstacle, u_base, self.clearance, self.max_altitude, self.eps)
         best, fallback_used = evaluate_and_select_candidate(
-            position, velocity, u_base, candidates, layout, target_position, limits, self.horizon_steps,
+            position, velocity, u_base, candidates, layout, target_position, limits, self.horizon_steps, self.clearance,
         )
         self.mode = best.mode
         self.waypoint = best.waypoint
@@ -407,7 +563,7 @@ class ObstacleAvoidancePlanner:
         obstacle = layout[base_prediction.obstacle_index]
         candidates = generate_bypass_candidates(position, obstacle, u_base, self.clearance, self.max_altitude, self.eps)
         best, fallback_used = evaluate_and_select_candidate(
-            position, velocity, u_base, candidates, layout, target_position, limits, self.horizon_steps,
+            position, velocity, u_base, candidates, layout, target_position, limits, self.horizon_steps, self.clearance,
         )
         self.active = True
         self.obstacle_index = base_prediction.obstacle_index

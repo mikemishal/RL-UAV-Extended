@@ -16,6 +16,8 @@ from uav_defend.obstacles.avoidance import (
     CollisionPrediction,
     DynamicsLimits,
     ObstacleAvoidancePlanner,
+    candidate_category,
+    candidate_sort_key,
     evaluate_and_select_candidate,
     generate_bypass_candidates,
     predict_collision,
@@ -39,4 +41,6 @@ __all__ = [
     "predict_collision",
     "generate_bypass_candidates",
     "evaluate_and_select_candidate",
+    "candidate_category",
+    "candidate_sort_key",
 ]
