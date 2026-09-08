@@ -22,7 +22,8 @@ from gymnasium import spaces
 
 from uav_defend.config.env_config import EnvConfig
 from uav_defend.tracking import EnemyKalmanFilter
-from uav_defend.dynamics.constrained_point_mass import advance_velocity
+from uav_defend.dynamics.constrained_point_mass import advance_velocity, apply_boundary
+from uav_defend.obstacles import DynamicsLimits, ObstacleAvoidancePlanner, ObstacleLayout, generate_layout
 
 
 class SoldierEnv(gym.Env):
@@ -272,6 +273,60 @@ class SoldierEnv(gym.Env):
         self._rng_soldier: np.random.Generator | None = None
         self._rng_enemy_motion: np.random.Generator | None = None
         self._rng_sensor: np.random.Generator | None = None
+        # Dedicated obstacle RNG stream (journal extension; see reset()).
+        # Never shared with the four streams above -- see
+        # test_obstacle_env_integration.py's baseline-reproduction regression
+        # test for the property this separation guarantees.
+        self._rng_obstacles: np.random.Generator | None = None
+        self._obstacle_layout: ObstacleLayout = ObstacleLayout()
+
+        # Obstacle collision/clearance diagnostics (journal extension,
+        # Phase 2). DIAGNOSTIC ONLY in this phase: never affects movement,
+        # reward, or termination (see step()/reset()).
+        self._defender_obstacle_collision: bool = False
+        self._enemy_obstacle_collision: bool = False
+        self._defender_collision_obstacle_index: int | None = None
+        self._enemy_collision_obstacle_index: int | None = None
+        self._defender_collision_point: np.ndarray | None = None
+        self._enemy_collision_point: np.ndarray | None = None
+        self._defender_min_obstacle_clearance: float = float("inf")
+        self._enemy_min_obstacle_clearance: float = float("inf")
+        # Collision EVENT counters: an "outside -> collision" transition
+        # counts once; continued occupancy of the same (or any) obstacle on
+        # subsequent steps is NOT re-counted until clearance is regained.
+        self._defender_collision_count: int = 0
+        self._enemy_collision_count: int = 0
+        self._defender_ever_collided: bool = False
+        self._enemy_ever_collided: bool = False
+        self._defender_was_in_collision: bool = False
+        self._enemy_was_in_collision: bool = False
+
+        # Protected-asset obstacle-blocked-motion diagnostics (Phase 3).
+        # DIAGNOSTIC ONLY plus the (data-preserving) blocked-motion rule
+        # itself -- see _move_soldier().
+        self._soldier_obstacle_blocked: bool = False
+        self._soldier_obstacle_block_count: int = 0
+
+        # Hostile obstacle-navigation planner (Phase 3B): a deterministic,
+        # RNG-free, short-horizon local avoidance layer (see
+        # uav_defend/obstacles/avoidance.py). Persistence/hysteresis state
+        # lives inside the planner instance and is cleared every reset().
+        self._enemy_obstacle_planner = ObstacleAvoidancePlanner(
+            clearance=self.config.enemy_obstacle_clearance,
+            horizon_steps=self.config.enemy_obstacle_prediction_horizon_steps,
+            release_steps=self.config.enemy_obstacle_release_steps,
+            max_altitude=self.config.max_altitude,
+            eps=self.config.eps,
+        )
+        # Hostile obstacle-navigation diagnostics (Phase 3B). Deterministic
+        # and RNG-free -- see _move_enemy()/ObstacleAvoidancePlanner.plan().
+        self._enemy_obstacle_avoidance_active: bool = False
+        self._enemy_obstacle_avoidance_mode: str | None = None
+        self._enemy_obstacle_avoidance_vector: np.ndarray = np.zeros(3, dtype=np.float32)
+        self._enemy_predicted_obstacle_index: int | None = None
+        self._enemy_predicted_collision_step: int | None = None
+        self._enemy_predicted_min_clearance: float = float("inf")
+        self._enemy_obstacle_fallback_used: bool = False
         
         # Kalman filter for enemy tracking (initialized on first detection)
         self._kf: EnemyKalmanFilter | None = None
@@ -324,6 +379,13 @@ class SoldierEnv(gym.Env):
         self._rng_soldier = np.random.default_rng(soldier_seed)
         self._rng_enemy_motion = np.random.default_rng(enemy_seed)
         self._rng_sensor = np.random.default_rng(sensor_seed)
+        # Obstacle RNG (journal extension): spawned AFTER the four streams
+        # above so their entropy/output is bit-for-bit unchanged regardless
+        # of whether obstacles are enabled (numpy SeedSequence.spawn() calls
+        # on the same sequence never alter earlier children -- see
+        # test_obstacle_env_integration.py).
+        (obstacle_seed,) = seed_seq.spawn(1)
+        self._rng_obstacles = np.random.default_rng(obstacle_seed)
         
         # Initialize soldier at the origin, on the ground (z = 0)
         self._soldier_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
@@ -360,6 +422,51 @@ class SoldierEnv(gym.Env):
             self.config.enemy_max_climb_rate,
         )
         self._enemy_vel = initial_enemy_vel.astype(np.float32)
+        
+        # Obstacle layout (journal extension): DATA ONLY in this phase --
+        # does not affect movement, detection, reward, or termination.
+        # Generated from its own dedicated RNG stream (see above), using
+        # the now-known enemy spawn position for spawn-clearance rejection
+        # in "random" mode.
+        self._obstacle_layout = generate_layout(
+            config=self.config,
+            rng=self._rng_obstacles,
+            asset_position=self._soldier_pos,
+            defender_position=self._defender_pos,
+            enemy_spawn_position=self._enemy_pos,
+        )
+
+        # Reset per-episode collision/clearance diagnostics (Phase 2).
+        # Initial positions are validated (both "random" via clearance
+        # margins and "fixed" via hard containment rejection in
+        # generate_layout()) to never begin inside an obstacle, so the
+        # initial collision flags below are always False by construction.
+        self._defender_obstacle_collision = self._obstacle_layout.contains_point(self._defender_pos)
+        self._enemy_obstacle_collision = self._obstacle_layout.contains_point(self._enemy_pos)
+        self._defender_collision_obstacle_index = self._obstacle_layout.containing_obstacle_index(self._defender_pos)
+        self._enemy_collision_obstacle_index = self._obstacle_layout.containing_obstacle_index(self._enemy_pos)
+        self._defender_collision_point = None
+        self._enemy_collision_point = None
+        self._defender_min_obstacle_clearance = self._obstacle_layout.min_clearance(self._defender_pos)
+        self._enemy_min_obstacle_clearance = self._obstacle_layout.min_clearance(self._enemy_pos)
+        self._defender_collision_count = 0
+        self._enemy_collision_count = 0
+        self._defender_ever_collided = False
+        self._enemy_ever_collided = False
+        self._defender_was_in_collision = self._defender_obstacle_collision
+        self._enemy_was_in_collision = self._enemy_obstacle_collision
+
+        # Reset per-episode protected-asset/hostile obstacle diagnostics (Phase 3).
+        self._soldier_obstacle_blocked = False
+        self._soldier_obstacle_block_count = 0
+        self._enemy_obstacle_planner.reset()
+        self._enemy_obstacle_avoidance_active = False
+        self._enemy_obstacle_avoidance_mode = None
+        self._enemy_obstacle_avoidance_vector = np.zeros(3, dtype=np.float32)
+        self._enemy_predicted_obstacle_index = None
+        self._enemy_predicted_collision_step = None
+        self._enemy_predicted_min_clearance = self._obstacle_layout.min_clearance(self._enemy_pos)
+        self._enemy_obstacle_fallback_used = False
         
         # Reset per-step dynamics diagnostics (see _advance_velocity)
         self._defender_dynamics_info = {
@@ -504,6 +611,13 @@ class SoldierEnv(gym.Env):
         standby_mode = self.config.defender_standby_until_detection
         detected_at_step_start = self._enemy_detected
 
+        # Positions BEFORE this step's motion (journal extension, Phase 2):
+        # needed for swept-motion obstacle-collision detection below, since
+        # checking only the endpoint position can miss a fast entity
+        # tunneling through a thin obstacle within one dt.
+        defender_prev_pos = self._defender_pos.copy()
+        enemy_prev_pos = self._enemy_pos.copy()
+
         # A. Move soldier stochastically (uncontrolled) -- unchanged model.
         self._move_soldier()
 
@@ -552,6 +666,53 @@ class SoldierEnv(gym.Env):
         else:
             self._move_defender(action)
             controller_action_executed = True
+
+        # Swept-motion obstacle-collision diagnostics (journal extension,
+        # Phase 2). DIAGNOSTIC ONLY: does not stop movement, modify
+        # position/velocity, terminate the episode, or alter reward -- see
+        # module-level design notes in uav_defend/obstacles/.
+        #
+        # Phase-2 semantic fix: while the defender is held in pre-detection
+        # standby (controller_action_executed=False), synchronizing its
+        # position onto the just-moved soldier is bookkeeping, NOT physical
+        # UAV flight -- the segment (previous defender position) -> (synced
+        # soldier position) must NOT be swept-tested, or a fictitious
+        # "flight through a wall" could be reported even though the
+        # defender never actually flew anywhere. In that case we test only
+        # the current (synchronized) position for containment (a
+        # zero-length segment), never the bookkeeping displacement. Once
+        # controller_action_executed=True, normal swept-motion checking
+        # against the real pre-step position resumes.
+        if controller_action_executed:
+            defender_collision_segment_start = defender_prev_pos
+        else:
+            defender_collision_segment_start = self._defender_pos
+        defender_collision = self._obstacle_layout.first_segment_intersection(
+            defender_collision_segment_start, self._defender_pos
+        )
+        enemy_collision = self._obstacle_layout.first_segment_intersection(enemy_prev_pos, self._enemy_pos)
+
+        self._defender_obstacle_collision = defender_collision.intersects
+        self._enemy_obstacle_collision = enemy_collision.intersects
+        self._defender_collision_obstacle_index = defender_collision.obstacle_index
+        self._enemy_collision_obstacle_index = enemy_collision.obstacle_index
+        self._defender_collision_point = defender_collision.point
+        self._enemy_collision_point = enemy_collision.point
+        self._defender_min_obstacle_clearance = self._obstacle_layout.min_clearance(self._defender_pos)
+        self._enemy_min_obstacle_clearance = self._obstacle_layout.min_clearance(self._enemy_pos)
+
+        # Collision EVENT counting: only an "outside -> collision" transition
+        # increments the count. An entity that remains inside/overlapping an
+        # obstacle across multiple steps (possible in Phase 2 since motion is
+        # never blocked) is counted once, not once per step.
+        if self._defender_obstacle_collision and not self._defender_was_in_collision:
+            self._defender_collision_count += 1
+            self._defender_ever_collided = True
+        self._defender_was_in_collision = self._defender_obstacle_collision
+        if self._enemy_obstacle_collision and not self._enemy_was_in_collision:
+            self._enemy_collision_count += 1
+            self._enemy_ever_collided = True
+        self._enemy_was_in_collision = self._enemy_obstacle_collision
 
         self._step_count += 1
         
@@ -741,39 +902,7 @@ class SoldierEnv(gym.Env):
         Returns:
             (clipped_pos, clipped_vel), each of shape (3,).
         """
-        L = self.config.L
-        H = self.config.max_altitude
-        pos = pos.copy()
-        vel = vel.copy()
-        
-        if pos[0] > L:
-            pos[0] = L
-            if vel[0] > 0:
-                vel[0] = 0.0
-        elif pos[0] < -L:
-            pos[0] = -L
-            if vel[0] < 0:
-                vel[0] = 0.0
-        
-        if pos[1] > L:
-            pos[1] = L
-            if vel[1] > 0:
-                vel[1] = 0.0
-        elif pos[1] < -L:
-            pos[1] = -L
-            if vel[1] < 0:
-                vel[1] = 0.0
-        
-        if pos[2] > H:
-            pos[2] = H
-            if vel[2] > 0:
-                vel[2] = 0.0
-        elif pos[2] < 0.0:
-            pos[2] = 0.0
-            if vel[2] < 0:
-                vel[2] = 0.0
-        
-        return pos, vel
+        return apply_boundary(pos, vel, L=self.config.L, max_altitude=self.config.max_altitude)
     
     def _move_defender(self, action: np.ndarray) -> None:
         """
@@ -939,6 +1068,16 @@ class SoldierEnv(gym.Env):
         - Sample 2D (horizontal) Gaussian displacement with scale σ = v_s * dt
         - Variable step magnitude (Gaussian-distributed)
         - Reflecting boundary conditions at [-L, L]² (horizontal only)
+
+        Obstacle-blocked motion (journal extension, Phase 3): the proposed
+        displacement (and its RNG draw) is computed EXACTLY as before,
+        regardless of obstacles. If the resulting candidate segment
+        (previous position -> candidate position, both at z=0) would
+        enter/cross any obstacle footprint, the displacement is REJECTED
+        and the soldier holds its previous valid position for this step --
+        it is NEVER resampled, so the soldier RNG stream's sequence of
+        draws is identical whether or not obstacles are enabled (see
+        test_soldier_obstacle_motion.py).
         """
         # True Gaussian random walk: sample horizontal displacement directly
         # Scale (standard deviation) determines typical step size
@@ -956,7 +1095,17 @@ class SoldierEnv(gym.Env):
         
         # Soldier is a ground entity: enforce z = 0 explicitly
         new_pos[2] = 0.0
-        
+
+        # Obstacle-validity rule: reuse the existing layout geometry (never
+        # duplicate intersection math) to swept-test the ground-plane
+        # segment; boundary contact counts as blocked (AABBObstacle
+        # convention). Reject-in-place, never resample.
+        if self._obstacle_layout.segment_intersects(self._soldier_pos, new_pos):
+            self._soldier_obstacle_blocked = True
+            self._soldier_obstacle_block_count += 1
+            return
+
+        self._soldier_obstacle_blocked = False
         self._soldier_pos = new_pos.astype(np.float32)
     
     def _compute_enemy_evasion(
@@ -1037,7 +1186,7 @@ class SoldierEnv(gym.Env):
             "away_direction": away_direction.astype(np.float32),
             "evasion_component": evasion_component.astype(np.float32),
         }
-    
+
     def _move_enemy(self) -> None:
         """
         Move the enemy with a stochastic weaving pursuit policy in 3D, with
@@ -1071,9 +1220,24 @@ class SoldierEnv(gym.Env):
         activation formula). This is added alongside pursuit/weave/noise,
         NOT in place of them.
         
-        6. Unnormalized direction: u_raw = r_hat + a * lateral + sigma_e * z
-           + evasion_component
-        7. Normalize: u = u_raw / (||u_raw|| + eps)
+        6. Unnormalized direction: u_base_raw = r_hat + a * lateral +
+           sigma_e * z + evasion_component
+        7. Normalize: u_base = u_base_raw / (||u_base_raw|| + eps)
+        
+        OBSTACLE NAVIGATION (journal extension, Phase 3B): u_base is the
+        "base command" the hostile would fly if obstacles did not exist.
+        When enemy_obstacle_avoidance_enabled, u_base (together with the
+        hostile's current position/velocity) is handed to a deterministic,
+        RNG-free `ObstacleAvoidancePlanner` (uav_defend/obstacles/avoidance.py),
+        which predicts -- using the SAME constrained point-mass dynamics as
+        below, over a short fixed horizon -- whether flying u_base would
+        collide with an obstacle, and if so temporarily substitutes a
+        deterministic bypass direction. See that module for the prediction/
+        candidate-generation/selection/persistence algorithm. When
+        disabled, or when no collision is predicted, the commanded
+        direction u is exactly u_base (bit-for-bit): obstacle navigation
+        NEVER touches pursuit/weave/noise/evasion or the RNG streams that
+        produce them.
         
         DYNAMICS (unchanged from the constrained-dynamics task): guidance
         produces a DESIRED velocity direction, not instantaneous motion.
@@ -1132,17 +1296,47 @@ class SoldierEnv(gym.Env):
         # (see _compute_enemy_evasion docstring).
         evasion_info = self._compute_enemy_evasion(self._defender_pos, self._enemy_pos)
         self._enemy_evasion_info = evasion_info
-        
-        # Unnormalized direction with weave amplitude multiplier (horizontal weave only)
+
+        # Base command: exactly the pre-obstacle hostile model (pursuit +
+        # weave + heading noise + evasion), unnormalized then normalized.
         weave_component = self._weave_bias * self.config.weave_amplitude * lateral
-        u_raw = r_hat + weave_component + self.config.sigma_e * z + evasion_info["evasion_component"]
-        
-        # Normalize direction
-        u_norm = np.linalg.norm(u_raw)
-        if u_norm > eps:
-            u = u_raw / u_norm
+        u_base_raw = r_hat + weave_component + self.config.sigma_e * z + evasion_info["evasion_component"]
+        u_base_norm = np.linalg.norm(u_base_raw)
+        if u_base_norm > eps:
+            u_base = u_base_raw / u_base_norm
         else:
-            u = r_hat  # Fallback to direct pursuit
+            u_base = r_hat  # Fallback to direct pursuit
+
+        # Deterministic, RNG-free obstacle navigation (journal extension,
+        # Phase 3B). Operates on u_base (the command the hostile would
+        # actually execute if obstacles did not exist) plus current
+        # position/velocity -- NOT merely the instantaneous pursuit ray.
+        # Exact no-op (u = u_base, bit-for-bit) when disabled or when no
+        # obstacles exist -- see ObstacleAvoidancePlanner.plan().
+        if self.config.enemy_obstacle_avoidance_enabled:
+            plan = self._enemy_obstacle_planner.plan(
+                position=self._enemy_pos,
+                velocity=self._enemy_vel,
+                u_base=u_base,
+                layout=self._obstacle_layout,
+                target_position=self._soldier_pos,
+                limits=self._enemy_dynamics_limits(),
+            )
+        else:
+            plan = {
+                "direction": u_base, "active": False, "mode": None, "obstacle_index": None,
+                "predicted_collision_step": None, "predicted_min_clearance": float("inf"),
+                "fallback_used": False,
+            }
+        self._enemy_obstacle_avoidance_active = plan["active"]
+        self._enemy_obstacle_avoidance_mode = plan["mode"]
+        self._enemy_obstacle_avoidance_vector = np.asarray(plan["direction"], dtype=np.float32)
+        self._enemy_predicted_obstacle_index = plan["obstacle_index"]
+        self._enemy_predicted_collision_step = plan["predicted_collision_step"]
+        self._enemy_predicted_min_clearance = plan["predicted_min_clearance"]
+        self._enemy_obstacle_fallback_used = plan["fallback_used"]
+
+        u = np.asarray(plan["direction"], dtype=np.float64)
         
         # Guidance produces a DESIRED velocity; dynamics determine the
         # actual persistent velocity subject to acceleration/turn/vertical limits.
@@ -1164,6 +1358,23 @@ class SoldierEnv(gym.Env):
         
         self._enemy_pos = new_pos.astype(np.float32)
         self._enemy_vel = next_vel.astype(np.float32)
+
+    def _enemy_dynamics_limits(self) -> DynamicsLimits:
+        """Bundles the hostile's constrained-dynamics parameters for reuse
+        by the obstacle-navigation predictor (uav_defend/obstacles/avoidance.py),
+        guaranteeing the predictor's dynamics model can never drift out of
+        sync with the real per-step update above."""
+        return DynamicsLimits(
+            max_speed=self.config.v_e,
+            max_accel=self.config.enemy_max_accel,
+            max_turn_rate_rad=np.radians(self.config.enemy_max_turn_rate_deg),
+            max_climb_rate=self.config.enemy_max_climb_rate,
+            max_descent_rate=self.config.enemy_max_descent_rate,
+            dt=self.config.dt,
+            eps=self.config.eps,
+            L=self.config.L,
+            max_altitude=self.config.max_altitude,
+        )
     
     def _reflect_boundary(self, pos: np.ndarray) -> np.ndarray:
         """
@@ -1390,6 +1601,45 @@ class SoldierEnv(gym.Env):
             "defender_standby": defender_standby,
             "controller_action_executed": controller_action_executed,
             "just_detected": just_detected,
+            # Obstacle diagnostics (journal extension; NOT part of the RL
+            # observation in this phase -- see uav_defend/obstacles/).
+            "obstacles_enabled": self.config.obstacles_enabled,
+            "obstacle_count": len(self._obstacle_layout),
+            "obstacle_layout": self._obstacle_layout.to_dict(),
+            # Obstacle collision/clearance diagnostics (Phase 2). DIAGNOSTIC
+            # ONLY -- does not affect reward or termination in this phase.
+            # Clearance is +inf when there are no obstacles (chosen
+            # consistently over None to simplify minimum-distance math).
+            "defender_obstacle_collision": self._defender_obstacle_collision,
+            "enemy_obstacle_collision": self._enemy_obstacle_collision,
+            "defender_collision_obstacle_index": self._defender_collision_obstacle_index,
+            "enemy_collision_obstacle_index": self._enemy_collision_obstacle_index,
+            "defender_collision_point": (
+                self._defender_collision_point.copy() if self._defender_collision_point is not None else None
+            ),
+            "enemy_collision_point": (
+                self._enemy_collision_point.copy() if self._enemy_collision_point is not None else None
+            ),
+            "defender_min_obstacle_clearance": self._defender_min_obstacle_clearance,
+            "enemy_min_obstacle_clearance": self._enemy_min_obstacle_clearance,
+            # Collision EVENT counts (outside -> collision transitions only;
+            # see step() for the exact definition), not per-step occupancy.
+            "defender_collision_count": self._defender_collision_count,
+            "enemy_collision_count": self._enemy_collision_count,
+            "defender_ever_collided": self._defender_ever_collided,
+            "enemy_ever_collided": self._enemy_ever_collided,
+            # Protected-asset obstacle-blocked-motion diagnostics (Phase 3).
+            "soldier_obstacle_blocked": self._soldier_obstacle_blocked,
+            "soldier_obstacle_block_count": self._soldier_obstacle_block_count,
+            # Hostile obstacle-navigation diagnostics (Phase 3B). Deterministic,
+            # RNG-free; NOT part of the policy observation.
+            "enemy_obstacle_avoidance_active": self._enemy_obstacle_avoidance_active,
+            "enemy_obstacle_avoidance_mode": self._enemy_obstacle_avoidance_mode,
+            "enemy_obstacle_avoidance_vector": self._enemy_obstacle_avoidance_vector.copy(),
+            "enemy_predicted_obstacle_index": self._enemy_predicted_obstacle_index,
+            "enemy_predicted_collision_step": self._enemy_predicted_collision_step,
+            "enemy_predicted_min_clearance": self._enemy_predicted_min_clearance,
+            "enemy_obstacle_fallback_used": self._enemy_obstacle_fallback_used,
         }
     
     def render(self) -> np.ndarray | None:
@@ -1405,6 +1655,26 @@ class SoldierEnv(gym.Env):
         size = 100
         frame = np.zeros((size, size, 3), dtype=np.uint8)
         L = self.config.L
+
+        # Draw obstacle footprints (journal extension, Phase 2): this
+        # renderer is fundamentally 2-D/top-down, so obstacles are drawn as
+        # filled x/y-footprint rectangles UNDER the entity markers below.
+        # Shade encodes height (taller obstacle -> darker gray) as a simple
+        # height annotation without adding a 3-D rendering dependency.
+        for obstacle in self._obstacle_layout:
+            x_min, x_max = np.clip(
+                np.round([(obstacle.min_corner[0] + L) / (2 * L) * (size - 1),
+                          (obstacle.max_corner[0] + L) / (2 * L) * (size - 1)]).astype(int),
+                0, size - 1,
+            )
+            y_min, y_max = np.clip(
+                np.round([(obstacle.min_corner[1] + L) / (2 * L) * (size - 1),
+                          (obstacle.max_corner[1] + L) / (2 * L) * (size - 1)]).astype(int),
+                0, size - 1,
+            )
+            height_frac = float(np.clip(obstacle.max_corner[2] / max(self.config.max_altitude, self.config.eps), 0.0, 1.0))
+            shade = int(round(150 - 90 * height_frac))  # taller obstacle -> darker gray
+            frame[y_min:y_max + 1, x_min:x_max + 1] = [shade, shade, shade]
         
         # Draw soldier as blue square
         if self._soldier_pos is not None:

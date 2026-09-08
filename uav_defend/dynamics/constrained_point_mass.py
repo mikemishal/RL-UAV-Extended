@@ -168,3 +168,55 @@ def advance_velocity(
     }
 
     return next_velocity.astype(np.float32), diagnostics
+
+
+def apply_boundary(
+    pos: np.ndarray, vel: np.ndarray, L: float, max_altitude: float,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Clip position to the 3D engagement volume (x, y in [-L, L], z in
+    [0, max_altitude]) and zero ONLY the outward-normal velocity component
+    at any boundary the position has reached. Tangential velocity
+    components are preserved unchanged (no bounce/reflection for
+    persistent-velocity vehicles).
+
+    PURE function: does not mutate its input arrays. Factored out of
+    `SoldierEnv._apply_boundary` (the single canonical domain-boundary
+    update) so short-horizon prediction code (e.g.
+    `uav_defend/obstacles/avoidance.py`) can apply the SAME ground/ceiling/
+    wall clipping the real simulation uses -- without this, unclipped
+    prediction can let a mover's z "escape" below the ground plane (or
+    beyond a wall) in a way that never actually happens in the real
+    simulation, causing a predicted trajectory to spuriously miss an
+    obstacle it would truly collide with at the real (clipped) altitude.
+    """
+    pos = np.array(pos, dtype=np.float64, copy=True)
+    vel = np.array(vel, dtype=np.float64, copy=True)
+
+    if pos[0] > L:
+        pos[0] = L
+        if vel[0] > 0:
+            vel[0] = 0.0
+    elif pos[0] < -L:
+        pos[0] = -L
+        if vel[0] < 0:
+            vel[0] = 0.0
+
+    if pos[1] > L:
+        pos[1] = L
+        if vel[1] > 0:
+            vel[1] = 0.0
+    elif pos[1] < -L:
+        pos[1] = -L
+        if vel[1] < 0:
+            vel[1] = 0.0
+
+    if pos[2] > max_altitude:
+        pos[2] = max_altitude
+        if vel[2] > 0:
+            vel[2] = 0.0
+    elif pos[2] < 0.0:
+        pos[2] = 0.0
+        if vel[2] < 0:
+            vel[2] = 0.0
+
+    return pos, vel

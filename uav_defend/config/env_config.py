@@ -153,6 +153,53 @@ class EnvConfig:
     measurement_var: float = 0.5       # Enemy position measurement noise variance (per axis)
     lead_time: float = 0.0             # Prediction lead time for extrapolating enemy position (seconds)
 
+    # =========================================================================
+    # Obstacle Configuration (journal extension: obstacle-aware 3-D
+    # interception; see uav_defend/obstacles/ for geometry/layout code).
+    #
+    # OFF BY DEFAULT: obstacles_enabled=False reproduces the conference-
+    # baseline environment exactly -- no obstacle layout is generated, no
+    # RNG stream is consumed for obstacles, and no other behavior changes.
+    # This phase adds obstacle GEOMETRY/DATA ONLY: no collision
+    # termination, no avoidance guidance, no observation changes.
+    # =========================================================================
+    obstacles_enabled: bool = False
+    obstacle_layout_mode: str = "none"  # "none" | "fixed" | "random"
+    obstacle_count: int = 0             # number of obstacles to place ("random" mode only)
+    obstacle_min_size: float = 2.0      # min horizontal (x/y) full width/length, meters
+    obstacle_max_size: float = 6.0      # max horizontal (x/y) full width/length, meters
+    obstacle_min_height: float = 2.0    # min full vertical extent (z-height), meters; obstacles are ground-based (z_min=0)
+    obstacle_max_height: float = 10.0   # max full vertical extent (z-height), meters
+    obstacle_clearance_from_asset: float = 5.0   # min clearance (m) from the protected asset / defender initial position
+    obstacle_clearance_from_spawn: float = 3.0   # min clearance (m) from a known enemy spawn point ("random" mode)
+    obstacle_min_separation: float = 0.0         # min clearance (m) required between distinct obstacles (0 = no overlap only)
+    obstacle_max_placement_attempts: int = 500   # rejection-sampling attempt budget PER obstacle ("random" mode)
+    # "fixed" mode only: tuple of (center_x, center_y, center_z, half_x, half_y, half_z) per obstacle
+    obstacle_fixed_spec: tuple[tuple[float, float, float, float, float, float], ...] = ()
+
+    # =========================================================================
+    # Obstacle-compatible exogenous motion (journal extension, Phase 3):
+    #
+    # Protected asset: the existing planar Gaussian random-walk PROPOSAL is
+    # unchanged (same RNG draw, same sequence). If the proposed displacement
+    # would enter/cross an obstacle footprint, the displacement is REJECTED
+    # (soldier holds its previous valid position for that step) -- never
+    # resampled, so the soldier RNG stream is never perturbed by obstacles.
+    #
+    # Hostile UAS (Phase 3B): a deterministic, RNG-free, short-horizon local
+    # obstacle-navigation layer (see uav_defend/obstacles/avoidance.py) can
+    # temporarily redirect the hostile's base guidance command (pursuit +
+    # weave + heading noise + defender evasion) when that base command is
+    # predicted -- under the SAME constrained point-mass dynamics used
+    # elsewhere -- to collide with an obstacle. OFF BY DEFAULT
+    # (enemy_obstacle_avoidance_enabled=False) so Phase-2 hostile
+    # trajectories are reproduced exactly unless explicitly enabled.
+    # =========================================================================
+    enemy_obstacle_avoidance_enabled: bool = False
+    enemy_obstacle_clearance: float = 2.0                  # m; inflates obstacles for candidate bypass targets
+    enemy_obstacle_prediction_horizon_steps: int = 12       # simulation steps of short-horizon collision prediction
+    enemy_obstacle_release_steps: int = 4                  # consecutive collision-free checks required to release avoidance
+
     def __post_init__(self) -> None:
         """Validate altitude and dynamics configuration."""
         if self.enemy_spawn_altitude_min < 0:
@@ -216,4 +263,78 @@ class EnvConfig:
         if not (0 <= self.enemy_evasion_gain <= 1):
             raise ValueError(
                 f"enemy_evasion_gain must be in [0, 1], got {self.enemy_evasion_gain}"
+            )
+
+        if self.obstacle_layout_mode not in ("none", "fixed", "random"):
+            raise ValueError(
+                f"obstacle_layout_mode must be one of 'none', 'fixed', 'random', got "
+                f"{self.obstacle_layout_mode!r}"
+            )
+        if self.obstacle_count < 0:
+            raise ValueError(f"obstacle_count must be >= 0, got {self.obstacle_count}")
+        if self.obstacle_min_size <= 0 or self.obstacle_max_size <= 0:
+            raise ValueError(
+                "obstacle_min_size and obstacle_max_size must be > 0, got "
+                f"{self.obstacle_min_size}, {self.obstacle_max_size}"
+            )
+        if self.obstacle_min_size > self.obstacle_max_size:
+            raise ValueError(
+                "obstacle_min_size must be <= obstacle_max_size, got "
+                f"{self.obstacle_min_size} > {self.obstacle_max_size}"
+            )
+        if self.obstacle_min_height <= 0 or self.obstacle_max_height <= 0:
+            raise ValueError(
+                "obstacle_min_height and obstacle_max_height must be > 0, got "
+                f"{self.obstacle_min_height}, {self.obstacle_max_height}"
+            )
+        if self.obstacle_min_height > self.obstacle_max_height:
+            raise ValueError(
+                "obstacle_min_height must be <= obstacle_max_height, got "
+                f"{self.obstacle_min_height} > {self.obstacle_max_height}"
+            )
+        if self.obstacle_min_height > self.max_altitude:
+            raise ValueError(
+                "obstacle_min_height must be <= max_altitude, got "
+                f"{self.obstacle_min_height} > {self.max_altitude}"
+            )
+        if self.obstacle_clearance_from_asset < 0:
+            raise ValueError(
+                f"obstacle_clearance_from_asset must be >= 0, got {self.obstacle_clearance_from_asset}"
+            )
+        if self.obstacle_clearance_from_spawn < 0:
+            raise ValueError(
+                f"obstacle_clearance_from_spawn must be >= 0, got {self.obstacle_clearance_from_spawn}"
+            )
+        if self.obstacle_min_separation < 0:
+            raise ValueError(
+                f"obstacle_min_separation must be >= 0, got {self.obstacle_min_separation}"
+            )
+        if self.obstacle_max_placement_attempts <= 0:
+            raise ValueError(
+                f"obstacle_max_placement_attempts must be > 0, got {self.obstacle_max_placement_attempts}"
+            )
+        for spec in self.obstacle_fixed_spec:
+            if len(spec) != 6:
+                raise ValueError(
+                    "each obstacle_fixed_spec entry must be a 6-tuple "
+                    "(center_x, center_y, center_z, half_x, half_y, half_z), got "
+                    f"{spec}"
+                )
+            if any(h <= 0 for h in spec[3:]):
+                raise ValueError(
+                    f"obstacle_fixed_spec half-extents must be > 0, got {spec}"
+                )
+
+        if self.enemy_obstacle_clearance < 0:
+            raise ValueError(
+                f"enemy_obstacle_clearance must be >= 0, got {self.enemy_obstacle_clearance}"
+            )
+        if self.enemy_obstacle_prediction_horizon_steps < 1:
+            raise ValueError(
+                "enemy_obstacle_prediction_horizon_steps must be >= 1, got "
+                f"{self.enemy_obstacle_prediction_horizon_steps}"
+            )
+        if self.enemy_obstacle_release_steps < 1:
+            raise ValueError(
+                f"enemy_obstacle_release_steps must be >= 1, got {self.enemy_obstacle_release_steps}"
             )
