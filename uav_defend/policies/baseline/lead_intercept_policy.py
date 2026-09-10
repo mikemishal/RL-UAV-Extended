@@ -71,6 +71,12 @@ from __future__ import annotations
 import numpy as np
 
 from uav_defend.config.env_config import EnvConfig
+from uav_defend.policies.baseline.lead_math import (
+    get_target_state_estimate,
+    pure_pursuit_direction,
+    solve_cv_lead,
+    solve_quadratic_intercept_time,
+)
 
 
 class LeadInterceptPolicy:
@@ -190,44 +196,16 @@ class LeadInterceptPolicy:
         """
         Return (target_position, target_velocity) using ONLY legitimate
         environment fields for the configured state_source. NEVER reads
-        info["enemy_pos"] or info["enemy_vel"].
+        info["enemy_pos"] or info["enemy_vel"]. Thin delegation to the
+        shared pure helper (see uav_defend.policies.baseline.lead_math.
+        get_target_state_estimate), reused by other estimated-state
+        Lead-family diagnostic controllers.
         """
-        if self.state_source == "kalman":
-            e_hat = info.get("e_hat")
-            v_hat = info.get("v_hat")
-            if e_hat is None:
-                return None, None
-            target_pos = np.asarray(e_hat, dtype=np.float64)
-            target_vel = np.asarray(v_hat, dtype=np.float64) if v_hat is not None else None
-            return target_pos, target_vel
-
-        # state_source == "measurement": consume the environment's
-        # standardized finite-difference measurement velocity -- the same
-        # estimator used by the Direct observation and shared across all
-        # measurement-mode controllers. No independent per-policy finite
-        # differencing.
-        meas = info.get("enemy_measurement")
-        if meas is None:
-            return None, None
-        target_pos = np.asarray(meas, dtype=np.float64)
-        if info.get("enemy_measurement_velocity_valid", False):
-            target_vel = np.asarray(info.get("enemy_measurement_velocity"), dtype=np.float64)
-        else:
-            target_vel = None
-        return target_pos, target_vel
+        return get_target_state_estimate(info, self.state_source)
 
     def _pursue(self, target: np.ndarray | None, defender_pos: np.ndarray, eps: float) -> np.ndarray:
         """Pure-pursuit fallback direction toward `target` (never ground truth)."""
-        if target is None:
-            action = np.zeros(3, dtype=np.float32)
-        else:
-            target = np.asarray(target, dtype=np.float64)
-            direction = target - defender_pos
-            dist = float(np.linalg.norm(direction))
-            if dist < eps:
-                action = np.zeros(3, dtype=np.float32)
-            else:
-                action = (direction / dist).astype(np.float32)
+        action = pure_pursuit_direction(target, defender_pos, eps)
         self.last_action = action.copy()
         return action
 
@@ -236,57 +214,13 @@ class LeadInterceptPolicy:
         a: float, b: float, c: float, eps: float
     ) -> tuple[float | None, float | None, str]:
         """
-        Solve a t^2 + b t + c = 0 for the earliest positive real root,
-        robustly handling the normal-quadratic, near-linear, and
-        floating-point-roundoff-near-zero-discriminant cases.
-
-        Returns:
-            (t_intercept, discriminant, reason) where:
-                t_intercept: earliest positive real root, or None if none exists.
-                discriminant: b^2-4ac (normal-quadratic branch only), else None.
-                reason: "ok" | "no_real_solution" | "no_positive_root"
+        Solve a t^2 + b t + c = 0 for the earliest positive real root.
+        Thin delegation to the shared pure helper (see
+        uav_defend.policies.baseline.lead_math.solve_quadratic_intercept_time
+        for the full derivation/algorithm) -- kept as a static method here
+        for backward compatibility with any existing callers.
         """
-        if abs(a) > eps:
-            # CASE A: normal quadratic.
-            discriminant = b * b - 4.0 * a * c
-            if discriminant < -eps:
-                return None, discriminant, "no_real_solution"
-            if discriminant < 0.0:
-                discriminant = 0.0  # floating-point roundoff clamp
-
-            sqrt_D = float(np.sqrt(discriminant))
-            sign_b = 1.0 if b >= 0.0 else -1.0
-            q = -0.5 * (b + sign_b * sqrt_D)
-
-            roots: list[float] = []
-            if abs(q) > eps:
-                # Numerically stable formulation (avoids catastrophic
-                # cancellation in (-b +/- sqrt(D))/(2a) when b and sqrt_D
-                # are close in magnitude).
-                roots.append(q / a)
-                roots.append(c / q)
-            else:
-                # q ~ 0: fall back to the direct quadratic formula, which is
-                # safe here precisely because q's cancellation risk is what
-                # the stable form exists to avoid, and q~0 means that risk
-                # is not present in this branch.
-                roots.append((-b + sqrt_D) / (2.0 * a))
-                roots.append((-b - sqrt_D) / (2.0 * a))
-
-            positive_roots = [t for t in roots if np.isfinite(t) and t > eps]
-            if not positive_roots:
-                return None, discriminant, "no_positive_root"
-            return min(positive_roots), discriminant, "ok"
-
-        # CASE B: near-linear geometry (a ~ 0).
-        if abs(b) > eps:
-            t = -c / b
-            if np.isfinite(t) and t > eps:
-                return t, None, "ok"
-            return None, None, "no_positive_root"
-
-        # abs(a) <= eps and abs(b) <= eps: no useful predicted solution.
-        return None, None, "no_real_solution"
+        return solve_quadratic_intercept_time(a, b, c, eps)
 
     def act(self, obs: np.ndarray, info: dict) -> np.ndarray:
         """
@@ -336,53 +270,21 @@ class LeadInterceptPolicy:
 
         self.last_target_velocity_estimate = target_vel.astype(np.float32)
 
-        # Relative geometry (section 7)
-        r = target_pos - defender_pos
-        self.last_relative_position = r.astype(np.float32)
-        R = float(np.linalg.norm(r))
-
-        if R <= eps:
-            self.last_guidance_mode = "degenerate_fallback"
-            return self._pursue(target_pos, defender_pos, eps)
-
-        s = self.v_d
-        a = float(np.dot(target_vel, target_vel) - s * s)
-        b = float(2.0 * np.dot(r, target_vel))
-        c = float(np.dot(r, r))
-        self.last_quadratic_a = a
-        self.last_quadratic_b = b
-        self.last_quadratic_c = c
-
-        t_intercept, discriminant, reason = self._solve_intercept_time(a, b, c, eps)
-        self.last_discriminant = discriminant
-
-        if reason != "ok":
-            self.last_guidance_mode = (
-                "no_real_solution_fallback" if reason == "no_real_solution" else "no_positive_root_fallback"
-            )
-            return self._pursue(target_pos, defender_pos, eps)
-
-        self.last_intercept_time = t_intercept
-
-        # Predicted intercept point (section 10). NOT clipped to the
-        # engagement volume -- this is a mathematical aim point; only its
-        # direction is returned, and the environment alone handles bounds.
-        p_intercept = target_pos + target_vel * t_intercept
-        if not np.all(np.isfinite(p_intercept)):
-            self.last_guidance_mode = "degenerate_fallback"
-            return self._pursue(target_pos, defender_pos, eps)
-        self.last_intercept_point = p_intercept.astype(np.float32)
-
-        lead_vector = p_intercept - defender_pos
-        lead_norm = float(np.linalg.norm(lead_vector))
-        if lead_norm <= eps or not np.isfinite(lead_norm):
-            self.last_guidance_mode = "degenerate_fallback"
-            return self._pursue(target_pos, defender_pos, eps)
-
-        action = (lead_vector / lead_norm).astype(np.float32)
-        self.last_guidance_mode = "lead"
-        self.last_action = action.copy()
-        return action
+        # Core constant-velocity Lead geometry -- delegated to the shared
+        # pure helper (uav_defend.policies.baseline.lead_math.solve_cv_lead)
+        # so it is not duplicated across diagnostic controllers (e.g. the
+        # True-State CV Lead analysis policy reuses the SAME function).
+        solution = solve_cv_lead(target_pos, target_vel, defender_pos, self.v_d, eps)
+        self.last_relative_position = solution.relative_position
+        self.last_quadratic_a = solution.quadratic_a
+        self.last_quadratic_b = solution.quadratic_b
+        self.last_quadratic_c = solution.quadratic_c
+        self.last_discriminant = solution.discriminant
+        self.last_intercept_time = solution.intercept_time
+        self.last_intercept_point = solution.intercept_point
+        self.last_guidance_mode = solution.guidance_mode
+        self.last_action = solution.action.copy()
+        return solution.action
 
     def __repr__(self) -> str:
         return f"LeadInterceptPolicy(state_source='{self.state_source}', v_d={self.v_d})"
