@@ -63,6 +63,21 @@ class EpisodeRecord:
     steps: list[EpisodeStep] = field(default_factory=list)
 
 
+def build_feature_vector(
+    est_pos: np.ndarray, est_vel: np.ndarray, defender_pos: np.ndarray,
+    defender_vel: np.ndarray, soldier_pos: np.ndarray, time_since_detection: float,
+) -> np.ndarray:
+    """Shared causal feature layout (order MUST match `FEATURE_NAMES`) used
+    both by dataset generation (`rollout_episode`) and by
+    `LearnedPredictionLeadPolicy`, so the deployed policy sees EXACTLY the
+    same feature construction the predictor was trained on."""
+    hostile_range = float(np.linalg.norm(est_pos - defender_pos))
+    return np.concatenate([
+        est_pos, est_vel, defender_pos, defender_vel, soldier_pos,
+        [float(time_since_detection), hostile_range],
+    ])
+
+
 def rollout_episode(env: SoldierEnv, seed: int, scenario: str) -> EpisodeRecord:
     """Roll out ONE episode with the deployable measurement-mode Lead
     policy, recording causal features and the true hostile position at
@@ -92,11 +107,10 @@ def rollout_episode(env: SoldierEnv, seed: int, scenario: str) -> EpisodeRecord:
             defender_pos = np.asarray(info["defender_pos"], dtype=np.float64)
             defender_vel = np.asarray(info["defender_vel"], dtype=np.float64)
             soldier_pos = np.asarray(info["soldier_pos"], dtype=np.float64)
-            hostile_range = float(np.linalg.norm(est_pos - defender_pos))
-            features = np.concatenate([
+            features = build_feature_vector(
                 est_pos, est_vel, defender_pos, defender_vel, soldier_pos,
-                [float(steps_since_detection) * env.config.dt, hostile_range],
-            ])
+                steps_since_detection * env.config.dt,
+            )
         else:
             features = np.zeros(FEATURE_DIM)
 
