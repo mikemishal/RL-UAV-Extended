@@ -20,6 +20,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from experiments.artifact_paths import resolve_artifact_or_local
 from experiments.post_detection_diagnostic_protocol import FROZEN_MODELS as _OLD_FROZEN_MODELS
 
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -50,19 +51,19 @@ FROZEN_MODELS = dict(_OLD_FROZEN_MODELS)
 FROZEN_MODELS[("lr_ppo", 55)] = {
     "best_step": 250_000,
     "sha256": "40c64c46cad7f97da8ecf1f59fcec856e68b3633a557c133116b64759933fc7b",
-    "path": PROJECT_ROOT / "models" / "lead_residual_post_detection" / "seed_55" / "best_model.zip",
+    "path": resolve_artifact_or_local("models/lead_residual_post_detection/seed_55/best_model.zip"),
     "validation_best_success_rate": 0.94,
 }
 FROZEN_MODELS[("lr_ppo", 56)] = {
     "best_step": 200_000,
     "sha256": "e12753eafd357dbeb849126997373c4bd963d79079636a30a945c2fc3ae2c343",
-    "path": PROJECT_ROOT / "models" / "lead_residual_post_detection" / "seed_56" / "best_model.zip",
+    "path": resolve_artifact_or_local("models/lead_residual_post_detection/seed_56/best_model.zip"),
     "validation_best_success_rate": 0.96,
 }
 FROZEN_MODELS[("lr_ppo", 57)] = {
     "best_step": 375_000,
     "sha256": "f7b54cdeaa2a4e760399df41a915cc7a5f5f134e567599f0e8a59a59427ff29a",
-    "path": PROJECT_ROOT / "models" / "lead_residual_post_detection" / "seed_57" / "best_model.zip",
+    "path": resolve_artifact_or_local("models/lead_residual_post_detection/seed_57/best_model.zip"),
     "validation_best_success_rate": 0.97,
 }
 

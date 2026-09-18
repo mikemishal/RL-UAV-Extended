@@ -18,6 +18,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from experiments.artifact_paths import resolve_artifact_or_local
+
 PROJECT_ROOT = Path(__file__).parent.parent
 
 DIAGNOSTIC_SEED_OFFSET = 40_100
@@ -37,37 +39,37 @@ FROZEN_MODELS = {
     ("direct", 45): {
         "best_step": 350_000,
         "sha256": "3b7e37dcf94a90c484364127c8a594c06386fba389bed1735cac316ed34b6595",
-        "path": PROJECT_ROOT / "results" / "training_post_detection_400k" / "direct" / "seed_45" / "best_model.zip",
+        "path": resolve_artifact_or_local("results/training_post_detection_400k/direct/seed_45/best_model.zip"),
         "validation_best_success_rate": 0.92,
     },
     ("direct", 46): {
         "best_step": 200_000,
         "sha256": "ceb4c652a84ab88616e8389ae4aa80b58ae5e323b3496ea2103dfe8c85c1b37c",
-        "path": PROJECT_ROOT / "results" / "training_post_detection_400k" / "direct" / "seed_46" / "best_model.zip",
+        "path": resolve_artifact_or_local("results/training_post_detection_400k/direct/seed_46/best_model.zip"),
         "validation_best_success_rate": 0.94,
     },
     ("direct", 47): {
         "best_step": 100_000,
         "sha256": "ea38fe085ec6ea1cefa051ba08ee80d749f35b87b699a129bf9157d82ed4a334",
-        "path": PROJECT_ROOT / "results" / "training_post_detection_400k" / "direct" / "seed_47" / "best_model.zip",
+        "path": resolve_artifact_or_local("results/training_post_detection_400k/direct/seed_47/best_model.zip"),
         "validation_best_success_rate": 0.89,
     },
     ("kalman", 45): {
         "best_step": 225_000,
         "sha256": "ddf16641a71b102cfb01d9928597ab0c43d11598cd2d0f4eb63932d80490f98e",
-        "path": PROJECT_ROOT / "results" / "training_post_detection_400k" / "kalman" / "seed_45" / "best_model.zip",
+        "path": resolve_artifact_or_local("results/training_post_detection_400k/kalman/seed_45/best_model.zip"),
         "validation_best_success_rate": 0.89,
     },
     ("kalman", 46): {
         "best_step": 200_000,
         "sha256": "b22116eb659552a94c28bfb32cdef58d5630267eaa4654a7a87b4ab802234f07",
-        "path": PROJECT_ROOT / "results" / "training_post_detection_400k" / "kalman" / "seed_46" / "best_model.zip",
+        "path": resolve_artifact_or_local("results/training_post_detection_400k/kalman/seed_46/best_model.zip"),
         "validation_best_success_rate": 0.83,
     },
     ("kalman", 47): {
         "best_step": 175_000,
         "sha256": "a9d7a3f39c3c63dab98cfcfbb68c117844c3ef1884a23a242a9d38cfa4f2152d",
-        "path": PROJECT_ROOT / "results" / "training_post_detection_400k" / "kalman" / "seed_47" / "best_model.zip",
+        "path": resolve_artifact_or_local("results/training_post_detection_400k/kalman/seed_47/best_model.zip"),
         "validation_best_success_rate": 0.88,
     },
 }

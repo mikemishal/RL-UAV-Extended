@@ -24,6 +24,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
+from experiments.artifact_paths import resolve_artifact_or_local
 from experiments.method_specs import get_method_spec
 from experiments.training_protocol import (
     TRAINING_SEEDS as PPO_TRAINING_SEEDS,
@@ -79,7 +80,9 @@ def frozen_model_path(track: str, seed: int) -> Path:
     NEVER final_model.zip and NEVER a 200k model -- this is the SOLE source
     of PPO/PPO-Kalman weights for the final nominal evaluation.
     """
-    return run_output_dir(PROJECT_ROOT / "results" / CAMPAIGN_400K_DIRNAME, track, seed) / "best_model.zip"
+    local_path = run_output_dir(PROJECT_ROOT / "results" / CAMPAIGN_400K_DIRNAME, track, seed) / "best_model.zip"
+    relative_path = local_path.relative_to(PROJECT_ROOT)
+    return resolve_artifact_or_local(relative_path)
 
 
 # =============================================================================
