@@ -176,6 +176,15 @@ class EnvConfig:
     obstacle_max_placement_attempts: int = 500   # rejection-sampling attempt budget PER obstacle ("random" mode)
     # "fixed" mode only: tuple of (center_x, center_y, center_z, half_x, half_y, half_z) per obstacle
     obstacle_fixed_spec: tuple[tuple[float, float, float, float, float, float], ...] = ()
+    # Static-obstacle map-knowledge classification (journal extension: attacker
+    # perception layer; see uav_defend/obstacles/perception.py). Pure metadata
+    # -- never affects geometry/physics. "random" mode: fraction (by DETERMINISTIC
+    # placement order, no RNG draw) of obstacles classified map_known=False;
+    # default 0.0 preserves prior behavior (all obstacles map-known) exactly,
+    # including RNG-consumption sequence. "fixed" mode: explicit per-obstacle
+    # tuple (empty = all map-known).
+    obstacle_unmapped_fraction: float = 0.0
+    obstacle_fixed_map_known: tuple[bool, ...] = ()
 
     # =========================================================================
     # Obstacle-compatible exogenous motion (journal extension, Phase 3):
@@ -199,6 +208,48 @@ class EnvConfig:
     enemy_obstacle_clearance: float = 2.0                  # m; inflates obstacles for candidate bypass targets
     enemy_obstacle_prediction_horizon_steps: int = 12       # simulation steps of short-horizon collision prediction
     enemy_obstacle_release_steps: int = 4                  # consecutive collision-free checks required to release avoidance
+
+    # =========================================================================
+    # Dynamic obstacle configuration (journal extension: simple moving
+    # aerial clutter -- birds / other non-combat airborne objects). See
+    # uav_defend/obstacles/dynamic.py. OFF BY DEFAULT: dynamic_obstacles_enabled
+    # =False reproduces existing behavior exactly -- no dynamic obstacles are
+    # generated, no dedicated RNG stream is consumed, no other behavior changes.
+    # =========================================================================
+    dynamic_obstacles_enabled: bool = False
+    dynamic_obstacle_count: int = 0
+    dynamic_obstacle_min_radius: float = 0.3     # m; spherical collision radius
+    dynamic_obstacle_max_radius: float = 1.0     # m
+    dynamic_obstacle_min_speed: float = 1.0       # m/s; approximately constant speed
+    dynamic_obstacle_max_speed: float = 4.0       # m/s
+    dynamic_obstacle_min_altitude: float = 5.0    # m
+    dynamic_obstacle_max_altitude: float = 25.0   # m
+    dynamic_obstacle_heading_noise: float = 0.05  # rad; bounded per-step stochastic heading change (std dev)
+    dynamic_obstacle_clearance: float = 2.0       # m; safety margin added to (enemy_radius + obstacle radius)
+    dynamic_obstacle_prediction_horizon_steps: int = 12  # simulation steps of short-horizon conflict prediction
+
+    # =========================================================================
+    # Hostile-UAS environmental-awareness/perception layer (journal extension;
+    # see uav_defend/obstacles/perception.py). Governs what the AVOIDANCE
+    # PLANNER may see -- ground-truth physics/collision checking is always
+    # computed against the FULL world regardless of this setting (perception
+    # state != physics state; see module docstring).
+    #
+    # "disabled" (DEFAULT): backward-compatible mode -- avoidance sees the
+    #     full ground-truth static layout + all current dynamic obstacles,
+    #     exactly as in the pre-perception-layer implementation. Not treated
+    #     as a realistic journal attacker mode.
+    # "local"     (Level B): only obstacles within sensor range are perceived;
+    #     no prior map knowledge.
+    # "map_local" (Level C): map-known static obstacles are always perceived
+    #     (from episode start) PLUS locally-sensed unmapped-static/dynamic
+    #     obstacles.
+    # =========================================================================
+    enemy_obstacle_awareness_mode: str = "disabled"
+    enemy_obstacle_sensor_range: float = 15.0          # m; static-obstacle local sensing radius (AABB-surface distance)
+    enemy_dynamic_obstacle_sensor_range: float = 15.0  # m; dynamic-obstacle local sensing radius (center distance)
+    enemy_static_obstacle_memory_enabled: bool = True  # once locally detected, a static obstacle is remembered for the rest of the episode
+    enemy_dynamic_obstacle_memory_steps: int = 6       # steps a dynamic-obstacle track survives without re-observation before expiring
 
     def __post_init__(self) -> None:
         """Validate altitude and dynamics configuration."""
@@ -337,4 +388,75 @@ class EnvConfig:
         if self.enemy_obstacle_release_steps < 1:
             raise ValueError(
                 f"enemy_obstacle_release_steps must be >= 1, got {self.enemy_obstacle_release_steps}"
+            )
+
+        if self.dynamic_obstacle_count < 0:
+            raise ValueError(f"dynamic_obstacle_count must be >= 0, got {self.dynamic_obstacle_count}")
+        if self.dynamic_obstacle_min_radius <= 0 or self.dynamic_obstacle_max_radius <= 0:
+            raise ValueError(
+                "dynamic_obstacle_min_radius and dynamic_obstacle_max_radius must be > 0, got "
+                f"{self.dynamic_obstacle_min_radius}, {self.dynamic_obstacle_max_radius}"
+            )
+        if self.dynamic_obstacle_min_radius > self.dynamic_obstacle_max_radius:
+            raise ValueError(
+                "dynamic_obstacle_min_radius must be <= dynamic_obstacle_max_radius, got "
+                f"{self.dynamic_obstacle_min_radius} > {self.dynamic_obstacle_max_radius}"
+            )
+        if self.dynamic_obstacle_min_speed <= 0 or self.dynamic_obstacle_max_speed <= 0:
+            raise ValueError(
+                "dynamic_obstacle_min_speed and dynamic_obstacle_max_speed must be > 0, got "
+                f"{self.dynamic_obstacle_min_speed}, {self.dynamic_obstacle_max_speed}"
+            )
+        if self.dynamic_obstacle_min_speed > self.dynamic_obstacle_max_speed:
+            raise ValueError(
+                "dynamic_obstacle_min_speed must be <= dynamic_obstacle_max_speed, got "
+                f"{self.dynamic_obstacle_min_speed} > {self.dynamic_obstacle_max_speed}"
+            )
+        if self.dynamic_obstacle_min_altitude < 0 or self.dynamic_obstacle_max_altitude > self.max_altitude:
+            raise ValueError(
+                "dynamic obstacle altitude range must lie within [0, max_altitude], got "
+                f"[{self.dynamic_obstacle_min_altitude}, {self.dynamic_obstacle_max_altitude}] "
+                f"vs max_altitude={self.max_altitude}"
+            )
+        if self.dynamic_obstacle_min_altitude > self.dynamic_obstacle_max_altitude:
+            raise ValueError(
+                "dynamic_obstacle_min_altitude must be <= dynamic_obstacle_max_altitude, got "
+                f"{self.dynamic_obstacle_min_altitude} > {self.dynamic_obstacle_max_altitude}"
+            )
+        if self.dynamic_obstacle_heading_noise < 0:
+            raise ValueError(
+                f"dynamic_obstacle_heading_noise must be >= 0, got {self.dynamic_obstacle_heading_noise}"
+            )
+        if self.dynamic_obstacle_clearance < 0:
+            raise ValueError(f"dynamic_obstacle_clearance must be >= 0, got {self.dynamic_obstacle_clearance}")
+        if self.dynamic_obstacle_prediction_horizon_steps < 1:
+            raise ValueError(
+                "dynamic_obstacle_prediction_horizon_steps must be >= 1, got "
+                f"{self.dynamic_obstacle_prediction_horizon_steps}"
+            )
+
+        if not (0.0 <= self.obstacle_unmapped_fraction <= 1.0):
+            raise ValueError(
+                f"obstacle_unmapped_fraction must be in [0, 1], got {self.obstacle_unmapped_fraction}"
+            )
+        if self.obstacle_fixed_map_known and len(self.obstacle_fixed_map_known) != len(self.obstacle_fixed_spec):
+            raise ValueError(
+                "obstacle_fixed_map_known must be empty or match obstacle_fixed_spec's length, got "
+                f"{len(self.obstacle_fixed_map_known)} vs {len(self.obstacle_fixed_spec)}"
+            )
+
+        if self.enemy_obstacle_awareness_mode not in ("disabled", "local", "map_local"):
+            raise ValueError(
+                "enemy_obstacle_awareness_mode must be one of 'disabled', 'local', 'map_local', got "
+                f"{self.enemy_obstacle_awareness_mode!r}"
+            )
+        if self.enemy_obstacle_sensor_range <= 0:
+            raise ValueError(f"enemy_obstacle_sensor_range must be > 0, got {self.enemy_obstacle_sensor_range}")
+        if self.enemy_dynamic_obstacle_sensor_range <= 0:
+            raise ValueError(
+                f"enemy_dynamic_obstacle_sensor_range must be > 0, got {self.enemy_dynamic_obstacle_sensor_range}"
+            )
+        if self.enemy_dynamic_obstacle_memory_steps < 0:
+            raise ValueError(
+                f"enemy_dynamic_obstacle_memory_steps must be >= 0, got {self.enemy_dynamic_obstacle_memory_steps}"
             )

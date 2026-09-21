@@ -56,6 +56,13 @@ class AABBObstacle:
     min_corner: np.ndarray
     max_corner: np.ndarray
     tolerance: float = DEFAULT_TOLERANCE
+    # Journal extension (attacker perception layer): whether this obstacle
+    # is a permanent, prior-mapped obstacle (e.g. a building) vs one that
+    # must be locally sensed to be known (e.g. a tree/temporary structure).
+    # Pure metadata -- never affects geometry/physics/ground-truth collision
+    # checking. Defaults to True so existing code that never sets it (or
+    # constructs AABBObstacle directly) is unaffected.
+    map_known: bool = True
 
     def __post_init__(self) -> None:
         min_c = _as_vec3(self.min_corner, "min_corner")
@@ -72,14 +79,14 @@ class AABBObstacle:
 
     @classmethod
     def from_center_half_extents(
-        cls, center, half_extents, tolerance: float = DEFAULT_TOLERANCE
+        cls, center, half_extents, tolerance: float = DEFAULT_TOLERANCE, map_known: bool = True
     ) -> "AABBObstacle":
         """Construct from `center` (3,) and `half_extents` (3,), both > 0."""
         center = _as_vec3(center, "center")
         half_extents = _as_vec3(half_extents, "half_extents")
         if np.any(half_extents <= 0):
             raise ValueError(f"half_extents must be > 0 on every axis, got {half_extents}")
-        return cls(min_corner=center - half_extents, max_corner=center + half_extents, tolerance=tolerance)
+        return cls(min_corner=center - half_extents, max_corner=center + half_extents, tolerance=tolerance, map_known=map_known)
 
     @property
     def center(self) -> np.ndarray:
@@ -166,4 +173,5 @@ class AABBObstacle:
             "max_corner": self.max_corner.tolist(),
             "center": self.center.tolist(),
             "half_extents": self.half_extents.tolist(),
+            "map_known": self.map_known,
         }

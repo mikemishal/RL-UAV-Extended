@@ -24,6 +24,15 @@ from uav_defend.config.env_config import EnvConfig
 from uav_defend.tracking import EnemyKalmanFilter
 from uav_defend.dynamics.constrained_point_mass import advance_velocity, apply_boundary
 from uav_defend.obstacles import DynamicsLimits, ObstacleAvoidancePlanner, ObstacleLayout, generate_layout
+from uav_defend.obstacles.dynamic import (
+    DynamicObstacle,
+    dynamic_obstacle_swept_aabb,
+    dynamic_obstacle_threatens,
+    generate_dynamic_obstacles,
+    step_dynamic_obstacles,
+    swept_sphere_vs_sphere_min_distance,
+)
+from uav_defend.obstacles.perception import EnemyObstaclePerception, PerceivedObstacleSet
 
 
 class SoldierEnv(gym.Env):
@@ -279,6 +288,12 @@ class SoldierEnv(gym.Env):
         # test for the property this separation guarantees.
         self._rng_obstacles: np.random.Generator | None = None
         self._obstacle_layout: ObstacleLayout = ObstacleLayout()
+        # Dedicated dynamic-obstacle RNG stream (journal extension; see
+        # reset()). Spawned AFTER the static-obstacle stream so that
+        # enabling/disabling dynamic obstacles never perturbs static-obstacle
+        # or exogenous-motion trajectories.
+        self._rng_dynamic_obstacles: np.random.Generator | None = None
+        self._dynamic_obstacles: tuple[DynamicObstacle, ...] = ()
 
         # Obstacle collision/clearance diagnostics (journal extension,
         # Phase 2). DIAGNOSTIC ONLY in this phase: never affects movement,
@@ -318,6 +333,18 @@ class SoldierEnv(gym.Env):
             max_altitude=self.config.max_altitude,
             eps=self.config.eps,
         )
+        # Environmental-awareness/perception layer (journal extension): the
+        # planner above is fed ONLY this object's output (see _move_enemy()),
+        # never the ground-truth world directly -- see
+        # uav_defend/obstacles/perception.py.
+        self._enemy_perception = EnemyObstaclePerception(
+            mode=self.config.enemy_obstacle_awareness_mode,
+            static_sensor_range=self.config.enemy_obstacle_sensor_range,
+            dynamic_sensor_range=self.config.enemy_dynamic_obstacle_sensor_range,
+            static_memory_enabled=self.config.enemy_static_obstacle_memory_enabled,
+            dynamic_memory_steps=self.config.enemy_dynamic_obstacle_memory_steps,
+        )
+        self._enemy_last_perceived: PerceivedObstacleSet = PerceivedObstacleSet()
         # Hostile obstacle-navigation diagnostics (Phase 3B). Deterministic
         # and RNG-free -- see _move_enemy()/ObstacleAvoidancePlanner.plan().
         self._enemy_obstacle_avoidance_active: bool = False
@@ -327,6 +354,27 @@ class SoldierEnv(gym.Env):
         self._enemy_predicted_collision_step: int | None = None
         self._enemy_predicted_min_clearance: float = float("inf")
         self._enemy_obstacle_fallback_used: bool = False
+
+        # Hostile avoidance diagnostics extended for dynamic obstacles
+        # (journal extension): obstacle_type/angle/time-to-conflict
+        # distinguish a static-AABB avoidance decision from a
+        # dynamic-obstacle one, and record the actual (not just predicted)
+        # per-step dynamic-obstacle collision/clearance state.
+        self._enemy_avoidance_obstacle_type: str | None = None
+        self._enemy_avoidance_obstacle_id: int | None = None
+        self._enemy_avoidance_angle_deg: float = 0.0
+        self._enemy_predicted_time_to_conflict: float | None = None
+        self._enemy_dynamic_obstacle_collision: bool = False
+        self._enemy_collision_obstacle_id: int | None = None
+        self._enemy_min_dynamic_obstacle_clearance: float = float("inf")
+        self._enemy_dynamic_collision_count: int = 0
+        self._enemy_dynamic_ever_collided: bool = False
+        self._enemy_was_in_dynamic_collision: bool = False
+        self._defender_dynamic_obstacle_collision: bool = False
+        self._defender_min_dynamic_obstacle_clearance: float = float("inf")
+        self._defender_dynamic_collision_count: int = 0
+        self._defender_dynamic_ever_collided: bool = False
+        self._defender_was_in_dynamic_collision: bool = False
         
         # Kalman filter for enemy tracking (initialized on first detection)
         self._kf: EnemyKalmanFilter | None = None
@@ -386,6 +434,10 @@ class SoldierEnv(gym.Env):
         # test_obstacle_env_integration.py).
         (obstacle_seed,) = seed_seq.spawn(1)
         self._rng_obstacles = np.random.default_rng(obstacle_seed)
+        # Dynamic-obstacle RNG (journal extension): spawned AFTER the
+        # static-obstacle stream, for the same reproducibility reason.
+        (dynamic_obstacle_seed,) = seed_seq.spawn(1)
+        self._rng_dynamic_obstacles = np.random.default_rng(dynamic_obstacle_seed)
         
         # Initialize soldier at the origin, on the ground (z = 0)
         self._soldier_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
@@ -436,6 +488,21 @@ class SoldierEnv(gym.Env):
             enemy_spawn_position=self._enemy_pos,
         )
 
+        # Dynamic obstacles (journal extension): DATA ONLY unless
+        # `dynamic_obstacles_enabled` -- generated from their own dedicated
+        # RNG stream, never affecting behavior when disabled.
+        if self.config.dynamic_obstacles_enabled:
+            self._dynamic_obstacles = generate_dynamic_obstacles(
+                config=self.config,
+                rng=self._rng_dynamic_obstacles,
+                static_layout=self._obstacle_layout,
+                asset_position=self._soldier_pos,
+                defender_position=self._defender_pos,
+                enemy_position=self._enemy_pos,
+            )
+        else:
+            self._dynamic_obstacles = ()
+
         # Reset per-episode collision/clearance diagnostics (Phase 2).
         # Initial positions are validated (both "random" via clearance
         # margins and "fixed" via hard containment rejection in
@@ -460,6 +527,8 @@ class SoldierEnv(gym.Env):
         self._soldier_obstacle_blocked = False
         self._soldier_obstacle_block_count = 0
         self._enemy_obstacle_planner.reset()
+        self._enemy_perception.reset()
+        self._enemy_last_perceived = PerceivedObstacleSet()
         self._enemy_obstacle_avoidance_active = False
         self._enemy_obstacle_avoidance_mode = None
         self._enemy_obstacle_avoidance_vector = np.zeros(3, dtype=np.float32)
@@ -467,6 +536,23 @@ class SoldierEnv(gym.Env):
         self._enemy_predicted_collision_step = None
         self._enemy_predicted_min_clearance = self._obstacle_layout.min_clearance(self._enemy_pos)
         self._enemy_obstacle_fallback_used = False
+
+        # Reset dynamic-obstacle diagnostics (journal extension).
+        self._enemy_avoidance_obstacle_type = None
+        self._enemy_avoidance_obstacle_id = None
+        self._enemy_avoidance_angle_deg = 0.0
+        self._enemy_predicted_time_to_conflict = None
+        self._enemy_dynamic_obstacle_collision = False
+        self._enemy_collision_obstacle_id = None
+        self._enemy_min_dynamic_obstacle_clearance = self._dynamic_min_clearance(self._enemy_pos)
+        self._enemy_dynamic_collision_count = 0
+        self._enemy_dynamic_ever_collided = False
+        self._enemy_was_in_dynamic_collision = False
+        self._defender_dynamic_obstacle_collision = False
+        self._defender_min_dynamic_obstacle_clearance = self._dynamic_min_clearance(self._defender_pos)
+        self._defender_dynamic_collision_count = 0
+        self._defender_dynamic_ever_collided = False
+        self._defender_was_in_dynamic_collision = False
         
         # Reset per-step dynamics diagnostics (see _advance_velocity)
         self._defender_dynamics_info = {
@@ -544,7 +630,48 @@ class SoldierEnv(gym.Env):
             return np.array([-L, coord, z], dtype=np.float32)
         else:  # Right edge: x = L
             return np.array([L, coord, z], dtype=np.float32)
-    
+
+    def _dynamic_min_clearance(self, point: np.ndarray) -> float:
+        """Minimum (surface-to-point) clearance from `point` to any current
+        dynamic obstacle; `+inf` if none exist. Point-vs-sphere-surface
+        distance, consistent with `ObstacleLayout.min_clearance`'s
+        point-vs-box-surface convention for static obstacles."""
+        if not self._dynamic_obstacles:
+            return float("inf")
+        return min(
+            float(np.linalg.norm(np.asarray(point, dtype=np.float64) - obs.position)) - obs.radius
+            for obs in self._dynamic_obstacles
+        )
+
+    def _combined_avoidance_layout(
+        self, position: np.ndarray, velocity: np.ndarray, horizon_steps: int, clearance: float,
+        static_layout: ObstacleLayout, dynamic_obstacles: tuple,
+    ) -> ObstacleLayout:
+        """`static_layout` plus one conservative swept-AABB per obstacle in
+        `dynamic_obstacles` that a closest-point-of-approach pre-check
+        (using the mover's CURRENT velocity as a constant-velocity proxy --
+        the subsequent full constrained-dynamics candidate evaluation is
+        the authoritative check) predicts could come within `clearance` of
+        `position` within the horizon. Obstacles already receding/never
+        converging are excluded, so a merely-nearby-but-diverging obstacle
+        can never spuriously trigger avoidance (see
+        `dynamic_obstacle_swept_aabb`'s full-path-box conservativeness).
+
+        NOTE: `static_layout`/`dynamic_obstacles` are the PERCEIVED
+        obstacle set (see uav_defend/obstacles/perception.py), NOT
+        necessarily the ground-truth world -- this function itself is
+        perception-agnostic; the caller decides what it may see."""
+        if not dynamic_obstacles:
+            return static_layout
+        threatening = [
+            dynamic_obstacle_swept_aabb(obs, horizon_steps, self.config.dt, clearance)
+            for obs in dynamic_obstacles
+            if dynamic_obstacle_threatens(position, velocity, obs, horizon_steps, self.config.dt, clearance)
+        ]
+        if not threatening:
+            return static_layout
+        return ObstacleLayout(obstacles=static_layout.obstacles + tuple(threatening))
+
     def step(
         self,
         action: np.ndarray,
@@ -617,6 +744,16 @@ class SoldierEnv(gym.Env):
         # tunneling through a thin obstacle within one dt.
         defender_prev_pos = self._defender_pos.copy()
         enemy_prev_pos = self._enemy_pos.copy()
+
+        # Advance dynamic obstacles (journal extension) BEFORE the enemy's
+        # own move, so its avoidance planning this step reacts to their
+        # current (this-step) position/velocity. Prev positions are kept
+        # for the swept collision diagnostics computed below.
+        dynamic_obstacles_prev = self._dynamic_obstacles
+        if self.config.dynamic_obstacles_enabled:
+            self._dynamic_obstacles = step_dynamic_obstacles(
+                self._dynamic_obstacles, self._rng_dynamic_obstacles, self.config
+            )
 
         # A. Move soldier stochastically (uncontrolled) -- unchanged model.
         self._move_soldier()
@@ -713,6 +850,37 @@ class SoldierEnv(gym.Env):
             self._enemy_collision_count += 1
             self._enemy_ever_collided = True
         self._enemy_was_in_collision = self._enemy_obstacle_collision
+
+        # Dynamic-obstacle swept collision diagnostics (journal extension).
+        # ACTUAL (not predicted) per-step collision: DIAGNOSTIC ONLY, same
+        # never-blocking/never-terminal convention as the static case.
+        self._enemy_min_dynamic_obstacle_clearance = self._dynamic_min_clearance(self._enemy_pos)
+        self._defender_min_dynamic_obstacle_clearance = self._dynamic_min_clearance(self._defender_pos)
+        enemy_dynamic_collision = False
+        enemy_collision_obstacle_id = None
+        defender_dynamic_collision = False
+        for obs_prev, obs in zip(dynamic_obstacles_prev, self._dynamic_obstacles):
+            if swept_sphere_vs_sphere_min_distance(
+                enemy_prev_pos, self._enemy_pos, obs_prev.position, obs.position
+            ) <= obs.radius:
+                enemy_dynamic_collision = True
+                enemy_collision_obstacle_id = obs.id
+            if swept_sphere_vs_sphere_min_distance(
+                defender_prev_pos, self._defender_pos, obs_prev.position, obs.position
+            ) <= obs.radius:
+                defender_dynamic_collision = True
+        self._enemy_dynamic_obstacle_collision = enemy_dynamic_collision
+        if enemy_dynamic_collision:
+            self._enemy_collision_obstacle_id = enemy_collision_obstacle_id
+        self._defender_dynamic_obstacle_collision = defender_dynamic_collision
+        if enemy_dynamic_collision and not self._enemy_was_in_dynamic_collision:
+            self._enemy_dynamic_collision_count += 1
+            self._enemy_dynamic_ever_collided = True
+        self._enemy_was_in_dynamic_collision = enemy_dynamic_collision
+        if defender_dynamic_collision and not self._defender_was_in_dynamic_collision:
+            self._defender_dynamic_collision_count += 1
+            self._defender_dynamic_ever_collided = True
+        self._defender_was_in_dynamic_collision = defender_dynamic_collision
 
         self._step_count += 1
         
@@ -1314,11 +1482,42 @@ class SoldierEnv(gym.Env):
         # Exact no-op (u = u_base, bit-for-bit) when disabled or when no
         # obstacles exist -- see ObstacleAvoidancePlanner.plan().
         if self.config.enemy_obstacle_avoidance_enabled:
+            # Perception layer (journal extension): the planner NEVER sees
+            # ground-truth world obstacles directly -- only what this
+            # episode's awareness mode currently perceives. "disabled" mode
+            # perceives the full ground truth (bit-for-bit prior behavior).
+            perceived = self._enemy_perception.update(
+                self._enemy_pos, self._obstacle_layout, self._dynamic_obstacles
+            )
+            self._enemy_last_perceived = perceived
+            perceived_static_layout = perceived.to_static_layout()
+            avoidance_layout = self._combined_avoidance_layout(
+                self._enemy_pos, self._enemy_vel,
+                self.config.enemy_obstacle_prediction_horizon_steps, self.config.enemy_obstacle_clearance,
+                perceived_static_layout, perceived.dynamic,
+            )
+            # Defensive guard: the dynamic portion of `avoidance_layout` is
+            # rebuilt every step from only the CURRENTLY-threatening
+            # dynamic obstacles (see `_combined_avoidance_layout`), so a
+            # persisted `obstacle_index` from a prior step can point past
+            # the end of (or, rarely, to a different obstacle within) this
+            # step's layout once the threatening set changes. Resetting
+            # here (re-activating fresh against the current layout, same
+            # step) avoids an IndexError; static-obstacle persistence is
+            # unaffected since the static portion's indices never change.
+            if (
+                self._enemy_obstacle_planner.active
+                and (
+                    self._enemy_obstacle_planner.obstacle_index is None
+                    or self._enemy_obstacle_planner.obstacle_index >= len(avoidance_layout)
+                )
+            ):
+                self._enemy_obstacle_planner.reset()
             plan = self._enemy_obstacle_planner.plan(
                 position=self._enemy_pos,
                 velocity=self._enemy_vel,
                 u_base=u_base,
-                layout=self._obstacle_layout,
+                layout=avoidance_layout,
                 target_position=self._soldier_pos,
                 limits=self._enemy_dynamics_limits(),
             )
@@ -1335,6 +1534,31 @@ class SoldierEnv(gym.Env):
         self._enemy_predicted_collision_step = plan["predicted_collision_step"]
         self._enemy_predicted_min_clearance = plan["predicted_min_clearance"]
         self._enemy_obstacle_fallback_used = plan["fallback_used"]
+
+        # Distinguish a static-AABB avoidance decision from a
+        # dynamic-obstacle one: indices >= len(perceived static layout)
+        # refer to the ephemeral swept-AABBs appended by
+        # _combined_avoidance_layout(). Falls back to the ground-truth
+        # static layout length when avoidance is disabled (no perception
+        # update ran this step, so n_static is irrelevant either way).
+        n_static = len(self._enemy_last_perceived.static) if self.config.enemy_obstacle_avoidance_enabled else len(self._obstacle_layout)
+        if plan["obstacle_index"] is None:
+            self._enemy_avoidance_obstacle_type = None
+            self._enemy_avoidance_obstacle_id = None
+        elif plan["obstacle_index"] < n_static:
+            self._enemy_avoidance_obstacle_type = "static"
+            self._enemy_avoidance_obstacle_id = (
+                self._enemy_last_perceived.static[plan["obstacle_index"]].id
+                if self.config.enemy_obstacle_avoidance_enabled else plan["obstacle_index"]
+            )
+        else:
+            self._enemy_avoidance_obstacle_type = self._enemy_last_perceived.dynamic[plan["obstacle_index"] - n_static].obstacle_type
+            self._enemy_avoidance_obstacle_id = self._enemy_last_perceived.dynamic[plan["obstacle_index"] - n_static].id
+        cos_angle = float(np.clip(np.dot(self._enemy_obstacle_avoidance_vector.astype(np.float64), u_base), -1.0, 1.0))
+        self._enemy_avoidance_angle_deg = float(np.degrees(np.arccos(cos_angle)))
+        self._enemy_predicted_time_to_conflict = (
+            plan["predicted_collision_step"] * self.config.dt if plan["predicted_collision_step"] is not None else None
+        )
 
         u = np.asarray(plan["direction"], dtype=np.float64)
         
@@ -1640,6 +1864,44 @@ class SoldierEnv(gym.Env):
             "enemy_predicted_collision_step": self._enemy_predicted_collision_step,
             "enemy_predicted_min_clearance": self._enemy_predicted_min_clearance,
             "enemy_obstacle_fallback_used": self._enemy_obstacle_fallback_used,
+            # Dynamic-obstacle diagnostics (journal extension). DIAGNOSTIC
+            # ONLY -- same never-blocking/never-terminal convention as the
+            # static case; NOT part of the RL observation.
+            "dynamic_obstacles_enabled": self.config.dynamic_obstacles_enabled,
+            "dynamic_obstacle_count": len(self._dynamic_obstacles),
+            "enemy_avoidance_active": self._enemy_obstacle_avoidance_active,
+            "enemy_avoidance_obstacle_id": self._enemy_avoidance_obstacle_id,
+            "enemy_avoidance_obstacle_type": self._enemy_avoidance_obstacle_type,
+            "enemy_avoidance_angle_deg": self._enemy_avoidance_angle_deg,
+            "enemy_predicted_time_to_conflict": self._enemy_predicted_time_to_conflict,
+            "enemy_actual_min_clearance": min(self._enemy_min_obstacle_clearance, self._enemy_min_dynamic_obstacle_clearance),
+            "enemy_min_dynamic_obstacle_clearance": self._enemy_min_dynamic_obstacle_clearance,
+            "defender_min_dynamic_obstacle_clearance": self._defender_min_dynamic_obstacle_clearance,
+            "enemy_dynamic_obstacle_collision": self._enemy_dynamic_obstacle_collision,
+            "defender_dynamic_obstacle_collision": self._defender_dynamic_obstacle_collision,
+            "enemy_collision_obstacle_id": self._enemy_collision_obstacle_id,
+            "enemy_dynamic_collision_count": self._enemy_dynamic_collision_count,
+            "defender_dynamic_collision_count": self._defender_dynamic_collision_count,
+            "enemy_dynamic_ever_collided": self._enemy_dynamic_ever_collided,
+            "defender_dynamic_ever_collided": self._defender_dynamic_ever_collided,
+            # Attacker perception/awareness diagnostics (journal extension;
+            # see uav_defend/obstacles/perception.py). NEVER exposed to any
+            # defender controller/observation -- ground-truth collision
+            # diagnostics above are unaffected by awareness mode.
+            "enemy_awareness_mode": self.config.enemy_obstacle_awareness_mode,
+            "enemy_num_mapped_obstacles_known": sum(
+                1 for o in self._enemy_last_perceived.static if o.source == "map"
+            ),
+            "enemy_num_locally_sensed_static": sum(
+                1 for o in self._enemy_last_perceived.static if o.source == "local_sensor"
+            ),
+            "enemy_num_locally_sensed_dynamic": len(self._enemy_last_perceived.dynamic),
+            "enemy_total_perceived_obstacles": (
+                len(self._enemy_last_perceived.static) + len(self._enemy_last_perceived.dynamic)
+            ),
+            "enemy_new_obstacle_detections": self._enemy_perception.new_static_detections,
+            "enemy_perceived_static_ids": tuple(o.id for o in self._enemy_last_perceived.static),
+            "enemy_perceived_dynamic_ids": tuple(o.id for o in self._enemy_last_perceived.dynamic),
         }
     
     def render(self) -> np.ndarray | None:

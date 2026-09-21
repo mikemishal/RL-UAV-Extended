@@ -131,10 +131,17 @@ def _fixed_layout(
     defender_position=None,
     enemy_spawn_position=None,
 ) -> ObstacleLayout:
+    map_known_spec = config.obstacle_fixed_map_known
+    if map_known_spec and len(map_known_spec) != len(config.obstacle_fixed_spec):
+        raise ValueError(
+            f"obstacle_fixed_map_known must be empty or match obstacle_fixed_spec's length "
+            f"({len(config.obstacle_fixed_spec)}), got {len(map_known_spec)}"
+        )
     obstacles = []
-    for spec in config.obstacle_fixed_spec:
+    for i, spec in enumerate(config.obstacle_fixed_spec):
         cx, cy, cz, hx, hy, hz = spec
-        obstacle = AABBObstacle.from_center_half_extents((cx, cy, cz), (hx, hy, hz))
+        map_known = map_known_spec[i] if map_known_spec else True
+        obstacle = AABBObstacle.from_center_half_extents((cx, cy, cz), (hx, hy, hz), map_known=map_known)
         _validate_within_domain(obstacle, config)
         obstacles.append(obstacle)
     layout = ObstacleLayout(obstacles=tuple(obstacles))
@@ -187,7 +194,12 @@ def _random_layout(
             center_z = half_extents[2]  # ground-based: min_corner_z == 0
 
             candidate = AABBObstacle.from_center_half_extents(
-                (center_x, center_y, center_z), half_extents
+                (center_x, center_y, center_z), half_extents,
+                # Deterministic (no RNG draw, so obstacle_unmapped_fraction=0.0
+                # -- the default -- never perturbs any existing RNG-consumption
+                # sequence): the LAST round(count * fraction) placed obstacles
+                # (by placement ORDER, not spatial position) are unmapped.
+                map_known=(i < config.obstacle_count - round(config.obstacle_count * config.obstacle_unmapped_fraction)),
             )
 
             if candidate.clearance_to_point(asset_position) < config.obstacle_clearance_from_asset:
