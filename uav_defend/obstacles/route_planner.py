@@ -497,3 +497,82 @@ class RoutePlanner:
             "vertical_bypass_count": self._vertical_bypass_count,
         }
 
+    def resume_or_rejoin(
+        self, position: np.ndarray, true_target: np.ndarray, perceived: PerceivedObstacleSet, awareness_mode: str,
+    ) -> dict:
+        """Behavior-arbitration Phase 6: called ONCE when the caller
+        transitions out of a suspension window (e.g. defender-evasion just
+        ended) instead of `plan()`. While suspended, the caller does not
+        call `plan()` at all -- so no stall/target-moved/revisit judgment
+        accumulates evasion-induced deviation against the route (Phase 6:
+        "preserve the route if it remains useful; suspend waypoint
+        tracking temporarily").
+
+        On resuming:
+          1. If no route exists yet, or the existing route is no longer
+             collision-safe from the CURRENT (post-evasion) position,
+             this is exactly a `no_active_route` / `route_unsafe_or_new_
+             obstacle` replan -- delegate to `plan()` (a fresh replan is
+             the correct, safe behavior; this is NOT counted as an
+             evasion-induced "waypoint invalidation" since it reflects a
+             genuine safety/geometry change, not policy churn).
+          2. Otherwise, SKIP any waypoints that are effectively already
+             behind the current position (a waypoint is skipped if the
+             segment straight to a LATER waypoint is collision-free AND
+             that later waypoint is no farther away -- i.e. detouring
+             back to the skipped waypoint would only add path length),
+             then resume following the route from there -- never forcing
+             a return to an obsolete waypoint behind the attacker.
+        """
+        position = np.asarray(position, dtype=np.float64)
+        true_target = np.asarray(true_target, dtype=np.float64)
+
+        if self._route is None or self._route_is_blocked(position, perceived):
+            return self.plan(position, true_target, perceived, awareness_mode)
+
+        from uav_defend.obstacles.geometry import AABBObstacle
+        inflated = [
+            AABBObstacle.from_center_half_extents(
+                (o.min_corner + o.max_corner) / 2.0, (o.max_corner - o.min_corner) / 2.0 + self.clearance,
+            ) for o in perceived.static
+        ]
+        idx = self._route.current_waypoint_index
+        waypoints = self._route.waypoints
+        while idx < len(waypoints) - 1:
+            later_is_closer = float(np.linalg.norm(waypoints[idx + 1] - position)) <= float(np.linalg.norm(waypoints[idx] - position))
+            direct_to_later_safe = not _segment_blocked(position, waypoints[idx + 1], inflated)
+            if later_is_closer and direct_to_later_safe:
+                idx += 1
+            else:
+                break
+
+        local_goal = self._local_goal(position, true_target)
+        if idx == len(waypoints) - 1 and not np.allclose(waypoints[-1], local_goal, atol=1e-9):
+            waypoints = waypoints[:-1] + (local_goal,)
+
+        self._route = RouteState(
+            route_id=self._route.route_id, waypoints=waypoints, current_waypoint_index=idx,
+            awareness_mode=self._route.awareness_mode, obstacle_ids=self._route.obstacle_ids,
+            created_step=self._route.created_step, replan_reason=self._route.replan_reason,
+            estimated_length=self._route.estimated_length, goal_at_creation=self._route.goal_at_creation,
+        )
+
+        target_point = self._route.current_target()
+        offset = target_point - position
+        norm = float(np.linalg.norm(offset))
+        direction = offset / norm if norm > _EPS else np.zeros(3)
+
+        return {
+            "direction": direction,
+            "route_active": True,
+            "route_waypoint_count": len(self._route.waypoints),
+            "route_current_waypoint": self._route.current_waypoint_index,
+            "route_replan_count": self._replan_count,
+            "route_replan_reason": self._last_replan_reason,
+            "route_obstacle_ids": self._route.obstacle_ids,
+            "route_estimated_length": self._route.estimated_length,
+            "progress_stall_active": False,
+            "route_revisit": False,
+            "vertical_bypass_count": self._vertical_bypass_count,
+        }
+

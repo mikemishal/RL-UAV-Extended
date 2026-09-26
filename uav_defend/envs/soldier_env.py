@@ -361,6 +361,36 @@ class SoldierEnv(gym.Env):
             dt=self.config.dt,
         )
         self._enemy_route_last_result: dict | None = None
+        # Command-conflict diagnostics (Phase 3, behavior-arbitration
+        # audit): raw per-stage commands + angular disagreement + episode
+        # counters. Purely observational -- never fed back into control.
+        self._enemy_mission_command: np.ndarray = np.zeros(3, dtype=np.float32)
+        self._enemy_evasion_command: np.ndarray = np.zeros(3, dtype=np.float32)
+        self._enemy_route_command: np.ndarray | None = None
+        self._enemy_reactive_avoidance_command: np.ndarray | None = None
+        self._enemy_final_command: np.ndarray = np.zeros(3, dtype=np.float32)
+        self._enemy_evasion_active: bool = False
+        self._enemy_evasion_streak_steps: int = 0
+        self._enemy_evasion_streak_start_pos: np.ndarray | None = None
+        self._enemy_evasion_streak_start_goal_dist: float | None = None
+        self._enemy_replans_while_evading: int = 0
+        self._enemy_waypoint_invalidations_from_evasion: int = 0
+        self._enemy_route_resumptions_after_evasion: int = 0
+        self._enemy_obstacle_conflicts_during_evasion: int = 0
+        self._enemy_behavior_mode: str = "MISSION"
+        self._enemy_behavior_mode_switch_count: int = 0
+        self._enemy_angle_mission_evasion: float | None = None
+        self._enemy_angle_mission_route: float | None = None
+        self._enemy_angle_evasion_route: float | None = None
+        self._enemy_angle_route_final: float | None = None
+        self._enemy_angle_evasion_final: float | None = None
+        # Behavior arbitration (Phase 5-7): route-suspension-during-evasion
+        # state (see _move_enemy()). Initialized at (not below) the release
+        # threshold so route planning is NOT spuriously suspended at episode
+        # start merely because evasion hasn't happened yet.
+        self._enemy_evasion_clear_streak: int = self.config.enemy_obstacle_release_steps
+        self._enemy_route_was_suspended: bool = False
+        self._enemy_route_suspended: bool = False
         # Hostile obstacle-navigation diagnostics (Phase 3B). Deterministic
         # and RNG-free -- see _move_enemy()/ObstacleAvoidancePlanner.plan().
         self._enemy_obstacle_avoidance_active: bool = False
@@ -547,6 +577,29 @@ class SoldierEnv(gym.Env):
         self._enemy_last_perceived = PerceivedObstacleSet()
         self._enemy_route_planner.reset()
         self._enemy_route_last_result = None
+        self._enemy_mission_command = np.zeros(3, dtype=np.float32)
+        self._enemy_evasion_command = np.zeros(3, dtype=np.float32)
+        self._enemy_route_command = None
+        self._enemy_reactive_avoidance_command = None
+        self._enemy_final_command = np.zeros(3, dtype=np.float32)
+        self._enemy_evasion_active = False
+        self._enemy_evasion_streak_steps = 0
+        self._enemy_evasion_streak_start_pos = None
+        self._enemy_evasion_streak_start_goal_dist = None
+        self._enemy_replans_while_evading = 0
+        self._enemy_waypoint_invalidations_from_evasion = 0
+        self._enemy_route_resumptions_after_evasion = 0
+        self._enemy_obstacle_conflicts_during_evasion = 0
+        self._enemy_behavior_mode = "MISSION"
+        self._enemy_behavior_mode_switch_count = 0
+        self._enemy_angle_mission_evasion = None
+        self._enemy_angle_mission_route = None
+        self._enemy_angle_evasion_route = None
+        self._enemy_angle_route_final = None
+        self._enemy_angle_evasion_final = None
+        self._enemy_evasion_clear_streak = self.config.enemy_obstacle_release_steps
+        self._enemy_route_was_suspended = False
+        self._enemy_route_suspended = False
         self._enemy_obstacle_avoidance_active = False
         self._enemy_obstacle_avoidance_mode = None
         self._enemy_obstacle_avoidance_vector = np.zeros(3, dtype=np.float32)
@@ -1458,6 +1511,9 @@ class SoldierEnv(gym.Env):
             else:
                 r_hat = np.array([1.0, 0.0, 0.0])
         self._enemy_pursuit_direction = r_hat.astype(np.float32)
+        # Command-conflict diagnostics (Phase 3): raw mission command,
+        # captured BEFORE any downstream stage may overwrite r_hat.
+        self._enemy_mission_command = r_hat.astype(np.float32)
 
         # Perception layer (journal extension): computed ONCE per step so
         # both the route planner below and the reactive avoidance layer
@@ -1472,20 +1528,63 @@ class SoldierEnv(gym.Env):
             )
             self._enemy_last_perceived = perceived
 
-        # Multi-obstacle route planning (journal extension, Phase 3-15):
-        # replaces the naive straight-line pursuit direction with a
-        # locally-planned waypoint direction around perceived obstacle
-        # clusters. Weave/heading-noise/evasion below are UNCHANGED --
-        # only the pursuit term r_hat is substituted. The existing reactive
-        # avoidance layer (below) still runs afterward as the last-mile
-        # safety mechanism.
-        self._enemy_route_last_result = None
-        if self.config.enemy_obstacle_avoidance_enabled and self.config.enemy_route_planning_enabled and perceived is not None:
-            route_result = self._enemy_route_planner.plan(
-                self._enemy_pos, self._soldier_pos, perceived, self.config.enemy_obstacle_awareness_mode,
-            )
+        # Reactive evasion (moved earlier, Phase 5 arbitration): computed
+        # BEFORE the route-planning decision below so the arbitration layer
+        # knows whether an immediate defender threat is present THIS step.
+        # Intentionally independent of self._enemy_detected (see
+        # _compute_enemy_evasion docstring).
+        evasion_info = self._compute_enemy_evasion(self._defender_pos, self._enemy_pos)
+        self._enemy_evasion_info = evasion_info
+        self._enemy_evasion_command = evasion_info["evasion_component"].astype(np.float32)
+        evasion_active_this_step = bool(evasion_info["activation"] > 1e-6)
+
+        # Behavior-arbitration hysteresis (Phase 7): reuse the EXISTING
+        # obstacle-avoidance release-steps hysteresis parameter rather than
+        # inventing a new threshold -- route suspension persists for
+        # `enemy_obstacle_release_steps` consecutive non-evading steps
+        # after evasion ends, preventing ROUTE<->EVADE ping-pong right at
+        # the activation boundary.
+        if evasion_active_this_step:
+            self._enemy_evasion_clear_streak = 0
+        else:
+            self._enemy_evasion_clear_streak += 1
+        route_suspended = self.config.enemy_route_arbitration_enabled and (
+            evasion_active_this_step or self._enemy_evasion_clear_streak < self.config.enemy_obstacle_release_steps
+        )
+        just_resumed = (not route_suspended) and self._enemy_route_was_suspended
+        self._enemy_route_was_suspended = route_suspended
+
+        # Multi-obstacle route planning (journal extension, Phase 3-15;
+        # arbitration added Phase 5-6): replaces the naive straight-line
+        # pursuit direction with a locally-planned waypoint direction
+        # around perceived obstacle clusters -- UNLESS route following is
+        # currently suspended in favor of defender evasion (Priority 2 over
+        # Priority 3, Phase 5), in which case the route is left untouched
+        # (never judged/replanned against evasion-induced deviation, Phase
+        # 6) and the pursuit term remains the raw mission direction, still
+        # combined with weave/noise/evasion below exactly as without route
+        # planning. On resuming (evasion hysteresis just cleared), the
+        # route is REJOINED from the current position (skipping any
+        # effectively-passed waypoints) or replanned if no longer safe --
+        # never forced back to an obsolete waypoint behind the attacker.
+        self._enemy_route_last_result = None if not route_suspended else self._enemy_route_last_result
+        self._enemy_route_suspended = route_suspended and self.config.enemy_route_planning_enabled
+        prev_route_replan_count = (
+            self._enemy_route_planner._replan_count if self.config.enemy_route_planning_enabled else 0
+        )
+        self._enemy_route_command = None
+        if self.config.enemy_obstacle_avoidance_enabled and self.config.enemy_route_planning_enabled and perceived is not None and not route_suspended:
+            if just_resumed:
+                route_result = self._enemy_route_planner.resume_or_rejoin(
+                    self._enemy_pos, self._soldier_pos, perceived, self.config.enemy_obstacle_awareness_mode,
+                )
+            else:
+                route_result = self._enemy_route_planner.plan(
+                    self._enemy_pos, self._soldier_pos, perceived, self.config.enemy_obstacle_awareness_mode,
+                )
             self._enemy_route_last_result = route_result
             route_direction = np.asarray(route_result["direction"], dtype=np.float64)
+            self._enemy_route_command = route_direction.astype(np.float32)
             if np.linalg.norm(route_direction) > eps:
                 r_hat = route_direction
         
@@ -1507,11 +1606,6 @@ class SoldierEnv(gym.Env):
         
         # Heading noise, generalized to 3 dimensions
         z = self._rng_enemy_motion.normal(0.0, 1.0, size=(3,))
-        
-        # Reactive evasion: intentionally independent of self._enemy_detected
-        # (see _compute_enemy_evasion docstring).
-        evasion_info = self._compute_enemy_evasion(self._defender_pos, self._enemy_pos)
-        self._enemy_evasion_info = evasion_info
 
         # Base command: exactly the pre-obstacle hostile model (pursuit +
         # weave + heading noise + evasion), unnormalized then normalized.
@@ -1572,6 +1666,9 @@ class SoldierEnv(gym.Env):
         self._enemy_obstacle_avoidance_active = plan["active"]
         self._enemy_obstacle_avoidance_mode = plan["mode"]
         self._enemy_obstacle_avoidance_vector = np.asarray(plan["direction"], dtype=np.float32)
+        self._enemy_reactive_avoidance_command = (
+            np.asarray(plan["direction"], dtype=np.float32) if plan["active"] else None
+        )
         self._enemy_predicted_obstacle_index = plan["obstacle_index"]
         self._enemy_predicted_collision_step = plan["predicted_collision_step"]
         self._enemy_predicted_min_clearance = plan["predicted_min_clearance"]
@@ -1603,7 +1700,69 @@ class SoldierEnv(gym.Env):
         )
 
         u = np.asarray(plan["direction"], dtype=np.float64)
-        
+        self._enemy_final_command = u.astype(np.float32)
+
+        # Command-conflict diagnostics (Phase 3): angular disagreement
+        # between every pair of per-stage commands actually computed this
+        # step (angles in degrees; None where a stage did not fire).
+        def _angle_deg(a, b):
+            if a is None or b is None:
+                return None
+            a_n, b_n = np.linalg.norm(a), np.linalg.norm(b)
+            if a_n <= eps or b_n <= eps:
+                return None
+            cos_a = float(np.clip(np.dot(a, b) / (a_n * b_n), -1.0, 1.0))
+            return float(np.degrees(np.arccos(cos_a)))
+
+        self._enemy_angle_mission_evasion = _angle_deg(self._enemy_mission_command, self._enemy_evasion_command)
+        self._enemy_angle_mission_route = _angle_deg(self._enemy_mission_command, self._enemy_route_command)
+        self._enemy_angle_evasion_route = _angle_deg(self._enemy_evasion_command, self._enemy_route_command)
+        self._enemy_angle_route_final = _angle_deg(self._enemy_route_command, self._enemy_final_command)
+        self._enemy_angle_evasion_final = _angle_deg(self._enemy_evasion_command, self._enemy_final_command)
+
+        # Evasion activation transition + streak tracking.
+        self._enemy_evasion_active = evasion_active_this_step
+        if evasion_active_this_step:
+            if self._enemy_evasion_streak_steps == 0:
+                self._enemy_evasion_streak_start_pos = self._enemy_pos.copy()
+                self._enemy_evasion_streak_start_goal_dist = float(np.linalg.norm(self._soldier_pos - self._enemy_pos))
+            self._enemy_evasion_streak_steps += 1
+            if self._enemy_obstacle_avoidance_active:
+                self._enemy_obstacle_conflicts_during_evasion += 1
+        else:
+            if self._enemy_evasion_streak_steps > 0 and self.config.enemy_route_planning_enabled:
+                # Evasion just ended: did the SAME route resume (no replan
+                # forced this step) or did it require a fresh replan?
+                if self._enemy_route_last_result is not None and self._enemy_route_last_result["route_replan_count"] == prev_route_replan_count:
+                    self._enemy_route_resumptions_after_evasion += 1
+            self._enemy_evasion_streak_steps = 0
+            self._enemy_evasion_streak_start_pos = None
+            self._enemy_evasion_streak_start_goal_dist = None
+
+        # Route replans / waypoint invalidations attributable to evasion.
+        if self._enemy_route_last_result is not None and self._enemy_route_last_result["route_replan_count"] > prev_route_replan_count:
+            if evasion_active_this_step:
+                self._enemy_replans_while_evading += 1
+                if self._enemy_route_last_result["route_replan_reason"] in ("route_unsafe_or_new_obstacle", "progress_stall"):
+                    self._enemy_waypoint_invalidations_from_evasion += 1
+
+        # Behavior mode (Phase 5-7): highest-priority ACTIVE stage this
+        # step, in the enforced arbitration priority order collision-avoid
+        # > evade > route > mission (route is suspended, not merely
+        # deprioritized, while evasion is active or within its hysteresis
+        # hold -- see route_suspended above).
+        if self._enemy_obstacle_avoidance_active:
+            new_mode = "COLLISION_AVOID"
+        elif evasion_active_this_step:
+            new_mode = "EVADE"
+        elif not route_suspended and self._enemy_route_last_result is not None:
+            new_mode = "ROUTE"
+        else:
+            new_mode = "MISSION"
+        if new_mode != self._enemy_behavior_mode:
+            self._enemy_behavior_mode_switch_count += 1
+        self._enemy_behavior_mode = new_mode
+
         # Guidance produces a DESIRED velocity; dynamics determine the
         # actual persistent velocity subject to acceleration/turn/vertical limits.
         desired_velocity = self.config.v_e * u
@@ -1976,6 +2135,35 @@ class SoldierEnv(gym.Env):
             "enemy_vertical_bypass_count": (
                 self._enemy_route_last_result["vertical_bypass_count"] if self._enemy_route_last_result else 0
             ),
+            # Command-conflict diagnostics (Phase 3, behavior-arbitration
+            # audit). Purely observational.
+            "enemy_mission_command": self._enemy_mission_command,
+            "enemy_evasion_command": self._enemy_evasion_command,
+            "enemy_route_command": self._enemy_route_command,
+            "enemy_reactive_avoidance_command": self._enemy_reactive_avoidance_command,
+            "enemy_final_command": self._enemy_final_command,
+            "enemy_evasion_active": self._enemy_evasion_active,
+            "enemy_angle_mission_evasion_deg": self._enemy_angle_mission_evasion,
+            "enemy_angle_mission_route_deg": self._enemy_angle_mission_route,
+            "enemy_angle_evasion_route_deg": self._enemy_angle_evasion_route,
+            "enemy_angle_route_final_deg": self._enemy_angle_route_final,
+            "enemy_angle_evasion_final_deg": self._enemy_angle_evasion_final,
+            "enemy_replans_while_evading": self._enemy_replans_while_evading,
+            "enemy_waypoint_invalidations_from_evasion": self._enemy_waypoint_invalidations_from_evasion,
+            "enemy_route_resumptions_after_evasion": self._enemy_route_resumptions_after_evasion,
+            "enemy_evasion_streak_steps": self._enemy_evasion_streak_steps,
+            "enemy_evasion_distance_since_streak_start": (
+                float(np.linalg.norm(self._enemy_pos - self._enemy_evasion_streak_start_pos))
+                if self._enemy_evasion_streak_start_pos is not None else 0.0
+            ),
+            "enemy_evasion_net_progress_since_streak_start": (
+                self._enemy_evasion_streak_start_goal_dist - float(np.linalg.norm(self._soldier_pos - self._enemy_pos))
+                if self._enemy_evasion_streak_start_goal_dist is not None else 0.0
+            ),
+            "enemy_obstacle_conflicts_during_evasion": self._enemy_obstacle_conflicts_during_evasion,
+            "enemy_behavior_mode": self._enemy_behavior_mode,
+            "enemy_behavior_mode_switch_count": self._enemy_behavior_mode_switch_count,
+            "enemy_route_suspended": self._enemy_route_suspended,
         }
     
     def render(self) -> np.ndarray | None:

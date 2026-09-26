@@ -264,6 +264,13 @@ class EnvConfig:
     enemy_route_waypoint_tolerance: float = 2.0         # m; distance at which a waypoint counts as reached
     enemy_progress_window_steps: int = 40               # rolling window for stall detection (Phase 12)
     enemy_route_stall_distance_threshold: float = 2.0   # m; negligible goal-distance reduction over the window
+    # Behavior-arbitration (journal extension, follow-up task): when True
+    # (default), route following is SUSPENDED (not replanned/judged) while
+    # defender evasion is active or within its post-evasion hysteresis hold
+    # (reusing enemy_obstacle_release_steps), then REJOINED (not blindly
+    # replanned) on resuming. When False, reproduces the original
+    # always-persistent route-planning behavior (pre-arbitration ablation).
+    enemy_route_arbitration_enabled: bool = True
 
     def __post_init__(self) -> None:
         """Validate altitude and dynamics configuration."""
