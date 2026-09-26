@@ -41,6 +41,7 @@ from uav_defend.obstacles.perception import (
     PerceivedObstacleSet,
     PerceivedStaticObstacle,
 )
+from uav_defend.obstacles.route_planner import RoutePlanner, RouteState, build_and_search_route
 
 __all__ = [
     "AABBObstacle",
@@ -71,4 +72,7 @@ __all__ = [
     "PerceivedStaticObstacle",
     "PerceivedDynamicObstacle",
     "PerceivedObstacleSet",
+    "RoutePlanner",
+    "RouteState",
+    "build_and_search_route",
 ]

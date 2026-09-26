@@ -33,6 +33,7 @@ from uav_defend.obstacles.dynamic import (
     swept_sphere_vs_sphere_min_distance,
 )
 from uav_defend.obstacles.perception import EnemyObstaclePerception, PerceivedObstacleSet
+from uav_defend.obstacles.route_planner import RoutePlanner
 
 
 class SoldierEnv(gym.Env):
@@ -345,6 +346,21 @@ class SoldierEnv(gym.Env):
             dynamic_memory_steps=self.config.enemy_dynamic_obstacle_memory_steps,
         )
         self._enemy_last_perceived: PerceivedObstacleSet = PerceivedObstacleSet()
+        # Multi-obstacle local route planner (journal extension): sits
+        # BETWEEN mission pursuit and the reactive avoidance layer above --
+        # see _move_enemy(). Consumes only PerceivedObstacleSet, never
+        # ground truth.
+        self._enemy_route_planner = RoutePlanner(
+            clearance=self.config.enemy_obstacle_clearance,
+            max_altitude=self.config.max_altitude,
+            planning_range=self.config.enemy_route_planning_range,
+            max_graph_nodes=self.config.enemy_route_max_graph_nodes,
+            waypoint_tolerance=self.config.enemy_route_waypoint_tolerance,
+            progress_window_steps=self.config.enemy_progress_window_steps,
+            stall_distance_threshold=self.config.enemy_route_stall_distance_threshold,
+            dt=self.config.dt,
+        )
+        self._enemy_route_last_result: dict | None = None
         # Hostile obstacle-navigation diagnostics (Phase 3B). Deterministic
         # and RNG-free -- see _move_enemy()/ObstacleAvoidancePlanner.plan().
         self._enemy_obstacle_avoidance_active: bool = False
@@ -529,6 +545,8 @@ class SoldierEnv(gym.Env):
         self._enemy_obstacle_planner.reset()
         self._enemy_perception.reset()
         self._enemy_last_perceived = PerceivedObstacleSet()
+        self._enemy_route_planner.reset()
+        self._enemy_route_last_result = None
         self._enemy_obstacle_avoidance_active = False
         self._enemy_obstacle_avoidance_mode = None
         self._enemy_obstacle_avoidance_vector = np.zeros(3, dtype=np.float32)
@@ -1440,6 +1458,36 @@ class SoldierEnv(gym.Env):
             else:
                 r_hat = np.array([1.0, 0.0, 0.0])
         self._enemy_pursuit_direction = r_hat.astype(np.float32)
+
+        # Perception layer (journal extension): computed ONCE per step so
+        # both the route planner below and the reactive avoidance layer
+        # further down share the IDENTICAL PerceivedObstacleSet -- calling
+        # EnemyObstaclePerception.update() twice per step would incorrectly
+        # double-age dynamic-obstacle track memory. "disabled" mode
+        # perceives the full ground truth (bit-for-bit prior behavior).
+        perceived = None
+        if self.config.enemy_obstacle_avoidance_enabled:
+            perceived = self._enemy_perception.update(
+                self._enemy_pos, self._obstacle_layout, self._dynamic_obstacles
+            )
+            self._enemy_last_perceived = perceived
+
+        # Multi-obstacle route planning (journal extension, Phase 3-15):
+        # replaces the naive straight-line pursuit direction with a
+        # locally-planned waypoint direction around perceived obstacle
+        # clusters. Weave/heading-noise/evasion below are UNCHANGED --
+        # only the pursuit term r_hat is substituted. The existing reactive
+        # avoidance layer (below) still runs afterward as the last-mile
+        # safety mechanism.
+        self._enemy_route_last_result = None
+        if self.config.enemy_obstacle_avoidance_enabled and self.config.enemy_route_planning_enabled and perceived is not None:
+            route_result = self._enemy_route_planner.plan(
+                self._enemy_pos, self._soldier_pos, perceived, self.config.enemy_obstacle_awareness_mode,
+            )
+            self._enemy_route_last_result = route_result
+            route_direction = np.asarray(route_result["direction"], dtype=np.float64)
+            if np.linalg.norm(route_direction) > eps:
+                r_hat = route_direction
         
         # Horizontal lateral vector (perpendicular to the horizontal
         # projection of the pursuit direction, 90° CCW rotation in XY)
@@ -1482,14 +1530,8 @@ class SoldierEnv(gym.Env):
         # Exact no-op (u = u_base, bit-for-bit) when disabled or when no
         # obstacles exist -- see ObstacleAvoidancePlanner.plan().
         if self.config.enemy_obstacle_avoidance_enabled:
-            # Perception layer (journal extension): the planner NEVER sees
-            # ground-truth world obstacles directly -- only what this
-            # episode's awareness mode currently perceives. "disabled" mode
-            # perceives the full ground truth (bit-for-bit prior behavior).
-            perceived = self._enemy_perception.update(
-                self._enemy_pos, self._obstacle_layout, self._dynamic_obstacles
-            )
-            self._enemy_last_perceived = perceived
+            # perceived was already computed once, above (shared with the
+            # route planner) -- never recomputed here.
             perceived_static_layout = perceived.to_static_layout()
             avoidance_layout = self._combined_avoidance_layout(
                 self._enemy_pos, self._enemy_vel,
@@ -1902,6 +1944,38 @@ class SoldierEnv(gym.Env):
             "enemy_new_obstacle_detections": self._enemy_perception.new_static_detections,
             "enemy_perceived_static_ids": tuple(o.id for o in self._enemy_last_perceived.static),
             "enemy_perceived_dynamic_ids": tuple(o.id for o in self._enemy_last_perceived.dynamic),
+            # Multi-obstacle route-planner diagnostics (journal extension;
+            # see uav_defend/obstacles/route_planner.py). None of these
+            # affect physics/collision -- purely the mission-command source
+            # fed into the (unchanged) reactive avoidance layer.
+            "enemy_route_active": bool(self._enemy_route_last_result is not None),
+            "enemy_route_waypoint_count": (
+                self._enemy_route_last_result["route_waypoint_count"] if self._enemy_route_last_result else 0
+            ),
+            "enemy_route_current_waypoint": (
+                self._enemy_route_last_result["route_current_waypoint"] if self._enemy_route_last_result else 0
+            ),
+            "enemy_route_replan_count": (
+                self._enemy_route_last_result["route_replan_count"] if self._enemy_route_last_result else 0
+            ),
+            "enemy_route_replan_reason": (
+                self._enemy_route_last_result["route_replan_reason"] if self._enemy_route_last_result else None
+            ),
+            "enemy_route_obstacle_ids": (
+                self._enemy_route_last_result["route_obstacle_ids"] if self._enemy_route_last_result else ()
+            ),
+            "enemy_route_estimated_length": (
+                self._enemy_route_last_result["route_estimated_length"] if self._enemy_route_last_result else 0.0
+            ),
+            "enemy_progress_stall_active": (
+                self._enemy_route_last_result["progress_stall_active"] if self._enemy_route_last_result else False
+            ),
+            "enemy_route_revisit": (
+                self._enemy_route_last_result["route_revisit"] if self._enemy_route_last_result else False
+            ),
+            "enemy_vertical_bypass_count": (
+                self._enemy_route_last_result["vertical_bypass_count"] if self._enemy_route_last_result else 0
+            ),
         }
     
     def render(self) -> np.ndarray | None:

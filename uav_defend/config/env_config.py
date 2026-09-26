@@ -251,6 +251,20 @@ class EnvConfig:
     enemy_static_obstacle_memory_enabled: bool = True  # once locally detected, a static obstacle is remembered for the rest of the episode
     enemy_dynamic_obstacle_memory_steps: int = 6       # steps a dynamic-obstacle track survives without re-observation before expiring
 
+    # =========================================================================
+    # Perception-constrained multi-obstacle local route planner (journal
+    # extension; see uav_defend/obstacles/route_planner.py). Requires
+    # enemy_obstacle_avoidance_enabled=True (the reactive layer remains the
+    # last-mile safety mechanism). OFF BY DEFAULT: enemy_route_planning_enabled
+    # =False reproduces the pre-route-planner behavior exactly.
+    # =========================================================================
+    enemy_route_planning_enabled: bool = False
+    enemy_route_planning_range: float = 40.0           # m; bounded local planning horizon (Phase 7)
+    enemy_route_max_graph_nodes: int = 150              # cap on visibility-graph size (>= 5 nodes/obstacle x dense-cluster obstacle counts)
+    enemy_route_waypoint_tolerance: float = 2.0         # m; distance at which a waypoint counts as reached
+    enemy_progress_window_steps: int = 40               # rolling window for stall detection (Phase 12)
+    enemy_route_stall_distance_threshold: float = 2.0   # m; negligible goal-distance reduction over the window
+
     def __post_init__(self) -> None:
         """Validate altitude and dynamics configuration."""
         if self.enemy_spawn_altitude_min < 0:
@@ -459,4 +473,17 @@ class EnvConfig:
         if self.enemy_dynamic_obstacle_memory_steps < 0:
             raise ValueError(
                 f"enemy_dynamic_obstacle_memory_steps must be >= 0, got {self.enemy_dynamic_obstacle_memory_steps}"
+            )
+
+        if self.enemy_route_planning_range <= 0:
+            raise ValueError(f"enemy_route_planning_range must be > 0, got {self.enemy_route_planning_range}")
+        if self.enemy_route_max_graph_nodes < 2:
+            raise ValueError(f"enemy_route_max_graph_nodes must be >= 2, got {self.enemy_route_max_graph_nodes}")
+        if self.enemy_route_waypoint_tolerance <= 0:
+            raise ValueError(f"enemy_route_waypoint_tolerance must be > 0, got {self.enemy_route_waypoint_tolerance}")
+        if self.enemy_progress_window_steps < 1:
+            raise ValueError(f"enemy_progress_window_steps must be >= 1, got {self.enemy_progress_window_steps}")
+        if self.enemy_route_stall_distance_threshold < 0:
+            raise ValueError(
+                f"enemy_route_stall_distance_threshold must be >= 0, got {self.enemy_route_stall_distance_threshold}"
             )
