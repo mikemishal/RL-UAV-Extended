@@ -210,6 +210,22 @@ class EnvConfig:
     enemy_obstacle_release_steps: int = 4                  # consecutive collision-free checks required to release avoidance
 
     # =========================================================================
+    # Defender UAS (journal extension): the SAME deterministic, RNG-free,
+    # short-horizon local obstacle-navigation layer as the hostile's above
+    # (see uav_defend/obstacles/avoidance.py -- ObstacleAvoidancePlanner is
+    # explicitly mover-agnostic and reused here, never duplicated), applied
+    # to whatever action ANY defender controller family (Greedy, PN, Lead,
+    # RMPC, PPO, PPO-Kalman, LR-PPO) produces -- a single, controller-blind
+    # insertion point in SoldierEnv._move_defender(). OFF BY DEFAULT
+    # (defender_obstacle_avoidance_enabled=False) so conference/frozen
+    # defender behavior is reproduced exactly unless explicitly enabled.
+    # =========================================================================
+    defender_obstacle_avoidance_enabled: bool = False
+    defender_obstacle_clearance: float = 2.0
+    defender_obstacle_prediction_horizon_steps: int = 12
+    defender_obstacle_release_steps: int = 4
+
+    # =========================================================================
     # Dynamic obstacle configuration (journal extension: simple moving
     # aerial clutter -- birds / other non-combat airborne objects). See
     # uav_defend/obstacles/dynamic.py. OFF BY DEFAULT: dynamic_obstacles_enabled
@@ -250,6 +266,21 @@ class EnvConfig:
     enemy_dynamic_obstacle_sensor_range: float = 15.0  # m; dynamic-obstacle local sensing radius (center distance)
     enemy_static_obstacle_memory_enabled: bool = True  # once locally detected, a static obstacle is remembered for the rest of the episode
     enemy_dynamic_obstacle_memory_steps: int = 6       # steps a dynamic-obstacle track survives without re-observation before expiring
+
+    # =========================================================================
+    # Defender environmental-awareness/perception layer (journal extension;
+    # reuses uav_defend/obstacles/perception.py's EnemyObstaclePerception --
+    # mover-agnostic despite the class name -- via a SEPARATE instance owning
+    # the defender's own memory state). Same "disabled"/"local"/"map_local"
+    # semantics as the hostile's mode above. Defaults mirror the hostile's
+    # defaults (Phase 5: "use attacker defaults initially unless there is a
+    # concrete reason not to").
+    # =========================================================================
+    defender_obstacle_awareness_mode: str = "disabled"
+    defender_obstacle_sensor_range: float = 15.0
+    defender_dynamic_obstacle_sensor_range: float = 15.0
+    defender_static_obstacle_memory_enabled: bool = True
+    defender_dynamic_obstacle_memory_steps: int = 6
 
     # =========================================================================
     # Perception-constrained multi-obstacle local route planner (journal
@@ -411,6 +442,20 @@ class EnvConfig:
                 f"enemy_obstacle_release_steps must be >= 1, got {self.enemy_obstacle_release_steps}"
             )
 
+        if self.defender_obstacle_clearance < 0:
+            raise ValueError(
+                f"defender_obstacle_clearance must be >= 0, got {self.defender_obstacle_clearance}"
+            )
+        if self.defender_obstacle_prediction_horizon_steps < 1:
+            raise ValueError(
+                "defender_obstacle_prediction_horizon_steps must be >= 1, got "
+                f"{self.defender_obstacle_prediction_horizon_steps}"
+            )
+        if self.defender_obstacle_release_steps < 1:
+            raise ValueError(
+                f"defender_obstacle_release_steps must be >= 1, got {self.defender_obstacle_release_steps}"
+            )
+
         if self.dynamic_obstacle_count < 0:
             raise ValueError(f"dynamic_obstacle_count must be >= 0, got {self.dynamic_obstacle_count}")
         if self.dynamic_obstacle_min_radius <= 0 or self.dynamic_obstacle_max_radius <= 0:
@@ -480,6 +525,22 @@ class EnvConfig:
         if self.enemy_dynamic_obstacle_memory_steps < 0:
             raise ValueError(
                 f"enemy_dynamic_obstacle_memory_steps must be >= 0, got {self.enemy_dynamic_obstacle_memory_steps}"
+            )
+
+        if self.defender_obstacle_awareness_mode not in ("disabled", "local", "map_local"):
+            raise ValueError(
+                "defender_obstacle_awareness_mode must be one of 'disabled', 'local', 'map_local', got "
+                f"{self.defender_obstacle_awareness_mode!r}"
+            )
+        if self.defender_obstacle_sensor_range <= 0:
+            raise ValueError(f"defender_obstacle_sensor_range must be > 0, got {self.defender_obstacle_sensor_range}")
+        if self.defender_dynamic_obstacle_sensor_range <= 0:
+            raise ValueError(
+                f"defender_dynamic_obstacle_sensor_range must be > 0, got {self.defender_dynamic_obstacle_sensor_range}"
+            )
+        if self.defender_dynamic_obstacle_memory_steps < 0:
+            raise ValueError(
+                f"defender_dynamic_obstacle_memory_steps must be >= 0, got {self.defender_dynamic_obstacle_memory_steps}"
             )
 
         if self.enemy_route_planning_range <= 0:

@@ -401,6 +401,40 @@ class SoldierEnv(gym.Env):
         self._enemy_predicted_min_clearance: float = float("inf")
         self._enemy_obstacle_fallback_used: bool = False
 
+        # Defender obstacle-navigation planner (journal extension): the
+        # SAME mover-agnostic ObstacleAvoidancePlanner as the hostile's
+        # above, in a SEPARATE instance so avoidance persistence/hysteresis
+        # never leaks between the two movers. See _move_defender().
+        self._defender_obstacle_planner = ObstacleAvoidancePlanner(
+            clearance=self.config.defender_obstacle_clearance,
+            horizon_steps=self.config.defender_obstacle_prediction_horizon_steps,
+            release_steps=self.config.defender_obstacle_release_steps,
+            max_altitude=self.config.max_altitude,
+            eps=self.config.eps,
+        )
+        # Defender perception (journal extension): reuses
+        # EnemyObstaclePerception (mover-agnostic despite the class name --
+        # see uav_defend/obstacles/perception.py) with the defender's OWN
+        # memory state. The mission target (the hostile UAV) is NEVER
+        # added to this perceived set -- it remains the interception
+        # target, not environmental clutter (Phase 14).
+        self._defender_perception = EnemyObstaclePerception(
+            mode=self.config.defender_obstacle_awareness_mode,
+            static_sensor_range=self.config.defender_obstacle_sensor_range,
+            dynamic_sensor_range=self.config.defender_dynamic_obstacle_sensor_range,
+            static_memory_enabled=self.config.defender_static_obstacle_memory_enabled,
+            dynamic_memory_steps=self.config.defender_dynamic_obstacle_memory_steps,
+        )
+        self._defender_last_perceived: PerceivedObstacleSet = PerceivedObstacleSet()
+        self._defender_obstacle_avoidance_active: bool = False
+        self._defender_obstacle_avoidance_mode: str | None = None
+        self._defender_desired_command: np.ndarray = np.zeros(3, dtype=np.float32)
+        self._defender_safe_command: np.ndarray = np.zeros(3, dtype=np.float32)
+        self._defender_avoidance_obstacle_type: str | None = None
+        self._defender_avoidance_obstacle_id: int | None = None
+        self._defender_avoidance_angle_deg: float = 0.0
+        self._defender_predicted_min_clearance: float = float("inf")
+
         # Hostile avoidance diagnostics extended for dynamic obstacles
         # (journal extension): obstacle_type/angle/time-to-conflict
         # distinguish a static-AABB avoidance decision from a
@@ -607,6 +641,18 @@ class SoldierEnv(gym.Env):
         self._enemy_predicted_collision_step = None
         self._enemy_predicted_min_clearance = self._obstacle_layout.min_clearance(self._enemy_pos)
         self._enemy_obstacle_fallback_used = False
+
+        self._defender_obstacle_planner.reset()
+        self._defender_perception.reset()
+        self._defender_last_perceived = PerceivedObstacleSet()
+        self._defender_obstacle_avoidance_active = False
+        self._defender_obstacle_avoidance_mode = None
+        self._defender_desired_command = np.zeros(3, dtype=np.float32)
+        self._defender_safe_command = np.zeros(3, dtype=np.float32)
+        self._defender_avoidance_obstacle_type = None
+        self._defender_avoidance_obstacle_id = None
+        self._defender_avoidance_angle_deg = 0.0
+        self._defender_predicted_min_clearance = self._obstacle_layout.min_clearance(self._defender_pos)
 
         # Reset dynamic-obstacle diagnostics (journal extension).
         self._enemy_avoidance_obstacle_type = None
@@ -1172,10 +1218,78 @@ class SoldierEnv(gym.Env):
         action_norm = np.linalg.norm(action)
         
         if action_norm > eps:
-            desired_direction = action / action_norm
-            desired_velocity = self.config.v_d * desired_direction
+            u_desired = action / action_norm
         else:
-            desired_velocity = np.zeros(3, dtype=np.float32)
+            u_desired = np.zeros(3, dtype=np.float32)
+        self._defender_desired_command = u_desired.astype(np.float32)
+
+        # Shared, controller-agnostic obstacle-safety layer (journal
+        # extension): identical mechanism to the hostile's, applied to
+        # whatever `action` ANY defender controller family produced
+        # (Greedy/PN/Lead/RMPC/PPO/PPO-Kalman/LR-PPO all funnel through
+        # this SAME call site, unmodified upstream -- see
+        # docs/defender_command_pipeline_audit.md). Exact no-op
+        # (u_safe == u_desired, bit-for-bit) when disabled or when no
+        # collision is predicted.
+        u_safe = u_desired
+        if self.config.defender_obstacle_avoidance_enabled:
+            perceived = self._defender_perception.update(
+                self._defender_pos, self._obstacle_layout, self._dynamic_obstacles
+            )
+            self._defender_last_perceived = perceived
+            perceived_static_layout = perceived.to_static_layout()
+            avoidance_layout = self._combined_avoidance_layout(
+                self._defender_pos, self._defender_vel,
+                self.config.defender_obstacle_prediction_horizon_steps, self.config.defender_obstacle_clearance,
+                perceived_static_layout, perceived.dynamic,
+            )
+            if (
+                self._defender_obstacle_planner.active
+                and (
+                    self._defender_obstacle_planner.obstacle_index is None
+                    or self._defender_obstacle_planner.obstacle_index >= len(avoidance_layout)
+                )
+            ):
+                self._defender_obstacle_planner.reset()
+            # Mission target (Phase 14): the hostile UAV is the
+            # interception target, NEVER environmental clutter -- it is
+            # passed here only as the candidate-selection tie-break
+            # reference (matching the hostile's own use of its mission
+            # target), never inserted into `avoidance_layout`.
+            plan = self._defender_obstacle_planner.plan(
+                position=self._defender_pos,
+                velocity=self._defender_vel,
+                u_base=u_desired,
+                layout=avoidance_layout,
+                target_position=self._enemy_pos,
+                limits=self._defender_dynamics_limits(),
+            )
+            u_safe = np.asarray(plan["direction"], dtype=np.float64)
+            self._defender_obstacle_avoidance_active = plan["active"]
+            self._defender_obstacle_avoidance_mode = plan["mode"]
+            self._defender_predicted_min_clearance = plan["predicted_min_clearance"]
+            n_static = len(perceived.static)
+            if plan["obstacle_index"] is None:
+                self._defender_avoidance_obstacle_type = None
+                self._defender_avoidance_obstacle_id = None
+            elif plan["obstacle_index"] < n_static:
+                self._defender_avoidance_obstacle_type = "static"
+                self._defender_avoidance_obstacle_id = perceived.static[plan["obstacle_index"]].id
+            else:
+                self._defender_avoidance_obstacle_type = perceived.dynamic[plan["obstacle_index"] - n_static].obstacle_type
+                self._defender_avoidance_obstacle_id = perceived.dynamic[plan["obstacle_index"] - n_static].id
+            cos_angle = float(np.clip(np.dot(np.asarray(u_safe, dtype=np.float64), u_desired.astype(np.float64)), -1.0, 1.0))
+            self._defender_avoidance_angle_deg = float(np.degrees(np.arccos(cos_angle)))
+        else:
+            self._defender_obstacle_avoidance_active = False
+            self._defender_obstacle_avoidance_mode = None
+            self._defender_avoidance_obstacle_type = None
+            self._defender_avoidance_obstacle_id = None
+            self._defender_avoidance_angle_deg = 0.0
+            self._defender_predicted_min_clearance = self._obstacle_layout.min_clearance(self._defender_pos)
+        self._defender_safe_command = np.asarray(u_safe, dtype=np.float32)
+
+        desired_velocity = self.config.v_d * np.asarray(u_safe, dtype=np.float32)
         
         next_vel, diag = self._advance_velocity(
             current_velocity=self._defender_vel,
@@ -1193,6 +1307,24 @@ class SoldierEnv(gym.Env):
         
         self._defender_pos = new_pos.astype(np.float32)
         self._defender_vel = next_vel.astype(np.float32)
+    
+    def _defender_dynamics_limits(self) -> DynamicsLimits:
+        """Bundles the defender's constrained-dynamics parameters for
+        reuse by the obstacle-navigation predictor, mirroring
+        `_enemy_dynamics_limits()` -- guarantees the predictor's dynamics
+        model can never drift out of sync with the real per-step update
+        above."""
+        return DynamicsLimits(
+            max_speed=self.config.v_d,
+            max_accel=self.config.defender_max_accel,
+            max_turn_rate_rad=np.radians(self.config.defender_max_turn_rate_deg),
+            max_climb_rate=self.config.defender_max_climb_rate,
+            max_descent_rate=self.config.defender_max_descent_rate,
+            dt=self.config.dt,
+            eps=self.config.eps,
+            L=self.config.L,
+            max_altitude=self.config.max_altitude,
+        )
     
     def _update_detection(self) -> None:
         """
@@ -2103,6 +2235,32 @@ class SoldierEnv(gym.Env):
             "enemy_new_obstacle_detections": self._enemy_perception.new_static_detections,
             "enemy_perceived_static_ids": tuple(o.id for o in self._enemy_last_perceived.static),
             "enemy_perceived_dynamic_ids": tuple(o.id for o in self._enemy_last_perceived.dynamic),
+            # Defender perception/awareness + obstacle-safety diagnostics
+            # (journal extension; see uav_defend/obstacles/perception.py,
+            # uav_defend/obstacles/avoidance.py). NEVER exposed to any
+            # controller/observation -- purely diagnostic. The hostile UAV
+            # (mission target) is NEVER counted here (Phase 14).
+            "defender_awareness_mode": self.config.defender_obstacle_awareness_mode,
+            "defender_num_mapped_obstacles_known": sum(
+                1 for o in self._defender_last_perceived.static if o.source == "map"
+            ),
+            "defender_num_locally_sensed_static": sum(
+                1 for o in self._defender_last_perceived.static if o.source == "local_sensor"
+            ),
+            "defender_num_locally_sensed_dynamic": len(self._defender_last_perceived.dynamic),
+            "defender_total_perceived_obstacles": (
+                len(self._defender_last_perceived.static) + len(self._defender_last_perceived.dynamic)
+            ),
+            "defender_avoidance_active": self._defender_obstacle_avoidance_active,
+            "defender_avoidance_obstacle_id": self._defender_avoidance_obstacle_id,
+            "defender_avoidance_obstacle_type": self._defender_avoidance_obstacle_type,
+            "defender_avoidance_angle_deg": self._defender_avoidance_angle_deg,
+            "defender_desired_command": self._defender_desired_command.copy(),
+            "defender_safe_command": self._defender_safe_command.copy(),
+            "defender_predicted_min_clearance": self._defender_predicted_min_clearance,
+            "defender_actual_min_clearance": min(
+                self._obstacle_layout.min_clearance(self._defender_pos), self._defender_min_dynamic_obstacle_clearance
+            ),
             # Multi-obstacle route-planner diagnostics (journal extension;
             # see uav_defend/obstacles/route_planner.py). None of these
             # affect physics/collision -- purely the mission-command source
