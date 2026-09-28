@@ -82,7 +82,10 @@ def test_same_seed_gives_identical_scenario_across_two_controllers():
 
 
 def test_obstacle_collision_is_diagnostic_not_terminal():
-    """Phase 3 finding: obstacle collision never appears as an `outcome`."""
+    """Journal extension update: obstacle collision now DOES terminate the
+    episode with its own dedicated outcome (physical-collision-semantics
+    phase) -- it is no longer folded into the four original mission
+    outcomes, but it also must never be MISCLASSIFIED as one of them."""
     config = build_env_config("C3", "measurement")
     env = SoldierEnv(config=config)
     from uav_defend.policies.registry import get_policy
@@ -90,7 +93,11 @@ def test_obstacle_collision_is_diagnostic_not_terminal():
     policy = get_policy("lead", config=config)
     metrics = run_clutter_episode(env, policy, SMOKE_SEEDS[0])
     assert metrics["feasible"] is True
-    assert metrics["outcome"] in ("intercepted", "soldier_caught", "unsafe_intercept", "timeout")
+    assert metrics["outcome"] in (
+        "intercepted", "soldier_caught", "unsafe_intercept", "timeout",
+        "defender_static_obstacle_collision", "defender_dynamic_obstacle_collision",
+        "enemy_static_obstacle_collision", "enemy_dynamic_obstacle_collision",
+    )
 
 
 def test_run_clutter_episode_reports_feasible_flag():

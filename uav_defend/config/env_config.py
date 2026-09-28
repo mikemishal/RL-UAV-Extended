@@ -95,6 +95,20 @@ class EnvConfig:
     reward_progress_scale: float = 5.0  # Scale for distance progress reward (closing on enemy)
     reward_time_penalty: float = -0.05  # Small time penalty per step
     reward_proximity_warning: float = -0.5  # Per-step penalty when enemy is close to soldier (increased)
+
+    # Physical obstacle-collision terminal rewards (journal extension,
+    # Phase 3/4/5). Defender collisions are the defender's OWN failure
+    # (destroyed vehicle) and default to the same severity as the existing
+    # worst-case penalty (reward_unsafe_intercept). Hostile (enemy)
+    # collisions are an ENVIRONMENTAL failure of the attacker's mission,
+    # NOT a defender interception -- they default to NEUTRAL (0.0) so the
+    # defender is never automatically rewarded as if it had intercepted;
+    # mission-outcome accounting (info["outcome"]) is kept separate from
+    # this RL reward choice, and both are independently configurable.
+    reward_defender_static_obstacle_collision: float = -150.0
+    reward_defender_dynamic_obstacle_collision: float = -150.0
+    reward_enemy_static_obstacle_collision: float = 0.0
+    reward_enemy_dynamic_obstacle_collision: float = 0.0
     
     # =========================================================================
     # Distance Thresholds (geometry parameters)

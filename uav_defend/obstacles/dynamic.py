@@ -192,3 +192,39 @@ def swept_sphere_vs_sphere_min_distance(
         t_star = float(np.clip(-np.dot(rel_pos0, rel_disp) / denom, 0.0, 1.0))
     closest = rel_pos0 + t_star * rel_disp
     return float(np.linalg.norm(closest))
+
+
+def swept_sphere_vs_sphere_first_contact(
+    p0_a: np.ndarray, p1_a: np.ndarray, p0_b: np.ndarray, p1_b: np.ndarray, radius_sum: float,
+) -> float | None:
+    """Earliest `t` in `[0, 1]` at which two linearly-moving points (same
+    convention as `swept_sphere_vs_sphere_min_distance`) are exactly
+    `radius_sum` apart -- the physically-correct FIRST CONTACT instant,
+    which can occur strictly before the closest-point-of-approach time
+    `swept_sphere_vs_sphere_min_distance` implicitly evaluates at (that
+    function reports the CPA distance, not when the surfaces first touch).
+    Returns `None` if the spheres never come within `radius_sum` over the
+    interval. Used for physical-collision termination/position-clamping
+    (journal extension, Phase 3/4/6/7), where the exact contact point along
+    the moving entity's own path is required."""
+    p0_a, p1_a = np.asarray(p0_a, dtype=np.float64), np.asarray(p1_a, dtype=np.float64)
+    p0_b, p1_b = np.asarray(p0_b, dtype=np.float64), np.asarray(p1_b, dtype=np.float64)
+    rel_pos0 = p0_a - p0_b
+    rel_disp = (p1_a - p0_a) - (p1_b - p0_b)
+    c = float(np.dot(rel_pos0, rel_pos0)) - radius_sum * radius_sum
+    if c <= 0.0:
+        return 0.0  # already overlapping at the start of the segment
+    a = float(np.dot(rel_disp, rel_disp))
+    if a < 1e-12:
+        return None  # no relative motion and not already overlapping
+    b = 2.0 * float(np.dot(rel_pos0, rel_disp))
+    disc = b * b - 4.0 * a * c
+    if disc < 0.0:
+        return None
+    sqrt_disc = disc ** 0.5
+    t0 = (-b - sqrt_disc) / (2.0 * a)
+    t1 = (-b + sqrt_disc) / (2.0 * a)
+    lo, hi = min(t0, t1), max(t0, t1)
+    if hi < 0.0 or lo > 1.0:
+        return None
+    return float(np.clip(lo, 0.0, 1.0))

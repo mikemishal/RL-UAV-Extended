@@ -245,10 +245,11 @@ def test_hostile_crossing_obstacle_is_detected():
     assert collided
 
 
-def test_collision_does_not_terminate_episode_or_alter_reward():
-    """A collision must be a pure diagnostic in Phase 2: termination and
-    reward must be identical whether or not a collision occurred, for the
-    same physical trajectory."""
+def test_collision_terminates_episode_with_dedicated_outcome_and_penalty():
+    """Journal extension, Phase 3: a physical defender/obstacle collision
+    now terminates the episode immediately with a dedicated outcome and
+    configured penalty, diverging from the no-obstacle baseline exactly at
+    the collision step (never before it)."""
     baseline_env = SoldierEnv(config=EnvConfig(defender_standby_until_detection=False))
     obstacle_env = SoldierEnv(config=_wall_config())
     baseline_env.reset(seed=1)
@@ -256,19 +257,32 @@ def test_collision_does_not_terminate_episode_or_alter_reward():
     for env in (baseline_env, obstacle_env):
         env._defender_pos = np.array([-30.0, 0.0, 2.0], dtype=np.float32)
         env._defender_vel = np.zeros(3, dtype=np.float32)
+    collided = False
     for _ in range(10):
-        _, r_base, term_base, trunc_base, _ = baseline_env.step(np.array([1.0, 0.0, 0.0], dtype=np.float32))
+        _, r_base, term_base, trunc_base, info_base = baseline_env.step(np.array([1.0, 0.0, 0.0], dtype=np.float32))
         _, r_obs, term_obs, trunc_obs, info_obs = obstacle_env.step(np.array([1.0, 0.0, 0.0], dtype=np.float32))
+        if info_obs["defender_obstacle_collision"]:
+            assert term_obs is True
+            assert info_obs["outcome"] == "defender_static_obstacle_collision"
+            assert r_obs == EnvConfig().reward_defender_static_obstacle_collision
+            collided = True
+            break
+        # Before the collision step, the obstacle's mere presence (with no
+        # avoidance/reaction) must not alter reward/termination at all.
         assert r_base == r_obs
         assert term_base == term_obs
         assert trunc_base == trunc_obs
         if term_base or trunc_base:
             break
+    assert collided  # the scenario is specifically constructed to collide
 
 
-def test_collision_does_not_modify_trajectory():
-    """Positions/velocities must be identical to the no-obstacle baseline
-    even while a collision is being flagged (Phase 2 never blocks motion)."""
+def test_collision_clamps_position_instead_of_passing_through():
+    """Journal extension, Phase 3/7: the defender must not be reported as
+    having flown past/through the obstacle -- its position is clamped to
+    the first physical contact point, strictly before the no-obstacle
+    baseline's position at that same step (which has already crossed the
+    wall's footprint)."""
     baseline_env = SoldierEnv(config=EnvConfig(defender_standby_until_detection=False))
     obstacle_env = SoldierEnv(config=_wall_config())
     baseline_env.reset(seed=1)
@@ -279,8 +293,14 @@ def test_collision_does_not_modify_trajectory():
     for _ in range(10):
         _, _, term_base, trunc_base, info_base = baseline_env.step(np.array([1.0, 0.0, 0.0], dtype=np.float32))
         _, _, term_obs, trunc_obs, info_obs = obstacle_env.step(np.array([1.0, 0.0, 0.0], dtype=np.float32))
-        assert np.array_equal(info_base["defender_pos"], info_obs["defender_pos"])
-        assert np.array_equal(info_base["defender_vel"], info_obs["defender_vel"])
+        if info_obs["defender_obstacle_collision"]:
+            # Wall spans x in [-15, -5]; the defender must be clamped at
+            # (or before) the near face x=-15, strictly short of the
+            # no-obstacle baseline's position at this same step.
+            assert info_obs["defender_pos"][0] <= -15.0 + 1e-6
+            assert info_obs["defender_pos"][0] < info_base["defender_pos"][0]
+            assert np.array_equal(info_obs["defender_vel"], np.zeros(3, dtype=np.float32))
+            break
         if term_base or trunc_base:
             break
 

@@ -288,8 +288,16 @@ def test_persistence_prevents_oscillation_and_releases_then_resumes_pursuit():
 # --- 14. Avoidance disabled reproduces the pre-obstacle hostile trajectory --
 
 def test_avoidance_disabled_matches_no_obstacle_hostile_trajectory():
+    """With avoidance disabled, the reactive-avoidance code path
+    contributes nothing: the hostile's trajectory matches the no-obstacle
+    baseline bit-for-bit RIGHT UP UNTIL a physical ground-truth collision
+    occurs (journal extension, Phase 3/4: a collision now clamps position
+    and terminates the episode, so the two trajectories necessarily
+    diverge starting at the collision step -- that divergence is the
+    expected, intended new behavior, not a regression)."""
     no_obstacle_cfg = EnvConfig(defender_standby_until_detection=False)
     obstacles_present_avoidance_off_cfg = _building_config(enemy_obstacle_avoidance_enabled=False)
+    collided_any_seed = False
     for seed in (0, 1, 5):
         env_a = SoldierEnv(config=no_obstacle_cfg)
         env_b = SoldierEnv(config=obstacles_present_avoidance_off_cfg)
@@ -305,10 +313,22 @@ def test_avoidance_disabled_matches_no_obstacle_hostile_trajectory():
             _, _, term_a, trunc_a, info_a = env_a.step(np.zeros(3, dtype=np.float32))
             _, _, term_b, trunc_b, info_b = env_b.step(np.zeros(3, dtype=np.float32))
             assert info_b["enemy_obstacle_avoidance_active"] is False
+            if info_b["enemy_obstacle_collision"]:
+                # Physical collision: trajectories now legitimately diverge
+                # (position clamped to the contact point, episode
+                # terminated) -- this is the new intended behavior.
+                assert info_b["outcome"] == "enemy_static_obstacle_collision"
+                assert term_b is True
+                collided_any_seed = True
+                break
             assert np.array_equal(info_a["enemy_pos"], info_b["enemy_pos"])
             assert np.array_equal(info_a["enemy_vel"], info_b["enemy_vel"])
             if term_a or trunc_a:
                 break
+    # The stochastic weave means not every seed is guaranteed to cross the
+    # obstacle's footprint within 30 steps -- but at least one of these
+    # three must, or the scenario isn't exercising the new behavior at all.
+    assert collided_any_seed
 
 
 # --- 15. Obstacles disabled reproduces conference behavior exactly --------

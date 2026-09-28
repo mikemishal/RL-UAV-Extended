@@ -30,6 +30,7 @@ from uav_defend.obstacles.dynamic import (
     dynamic_obstacle_threatens,
     generate_dynamic_obstacles,
     step_dynamic_obstacles,
+    swept_sphere_vs_sphere_first_contact,
     swept_sphere_vs_sphere_min_distance,
 )
 from uav_defend.obstacles.perception import EnemyObstaclePerception, PerceivedObstacleSet
@@ -451,10 +452,23 @@ class SoldierEnv(gym.Env):
         self._enemy_dynamic_ever_collided: bool = False
         self._enemy_was_in_dynamic_collision: bool = False
         self._defender_dynamic_obstacle_collision: bool = False
+        self._defender_collision_obstacle_id: int | None = None
         self._defender_min_dynamic_obstacle_clearance: float = float("inf")
         self._defender_dynamic_collision_count: int = 0
         self._defender_dynamic_ever_collided: bool = False
         self._defender_was_in_dynamic_collision: bool = False
+
+        # Physical-collision termination diagnostics (journal extension,
+        # Phase 3/4): the entity's FIRST contact this step (static or
+        # dynamic, whichever is earlier -- see step()), used to terminate
+        # the episode and clamp position/velocity at the contact point.
+        # None/0.0/None whenever no physical collision occurred this step.
+        self._defender_collision_event_type: str | None = None
+        self._defender_collision_event_point: np.ndarray | None = None
+        self._defender_collision_event_speed: float = 0.0
+        self._enemy_collision_event_type: str | None = None
+        self._enemy_collision_event_point: np.ndarray | None = None
+        self._enemy_collision_event_speed: float = 0.0
         
         # Kalman filter for enemy tracking (initialized on first detection)
         self._kf: EnemyKalmanFilter | None = None
@@ -666,10 +680,20 @@ class SoldierEnv(gym.Env):
         self._enemy_dynamic_ever_collided = False
         self._enemy_was_in_dynamic_collision = False
         self._defender_dynamic_obstacle_collision = False
+        self._defender_collision_obstacle_id = None
         self._defender_min_dynamic_obstacle_clearance = self._dynamic_min_clearance(self._defender_pos)
         self._defender_dynamic_collision_count = 0
         self._defender_dynamic_ever_collided = False
         self._defender_was_in_dynamic_collision = False
+
+        # Reset physical-collision-event diagnostics (journal extension,
+        # Phase 3/4).
+        self._defender_collision_event_type = None
+        self._defender_collision_event_point = None
+        self._defender_collision_event_speed = 0.0
+        self._enemy_collision_event_type = None
+        self._enemy_collision_event_point = None
+        self._enemy_collision_event_speed = 0.0
         
         # Reset per-step dynamics diagnostics (see _advance_velocity)
         self._defender_dynamics_info = {
@@ -922,9 +946,11 @@ class SoldierEnv(gym.Env):
             controller_action_executed = True
 
         # Swept-motion obstacle-collision diagnostics (journal extension,
-        # Phase 2). DIAGNOSTIC ONLY: does not stop movement, modify
-        # position/velocity, terminate the episode, or alter reward -- see
-        # module-level design notes in uav_defend/obstacles/.
+        # Phase 2). Starting with the physical-collision-semantics phase
+        # (Phase 3/4/6/7 below), a detected collision is no longer purely
+        # diagnostic: it clamps the colliding entity's position to its
+        # first physical-contact point and terminates the episode -- see
+        # the precedence block after distance computation, below.
         #
         # Phase-2 semantic fix: while the defender is held in pre-detection
         # standby (controller_action_executed=False), synchronizing its
@@ -957,8 +983,9 @@ class SoldierEnv(gym.Env):
 
         # Collision EVENT counting: only an "outside -> collision" transition
         # increments the count. An entity that remains inside/overlapping an
-        # obstacle across multiple steps (possible in Phase 2 since motion is
-        # never blocked) is counted once, not once per step.
+        # obstacle across multiple steps (possible if a caller keeps
+        # stepping past a collision-terminated episode) is counted once,
+        # not once per step.
         if self._defender_obstacle_collision and not self._defender_was_in_collision:
             self._defender_collision_count += 1
             self._defender_ever_collided = True
@@ -969,27 +996,45 @@ class SoldierEnv(gym.Env):
         self._enemy_was_in_collision = self._enemy_obstacle_collision
 
         # Dynamic-obstacle swept collision diagnostics (journal extension).
-        # ACTUAL (not predicted) per-step collision: DIAGNOSTIC ONLY, same
-        # never-blocking/never-terminal convention as the static case.
+        # ACTUAL (not predicted) per-step collision. Tracks the EARLIEST
+        # dynamic-obstacle first-contact time/point per mover (Phase 6/7:
+        # first-event-wins), for comparison against the static contact time
+        # below.
         self._enemy_min_dynamic_obstacle_clearance = self._dynamic_min_clearance(self._enemy_pos)
         self._defender_min_dynamic_obstacle_clearance = self._dynamic_min_clearance(self._defender_pos)
         enemy_dynamic_collision = False
         enemy_collision_obstacle_id = None
+        enemy_dynamic_hit_t: float | None = None
+        enemy_dynamic_hit_point: np.ndarray | None = None
         defender_dynamic_collision = False
+        defender_collision_obstacle_id = None
+        defender_dynamic_hit_t: float | None = None
+        defender_dynamic_hit_point: np.ndarray | None = None
         for obs_prev, obs in zip(dynamic_obstacles_prev, self._dynamic_obstacles):
-            if swept_sphere_vs_sphere_min_distance(
-                enemy_prev_pos, self._enemy_pos, obs_prev.position, obs.position
-            ) <= obs.radius:
+            enemy_t_hit = swept_sphere_vs_sphere_first_contact(
+                enemy_prev_pos, self._enemy_pos, obs_prev.position, obs.position, obs.radius
+            )
+            if enemy_t_hit is not None:
                 enemy_dynamic_collision = True
-                enemy_collision_obstacle_id = obs.id
-            if swept_sphere_vs_sphere_min_distance(
-                defender_prev_pos, self._defender_pos, obs_prev.position, obs.position
-            ) <= obs.radius:
+                if enemy_dynamic_hit_t is None or enemy_t_hit < enemy_dynamic_hit_t:
+                    enemy_dynamic_hit_t = enemy_t_hit
+                    enemy_dynamic_hit_point = enemy_prev_pos + enemy_t_hit * (self._enemy_pos - enemy_prev_pos)
+                    enemy_collision_obstacle_id = obs.id
+            defender_t_hit = swept_sphere_vs_sphere_first_contact(
+                defender_prev_pos, self._defender_pos, obs_prev.position, obs.position, obs.radius
+            )
+            if defender_t_hit is not None:
                 defender_dynamic_collision = True
+                if defender_dynamic_hit_t is None or defender_t_hit < defender_dynamic_hit_t:
+                    defender_dynamic_hit_t = defender_t_hit
+                    defender_dynamic_hit_point = defender_prev_pos + defender_t_hit * (self._defender_pos - defender_prev_pos)
+                    defender_collision_obstacle_id = obs.id
         self._enemy_dynamic_obstacle_collision = enemy_dynamic_collision
         if enemy_dynamic_collision:
             self._enemy_collision_obstacle_id = enemy_collision_obstacle_id
         self._defender_dynamic_obstacle_collision = defender_dynamic_collision
+        if defender_dynamic_collision:
+            self._defender_collision_obstacle_id = defender_collision_obstacle_id
         if enemy_dynamic_collision and not self._enemy_was_in_dynamic_collision:
             self._enemy_dynamic_collision_count += 1
             self._enemy_dynamic_ever_collided = True
@@ -999,9 +1044,55 @@ class SoldierEnv(gym.Env):
             self._defender_dynamic_ever_collided = True
         self._defender_was_in_dynamic_collision = defender_dynamic_collision
 
+        # Physical-collision termination (journal extension, Phase 3/4/6/7):
+        # for each mover independently, compare the static entry time
+        # against the dynamic first-contact time and keep whichever is
+        # EARLIER (first-event-wins) as that mover's collision event this
+        # step. The colliding mover's position is clamped to its
+        # first-contact point (never left past the obstacle surface) and
+        # its velocity zeroed; see the outcome precedence block below for
+        # how this terminates the episode.
+        self._defender_collision_event_type = None
+        self._defender_collision_event_point = None
+        self._defender_collision_event_speed = 0.0
+        self._enemy_collision_event_type = None
+        self._enemy_collision_event_point = None
+        self._enemy_collision_event_speed = 0.0
+
+        defender_static_t = defender_collision.t_enter if defender_collision.intersects else None
+        if defender_static_t is not None and (
+            defender_dynamic_hit_t is None or defender_static_t <= defender_dynamic_hit_t
+        ):
+            self._defender_collision_event_type = "static"
+            self._defender_collision_event_point = defender_collision.point
+        elif defender_dynamic_hit_t is not None:
+            self._defender_collision_event_type = "dynamic"
+            self._defender_collision_event_point = defender_dynamic_hit_point
+
+        enemy_static_t = enemy_collision.t_enter if enemy_collision.intersects else None
+        if enemy_static_t is not None and (
+            enemy_dynamic_hit_t is None or enemy_static_t <= enemy_dynamic_hit_t
+        ):
+            self._enemy_collision_event_type = "static"
+            self._enemy_collision_event_point = enemy_collision.point
+        elif enemy_dynamic_hit_t is not None:
+            self._enemy_collision_event_type = "dynamic"
+            self._enemy_collision_event_point = enemy_dynamic_hit_point
+
+        if self._defender_collision_event_type is not None:
+            self._defender_collision_event_speed = float(np.linalg.norm(self._defender_vel))
+            self._defender_pos = self._defender_collision_event_point.astype(np.float32)
+            self._defender_vel = np.zeros(3, dtype=np.float32)
+        if self._enemy_collision_event_type is not None:
+            self._enemy_collision_event_speed = float(np.linalg.norm(self._enemy_vel))
+            self._enemy_pos = self._enemy_collision_event_point.astype(np.float32)
+            self._enemy_vel = np.zeros(3, dtype=np.float32)
+
         self._step_count += 1
         
-        # Calculate distances
+        # Calculate distances (uses the post-clamp position on a collision
+        # step; irrelevant to the outcome in that case since the collision
+        # precedence branch below wins regardless of these values).
         enemy_soldier_dist = np.linalg.norm(self._enemy_pos - self._soldier_pos)
         defender_enemy_dist = np.linalg.norm(self._defender_pos - self._enemy_pos)
         defender_soldier_dist = np.linalg.norm(self._defender_pos - self._soldier_pos)
@@ -1025,54 +1116,83 @@ class SoldierEnv(gym.Env):
         # LOSS: Unsafe intercept (caught enemy but too close to soldier - collateral risk)
         unsafe_intercept = can_intercept and unsafe_zone and not soldier_caught
         
-        # Episode terminates on any terminal condition or timeout
-        terminated = intercepted or soldier_caught or unsafe_intercept or (self._step_count >= self.config.max_steps)
         truncated = False
-        
-        # Determine outcome and reward
-        if soldier_caught:
-            # Check soldier_caught FIRST (highest priority failure)
-            outcome = "soldier_caught"
-            reward = self.config.reward_soldier_caught  # LOSS
-        elif unsafe_intercept:
-            # Unsafe intercept: caught enemy but too close to soldier
-            outcome = "unsafe_intercept"
-            reward = self.config.reward_unsafe_intercept  # LOSS
-        elif intercepted:
-            # Safe intercept (WIN)
-            outcome = "intercepted"
-            reward = self.config.reward_intercept  # WIN
-        elif self._step_count >= self.config.max_steps:
-            outcome = "timeout"
-            reward = self.config.reward_timeout  # LOSS (failed to intercept)
+
+        # Step-order precedence (journal extension, Phase 6): a physical
+        # obstacle collision this step takes priority over EVERY
+        # mission-geometry outcome that would otherwise also be true this
+        # same step (e.g. a defender that clips a wall exactly as it
+        # reaches interception range has crashed, not intercepted; a
+        # hostile that clips a wall exactly as it reaches the soldier has
+        # suffered an environmental failure, not "caught" the soldier).
+        # Ties between the defender's own event and the hostile's are
+        # broken in favor of the defender's event -- an explicit,
+        # documented convention (not a claim of physical earliness across
+        # the two independent movers).
+        if self._defender_collision_event_type == "static":
+            outcome = "defender_static_obstacle_collision"
+            reward = self.config.reward_defender_static_obstacle_collision
+            terminated = True
+        elif self._defender_collision_event_type == "dynamic":
+            outcome = "defender_dynamic_obstacle_collision"
+            reward = self.config.reward_defender_dynamic_obstacle_collision
+            terminated = True
+        elif self._enemy_collision_event_type == "static":
+            outcome = "enemy_static_obstacle_collision"
+            reward = self.config.reward_enemy_static_obstacle_collision
+            terminated = True
+        elif self._enemy_collision_event_type == "dynamic":
+            outcome = "enemy_dynamic_obstacle_collision"
+            reward = self.config.reward_enemy_dynamic_obstacle_collision
+            terminated = True
         else:
-            outcome = "ongoing"
-            reward = 0.0
-            
-            # 1. Progress reward: positive for closing distance to enemy (using TRUE position)
-            progress = self._prev_defender_enemy_dist - dist_de
-            reward += self.config.reward_progress_scale * progress
-            
-            # 2. Small time penalty (encourages efficiency)
-            reward += self.config.reward_time_penalty
-            
-            # 3. Proximity warning: penalty when enemy gets close to soldier
-            # Scaled by how close enemy is (inverse distance)
-            proximity_threshold = self.config.unsafe_intercept_radius * 3.0  # ~10.5 units
-            if dist_es < proximity_threshold:
-                # Stronger penalty as enemy gets closer
-                proximity_factor = 1.0 - (dist_es / proximity_threshold)
-                reward += self.config.reward_proximity_warning * proximity_factor
-            
-            # NOTE: no hidden reward clipping. The executed ongoing reward is
-            # exactly r_t = reward_progress_scale*(d_{t-1}-d_t) + reward_time_penalty
-            # + proximity term. This is identical for Direct and Kalman tracks
-            # -- neither track receives a Kalman-only tracking-error reward
-            # (tracking error remains an EVALUATION metric only, see
-            # info["tracking_error"]). During standby, action-independence
-            # follows automatically: dist_de/dist_es evolve purely from the
-            # soldier/hostile motion models, so this reward term cannot be
-            # influenced by the (discarded) supplied action.
+            # Episode terminates on any terminal condition or timeout
+            terminated = intercepted or soldier_caught or unsafe_intercept or (self._step_count >= self.config.max_steps)
+
+            # Determine outcome and reward
+            if soldier_caught:
+                # Check soldier_caught FIRST (highest priority failure)
+                outcome = "soldier_caught"
+                reward = self.config.reward_soldier_caught  # LOSS
+            elif unsafe_intercept:
+                # Unsafe intercept: caught enemy but too close to soldier
+                outcome = "unsafe_intercept"
+                reward = self.config.reward_unsafe_intercept  # LOSS
+            elif intercepted:
+                # Safe intercept (WIN)
+                outcome = "intercepted"
+                reward = self.config.reward_intercept  # WIN
+            elif self._step_count >= self.config.max_steps:
+                outcome = "timeout"
+                reward = self.config.reward_timeout  # LOSS (failed to intercept)
+            else:
+                outcome = "ongoing"
+                reward = 0.0
+                
+                # 1. Progress reward: positive for closing distance to enemy (using TRUE position)
+                progress = self._prev_defender_enemy_dist - dist_de
+                reward += self.config.reward_progress_scale * progress
+                
+                # 2. Small time penalty (encourages efficiency)
+                reward += self.config.reward_time_penalty
+                
+                # 3. Proximity warning: penalty when enemy gets close to soldier
+                # Scaled by how close enemy is (inverse distance)
+                proximity_threshold = self.config.unsafe_intercept_radius * 3.0  # ~10.5 units
+                if dist_es < proximity_threshold:
+                    # Stronger penalty as enemy gets closer
+                    proximity_factor = 1.0 - (dist_es / proximity_threshold)
+                    reward += self.config.reward_proximity_warning * proximity_factor
+                
+                # NOTE: no hidden reward clipping. The executed ongoing reward is
+                # exactly r_t = reward_progress_scale*(d_{t-1}-d_t) + reward_time_penalty
+                # + proximity term. This is identical for Direct and Kalman tracks
+                # -- neither track receives a Kalman-only tracking-error reward
+                # (tracking error remains an EVALUATION metric only, see
+                # info["tracking_error"]). During standby, action-independence
+                # follows automatically: dist_de/dist_es evolve purely from the
+                # soldier/hostile motion models, so this reward term cannot be
+                # influenced by the (discarded) supplied action.
         
         # Update previous distance for next step
         self._prev_defender_enemy_dist = defender_enemy_dist
@@ -2213,10 +2333,35 @@ class SoldierEnv(gym.Env):
             "enemy_dynamic_obstacle_collision": self._enemy_dynamic_obstacle_collision,
             "defender_dynamic_obstacle_collision": self._defender_dynamic_obstacle_collision,
             "enemy_collision_obstacle_id": self._enemy_collision_obstacle_id,
+            "defender_collision_obstacle_id": self._defender_collision_obstacle_id,
             "enemy_dynamic_collision_count": self._enemy_dynamic_collision_count,
             "defender_dynamic_collision_count": self._defender_dynamic_collision_count,
             "enemy_dynamic_ever_collided": self._enemy_dynamic_ever_collided,
             "defender_dynamic_ever_collided": self._defender_dynamic_ever_collided,
+            # Physical-collision-event diagnostics (journal extension,
+            # Phase 3/4): the entity's FIRST contact THIS STEP (None if no
+            # physical collision occurred this step -- see step() for the
+            # static-vs-dynamic first-event-wins precedence). Distinct from
+            # the ever/count fields above, which persist across the whole
+            # episode.
+            "defender_collision_event_type": self._defender_collision_event_type,
+            "defender_collision_event_point": (
+                self._defender_collision_event_point.copy()
+                if self._defender_collision_event_point is not None else None
+            ),
+            "defender_collision_event_speed": self._defender_collision_event_speed,
+            "defender_collision_event_step": (
+                self._step_count if self._defender_collision_event_type is not None else None
+            ),
+            "enemy_collision_event_type": self._enemy_collision_event_type,
+            "enemy_collision_event_point": (
+                self._enemy_collision_event_point.copy()
+                if self._enemy_collision_event_point is not None else None
+            ),
+            "enemy_collision_event_speed": self._enemy_collision_event_speed,
+            "enemy_collision_event_step": (
+                self._step_count if self._enemy_collision_event_type is not None else None
+            ),
             # Attacker perception/awareness diagnostics (journal extension;
             # see uav_defend/obstacles/perception.py). NEVER exposed to any
             # defender controller/observation -- ground-truth collision

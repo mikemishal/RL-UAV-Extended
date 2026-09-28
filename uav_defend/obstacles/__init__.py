@@ -32,6 +32,7 @@ from uav_defend.obstacles.dynamic import (
     dynamic_obstacle_threatens,
     generate_dynamic_obstacles,
     step_dynamic_obstacles,
+    swept_sphere_vs_sphere_first_contact,
     swept_sphere_vs_sphere_min_distance,
 )
 from uav_defend.obstacles.perception import (
@@ -67,6 +68,7 @@ __all__ = [
     "dynamic_obstacle_swept_aabb",
     "dynamic_obstacle_threatens",
     "swept_sphere_vs_sphere_min_distance",
+    "swept_sphere_vs_sphere_first_contact",
     "VALID_AWARENESS_MODES",
     "EnemyObstaclePerception",
     "PerceivedStaticObstacle",

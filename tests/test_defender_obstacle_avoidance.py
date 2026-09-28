@@ -74,17 +74,24 @@ def test_no_op_when_no_obstacle_conflict():
 def test_obstacle_ahead_triggers_collision_free_modification():
     base = EnvConfig()
     obstacle_center = np.array([10.0, 0.0, 5.0])
+    spec = _safe_fixed_spec(obstacle_center, 5.0, 5.0, base)
+    cx, cy, cz, hx, hy, hz = spec
     config = EnvConfig(
         obstacles_enabled=True, obstacle_layout_mode="fixed",
-        obstacle_fixed_spec=(_safe_fixed_spec(obstacle_center, 5.0, 5.0, base),),
+        obstacle_fixed_spec=(spec,),
         defender_obstacle_avoidance_enabled=True, defender_obstacle_awareness_mode="local",
+        # Journal extension (physical collision semantics): the enemy must
+        # ALSO avoid this shared obstacle, or it may physically collide and
+        # end the episode before the defender's own avoidance scenario is
+        # exercised.
+        enemy_obstacle_avoidance_enabled=True, enemy_obstacle_awareness_mode="map_local",
         defender_standby_until_detection=False,
     )
     history = _run_with_policy(config, GreedyInterceptPolicy(), seed=3, max_steps=200)
     assert any(h["defender_avoidance_active"] for h in history)
     for h in history:
         pos = h["defender_pos"]
-        inside = (5.0 <= pos[0] <= 15.0) and (-5.0 <= pos[1] <= 5.0) and (0.0 <= pos[2] <= 10.0)
+        inside = (cx - hx <= pos[0] <= cx + hx) and (cy - hy <= pos[1] <= cy + hy) and (cz - hz <= pos[2] <= cz + hz)
         assert not inside
 
 
@@ -189,9 +196,27 @@ def test_rmpc_also_uses_the_same_safety_layer():
         defender_obstacle_avoidance_enabled=True, defender_obstacle_awareness_mode="local",
         defender_standby_until_detection=False,
     )
+    env = SoldierEnv(config=config)
     policy = RMPCPolicy(config=config, rmpc_config=RMPCConfig(enable_timing=False))
-    history = _run_with_policy(config, policy, seed=3, max_steps=15)
+    obs, info = env.reset(seed=3)
+    # Deterministic close-range placement (bypassing organic pursuit
+    # timing/direction, which now differs once the enemy's own avoidance
+    # is exercised elsewhere) so RMPC reliably needs to cross the obstacle
+    # within the small step budget RMPC's cost requires.
+    env._defender_pos = np.array([0.0, 0.0, 5.0], dtype=np.float32)
+    env._defender_vel = np.zeros(3, dtype=np.float32)
+    env._enemy_pos = np.array([25.0, 0.0, 5.0], dtype=np.float32)
+    env._enemy_vel = np.zeros(3, dtype=np.float32)
+    policy.reset()
+    history = [info]
+    for _ in range(15):
+        action = np.asarray(policy.act(obs, build_policy_info(info, "measurement")), dtype=np.float32)
+        obs, reward, term, trunc, info = env.step(action)
+        history.append(info)
+        if term or trunc:
+            break
     assert any(h["defender_avoidance_active"] for h in history)
+
 
 
 def test_c0_defender_default_disabled_matches_legacy_behavior():
@@ -207,18 +232,32 @@ def test_c0_defender_default_disabled_matches_legacy_behavior():
         np.testing.assert_allclose(ha["defender_pos"], hb["defender_pos"], atol=1e-9)
 
 
-def test_obstacle_collisions_remain_diagnostic_only_never_terminal():
-    """Phase 21: ground-truth obstacle collisions must never affect
-    episode outcome/termination -- only interception geometry does."""
+def test_obstacle_collision_terminates_immediately_with_dedicated_outcome():
+    """Physical-collision-semantics phase: forcing a straight-line
+    collision (avoidance disabled) must terminate the episode on the FIRST
+    colliding step, with a dedicated outcome distinct from every prior
+    "ongoing" step, and never misclassified as interception/timeout/
+    unsafe_intercept/soldier_caught."""
     config = EnvConfig(
         obstacles_enabled=True, obstacle_layout_mode="fixed",
-        obstacle_fixed_spec=(_safe_fixed_spec(np.array([0.0, 0.0, 10.0]), 20.0, 9.0, EnvConfig()),),
+        obstacle_fixed_spec=(_safe_fixed_spec(np.array([0.0, 0.0, 10.0]), 15.0, 5.0, EnvConfig()),),
         defender_obstacle_avoidance_enabled=False,  # force straight-line collisions
         defender_standby_until_detection=False,
     )
-    history = _run_with_policy(config, GreedyInterceptPolicy(), seed=11, max_steps=300)
-    outcomes = {h["outcome"] for h in history[:-1]}
-    assert outcomes <= {"ongoing"}  # never terminated early just from a collision
+    env = SoldierEnv(config=config)
+    obs, info = env.reset(seed=11)
+    # Place the defender just outside the obstacle, driving it straight in.
+    env._defender_pos = np.array([-20.0, 0.0, 10.0], dtype=np.float32)
+    env._defender_vel = np.zeros(3, dtype=np.float32)
+    outcomes = []
+    for _ in range(50):
+        _, _, term, trunc, info = env.step(np.array([1.0, 0.0, 0.0], dtype=np.float32))
+        outcomes.append(info["outcome"])
+        if term or trunc:
+            break
+    assert set(outcomes[:-1]) <= {"ongoing"}  # collision-free until the final step
+    assert outcomes[-1] == "defender_static_obstacle_collision"
+
 
 
 def test_seed_reproducibility():
