@@ -115,11 +115,43 @@ def build_lr_ppo_clutter_env(
     residual_max_angle_deg: float = DEFAULT_RESIDUAL_MAX_ANGLE_DEG,
     spec: SectorObservationSpec = SECTOR_OBSERVATION_V1,
 ) -> gym.Env:
-    """The canonical LR-PPO obstacle-aware clutter training environment
+    """The canonical LR-PPO obstacle-aware clutter TRAINING environment
     (Phase 10/11): randomized clutter (Phase 14) + sector features
     (Phase 5-9), Lead+residual composition and theta_max UNCHANGED."""
     base_config = build_randomized_training_config(np.random.default_rng(root_seed), "measurement")
     env = LeadResidualClutterTrainingEnv(
         config=base_config, root_seed=root_seed, residual_max_angle_deg=residual_max_angle_deg,
+    )
+    return LRPPOSectorObservationWrapper(env, spec=spec)
+
+
+def build_lr_ppo_clutter_eval_env(
+    fixed_config: EnvConfig,
+    root_seed: int,
+    residual_max_angle_deg: float = DEFAULT_RESIDUAL_MAX_ANGLE_DEG,
+    spec: SectorObservationSpec = SECTOR_OBSERVATION_V1,
+) -> gym.Env:
+    """FIXED-clutter-config counterpart of `build_lr_ppo_clutter_env`, for
+    held-out evaluation at a specific canonical clutter level (C1/C2/C3).
+
+    Bug found and fixed during Phase 15-17 (journal extension scale-up
+    sub-task): `build_lr_ppo_clutter_env` ALWAYS resamples the obstacle
+    config every episode (via `LeadResidualClutterTrainingEnv`'s
+    `_RandomizedClutterPostDetectionTrainingEnv._next_episode_seed()`
+    override) -- there was no way to evaluate LR-PPO at a FIXED canonical
+    clutter level, unlike `build_ppo_clutter_env(..., randomized=False,
+    fixed_config=...)` used for PPO/PPO-Kalman. That meant
+    `evaluate_clutter_trained`'s LR-PPO arm was silently evaluating the
+    SAME randomized-clutter distribution for every "C1"/"C2"/"C3" label,
+    making its level-based comparison meaningless. This function uses the
+    PLAIN (non-randomizing) `LeadResidualTrainingEnv` with the caller's
+    fixed config instead of the `LeadResidualClutterTrainingEnv` subclass,
+    giving genuinely fixed-clutter-level held-out evaluation while still
+    using the SAME Lead+residual composition, theta_max bound, and sector
+    observation wrapper as training."""
+    from experiments.lead_residual_training_env import LeadResidualTrainingEnv
+
+    env = LeadResidualTrainingEnv(
+        config=fixed_config, root_seed=root_seed, residual_max_angle_deg=residual_max_angle_deg,
     )
     return LRPPOSectorObservationWrapper(env, spec=spec)

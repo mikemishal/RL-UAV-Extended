@@ -43,7 +43,7 @@ def main() -> dict:
     print(f"=== PPO clutter diagnostic (seed {seed_ppo}) ===", flush=True)
     results["ppo_clutter_v1"] = run_clutter_training(
         architecture="ppo_clutter_v1",
-        env_fn=lambda: build_ppo_clutter_env("measurement"),
+        env_fn=lambda worker_seed: build_ppo_clutter_env("measurement"),
         seed=seed_ppo,
         output_dir=OUT_ROOT / "ppo_clutter_v1" / f"seed_{seed_ppo}",
         total_timesteps=DIAGNOSTIC_TOTAL_TIMESTEPS,
@@ -58,7 +58,7 @@ def main() -> dict:
     print(f"=== PPO-Kalman clutter diagnostic (seed {seed_ppok}) ===", flush=True)
     results["ppo_kalman_clutter_v1"] = run_clutter_training(
         architecture="ppo_kalman_clutter_v1",
-        env_fn=lambda: build_ppo_clutter_env("kalman"),
+        env_fn=lambda worker_seed: build_ppo_clutter_env("kalman"),
         seed=seed_ppok,
         output_dir=OUT_ROOT / "ppo_kalman_clutter_v1" / f"seed_{seed_ppok}",
         total_timesteps=DIAGNOSTIC_TOTAL_TIMESTEPS,
@@ -73,7 +73,7 @@ def main() -> dict:
     print(f"=== LR-PPO clutter diagnostic (seed {seed_lrppo}) ===", flush=True)
     results["lrppo_clutter_v1"] = run_clutter_training(
         architecture="lrppo_clutter_v1",
-        env_fn=lambda: build_lr_ppo_clutter_env(root_seed=seed_lrppo),
+        env_fn=lambda worker_seed: build_lr_ppo_clutter_env(root_seed=worker_seed),
         seed=seed_lrppo,
         output_dir=OUT_ROOT / "lrppo_clutter_v1" / f"seed_{seed_lrppo}",
         total_timesteps=DIAGNOSTIC_TOTAL_TIMESTEPS,

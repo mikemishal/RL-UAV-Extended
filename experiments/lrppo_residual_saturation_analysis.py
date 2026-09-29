@@ -78,5 +78,6 @@ def summarize(df: pd.DataFrame) -> dict:
 
 if __name__ == "__main__":
     path = sys.argv[1] if len(sys.argv) > 1 else "results/clutter_diagnostic_training/lrppo_clutter_v1/seed_77/best_model.zip"
-    df = run_analysis(path)
+    n_episodes = int(sys.argv[2]) if len(sys.argv) > 2 else 30
+    df = run_analysis(path, n_episodes=n_episodes)
     print(summarize(df))
