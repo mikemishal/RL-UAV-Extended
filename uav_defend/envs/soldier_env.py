@@ -16,6 +16,8 @@ Design Philosophy:
 
 from __future__ import annotations
 
+from typing import Callable
+
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
@@ -392,6 +394,18 @@ class SoldierEnv(gym.Env):
         self._enemy_evasion_clear_streak: int = self.config.enemy_obstacle_release_steps
         self._enemy_route_was_suspended: bool = False
         self._enemy_route_suspended: bool = False
+        # Adaptive Attacker v1 hook (learned tactical policy, journal
+        # extension): when set (by an external training wrapper, NEVER by
+        # SoldierEnv itself), _move_enemy() replaces its ENTIRE hand-designed
+        # tactical command (pursuit+evasion+route+weave+noise) with
+        # normalize(enemy_tactical_override()), while leaving obstacle
+        # safety/dynamics/collision (and all diagnostic fields, computed as
+        # usual from the hand-designed model for comparison purposes)
+        # completely unchanged. None (the default, set here and never
+        # touched by reset()) reproduces EXACT prior behavior -- this
+        # attribute does not exist anywhere else in the codebase yet, so no
+        # other caller can be affected.
+        self.enemy_tactical_override: Callable[[], np.ndarray] | None = None
         # Hostile obstacle-navigation diagnostics (Phase 3B). Deterministic
         # and RNG-free -- see _move_enemy()/ObstacleAvoidancePlanner.plan().
         self._enemy_obstacle_avoidance_active: bool = False
@@ -1868,6 +1882,25 @@ class SoldierEnv(gym.Env):
             u_base = u_base_raw / u_base_norm
         else:
             u_base = r_hat  # Fallback to direct pursuit
+
+        # Learned-attacker tactical override (Adaptive Attacker v1, Phase
+        # 3/8, journal extension): when set, REPLACES the entire
+        # hand-designed tactical command computed above with an
+        # externally-supplied desired direction. The diagnostic fields
+        # already captured above (_enemy_mission_command,
+        # _enemy_evasion_command, _enemy_route_command, etc.) still reflect
+        # what the hand-designed model WOULD have flown this step -- useful
+        # for scripted-vs-learned command comparison (Phase 23) at zero
+        # extra risk to the existing, unchanged code path above. Obstacle
+        # safety/dynamics/collision below are UNCHANGED and always apply to
+        # whichever u_base is in effect. Falls back to the hand-designed
+        # u_base (rather than producing NaN/degenerate motion) if the
+        # override returns a near-zero vector.
+        if self.enemy_tactical_override is not None:
+            override_raw = np.asarray(self.enemy_tactical_override(), dtype=np.float64)
+            override_norm = np.linalg.norm(override_raw)
+            if override_norm > eps:
+                u_base = override_raw / override_norm
 
         # Deterministic, RNG-free obstacle navigation (journal extension,
         # Phase 3B). Operates on u_base (the command the hostile would

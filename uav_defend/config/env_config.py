@@ -82,6 +82,24 @@ class EnvConfig:
     enemy_evasion_enabled: bool = True    # If False, hostile guidance reduces to pursuit + weave (no evasion)
     enemy_evasion_radius: float = 20.0    # m; 3D defender-enemy range at which evasion begins
     enemy_evasion_gain: float = 0.75      # Dimensionless relative evasion strength, lambda_e in [0, 1]
+
+    # =========================================================================
+    # Adaptive Attacker v1 defender-sensing contract (journal extension).
+    # Explicit, separate from the reactive-evasion parameters above: this
+    # field gates ONLY the defender-relative features exposed in the
+    # LEARNED attacker's OWN observation vector (see
+    # experiments/adaptive_attacker_*.py) -- it does NOT affect
+    # `_compute_enemy_evasion()`'s pre-existing, ground-truth-based reactive
+    # evasion mechanics used by the hand-designed hostile model above
+    # (audited and intentionally left unchanged; no correctness issue was
+    # found there). Below this range, the learned attacker's observation
+    # zeros out all defender-relative features (as if undetected); at or
+    # within it, exact defender-relative position/velocity/range/closing-
+    # rate are exposed (perfect measurement after detection, consistent
+    # with the existing hostile model's post-detection assumptions --
+    # Phase 7 explicitly permits this for Adaptive Attacker v1).
+    # =========================================================================
+    enemy_defender_detection_range: float = 25.0  # m; 3D range at which the LEARNED attacker's observation gains defender-relative features
     
     # RL reward shaping parameters
     # NOTE: there is no Kalman-only "tracking error improvement" reward term.
@@ -380,6 +398,10 @@ class EnvConfig:
         if not (0 <= self.enemy_evasion_gain <= 1):
             raise ValueError(
                 f"enemy_evasion_gain must be in [0, 1], got {self.enemy_evasion_gain}"
+            )
+        if self.enemy_defender_detection_range <= 0:
+            raise ValueError(
+                f"enemy_defender_detection_range must be > 0, got {self.enemy_defender_detection_range}"
             )
 
         if self.obstacle_layout_mode not in ("none", "fixed", "random"):

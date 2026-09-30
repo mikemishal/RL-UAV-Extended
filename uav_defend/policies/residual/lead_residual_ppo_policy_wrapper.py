@@ -85,9 +85,17 @@ class LeadResidualPPOPolicyWrapper:
         model = PPO.load(str(path), device=device)
         return cls(model, residual_max_angle_deg=residual_max_angle_deg, config=config, deterministic=deterministic)
 
-    def act(self, obs: np.ndarray, info: dict) -> np.ndarray:
+    def act(self, obs: np.ndarray, info: dict, extra_features: np.ndarray | None = None) -> np.ndarray:
+        """`extra_features` (journal extension, Adaptive Attacker v1): when
+        given, appended to the 19-D residual observation before
+        `model.predict()` -- required for clutter-trained LRPPO-C
+        checkpoints (39-D: 19 + 20 sector features), None (default)
+        preserves the exact original 19-D behavior for frozen conference
+        LR-PPO checkpoints."""
         lead_direction = np.asarray(self._lead_policy.act(obs, info), dtype=np.float32)
         residual_obs = build_residual_observation(obs, lead_direction)
+        if extra_features is not None:
+            residual_obs = np.concatenate([residual_obs, np.asarray(extra_features, dtype=np.float32)])
         r_raw, _ = self.model.predict(residual_obs, deterministic=self.deterministic)
         return compose_lead_residual(lead_direction, r_raw, self.residual_max_angle_deg)
 
