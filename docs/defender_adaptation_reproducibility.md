@@ -9,7 +9,7 @@ All paths below are repository-relative (never machine-specific absolute paths).
 |---|---|---|---|
 | Defender-adaptation training pipeline | `69596d8af8dc27bb080fa1eee37a38ea5090b6ef` | `journal-defender-adaptation-training-v1` | `952be4fd482f6f686122ff38f6d2782c0302ba7e` |
 | Held-out evaluation harness | `1abd7c57ab7a78d43752cfb21d3e254e2af0a548` | `journal-defender-adaptation-eval-v1` | `f2fbe7f143a70a0345bd950af65bffa422f4a6e8` |
-| Publication analysis code | `3d3e1597455c90b3424fa7837af57856b9bcd681` | `journal-defender-adaptation-results-v1` | `5b39777877dc085aecff98c093f0968e6c0eebc5` |
+| Publication analysis code | `07e187791797046a8ca24b253a8731326b733642` | `journal-defender-adaptation-results-v1` | `748e1e8864eea191176da85d79b5d14700dd8610` |
 
 Every episode record in `results/defender_adaptation_evaluation/episodes.jsonl` carries an
 `eval_code_commit` field stamped at write time via `git rev-parse HEAD`; every one of the 18
