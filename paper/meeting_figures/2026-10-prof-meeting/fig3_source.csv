@@ -1,0 +1,18 @@
+# Part A: obstacle-aware retraining recovery (frozen vs trained), LR-PPO, C1-C3
+part,level,frozen_safe_intercept_rate,trained_safe_intercept_rate,safe_intercept_rate_delta
+A_recovery,C1,0.88,0.8133333333333334,-0.0666666666666666
+A_recovery,C2,0.8866666666666667,0.8966666666666666,0.0099999999999998
+A_recovery,C3,0.77,0.8466666666666667,0.0766666666666666
+
+# Part B: D1-D0+ adaptation effect vs A1-unseen-203, LR-PPO-C, C0-C3
+part,condition,diff,ci_low,ci_high
+B_adaptation_effect,C0_canonical,-0.1266666666666666,-0.3,0.0499999999999999
+B_adaptation_effect,C1,-0.0866666666666666,-0.25,0.0499999999999999
+B_adaptation_effect,C2,-0.0933333333333333,-0.2099999999999999,0.0233333333333334
+B_adaptation_effect,C3,0.0066666666666666,-0.08,0.09
+
+# Part C: mean residual-correction angle by generation, canonical C0 (avg over 4 attacker conditions)
+part,generation,mean,std
+C_residual_angle,d0,6.940075334020959,0.20443339099643545
+C_residual_angle,d0_plus,7.869936552104855,0.18550382694482995
+C_residual_angle,d1,11.866368050185446,0.7199432293875572
