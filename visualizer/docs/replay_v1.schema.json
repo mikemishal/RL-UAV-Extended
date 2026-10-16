@@ -1,0 +1,1918 @@
+{
+  "$defs": {
+    "Checkpoint": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "minLength": 1,
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "research_relative_path": {
+          "minLength": 1,
+          "title": "Research Relative Path",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "d0_start",
+            "final",
+            "secondary_best",
+            "conference_best",
+            "attacker_best"
+          ],
+          "title": "Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "research_relative_path",
+        "sha256",
+        "role"
+      ],
+      "title": "Checkpoint",
+      "type": "object"
+    },
+    "EntityState": {
+      "additionalProperties": false,
+      "properties": {
+        "position_m": {
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Position M",
+          "type": "array"
+        },
+        "velocity_mps": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Velocity Mps"
+        }
+      },
+      "required": [
+        "position_m"
+      ],
+      "title": "EntityState",
+      "type": "object"
+    },
+    "EnvironmentSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "clutter": {
+          "enum": [
+            "C0",
+            "C1",
+            "C2",
+            "C3"
+          ],
+          "title": "Clutter",
+          "type": "string"
+        },
+        "awareness": {
+          "enum": [
+            "local",
+            "map_local"
+          ],
+          "title": "Awareness",
+          "type": "string"
+        },
+        "builder": {
+          "const": "experiments.journal_clutter_protocol.build_canonical_env_config",
+          "title": "Builder",
+          "type": "string"
+        },
+        "config": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Config",
+          "type": "object"
+        },
+        "config_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Config Sha256",
+          "type": "string"
+        },
+        "dt_s": {
+          "exclusiveMinimum": 0,
+          "title": "Dt S",
+          "type": "number"
+        }
+      },
+      "required": [
+        "clutter",
+        "awareness",
+        "builder",
+        "config",
+        "config_sha256",
+        "dt_s"
+      ],
+      "title": "EnvironmentSpec",
+      "type": "object"
+    },
+    "EpisodeSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "outcome": {
+          "enum": [
+            "intercepted",
+            "soldier_caught",
+            "unsafe_intercept",
+            "timeout",
+            "defender_static_obstacle_collision",
+            "defender_dynamic_obstacle_collision",
+            "enemy_static_obstacle_collision",
+            "enemy_dynamic_obstacle_collision"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "steps": {
+          "exclusiveMinimum": 0,
+          "title": "Steps",
+          "type": "integer"
+        },
+        "duration_s": {
+          "minimum": 0,
+          "title": "Duration S",
+          "type": "number"
+        },
+        "interception_time_s": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Interception Time S"
+        },
+        "collision_time_s": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Collision Time S"
+        },
+        "total_reward": {
+          "title": "Total Reward",
+          "type": "number"
+        }
+      },
+      "required": [
+        "outcome",
+        "steps",
+        "duration_s",
+        "total_reward"
+      ],
+      "title": "EpisodeSummary",
+      "type": "object"
+    },
+    "JsonValue": {},
+    "LRPPOGuidance": {
+      "additionalProperties": false,
+      "properties": {
+        "lead_direction": {
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Lead Direction",
+          "type": "array"
+        },
+        "residual_action": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Residual Action"
+        },
+        "residual_norm_raw": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Residual Norm Raw"
+        },
+        "residual_perpendicular": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Residual Perpendicular"
+        },
+        "residual_norm_clipped": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Residual Norm Clipped"
+        },
+        "native_adjustment_deg": {
+          "anyOf": [
+            {
+              "maximum": 30.0001,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Native Adjustment Deg"
+        },
+        "signed_horizontal_adjustment_deg": {
+          "anyOf": [
+            {
+              "maximum": 180,
+              "minimum": -180,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Signed Horizontal Adjustment Deg"
+        },
+        "max_adjustment_deg": {
+          "const": 30.0,
+          "default": 30.0,
+          "title": "Max Adjustment Deg",
+          "type": "number"
+        },
+        "near_bound": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Near Bound"
+        },
+        "near_bound_margin_deg": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Near Bound Margin Deg"
+        }
+      },
+      "required": [
+        "lead_direction"
+      ],
+      "title": "LRPPOGuidance",
+      "type": "object"
+    },
+    "LeadGuidance": {
+      "additionalProperties": false,
+      "properties": {
+        "guidance_mode": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Guidance Mode"
+        },
+        "target_position_m": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Position M"
+        },
+        "target_velocity_mps": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Velocity Mps"
+        },
+        "intercept_time_s": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Intercept Time S"
+        },
+        "intercept_point_m": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Intercept Point M"
+        },
+        "discriminant": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Discriminant"
+        }
+      },
+      "title": "LeadGuidance",
+      "type": "object"
+    },
+    "MovingObstacle": {
+      "additionalProperties": false,
+      "properties": {
+        "obstacle_id": {
+          "title": "Obstacle Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "bird",
+            "airborne_clutter"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "position_m": {
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Position M",
+          "type": "array"
+        },
+        "velocity_mps": {
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Velocity Mps",
+          "type": "array"
+        },
+        "radius_m": {
+          "exclusiveMinimum": 0,
+          "title": "Radius M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "obstacle_id",
+        "kind",
+        "position_m",
+        "velocity_mps",
+        "radius_m"
+      ],
+      "title": "MovingObstacle",
+      "type": "object"
+    },
+    "PNGuidance": {
+      "additionalProperties": false,
+      "properties": {
+        "guidance_mode": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Guidance Mode"
+        },
+        "range_m": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Range M"
+        },
+        "closing_speed_mps": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Closing Speed Mps"
+        },
+        "los_unit": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Los Unit"
+        },
+        "los_rate_radps": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Los Rate Radps"
+        },
+        "acceleration_mps2": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Acceleration Mps2"
+        }
+      },
+      "title": "PNGuidance",
+      "type": "object"
+    },
+    "PolicySelection": {
+      "additionalProperties": false,
+      "properties": {
+        "policy_id": {
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "generation": {
+          "anyOf": [
+            {
+              "enum": [
+                "conference",
+                "d0",
+                "d0_plus",
+                "d1"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Generation"
+        },
+        "training_seed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Training Seed"
+        },
+        "checkpoint": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Checkpoint"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "observation_shape": {
+          "items": {
+            "exclusiveMinimum": 0,
+            "type": "integer"
+          },
+          "title": "Observation Shape",
+          "type": "array"
+        },
+        "action_shape": {
+          "default": [
+            3
+          ],
+          "maxItems": 1,
+          "minItems": 1,
+          "prefixItems": [
+            {
+              "const": 3,
+              "type": "integer"
+            }
+          ],
+          "title": "Action Shape",
+          "type": "array"
+        },
+        "estimator": {
+          "enum": [
+            "measurement",
+            "kalman",
+            "attacker_local"
+          ],
+          "title": "Estimator",
+          "type": "string"
+        },
+        "parameters": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Parameters",
+          "type": "object"
+        }
+      },
+      "required": [
+        "policy_id",
+        "observation_shape",
+        "estimator",
+        "parameters"
+      ],
+      "title": "PolicySelection",
+      "type": "object"
+    },
+    "PolicyTelemetry": {
+      "additionalProperties": false,
+      "properties": {
+        "decision_step": {
+          "minimum": 0,
+          "title": "Decision Step",
+          "type": "integer"
+        },
+        "requested_action": {
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Requested Action",
+          "type": "array"
+        },
+        "safe_command": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Safe Command"
+        },
+        "controller_action_executed": {
+          "title": "Controller Action Executed",
+          "type": "boolean"
+        },
+        "defender_standby": {
+          "title": "Defender Standby",
+          "type": "boolean"
+        },
+        "avoidance_active": {
+          "title": "Avoidance Active",
+          "type": "boolean"
+        },
+        "avoidance_angle_deg": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Avoidance Angle Deg"
+        },
+        "executed_velocity_mps": {
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Executed Velocity Mps",
+          "type": "array"
+        },
+        "executed_acceleration_mps2": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Executed Acceleration Mps2"
+        },
+        "executed_turn_rate_degps": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Executed Turn Rate Degps"
+        },
+        "acceleration_saturated": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Acceleration Saturated"
+        },
+        "turn_saturated": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Turn Saturated"
+        },
+        "climb_saturated": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Climb Saturated"
+        },
+        "requested_horizontal_heading_deg": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Requested Horizontal Heading Deg"
+        },
+        "executed_horizontal_heading_deg": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Executed Horizontal Heading Deg"
+        },
+        "heading_change_deg": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Heading Change Deg"
+        },
+        "heading_reversal": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Heading Reversal"
+        },
+        "lrppo": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LRPPOGuidance"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "lead": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LeadGuidance"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "pn": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PNGuidance"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rmpc": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RMPCGuidance"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "unavailable_fields": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Unavailable Fields",
+          "type": "object"
+        }
+      },
+      "required": [
+        "decision_step",
+        "requested_action",
+        "controller_action_executed",
+        "defender_standby",
+        "avoidance_active",
+        "executed_velocity_mps"
+      ],
+      "title": "PolicyTelemetry",
+      "type": "object"
+    },
+    "PolicyVisible": {
+      "additionalProperties": false,
+      "properties": {
+        "estimator": {
+          "enum": [
+            "measurement",
+            "kalman"
+          ],
+          "title": "Estimator",
+          "type": "string"
+        },
+        "observation": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 16,
+          "minItems": 16,
+          "title": "Observation",
+          "type": "array"
+        },
+        "soldier_pos_m": {
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Soldier Pos M",
+          "type": "array"
+        },
+        "defender_pos_m": {
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Defender Pos M",
+          "type": "array"
+        },
+        "defender_vel_mps": {
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Defender Vel Mps",
+          "type": "array"
+        },
+        "enemy_detected": {
+          "title": "Enemy Detected",
+          "type": "boolean"
+        },
+        "enemy_measurement_m": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Enemy Measurement M"
+        },
+        "enemy_measurement_velocity_mps": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Enemy Measurement Velocity Mps"
+        },
+        "enemy_measurement_velocity_valid": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Enemy Measurement Velocity Valid"
+        },
+        "e_hat_m": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "E Hat M"
+        },
+        "v_hat_mps": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "V Hat Mps"
+        },
+        "sector_features": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "number"
+              },
+              "maxItems": 20,
+              "minItems": 20,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sector Features"
+        }
+      },
+      "required": [
+        "estimator",
+        "observation",
+        "soldier_pos_m",
+        "defender_pos_m",
+        "defender_vel_mps",
+        "enemy_detected"
+      ],
+      "title": "PolicyVisible",
+      "type": "object"
+    },
+    "PrivilegedDiagnostics": {
+      "additionalProperties": false,
+      "properties": {
+        "attacker_position_m": {
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Attacker Position M",
+          "type": "array"
+        },
+        "attacker_velocity_mps": {
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Attacker Velocity Mps",
+          "type": "array"
+        },
+        "tracking_error_m": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tracking Error M"
+        },
+        "defender_attacker_range_m": {
+          "minimum": 0,
+          "title": "Defender Attacker Range M",
+          "type": "number"
+        },
+        "attacker_asset_range_m": {
+          "minimum": 0,
+          "title": "Attacker Asset Range M",
+          "type": "number"
+        },
+        "closing_speed_mps": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Closing Speed Mps"
+        }
+      },
+      "required": [
+        "attacker_position_m",
+        "attacker_velocity_mps",
+        "defender_attacker_range_m",
+        "attacker_asset_range_m"
+      ],
+      "title": "PrivilegedDiagnostics",
+      "type": "object"
+    },
+    "RMPCGuidance": {
+      "additionalProperties": false,
+      "properties": {
+        "guidance_mode": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Guidance Mode"
+        },
+        "initialization_mode": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Initialization Mode"
+        },
+        "scenario_scores": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "number"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scenario Scores"
+        },
+        "robust_score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Robust Score"
+        },
+        "best_sequence": {
+          "anyOf": [
+            {
+              "items": {
+                "maxItems": 3,
+                "minItems": 3,
+                "prefixItems": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "type": "array"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Best Sequence"
+        },
+        "objective_evaluations": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Objective Evaluations"
+        },
+        "decision_time_s": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Decision Time S"
+        }
+      },
+      "title": "RMPCGuidance",
+      "type": "object"
+    },
+    "ReplayEpisode": {
+      "additionalProperties": false,
+      "properties": {
+        "episode_id": {
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "simulation_seed": {
+          "minimum": 0,
+          "title": "Simulation Seed",
+          "type": "integer"
+        },
+        "defender": {
+          "$ref": "#/$defs/PolicySelection"
+        },
+        "attacker": {
+          "$ref": "#/$defs/PolicySelection"
+        },
+        "environment": {
+          "$ref": "#/$defs/EnvironmentSpec"
+        },
+        "static_obstacles": {
+          "items": {
+            "$ref": "#/$defs/StaticObstacle"
+          },
+          "title": "Static Obstacles",
+          "type": "array"
+        },
+        "frames": {
+          "items": {
+            "$ref": "#/$defs/ReplayFrame"
+          },
+          "minItems": 2,
+          "title": "Frames",
+          "type": "array"
+        },
+        "events": {
+          "items": {
+            "$ref": "#/$defs/ReplayEvent"
+          },
+          "title": "Events",
+          "type": "array"
+        },
+        "summary": {
+          "$ref": "#/$defs/EpisodeSummary"
+        }
+      },
+      "required": [
+        "episode_id",
+        "simulation_seed",
+        "defender",
+        "attacker",
+        "environment",
+        "static_obstacles",
+        "frames",
+        "events",
+        "summary"
+      ],
+      "title": "ReplayEpisode",
+      "type": "object"
+    },
+    "ReplayEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "detection",
+            "interception",
+            "unsafe_interception",
+            "asset_reached",
+            "collision",
+            "timeout"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "step": {
+          "minimum": 0,
+          "title": "Step",
+          "type": "integer"
+        },
+        "time_s": {
+          "minimum": 0,
+          "title": "Time S",
+          "type": "number"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "entity": {
+          "anyOf": [
+            {
+              "enum": [
+                "defender",
+                "attacker",
+                "asset"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Entity"
+        },
+        "obstacle_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Obstacle Id"
+        },
+        "position_m": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Position M"
+        },
+        "contact_fraction": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contact Fraction"
+        }
+      },
+      "required": [
+        "kind",
+        "step",
+        "time_s",
+        "source"
+      ],
+      "title": "ReplayEvent",
+      "type": "object"
+    },
+    "ReplayFrame": {
+      "additionalProperties": false,
+      "properties": {
+        "step": {
+          "minimum": 0,
+          "title": "Step",
+          "type": "integer"
+        },
+        "time_s": {
+          "minimum": 0,
+          "title": "Time S",
+          "type": "number"
+        },
+        "defender": {
+          "$ref": "#/$defs/EntityState"
+        },
+        "attacker": {
+          "$ref": "#/$defs/EntityState"
+        },
+        "asset": {
+          "$ref": "#/$defs/EntityState"
+        },
+        "moving_obstacles": {
+          "items": {
+            "$ref": "#/$defs/MovingObstacle"
+          },
+          "title": "Moving Obstacles",
+          "type": "array"
+        },
+        "policy_visible": {
+          "$ref": "#/$defs/PolicyVisible"
+        },
+        "attacker_observation": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "number"
+              },
+              "maxItems": 36,
+              "minItems": 36,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Attacker Observation"
+        },
+        "telemetry": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PolicyTelemetry"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "privileged_diagnostics": {
+          "$ref": "#/$defs/PrivilegedDiagnostics"
+        },
+        "reward": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reward"
+        },
+        "terminated": {
+          "title": "Terminated",
+          "type": "boolean"
+        },
+        "truncated": {
+          "title": "Truncated",
+          "type": "boolean"
+        },
+        "outcome": {
+          "anyOf": [
+            {
+              "const": "ongoing",
+              "type": "string"
+            },
+            {
+              "enum": [
+                "intercepted",
+                "soldier_caught",
+                "unsafe_intercept",
+                "timeout",
+                "defender_static_obstacle_collision",
+                "defender_dynamic_obstacle_collision",
+                "enemy_static_obstacle_collision",
+                "enemy_dynamic_obstacle_collision"
+              ],
+              "type": "string"
+            }
+          ],
+          "title": "Outcome"
+        }
+      },
+      "required": [
+        "step",
+        "time_s",
+        "defender",
+        "attacker",
+        "asset",
+        "moving_obstacles",
+        "policy_visible",
+        "privileged_diagnostics",
+        "terminated",
+        "truncated",
+        "outcome"
+      ],
+      "title": "ReplayFrame",
+      "type": "object"
+    },
+    "ReplayProvenance": {
+      "additionalProperties": false,
+      "properties": {
+        "simulation_source_commit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "title": "Simulation Source Commit",
+          "type": "string"
+        },
+        "visualizer_source_commit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "title": "Visualizer Source Commit",
+          "type": "string"
+        },
+        "source_dirty": {
+          "title": "Source Dirty",
+          "type": "boolean"
+        },
+        "deterministic_inference": {
+          "const": true,
+          "default": true,
+          "title": "Deterministic Inference",
+          "type": "boolean"
+        },
+        "python_version": {
+          "title": "Python Version",
+          "type": "string"
+        },
+        "package_versions": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Package Versions",
+          "type": "object"
+        },
+        "model_device": {
+          "title": "Model Device",
+          "type": "string"
+        },
+        "registry_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Registry Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "simulation_source_commit",
+        "visualizer_source_commit",
+        "source_dirty",
+        "python_version",
+        "package_versions",
+        "model_device",
+        "registry_sha256"
+      ],
+      "title": "ReplayProvenance",
+      "type": "object"
+    },
+    "StaticObstacle": {
+      "additionalProperties": false,
+      "properties": {
+        "obstacle_id": {
+          "title": "Obstacle Id",
+          "type": "string"
+        },
+        "min_corner_m": {
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Min Corner M",
+          "type": "array"
+        },
+        "max_corner_m": {
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Max Corner M",
+          "type": "array"
+        },
+        "map_known": {
+          "title": "Map Known",
+          "type": "boolean"
+        },
+        "visual_kind": {
+          "default": "block",
+          "enum": [
+            "block",
+            "tree"
+          ],
+          "title": "Visual Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "obstacle_id",
+        "min_corner_m",
+        "max_corner_m",
+        "map_known"
+      ],
+      "title": "StaticObstacle",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "coordinate_system": {
+      "const": "simulation_xyz_z_up_m",
+      "default": "simulation_xyz_z_up_m",
+      "title": "Coordinate System",
+      "type": "string"
+    },
+    "presentation": {
+      "const": "horizontal_projection_fixed_heights",
+      "default": "horizontal_projection_fixed_heights",
+      "title": "Presentation",
+      "type": "string"
+    },
+    "provenance": {
+      "$ref": "#/$defs/ReplayProvenance"
+    },
+    "episode_count": {
+      "default": 5,
+      "enum": [
+        1,
+        3,
+        5,
+        10
+      ],
+      "title": "Episode Count",
+      "type": "integer"
+    },
+    "seed_start": {
+      "minimum": 0,
+      "title": "Seed Start",
+      "type": "integer"
+    },
+    "episodes": {
+      "items": {
+        "$ref": "#/$defs/ReplayEpisode"
+      },
+      "title": "Episodes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "provenance",
+    "seed_start",
+    "episodes"
+  ],
+  "title": "ReplayBundle",
+  "type": "object"
+}
