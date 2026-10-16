@@ -1,0 +1,90 @@
+combined dataset: 25200 episode rows across 42 cells
+
+=== D1-D0+ robustness table ===
+architecture level            dimension          setting_label  d0plus_mean  d1_mean          diff    ci_low   ci_high
+       PPO-C    C0              nominal                nominal     0.720000 0.456667 -2.633333e-01 -0.513333 -0.060000
+       PPO-C    C0 R1_measurement_noise                    low     0.690000 0.430000 -2.600000e-01 -0.450000 -0.103333
+       PPO-C    C0 R1_measurement_noise                   high     0.546667 0.593333  4.666667e-02 -0.060000  0.150000
+       PPO-C    C0  R2_detection_radius                  short     0.413333 0.336667 -7.666667e-02 -0.210000  0.040000
+       PPO-C    C0  R2_detection_radius                   long     0.603333 0.373333 -2.300000e-01 -0.480000 -0.016667
+       PPO-C    C0 R3_relative_mobility defender_disadvantaged     0.670000 0.453333 -2.166667e-01 -0.353333 -0.079917
+       PPO-C    C0 R3_relative_mobility    defender_advantaged     0.373333 0.286667 -8.666667e-02 -0.200000  0.020000
+       PPO-C    C2              nominal                nominal     0.440000 0.443333  3.333333e-03 -0.106667  0.110000
+       PPO-C    C2 R1_measurement_noise                    low     0.453333 0.356667 -9.666667e-02 -0.203333  0.010000
+       PPO-C    C2 R1_measurement_noise                   high     0.373333 0.370000 -3.333333e-03 -0.126667  0.116667
+       PPO-C    C2  R2_detection_radius                  short     0.330000 0.293333 -3.666667e-02 -0.150000  0.070000
+       PPO-C    C2  R2_detection_radius                   long     0.380000 0.323333 -5.666667e-02 -0.190000  0.070000
+       PPO-C    C2 R3_relative_mobility defender_disadvantaged     0.513333 0.413333 -1.000000e-01 -0.200000  0.000000
+       PPO-C    C2 R3_relative_mobility    defender_advantaged     0.263333 0.260000 -3.333333e-03 -0.096667  0.083417
+PPO-Kalman-C    C0              nominal                nominal     0.526667 0.713333  1.866667e-01  0.036667  0.350000
+PPO-Kalman-C    C0 R1_measurement_noise                    low     0.530000 0.720000  1.900000e-01  0.053333  0.323333
+PPO-Kalman-C    C0 R1_measurement_noise                   high     0.420000 0.640000  2.200000e-01  0.060000  0.370000
+PPO-Kalman-C    C0  R2_detection_radius                  short     0.333333 0.446667  1.133333e-01  0.030000  0.196667
+PPO-Kalman-C    C0  R2_detection_radius                   long     0.426667 0.613333  1.866667e-01  0.086667  0.290000
+PPO-Kalman-C    C0 R3_relative_mobility defender_disadvantaged     0.480000 0.653333  1.733333e-01  0.026667  0.340000
+PPO-Kalman-C    C0 R3_relative_mobility    defender_advantaged     0.236667 0.473333  2.366667e-01  0.083333  0.370000
+PPO-Kalman-C    C2              nominal                nominal     0.330000 0.496667  1.666667e-01  0.036667  0.283333
+PPO-Kalman-C    C2 R1_measurement_noise                    low     0.376667 0.480000  1.033333e-01 -0.040000  0.240000
+PPO-Kalman-C    C2 R1_measurement_noise                   high     0.346667 0.433333  8.666667e-02 -0.010000  0.183333
+PPO-Kalman-C    C2  R2_detection_radius                  short     0.273333 0.286667  1.333333e-02 -0.076667  0.106667
+PPO-Kalman-C    C2  R2_detection_radius                   long     0.343333 0.393333  5.000000e-02 -0.090000  0.193333
+PPO-Kalman-C    C2 R3_relative_mobility defender_disadvantaged     0.430000 0.573333  1.433333e-01 -0.030000  0.320000
+PPO-Kalman-C    C2 R3_relative_mobility    defender_advantaged     0.216667 0.390000  1.733333e-01  0.070000  0.273333
+    LR-PPO-C    C0              nominal                nominal     0.700000 0.573333 -1.266667e-01 -0.300000  0.050000
+    LR-PPO-C    C0 R1_measurement_noise                    low     0.800000 0.750000 -5.000000e-02 -0.196667  0.063333
+    LR-PPO-C    C0 R1_measurement_noise                   high     0.460000 0.400000 -6.000000e-02 -0.220000  0.086667
+    LR-PPO-C    C0  R2_detection_radius                  short     0.340000 0.353333  1.333333e-02 -0.066667  0.090000
+    LR-PPO-C    C0  R2_detection_radius                   long     0.606667 0.570000 -3.666667e-02 -0.150000  0.080000
+    LR-PPO-C    C0 R3_relative_mobility defender_disadvantaged     0.770000 0.780000  1.000000e-02 -0.093333  0.110000
+    LR-PPO-C    C0 R3_relative_mobility    defender_advantaged     0.686667 0.593333 -9.333333e-02 -0.216667  0.026667
+    LR-PPO-C    C2              nominal                nominal     0.740000 0.646667 -9.333333e-02 -0.210000  0.023333
+    LR-PPO-C    C2 R1_measurement_noise                    low     0.733333 0.693333 -4.000000e-02 -0.140000  0.053333
+    LR-PPO-C    C2 R1_measurement_noise                   high     0.516667 0.476667 -4.000000e-02 -0.180000  0.100000
+    LR-PPO-C    C2  R2_detection_radius                  short     0.493333 0.460000 -3.333333e-02 -0.106667  0.040000
+    LR-PPO-C    C2  R2_detection_radius                   long     0.650000 0.650000 -3.700743e-17 -0.096667  0.096667
+    LR-PPO-C    C2 R3_relative_mobility defender_disadvantaged     0.736667 0.720000 -1.666667e-02 -0.103333  0.070000
+    LR-PPO-C    C2 R3_relative_mobility    defender_advantaged     0.636667 0.603333 -3.333333e-02 -0.130000  0.066667
+
+=== Outcome decomposition (challenging conditions) ===
+           dimension          setting_label architecture level generation   n  safe_intercept  asset_reach  unsafe_intercept  timeout  defender_collision
+R1_measurement_noise                   high        PPO-C    C0    d0_plus 300        0.546667     0.433333          0.020000 0.000000            0.000000
+R1_measurement_noise                   high        PPO-C    C0         d1 300        0.593333     0.403333          0.003333 0.000000            0.000000
+R1_measurement_noise                   high        PPO-C    C2    d0_plus 300        0.373333     0.573333          0.010000 0.000000            0.020000
+R1_measurement_noise                   high        PPO-C    C2         d1 300        0.370000     0.543333          0.010000 0.000000            0.050000
+R1_measurement_noise                   high PPO-Kalman-C    C0    d0_plus 300        0.420000     0.566667          0.013333 0.000000            0.000000
+R1_measurement_noise                   high PPO-Kalman-C    C0         d1 300        0.640000     0.350000          0.010000 0.000000            0.000000
+R1_measurement_noise                   high PPO-Kalman-C    C2    d0_plus 300        0.346667     0.583333          0.006667 0.003333            0.043333
+R1_measurement_noise                   high PPO-Kalman-C    C2         d1 300        0.433333     0.503333          0.013333 0.003333            0.033333
+R1_measurement_noise                   high     LR-PPO-C    C0    d0_plus 300        0.460000     0.530000          0.010000 0.000000            0.000000
+R1_measurement_noise                   high     LR-PPO-C    C0         d1 300        0.400000     0.590000          0.010000 0.000000            0.000000
+R1_measurement_noise                   high     LR-PPO-C    C2    d0_plus 300        0.516667     0.446667          0.003333 0.000000            0.013333
+R1_measurement_noise                   high     LR-PPO-C    C2         d1 300        0.476667     0.473333          0.003333 0.000000            0.033333
+ R2_detection_radius                  short        PPO-C    C0    d0_plus 300        0.413333     0.390000          0.196667 0.000000            0.000000
+ R2_detection_radius                  short        PPO-C    C0         d1 300        0.336667     0.476667          0.186667 0.000000            0.000000
+ R2_detection_radius                  short        PPO-C    C2    d0_plus 300        0.330000     0.506667          0.126667 0.000000            0.026667
+ R2_detection_radius                  short        PPO-C    C2         d1 300        0.293333     0.576667          0.093333 0.003333            0.016667
+ R2_detection_radius                  short PPO-Kalman-C    C0    d0_plus 300        0.333333     0.480000          0.186667 0.000000            0.000000
+ R2_detection_radius                  short PPO-Kalman-C    C0         d1 300        0.446667     0.353333          0.200000 0.000000            0.000000
+ R2_detection_radius                  short PPO-Kalman-C    C2    d0_plus 300        0.273333     0.560000          0.136667 0.003333            0.016667
+ R2_detection_radius                  short PPO-Kalman-C    C2         d1 300        0.286667     0.540000          0.126667 0.003333            0.016667
+ R2_detection_radius                  short     LR-PPO-C    C0    d0_plus 300        0.340000     0.436667          0.223333 0.000000            0.000000
+ R2_detection_radius                  short     LR-PPO-C    C0         d1 300        0.353333     0.430000          0.216667 0.000000            0.000000
+ R2_detection_radius                  short     LR-PPO-C    C2    d0_plus 300        0.493333     0.373333          0.126667 0.000000            0.000000
+ R2_detection_radius                  short     LR-PPO-C    C2         d1 300        0.460000     0.400000          0.120000 0.000000            0.006667
+R3_relative_mobility defender_disadvantaged        PPO-C    C0    d0_plus 300        0.670000     0.293333          0.036667 0.000000            0.000000
+R3_relative_mobility defender_disadvantaged        PPO-C    C0         d1 300        0.453333     0.543333          0.003333 0.000000            0.000000
+R3_relative_mobility defender_disadvantaged        PPO-C    C2    d0_plus 300        0.513333     0.443333          0.016667 0.000000            0.013333
+R3_relative_mobility defender_disadvantaged        PPO-C    C2         d1 300        0.413333     0.540000          0.010000 0.000000            0.013333
+R3_relative_mobility defender_disadvantaged PPO-Kalman-C    C0    d0_plus 300        0.480000     0.506667          0.013333 0.000000            0.000000
+R3_relative_mobility defender_disadvantaged PPO-Kalman-C    C0         d1 300        0.653333     0.320000          0.026667 0.000000            0.000000
+R3_relative_mobility defender_disadvantaged PPO-Kalman-C    C2    d0_plus 300        0.430000     0.540000          0.006667 0.000000            0.013333
+R3_relative_mobility defender_disadvantaged PPO-Kalman-C    C2         d1 300        0.573333     0.383333          0.010000 0.000000            0.026667
+R3_relative_mobility defender_disadvantaged     LR-PPO-C    C0    d0_plus 300        0.770000     0.210000          0.020000 0.000000            0.000000
+R3_relative_mobility defender_disadvantaged     LR-PPO-C    C0         d1 300        0.780000     0.200000          0.020000 0.000000            0.000000
+R3_relative_mobility defender_disadvantaged     LR-PPO-C    C2    d0_plus 300        0.736667     0.243333          0.013333 0.000000            0.003333
+R3_relative_mobility defender_disadvantaged     LR-PPO-C    C2         d1 300        0.720000     0.236667          0.020000 0.000000            0.006667
+
+=== Pre-specified interaction (difference-of-differences) tests ===
+architecture level               condition_a     condition_b  diff_of_diffs    ci_low  ci_high
+PPO-Kalman-C    C0 R1_measurement_noise:high nominal:nominal       0.033333 -0.146667 0.216667
+PPO-Kalman-C    C0 R2_detection_radius:short nominal:nominal      -0.073333 -0.230000 0.090000

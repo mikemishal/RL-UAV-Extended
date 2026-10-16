@@ -1,0 +1,30 @@
+{
+  "code_base_commit": "cef02a9ceb1e4dd59454ecdbd0b9edce1f678eef",
+  "attacker": "A1-unseen-203",
+  "levels": [
+    "C0",
+    "C2"
+  ],
+  "generations": [
+    "d0_plus",
+    "d1"
+  ],
+  "eval_seed_range": [
+    200000,
+    200099
+  ],
+  "n_new_episodes": 21600,
+  "n_expected_episodes": 21600,
+  "reused_nominal": {
+    "C0": "results/defender_adaptation_canonical_c0_evaluation/episodes.csv",
+    "C2": "results/defender_adaptation_evaluation/episodes.csv"
+  },
+  "bootstrap_replicates": 10000,
+  "sha256": {
+    "episodes.jsonl": "45d1e166c401974813603f3529c8683817f64f6ade3b2339cf52f0b43a00c5b4",
+    "episodes.csv": "378d7eac01bfb9966f1c70bbefc76982612ef5d76eb4a65dddd09f487b755181",
+    "evaluation_manifest.json": "5ae1e9a55987c5e482bf3928a1ae2d26b08f2bb9a75d80656ac8ccf038f0ab36",
+    "all_operating_points_combined.csv": "c44c536de43b4adfce760c556860d90b5634e63d3f17cf2dc1e4327afbe01971"
+  },
+  "note": "Raw episode files are gitignored; verify against these hashes."
+}

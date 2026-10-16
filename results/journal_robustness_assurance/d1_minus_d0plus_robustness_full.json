@@ -1,0 +1,674 @@
+[
+  {
+    "architecture": "PPO-C",
+    "level": "C0",
+    "dimension": "nominal",
+    "setting_label": "nominal",
+    "d0plus_mean": 0.72,
+    "d1_mean": 0.45666666666666667,
+    "diff": -0.2633333333333333,
+    "ci_low": -0.5133333333333334,
+    "ci_high": -0.06000000000000005,
+    "per_seed_diffs": {
+      "71": -0.08999999999999997,
+      "72": -0.53,
+      "73": -0.16999999999999993
+    }
+  },
+  {
+    "architecture": "PPO-C",
+    "level": "C0",
+    "dimension": "R1_measurement_noise",
+    "setting_label": "low",
+    "d0plus_mean": 0.69,
+    "d1_mean": 0.43,
+    "diff": -0.26,
+    "ci_low": -0.45000000000000007,
+    "ci_high": -0.10333333333333328,
+    "per_seed_diffs": {
+      "71": -0.17000000000000004,
+      "72": -0.45,
+      "73": -0.15999999999999992
+    }
+  },
+  {
+    "architecture": "PPO-C",
+    "level": "C0",
+    "dimension": "R1_measurement_noise",
+    "setting_label": "high",
+    "d0plus_mean": 0.5466666666666666,
+    "d1_mean": 0.5933333333333334,
+    "diff": 0.04666666666666667,
+    "ci_low": -0.05999999999999994,
+    "ci_high": 0.15000000000000002,
+    "per_seed_diffs": {
+      "71": 0.050000000000000044,
+      "72": -0.010000000000000009,
+      "73": 0.09999999999999998
+    }
+  },
+  {
+    "architecture": "PPO-C",
+    "level": "C0",
+    "dimension": "R2_detection_radius",
+    "setting_label": "short",
+    "d0plus_mean": 0.41333333333333333,
+    "d1_mean": 0.33666666666666667,
+    "diff": -0.07666666666666667,
+    "ci_low": -0.21,
+    "ci_high": 0.040000000000000036,
+    "per_seed_diffs": {
+      "71": -0.04999999999999999,
+      "72": -0.19999999999999998,
+      "73": 0.019999999999999962
+    }
+  },
+  {
+    "architecture": "PPO-C",
+    "level": "C0",
+    "dimension": "R2_detection_radius",
+    "setting_label": "long",
+    "d0plus_mean": 0.6033333333333334,
+    "d1_mean": 0.37333333333333335,
+    "diff": -0.22999999999999998,
+    "ci_low": -0.48000000000000004,
+    "ci_high": -0.01666666666666672,
+    "per_seed_diffs": {
+      "71": -0.11999999999999994,
+      "72": -0.49999999999999994,
+      "73": -0.07000000000000006
+    }
+  },
+  {
+    "architecture": "PPO-C",
+    "level": "C0",
+    "dimension": "R3_relative_mobility",
+    "setting_label": "defender_disadvantaged",
+    "d0plus_mean": 0.67,
+    "d1_mean": 0.4533333333333333,
+    "diff": -0.21666666666666667,
+    "ci_low": -0.3533333333333333,
+    "ci_high": -0.07991666666666784,
+    "per_seed_diffs": {
+      "71": -0.16000000000000003,
+      "72": -0.13999999999999996,
+      "73": -0.35000000000000003
+    }
+  },
+  {
+    "architecture": "PPO-C",
+    "level": "C0",
+    "dimension": "R3_relative_mobility",
+    "setting_label": "defender_advantaged",
+    "d0plus_mean": 0.37333333333333335,
+    "d1_mean": 0.2866666666666667,
+    "diff": -0.08666666666666666,
+    "ci_low": -0.19999999999999998,
+    "ci_high": 0.020000000000000018,
+    "per_seed_diffs": {
+      "71": -0.02999999999999997,
+      "72": -0.15999999999999998,
+      "73": -0.07
+    }
+  },
+  {
+    "architecture": "PPO-C",
+    "level": "C2",
+    "dimension": "nominal",
+    "setting_label": "nominal",
+    "d0plus_mean": 0.44,
+    "d1_mean": 0.44333333333333336,
+    "diff": 0.003333333333333336,
+    "ci_low": -0.10666666666666669,
+    "ci_high": 0.10999999999999999,
+    "per_seed_diffs": {
+      "71": 0.020000000000000018,
+      "72": -0.020000000000000018,
+      "73": 0.010000000000000009
+    }
+  },
+  {
+    "architecture": "PPO-C",
+    "level": "C2",
+    "dimension": "R1_measurement_noise",
+    "setting_label": "low",
+    "d0plus_mean": 0.4533333333333333,
+    "d1_mean": 0.3566666666666667,
+    "diff": -0.09666666666666666,
+    "ci_low": -0.2033333333333333,
+    "ci_high": 0.010000000000000009,
+    "per_seed_diffs": {
+      "71": -0.040000000000000036,
+      "72": -0.13999999999999996,
+      "73": -0.10999999999999999
+    }
+  },
+  {
+    "architecture": "PPO-C",
+    "level": "C2",
+    "dimension": "R1_measurement_noise",
+    "setting_label": "high",
+    "d0plus_mean": 0.37333333333333335,
+    "d1_mean": 0.37,
+    "diff": -0.003333333333333355,
+    "ci_low": -0.12666666666666665,
+    "ci_high": 0.1166666666666667,
+    "per_seed_diffs": {
+      "71": 0.08999999999999997,
+      "72": -0.08000000000000002,
+      "73": -0.020000000000000018
+    }
+  },
+  {
+    "architecture": "PPO-C",
+    "level": "C2",
+    "dimension": "R2_detection_radius",
+    "setting_label": "short",
+    "d0plus_mean": 0.33,
+    "d1_mean": 0.29333333333333333,
+    "diff": -0.03666666666666669,
+    "ci_low": -0.15,
+    "ci_high": 0.07,
+    "per_seed_diffs": {
+      "71": 0.03999999999999998,
+      "72": -0.12000000000000002,
+      "73": -0.030000000000000027
+    }
+  },
+  {
+    "architecture": "PPO-C",
+    "level": "C2",
+    "dimension": "R2_detection_radius",
+    "setting_label": "long",
+    "d0plus_mean": 0.38,
+    "d1_mean": 0.3233333333333333,
+    "diff": -0.056666666666666664,
+    "ci_low": -0.19,
+    "ci_high": 0.07,
+    "per_seed_diffs": {
+      "71": 0.020000000000000018,
+      "72": -0.16999999999999998,
+      "73": -0.020000000000000018
+    }
+  },
+  {
+    "architecture": "PPO-C",
+    "level": "C2",
+    "dimension": "R3_relative_mobility",
+    "setting_label": "defender_disadvantaged",
+    "d0plus_mean": 0.5133333333333333,
+    "d1_mean": 0.41333333333333333,
+    "diff": -0.10000000000000002,
+    "ci_low": -0.2,
+    "ci_high": 0.0,
+    "per_seed_diffs": {
+      "71": -0.10000000000000003,
+      "72": -0.07,
+      "73": -0.13
+    }
+  },
+  {
+    "architecture": "PPO-C",
+    "level": "C2",
+    "dimension": "R3_relative_mobility",
+    "setting_label": "defender_advantaged",
+    "d0plus_mean": 0.2633333333333333,
+    "d1_mean": 0.26,
+    "diff": -0.0033333333333333457,
+    "ci_low": -0.09666666666666662,
+    "ci_high": 0.08341666666666549,
+    "per_seed_diffs": {
+      "71": -0.020000000000000018,
+      "72": -0.01999999999999999,
+      "73": 0.02999999999999997
+    }
+  },
+  {
+    "architecture": "PPO-Kalman-C",
+    "level": "C0",
+    "dimension": "nominal",
+    "setting_label": "nominal",
+    "d0plus_mean": 0.5266666666666666,
+    "d1_mean": 0.7133333333333334,
+    "diff": 0.18666666666666662,
+    "ci_low": 0.036666666666666736,
+    "ci_high": 0.35,
+    "per_seed_diffs": {
+      "74": 0.07999999999999996,
+      "75": 0.12999999999999995,
+      "76": 0.35
+    }
+  },
+  {
+    "architecture": "PPO-Kalman-C",
+    "level": "C0",
+    "dimension": "R1_measurement_noise",
+    "setting_label": "low",
+    "d0plus_mean": 0.53,
+    "d1_mean": 0.72,
+    "diff": 0.19000000000000003,
+    "ci_low": 0.053333333333333344,
+    "ci_high": 0.3233333333333333,
+    "per_seed_diffs": {
+      "74": 0.05999999999999994,
+      "75": 0.25000000000000006,
+      "76": 0.26
+    }
+  },
+  {
+    "architecture": "PPO-Kalman-C",
+    "level": "C0",
+    "dimension": "R1_measurement_noise",
+    "setting_label": "high",
+    "d0plus_mean": 0.42,
+    "d1_mean": 0.64,
+    "diff": 0.22000000000000006,
+    "ci_low": 0.05999999999999994,
+    "ci_high": 0.37,
+    "per_seed_diffs": {
+      "74": 0.26000000000000006,
+      "75": 0.07000000000000006,
+      "76": 0.32999999999999996
+    }
+  },
+  {
+    "architecture": "PPO-Kalman-C",
+    "level": "C0",
+    "dimension": "R2_detection_radius",
+    "setting_label": "short",
+    "d0plus_mean": 0.3333333333333333,
+    "d1_mean": 0.44666666666666666,
+    "diff": 0.1133333333333333,
+    "ci_low": 0.030000000000000027,
+    "ci_high": 0.19666666666666666,
+    "per_seed_diffs": {
+      "74": 0.09999999999999998,
+      "75": 0.08999999999999997,
+      "76": 0.14999999999999997
+    }
+  },
+  {
+    "architecture": "PPO-Kalman-C",
+    "level": "C0",
+    "dimension": "R2_detection_radius",
+    "setting_label": "long",
+    "d0plus_mean": 0.4266666666666667,
+    "d1_mean": 0.6133333333333333,
+    "diff": 0.18666666666666665,
+    "ci_low": 0.08666666666666667,
+    "ci_high": 0.29000000000000004,
+    "per_seed_diffs": {
+      "74": 0.22000000000000003,
+      "75": 0.19999999999999996,
+      "76": 0.13999999999999996
+    }
+  },
+  {
+    "architecture": "PPO-Kalman-C",
+    "level": "C0",
+    "dimension": "R3_relative_mobility",
+    "setting_label": "defender_disadvantaged",
+    "d0plus_mean": 0.48,
+    "d1_mean": 0.6533333333333333,
+    "diff": 0.17333333333333334,
+    "ci_low": 0.026666666666666616,
+    "ci_high": 0.33999999999999997,
+    "per_seed_diffs": {
+      "74": 0.07999999999999996,
+      "75": 0.33999999999999997,
+      "76": 0.10000000000000009
+    }
+  },
+  {
+    "architecture": "PPO-Kalman-C",
+    "level": "C0",
+    "dimension": "R3_relative_mobility",
+    "setting_label": "defender_advantaged",
+    "d0plus_mean": 0.23666666666666666,
+    "d1_mean": 0.47333333333333333,
+    "diff": 0.23666666666666666,
+    "ci_low": 0.08333333333333337,
+    "ci_high": 0.37,
+    "per_seed_diffs": {
+      "74": 0.12,
+      "75": 0.33,
+      "76": 0.26
+    }
+  },
+  {
+    "architecture": "PPO-Kalman-C",
+    "level": "C2",
+    "dimension": "nominal",
+    "setting_label": "nominal",
+    "d0plus_mean": 0.33,
+    "d1_mean": 0.49666666666666665,
+    "diff": 0.16666666666666666,
+    "ci_low": 0.03666666666666668,
+    "ci_high": 0.2833333333333334,
+    "per_seed_diffs": {
+      "74": 0.06999999999999995,
+      "75": 0.22999999999999998,
+      "76": 0.20000000000000007
+    }
+  },
+  {
+    "architecture": "PPO-Kalman-C",
+    "level": "C2",
+    "dimension": "R1_measurement_noise",
+    "setting_label": "low",
+    "d0plus_mean": 0.37666666666666665,
+    "d1_mean": 0.48,
+    "diff": 0.10333333333333332,
+    "ci_low": -0.03999999999999998,
+    "ci_high": 0.24,
+    "per_seed_diffs": {
+      "74": 0.0,
+      "75": 0.09999999999999998,
+      "76": 0.20999999999999996
+    }
+  },
+  {
+    "architecture": "PPO-Kalman-C",
+    "level": "C2",
+    "dimension": "R1_measurement_noise",
+    "setting_label": "high",
+    "d0plus_mean": 0.3466666666666667,
+    "d1_mean": 0.43333333333333335,
+    "diff": 0.08666666666666667,
+    "ci_low": -0.010000000000000009,
+    "ci_high": 0.18333333333333335,
+    "per_seed_diffs": {
+      "74": 0.09000000000000002,
+      "75": 0.08000000000000002,
+      "76": 0.08999999999999997
+    }
+  },
+  {
+    "architecture": "PPO-Kalman-C",
+    "level": "C2",
+    "dimension": "R2_detection_radius",
+    "setting_label": "short",
+    "d0plus_mean": 0.2733333333333333,
+    "d1_mean": 0.2866666666666667,
+    "diff": 0.013333333333333336,
+    "ci_low": -0.07666666666666666,
+    "ci_high": 0.10666666666666669,
+    "per_seed_diffs": {
+      "74": 0.07,
+      "75": -0.03,
+      "76": 0.0
+    }
+  },
+  {
+    "architecture": "PPO-Kalman-C",
+    "level": "C2",
+    "dimension": "R2_detection_radius",
+    "setting_label": "long",
+    "d0plus_mean": 0.3433333333333333,
+    "d1_mean": 0.3933333333333333,
+    "diff": 0.04999999999999999,
+    "ci_low": -0.09000000000000002,
+    "ci_high": 0.19333333333333336,
+    "per_seed_diffs": {
+      "74": -0.04999999999999999,
+      "75": 0.16999999999999998,
+      "76": 0.02999999999999997
+    }
+  },
+  {
+    "architecture": "PPO-Kalman-C",
+    "level": "C2",
+    "dimension": "R3_relative_mobility",
+    "setting_label": "defender_disadvantaged",
+    "d0plus_mean": 0.43,
+    "d1_mean": 0.5733333333333334,
+    "diff": 0.1433333333333333,
+    "ci_low": -0.030000000000000027,
+    "ci_high": 0.32,
+    "per_seed_diffs": {
+      "74": -0.020000000000000018,
+      "75": 0.3,
+      "76": 0.14999999999999997
+    }
+  },
+  {
+    "architecture": "PPO-Kalman-C",
+    "level": "C2",
+    "dimension": "R3_relative_mobility",
+    "setting_label": "defender_advantaged",
+    "d0plus_mean": 0.21666666666666667,
+    "d1_mean": 0.39,
+    "diff": 0.1733333333333333,
+    "ci_low": 0.07000000000000003,
+    "ci_high": 0.2733333333333333,
+    "per_seed_diffs": {
+      "74": 0.14999999999999997,
+      "75": 0.13999999999999999,
+      "76": 0.23
+    }
+  },
+  {
+    "architecture": "LR-PPO-C",
+    "level": "C0",
+    "dimension": "nominal",
+    "setting_label": "nominal",
+    "d0plus_mean": 0.7,
+    "d1_mean": 0.5733333333333334,
+    "diff": -0.12666666666666668,
+    "ci_low": -0.30000000000000004,
+    "ci_high": 0.04999999999999993,
+    "per_seed_diffs": {
+      "77": -0.14,
+      "78": -0.29000000000000004,
+      "79": 0.050000000000000044
+    }
+  },
+  {
+    "architecture": "LR-PPO-C",
+    "level": "C0",
+    "dimension": "R1_measurement_noise",
+    "setting_label": "low",
+    "d0plus_mean": 0.8,
+    "d1_mean": 0.75,
+    "diff": -0.04999999999999997,
+    "ci_low": -0.19666666666666666,
+    "ci_high": 0.06333333333333335,
+    "per_seed_diffs": {
+      "77": 0.020000000000000018,
+      "78": -0.19999999999999996,
+      "79": 0.030000000000000027
+    }
+  },
+  {
+    "architecture": "LR-PPO-C",
+    "level": "C0",
+    "dimension": "R1_measurement_noise",
+    "setting_label": "high",
+    "d0plus_mean": 0.46,
+    "d1_mean": 0.4,
+    "diff": -0.06000000000000002,
+    "ci_low": -0.22000000000000003,
+    "ci_high": 0.08666666666666673,
+    "per_seed_diffs": {
+      "77": -0.010000000000000009,
+      "78": -0.22999999999999998,
+      "79": 0.05999999999999994
+    }
+  },
+  {
+    "architecture": "LR-PPO-C",
+    "level": "C0",
+    "dimension": "R2_detection_radius",
+    "setting_label": "short",
+    "d0plus_mean": 0.34,
+    "d1_mean": 0.35333333333333333,
+    "diff": 0.013333333333333345,
+    "ci_low": -0.06666666666666671,
+    "ci_high": 0.08999999999999997,
+    "per_seed_diffs": {
+      "77": -0.010000000000000009,
+      "78": -0.019999999999999962,
+      "79": 0.07
+    }
+  },
+  {
+    "architecture": "LR-PPO-C",
+    "level": "C0",
+    "dimension": "R2_detection_radius",
+    "setting_label": "long",
+    "d0plus_mean": 0.6066666666666667,
+    "d1_mean": 0.57,
+    "diff": -0.03666666666666666,
+    "ci_low": -0.15000000000000002,
+    "ci_high": 0.08000000000000007,
+    "per_seed_diffs": {
+      "77": -0.020000000000000018,
+      "78": -0.13,
+      "79": 0.040000000000000036
+    }
+  },
+  {
+    "architecture": "LR-PPO-C",
+    "level": "C0",
+    "dimension": "R3_relative_mobility",
+    "setting_label": "defender_disadvantaged",
+    "d0plus_mean": 0.77,
+    "d1_mean": 0.78,
+    "diff": 0.009999999999999972,
+    "ci_low": -0.09333333333333327,
+    "ci_high": 0.1100000000000001,
+    "per_seed_diffs": {
+      "77": -0.08000000000000007,
+      "78": 0.010000000000000009,
+      "79": 0.09999999999999998
+    }
+  },
+  {
+    "architecture": "LR-PPO-C",
+    "level": "C0",
+    "dimension": "R3_relative_mobility",
+    "setting_label": "defender_advantaged",
+    "d0plus_mean": 0.6866666666666666,
+    "d1_mean": 0.5933333333333334,
+    "diff": -0.09333333333333331,
+    "ci_low": -0.21666666666666662,
+    "ci_high": 0.026666666666666616,
+    "per_seed_diffs": {
+      "77": -0.10999999999999999,
+      "78": -0.19999999999999996,
+      "79": 0.030000000000000027
+    }
+  },
+  {
+    "architecture": "LR-PPO-C",
+    "level": "C2",
+    "dimension": "nominal",
+    "setting_label": "nominal",
+    "d0plus_mean": 0.74,
+    "d1_mean": 0.6466666666666666,
+    "diff": -0.09333333333333334,
+    "ci_low": -0.20999999999999996,
+    "ci_high": 0.023333333333333428,
+    "per_seed_diffs": {
+      "77": 0.0,
+      "78": -0.17000000000000004,
+      "79": -0.10999999999999999
+    }
+  },
+  {
+    "architecture": "LR-PPO-C",
+    "level": "C2",
+    "dimension": "R1_measurement_noise",
+    "setting_label": "low",
+    "d0plus_mean": 0.7333333333333333,
+    "d1_mean": 0.6933333333333334,
+    "diff": -0.04,
+    "ci_low": -0.14,
+    "ci_high": 0.053333333333333344,
+    "per_seed_diffs": {
+      "77": -0.09999999999999998,
+      "78": -0.030000000000000027,
+      "79": 0.010000000000000009
+    }
+  },
+  {
+    "architecture": "LR-PPO-C",
+    "level": "C2",
+    "dimension": "R1_measurement_noise",
+    "setting_label": "high",
+    "d0plus_mean": 0.5166666666666667,
+    "d1_mean": 0.4766666666666667,
+    "diff": -0.04,
+    "ci_low": -0.17999999999999994,
+    "ci_high": 0.10000000000000003,
+    "per_seed_diffs": {
+      "77": -0.020000000000000018,
+      "78": -0.16000000000000003,
+      "79": 0.06000000000000005
+    }
+  },
+  {
+    "architecture": "LR-PPO-C",
+    "level": "C2",
+    "dimension": "R2_detection_radius",
+    "setting_label": "short",
+    "d0plus_mean": 0.49333333333333335,
+    "d1_mean": 0.46,
+    "diff": -0.03333333333333335,
+    "ci_low": -0.10666666666666669,
+    "ci_high": 0.03999999999999998,
+    "per_seed_diffs": {
+      "77": -0.020000000000000018,
+      "78": -0.06,
+      "79": -0.020000000000000018
+    }
+  },
+  {
+    "architecture": "LR-PPO-C",
+    "level": "C2",
+    "dimension": "R2_detection_radius",
+    "setting_label": "long",
+    "d0plus_mean": 0.65,
+    "d1_mean": 0.65,
+    "diff": -3.700743415417188e-17,
+    "ci_low": -0.09666666666666668,
+    "ci_high": 0.09666666666666668,
+    "per_seed_diffs": {
+      "77": 0.029999999999999916,
+      "78": -0.010000000000000009,
+      "79": -0.020000000000000018
+    }
+  },
+  {
+    "architecture": "LR-PPO-C",
+    "level": "C2",
+    "dimension": "R3_relative_mobility",
+    "setting_label": "defender_disadvantaged",
+    "d0plus_mean": 0.7366666666666667,
+    "d1_mean": 0.72,
+    "diff": -0.01666666666666668,
+    "ci_low": -0.10333333333333328,
+    "ci_high": 0.06999999999999995,
+    "per_seed_diffs": {
+      "77": -0.050000000000000044,
+      "78": -0.020000000000000018,
+      "79": 0.020000000000000018
+    }
+  },
+  {
+    "architecture": "LR-PPO-C",
+    "level": "C2",
+    "dimension": "R3_relative_mobility",
+    "setting_label": "defender_advantaged",
+    "d0plus_mean": 0.6366666666666667,
+    "d1_mean": 0.6033333333333334,
+    "diff": -0.03333333333333336,
+    "ci_low": -0.13,
+    "ci_high": 0.06666666666666665,
+    "per_seed_diffs": {
+      "77": -0.07000000000000006,
+      "78": -0.050000000000000044,
+      "79": 0.020000000000000018
+    }
+  }
+]
