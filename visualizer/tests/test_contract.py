@@ -12,8 +12,8 @@ def test_schema_is_valid_and_matches_typed_contract():
     schema = json.loads((Path(__file__).parents[1] / "docs" / "replay_v1.schema.json").read_text())
     Draft202012Validator.check_schema(schema)
     assert schema == ReplayBundle.model_json_schema()
-    assert schema["properties"]["episode_count"]["default"] == 5
-    assert schema["properties"]["episode_count"]["enum"] == [1, 3, 5, 10]
+    assert schema["properties"]["episode_count"]["default"] == 1
+    assert schema["properties"]["episode_count"]["const"] == 1
 
 
 def test_lrppo_angular_contract_preserves_native_bound():
@@ -46,7 +46,7 @@ def test_bundle_rejects_missing_recordings():
         ReplayBundle(
             provenance=dict(
                 simulation_source_commit="a" * 40, visualizer_source_commit="b" * 40,
-                source_dirty=False, python_version="test", package_versions={},
+                source_dirty=False, visualizer_dirty=False, python_version="test", package_versions={},
                 model_device="cpu", registry_sha256="c" * 64,
             ),
             seed_start=100, episodes=[],

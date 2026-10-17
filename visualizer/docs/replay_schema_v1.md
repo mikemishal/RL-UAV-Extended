@@ -1,15 +1,15 @@
 # Replay JSON v1 / telemetry design
 
-Version: `1.0.0`. This is a recording contract, **not** an implementation of
-episode execution. No example in the UI is backed by invented frames.
+Version: `1.0.0`. This is the typed contract used by the single-episode replay
+engine. The frontend remains an empty scene; no fabricated frames are included.
 
 Canonical definitions: [replay_contract.py](../backend/replay_contract.py).
 Machine schema: [replay_v1.schema.json](replay_v1.schema.json), generated with
 Pydantic `ReplayBundle.model_json_schema()`. Models forbid unknown keys and
-non-finite numeric fields; JSON must never contain NaN/Infinity.
-Unavailable infinite clearance values from the scientific info dict must
-be normalized to null only in explicitly optional fields, with an unavailable
-reason, not replaced with a fictitious large finite distance.
+non-finite numeric fields; JSON must never contain NaN/Infinity. The engine
+normalizes non-finite values in optional diagnostics to `null` and records a
+field-path reason. It does not replace infinite clearance with a fictitious
+large finite distance; authoritative non-finite entity/action state fails.
 
 ## Bundle and provenance
 
@@ -18,8 +18,8 @@ reason, not replaced with a fictitious large finite distance.
 | `schema_version` | literal `1.0.0`; incompatible layouts require a new version |
 | `coordinate_system` | `simulation_xyz_z_up_m`; preserve native three-component source data |
 | `presentation` | `horizontal_projection_fixed_heights`; not a change to data or dynamics |
-| `provenance` | 40-hex simulation/visualizer commits, source dirty flag, deterministic inference, Python/package versions, device, original registry SHA-256 |
-| `episode_count` | 1,3,5,10; planned default 5 |
+| `provenance` | 40-hex simulation/visualizer commits, both dirty flags, deterministic inference, Python/package versions, device, original registry SHA-256 |
+| `episode_count` | literal `1`; Phase 2 is single-episode only |
 | `seed_start` | nonnegative explicit simulation seed (not a model training seed) |
 | `episodes` | exact count, consecutive seeds in recording order (validated in Pydantic) |
 
@@ -27,16 +27,16 @@ Each episode stores `episode_id`, `simulation_seed`, defender and attacker
 selection snapshots, complete environment snapshot/hash, static geometry,
 all real frames, events and final summary. Selection includes catalog ID,
 generation, training seed, observation/action shapes, estimator and exact
-parameters. Checkpoint includes stable artifact ID, research-relative path,
+parameters, including the versioned `sector_obs_v1` spec when consumed.
+Checkpoint includes stable artifact ID, research-relative path,
 SHA-256 and role. Analytical/A0 checkpoint fields are null; never synthesize
 a checkpoint hash for them. Paths here are provenance, not a future file API.
 
 `EnvironmentSpec.config` is the full JSON-serialized `EnvConfig` dataclass,
-with an explicitly specified stable sorted JSON hash in Phase 2; include dt,
+with a stable sorted JSON hash; it includes dt,
 dimensions, thresholds, sensing, avoidance, collision/reward defaults and
 every builder override. `builder` identifies the canonical journal function.
-Capture the versioned sector specification in policy parameters, not merely
-the number 20. Record frozen selected RMPC parameters and residual limit 30.
+The engine records the frozen selected RMPC parameters and residual limit 30.
 
 ## Frame timing and units
 
@@ -48,19 +48,23 @@ rendering time. An initial frame has null telemetry and reward.
 Every frame stores current defender/attacker/asset position, available velocity,
 all moving obstacle states, **current** policy-visible observation/estimator
 channels, privileged diagnostic state, reward, termination/truncation and native
-outcome. `PolicyVisible.observation` is the base 16-D environment observation;
+outcome. The protected asset velocity is not exposed by SoldierEnv and remains
+null with a reason. `PolicyVisible.observation` is the base 16-D environment observation;
 20 sector features are a separate optional array. Model input shape lives in
 selection metadata: 16/19/36/39, not an ambiguous flattened state.
-An A1 current observation, when captured, is a separate optional 36-D array.
+An A1 decision's exact 36-D observation is stored in that transition's
+`telemetry.attacker_observation`.
 
 For k >= 1, telemetry describes the transition **ending at frame k**:
-`telemetry.decision_step = k-1`. Its requested action was based on the
-policy-visible data in frame k-1. Safe command and executed velocity come
-from the resulting `step` / frame k info. This avoids comparing a request
-to next-step sensor data. For Kalman overlays, show current frame estimates
-against current frame truth; for decision explanation use the explicitly
-identified prior frame. Do not call a stateful policy twice to reconstruct
-past decisions.
+`telemetry.decision_step = k-1`. `telemetry.decision_policy_visible` is the
+exact pre-step observation and sanitized channels supplied to that action.
+`frame.policy_visible` describes the state at frame k; it is not substituted
+for the earlier decision input. Safe/desired commands and executed velocity
+come from the resulting `step` info. `requested_to_velocity_angle_deg` is the
+angle from the request to actual post-step velocity; it is not an "executed
+action." Requested-to-desired delta/angle describe normalization;
+desired-to-safe delta/angle isolate obstacle safety. No stateful policy is
+called twice to reconstruct past decisions.
 
 - Distances/positions/radii/obstacle bounds: meters.
 - Velocities: m/s; accelerations: m/s^2; native timestep: seconds.
@@ -77,39 +81,45 @@ decorative skin. `visual_kind="tree"` is not an inferred native physics type.
 Dynamic geometry stores stable ID, native type, position/velocity/radius in each
 frame. Browser playback must not integrate moving obstacles itself.
 
-Pydantic validates shapes, finite values, enums, count and seed order. The
-Phase 2 recorder/tests must additionally verify reset/terminal ordering,
-continuous step numbering, T+1 length, timestamps, full config/hash agreement,
-source/checkpoint integrity, policy/observation compatibility, event consistency
-and that no state was mutated during capture. These semantic rules are not all
-expressible by JSON Schema and must not be mistaken for already implemented
-rollout validation.
+Pydantic validates shapes, finite values and enums. The recorder additionally
+validates reset/terminal ordering, contiguous step numbers, T+1 length,
+timestamps, final outcome, model observation/action shape and checkpoint
+integrity. Tests compare the full native states/actions/rewards/dynamic
+obstacles against `defender_adaptation_evaluation._run_matched_episode` for an
+identical frozen configuration and seed.
 
 ## Telemetry and access separation
 
 `policy_visible` contains only sanctioned own/asset state, detection and
 measurement OR Kalman estimator fields. The typed model rejects mixing those
 channels and rejects ground-truth extra fields. Use the existing sanitizer for
-actual control; this schema is not a replacement sanitizer.
-Obstacle features must come from the appropriate perceived set, never full
-ground-truth geometry.
+actual control; decision telemetry serializes that same sanitizer output and
+the already-used observation. The test verifies that privileged attacker
+position, velocity, full simulator info and obstacle geometry never enter the
+defender input. Obstacle features come from the existing perceived set, never
+full ground-truth geometry.
 
 `privileged_diagnostics` contains native actual attacker position/velocity,
-tracking error, ranges and optional derived closing speed. It is recorder-only
+tracking error, ranges, raw returned simulator info, and radial closing speed
+derived from defender/attacker positions and velocities (positive means closing).
+It is recorder-only
 and labeled privileged in the future inspector, never fed to the defender.
 The whole browser scene is an evaluator view, not a claim about what the
 controller knew. Optional `unavailable_fields` gives field-path -> reason.
 
 Common policy telemetry:
 
-- Single requested three-component action and decision step.
-- Safe command (post obstacle safety), controller-action-executed flag,
-  standby, avoidance activity/angle.
+- Single requested three-component action and decision step; normalized desired
+  direction, post-safety safe command, controller-action-executed flag, standby,
+  avoidance activity/angle.
+- Separate requested-to-desired normalization and desired-to-safe intervention
+  vectors/angles.
 - Actual constrained executed velocity (do **not** equate safe heading to
   realized velocity; acceleration, turning and climb constraints still act).
-- Optional requested/executed horizontal headings, signed heading change,
-  reversal. Reversal threshold must be explicitly recorded in policy parameters
-  when implemented, not guessed in Phase 1.
+- Requested horizontal heading, post-step velocity heading and signed
+  horizontal heading change. The replay metadata records the 120-degree
+  heading-reversal diagnostic threshold; it is a visual diagnostic, not a
+  simulator or policy threshold.
 - PPO/PPO-Kalman use these fields. Kalman e_hat/v_hat are current policy-visible
   channels; current actual attacker state and tracking error are privileged.
 - Analytical Lead: guidance mode, target state, intercept time/point,
@@ -117,7 +127,7 @@ Common policy telemetry:
   mode. RMPC: modes, best sequence, robust/per-scenario scores, evaluation count
   and timing when enabled. Greedy has no fabricated optimization internals.
 
-## LR-PPO angular diagnostics (Phase 5 plan)
+## LR-PPO angular diagnostics
 
 The existing composition is authoritative:
 norm-clip residual, remove its Lead-parallel component, form
@@ -140,9 +150,11 @@ raw norm, perpendicular component, norm-clipping flag, unsigned native
 `native_adjustment_deg`, signed horizontal adjustment, fixed max 30,
 and near-bound flag with explicit margin.
 Raw residual/clipping cannot be reverse-engineered from final heading:
-currently unavailable fields stay null with a reason. Future observational
-capture must use the same **one** deterministic prediction and canonical
-composition, with equivalence tests and no policy architecture edits.
+the engine records Lead direction and actual final requested guidance from the
+single wrapper call, derives the native 3D angle and signed horizontal angle,
+and verifies the native angle against the 30-degree cap. Raw residual, projected
+residual and clipping remain null with reasons because the wrapper does not
+expose them. No second policy call or scientific source edit is used.
 
 Signed horizontal adjustment:
 `atan2(cross2(lead_xy,requested_xy), dot(lead_xy,requested_xy))` in degrees,

@@ -83,6 +83,56 @@
           ],
           "default": null,
           "title": "Velocity Mps"
+        },
+        "speed_mps": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Speed Mps"
+        },
+        "horizontal_heading_deg": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Horizontal Heading Deg"
+        },
+        "movement_direction": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Movement Direction"
         }
       },
       "required": [
@@ -110,6 +160,12 @@
             "map_local"
           ],
           "title": "Awareness",
+          "type": "string"
+        },
+        "scenario_kind": {
+          "const": "canonical",
+          "default": "canonical",
+          "title": "Scenario Kind",
           "type": "string"
         },
         "builder": {
@@ -173,6 +229,45 @@
           "title": "Duration S",
           "type": "number"
         },
+        "detection_time_step": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Detection Time Step"
+        },
+        "detection_time_s": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Detection Time S"
+        },
+        "interception_step": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Interception Step"
+        },
         "interception_time_s": {
           "anyOf": [
             {
@@ -185,6 +280,31 @@
           ],
           "default": null,
           "title": "Interception Time S"
+        },
+        "collision_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Collision Type"
+        },
+        "collision_step": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Collision Step"
         },
         "collision_time_s": {
           "anyOf": [
@@ -199,15 +319,34 @@
           "default": null,
           "title": "Collision Time S"
         },
+        "final_defender_attacker_distance_m": {
+          "minimum": 0,
+          "title": "Final Defender Attacker Distance M",
+          "type": "number"
+        },
+        "final_attacker_asset_distance_m": {
+          "minimum": 0,
+          "title": "Final Attacker Asset Distance M",
+          "type": "number"
+        },
         "total_reward": {
           "title": "Total Reward",
           "type": "number"
+        },
+        "safety_metrics": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Safety Metrics",
+          "type": "object"
         }
       },
       "required": [
         "outcome",
         "steps",
         "duration_s",
+        "final_defender_attacker_distance_m",
+        "final_attacker_asset_distance_m",
         "total_reward"
       ],
       "title": "EpisodeSummary",
@@ -681,9 +820,30 @@
     "PolicySelection": {
       "additionalProperties": false,
       "properties": {
+        "policy_kind": {
+          "enum": [
+            "analytical",
+            "learned",
+            "scripted"
+          ],
+          "title": "Policy Kind",
+          "type": "string"
+        },
         "policy_id": {
           "title": "Policy Id",
           "type": "string"
+        },
+        "architecture": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Architecture"
         },
         "generation": {
           "anyOf": [
@@ -727,12 +887,20 @@
           "default": null
         },
         "observation_shape": {
-          "items": {
-            "exclusiveMinimum": 0,
-            "type": "integer"
-          },
-          "title": "Observation Shape",
-          "type": "array"
+          "anyOf": [
+            {
+              "items": {
+                "exclusiveMinimum": 0,
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observation Shape"
         },
         "action_shape": {
           "default": [
@@ -753,7 +921,8 @@
           "enum": [
             "measurement",
             "kalman",
-            "attacker_local"
+            "attacker_local",
+            "scripted_ground_truth"
           ],
           "title": "Estimator",
           "type": "string"
@@ -767,8 +936,8 @@
         }
       },
       "required": [
+        "policy_kind",
         "policy_id",
-        "observation_shape",
         "estimator",
         "parameters"
       ],
@@ -782,6 +951,9 @@
           "minimum": 0,
           "title": "Decision Step",
           "type": "integer"
+        },
+        "decision_policy_visible": {
+          "$ref": "#/$defs/PolicyVisible"
         },
         "requested_action": {
           "maxItems": 3,
@@ -799,6 +971,167 @@
           ],
           "title": "Requested Action",
           "type": "array"
+        },
+        "requested_action_norm": {
+          "minimum": 0,
+          "title": "Requested Action Norm",
+          "type": "number"
+        },
+        "defender_policy_input": {
+          "items": {
+            "type": "number"
+          },
+          "minItems": 1,
+          "title": "Defender Policy Input",
+          "type": "array"
+        },
+        "defender_model_input": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Defender Model Input"
+        },
+        "attacker_observation": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "number"
+              },
+              "maxItems": 36,
+              "minItems": 36,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Attacker Observation"
+        },
+        "attacker_tactical_command": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Attacker Tactical Command"
+        },
+        "attacker_command_source": {
+          "anyOf": [
+            {
+              "enum": [
+                "a0_scripted",
+                "a1_learned"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Attacker Command Source"
+        },
+        "attacker_mission_command": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Attacker Mission Command"
+        },
+        "attacker_final_command": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Attacker Final Command"
+        },
+        "desired_command": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Desired Command"
         },
         "safe_command": {
           "anyOf": [
@@ -824,6 +1157,98 @@
           ],
           "default": null,
           "title": "Safe Command"
+        },
+        "requested_to_desired_delta": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Requested To Desired Delta"
+        },
+        "requested_to_desired_angle_deg": {
+          "anyOf": [
+            {
+              "maximum": 180,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Requested To Desired Angle Deg"
+        },
+        "desired_to_safe_delta": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Desired To Safe Delta"
+        },
+        "desired_to_safe_angle_deg": {
+          "anyOf": [
+            {
+              "maximum": 180,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Desired To Safe Angle Deg"
+        },
+        "requested_to_velocity_angle_deg": {
+          "anyOf": [
+            {
+              "maximum": 180,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Requested To Velocity Angle Deg"
         },
         "controller_action_executed": {
           "title": "Controller Action Executed",
@@ -1031,7 +1456,10 @@
       },
       "required": [
         "decision_step",
+        "decision_policy_visible",
         "requested_action",
+        "requested_action_norm",
+        "defender_policy_input",
         "controller_action_executed",
         "defender_standby",
         "avoidance_active",
@@ -1243,6 +1671,13 @@
           ],
           "default": null,
           "title": "Sector Features"
+        },
+        "unavailable_fields": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Unavailable Fields",
+          "type": "object"
         }
       },
       "required": [
@@ -1327,13 +1762,28 @@
           ],
           "default": null,
           "title": "Closing Speed Mps"
+        },
+        "simulator_info": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Simulator Info",
+          "type": "object"
+        },
+        "unavailable_fields": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Unavailable Fields",
+          "type": "object"
         }
       },
       "required": [
         "attacker_position_m",
         "attacker_velocity_mps",
         "defender_attacker_range_m",
-        "attacker_asset_range_m"
+        "attacker_asset_range_m",
+        "simulator_info"
       ],
       "title": "PrivilegedDiagnostics",
       "type": "object"
@@ -1471,6 +1921,13 @@
         "environment": {
           "$ref": "#/$defs/EnvironmentSpec"
         },
+        "terminal_flags": {
+          "additionalProperties": {
+            "type": "boolean"
+          },
+          "title": "Terminal Flags",
+          "type": "object"
+        },
         "static_obstacles": {
           "items": {
             "$ref": "#/$defs/StaticObstacle"
@@ -1503,6 +1960,7 @@
         "defender",
         "attacker",
         "environment",
+        "terminal_flags",
         "static_obstacles",
         "frames",
         "events",
@@ -1607,6 +2065,13 @@
           ],
           "default": null,
           "title": "Contact Fraction"
+        },
+        "unavailable_fields": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Unavailable Fields",
+          "type": "object"
         }
       },
       "required": [
@@ -1650,23 +2115,6 @@
         "policy_visible": {
           "$ref": "#/$defs/PolicyVisible"
         },
-        "attacker_observation": {
-          "anyOf": [
-            {
-              "items": {
-                "type": "number"
-              },
-              "maxItems": 36,
-              "minItems": 36,
-              "type": "array"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Attacker Observation"
-        },
         "telemetry": {
           "anyOf": [
             {
@@ -1680,6 +2128,62 @@
         },
         "privileged_diagnostics": {
           "$ref": "#/$defs/PrivilegedDiagnostics"
+        },
+        "detection_radius_m": {
+          "minimum": 0,
+          "title": "Detection Radius M",
+          "type": "number"
+        },
+        "detection_time_step": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Detection Time Step"
+        },
+        "defender_action_applied": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Defender Action Applied"
+        },
+        "cumulative_reward": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cumulative Reward"
+        },
+        "environmental_state": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Environmental State",
+          "type": "object"
+        },
+        "unavailable_fields": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Unavailable Fields",
+          "type": "object"
         },
         "reward": {
           "anyOf": [
@@ -1733,6 +2237,7 @@
         "moving_obstacles",
         "policy_visible",
         "privileged_diagnostics",
+        "detection_radius_m",
         "terminated",
         "truncated",
         "outcome"
@@ -1755,6 +2260,10 @@
         },
         "source_dirty": {
           "title": "Source Dirty",
+          "type": "boolean"
+        },
+        "visualizer_dirty": {
+          "title": "Visualizer Dirty",
           "type": "boolean"
         },
         "deterministic_inference": {
@@ -1788,6 +2297,7 @@
         "simulation_source_commit",
         "visualizer_source_commit",
         "source_dirty",
+        "visualizer_dirty",
         "python_version",
         "package_versions",
         "model_device",
@@ -1885,13 +2395,8 @@
       "$ref": "#/$defs/ReplayProvenance"
     },
     "episode_count": {
-      "default": 5,
-      "enum": [
-        1,
-        3,
-        5,
-        10
-      ],
+      "const": 1,
+      "default": 1,
       "title": "Episode Count",
       "type": "integer"
     },

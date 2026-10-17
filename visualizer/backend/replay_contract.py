@@ -1,4 +1,4 @@
-"""Version 1 recording contract only; no replay execution or model inference."""
+"""Version 1 schema for a single authoritative native-3D replay."""
 
 from typing import Annotated, Literal
 
@@ -27,19 +27,22 @@ class Checkpoint(ContractModel):
 
 
 class PolicySelection(ContractModel):
+    policy_kind: Literal["analytical", "learned", "scripted"]
     policy_id: str
+    architecture: str | None = None
     generation: Literal["conference", "d0", "d0_plus", "d1"] | None = None
     training_seed: int | None = None
     checkpoint: Checkpoint | None = None
-    observation_shape: tuple[Annotated[int, Field(gt=0)], ...]
+    observation_shape: tuple[Annotated[int, Field(gt=0)], ...] | None = None
     action_shape: tuple[Literal[3]] = (3,)
-    estimator: Literal["measurement", "kalman", "attacker_local"]
+    estimator: Literal["measurement", "kalman", "attacker_local", "scripted_ground_truth"]
     parameters: dict[str, JsonValue]
 
 
 class EnvironmentSpec(ContractModel):
     clutter: Literal["C0", "C1", "C2", "C3"]
     awareness: Literal["local", "map_local"]
+    scenario_kind: Literal["canonical"] = "canonical"
     builder: Literal["experiments.journal_clutter_protocol.build_canonical_env_config"]
     config: dict[str, JsonValue]
     config_sha256: Sha256
@@ -49,6 +52,9 @@ class EnvironmentSpec(ContractModel):
 class EntityState(ContractModel):
     position_m: Vec3
     velocity_mps: Vec3 | None = None
+    speed_mps: NonNegative | None = None
+    horizontal_heading_deg: FiniteFloat | None = None
+    movement_direction: Vec3 | None = None
 
 
 class StaticObstacle(ContractModel):
@@ -80,6 +86,7 @@ class PolicyVisible(ContractModel):
     e_hat_m: Vec3 | None = None
     v_hat_mps: Vec3 | None = None
     sector_features: list[FiniteFloat] | None = Field(default=None, min_length=20, max_length=20)
+    unavailable_fields: dict[str, str] = Field(default_factory=dict)
 
     @model_validator(mode="after")
     def enforce_estimator_channels(self):
@@ -135,8 +142,23 @@ class RMPCGuidance(ContractModel):
 
 class PolicyTelemetry(ContractModel):
     decision_step: Annotated[int, Field(ge=0)]
+    decision_policy_visible: PolicyVisible
     requested_action: Vec3
+    requested_action_norm: NonNegative
+    defender_policy_input: list[FiniteFloat] = Field(min_length=1)
+    defender_model_input: list[FiniteFloat] | None = None
+    attacker_observation: list[FiniteFloat] | None = Field(default=None, min_length=36, max_length=36)
+    attacker_tactical_command: Vec3 | None = None
+    attacker_command_source: Literal["a0_scripted", "a1_learned"] | None = None
+    attacker_mission_command: Vec3 | None = None
+    attacker_final_command: Vec3 | None = None
+    desired_command: Vec3 | None = None
     safe_command: Vec3 | None = None
+    requested_to_desired_delta: Vec3 | None = None
+    requested_to_desired_angle_deg: Annotated[FiniteFloat, Field(ge=0, le=180)] | None = None
+    desired_to_safe_delta: Vec3 | None = None
+    desired_to_safe_angle_deg: Annotated[FiniteFloat, Field(ge=0, le=180)] | None = None
+    requested_to_velocity_angle_deg: Annotated[FiniteFloat, Field(ge=0, le=180)] | None = None
     controller_action_executed: bool
     defender_standby: bool
     avoidance_active: bool
@@ -165,6 +187,8 @@ class PrivilegedDiagnostics(ContractModel):
     defender_attacker_range_m: NonNegative
     attacker_asset_range_m: NonNegative
     closing_speed_mps: FiniteFloat | None = None
+    simulator_info: dict[str, JsonValue]
+    unavailable_fields: dict[str, str] = Field(default_factory=dict)
 
 
 class ReplayFrame(ContractModel):
@@ -175,9 +199,14 @@ class ReplayFrame(ContractModel):
     asset: EntityState
     moving_obstacles: list[MovingObstacle]
     policy_visible: PolicyVisible
-    attacker_observation: list[FiniteFloat] | None = Field(default=None, min_length=36, max_length=36)
     telemetry: PolicyTelemetry | None = None
     privileged_diagnostics: PrivilegedDiagnostics
+    detection_radius_m: NonNegative
+    detection_time_step: Annotated[int, Field(ge=0)] | None = None
+    defender_action_applied: bool | None = None
+    cumulative_reward: FiniteFloat | None = None
+    environmental_state: dict[str, JsonValue] = Field(default_factory=dict)
+    unavailable_fields: dict[str, str] = Field(default_factory=dict)
     reward: FiniteFloat | None = None
     terminated: bool
     truncated: bool
@@ -193,15 +222,24 @@ class ReplayEvent(ContractModel):
     obstacle_id: str | None = None
     position_m: Vec3 | None = None
     contact_fraction: Annotated[FiniteFloat, Field(ge=0, le=1)] | None = None
+    unavailable_fields: dict[str, str] = Field(default_factory=dict)
 
 
 class EpisodeSummary(ContractModel):
     outcome: Outcome
     steps: Annotated[int, Field(gt=0)]
     duration_s: NonNegative
+    detection_time_step: Annotated[int, Field(ge=0)] | None = None
+    detection_time_s: NonNegative | None = None
+    interception_step: Annotated[int, Field(ge=0)] | None = None
     interception_time_s: NonNegative | None = None
+    collision_type: str | None = None
+    collision_step: Annotated[int, Field(ge=0)] | None = None
     collision_time_s: NonNegative | None = None
+    final_defender_attacker_distance_m: NonNegative
+    final_attacker_asset_distance_m: NonNegative
     total_reward: FiniteFloat
+    safety_metrics: dict[str, JsonValue] = Field(default_factory=dict)
 
 
 class ReplayEpisode(ContractModel):
@@ -210,6 +248,7 @@ class ReplayEpisode(ContractModel):
     defender: PolicySelection
     attacker: PolicySelection
     environment: EnvironmentSpec
+    terminal_flags: dict[str, bool]
     static_obstacles: list[StaticObstacle]
     frames: list[ReplayFrame] = Field(min_length=2)
     events: list[ReplayEvent]
@@ -220,6 +259,7 @@ class ReplayProvenance(ContractModel):
     simulation_source_commit: Commit
     visualizer_source_commit: Commit
     source_dirty: bool
+    visualizer_dirty: bool
     deterministic_inference: Literal[True] = True
     python_version: str
     package_versions: dict[str, str]
@@ -232,7 +272,7 @@ class ReplayBundle(ContractModel):
     coordinate_system: Literal["simulation_xyz_z_up_m"] = "simulation_xyz_z_up_m"
     presentation: Literal["horizontal_projection_fixed_heights"] = "horizontal_projection_fixed_heights"
     provenance: ReplayProvenance
-    episode_count: Literal[1, 3, 5, 10] = 5
+    episode_count: Literal[1] = 1
     seed_start: Annotated[int, Field(ge=0)]
     episodes: list[ReplayEpisode]
 

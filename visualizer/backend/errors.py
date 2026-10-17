@@ -6,6 +6,8 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from starlette.exceptions import HTTPException
 
+from .application_error import ApplicationError
+
 logger = logging.getLogger(__name__)
 
 
@@ -16,14 +18,6 @@ class ErrorDetail(BaseModel):
 
 class ErrorResponse(BaseModel):
     error: ErrorDetail
-
-
-class ApplicationError(Exception):
-    def __init__(self, code: str, message: str, status_code: int = 400):
-        super().__init__(message)
-        self.code = code
-        self.message = message
-        self.status_code = status_code
 
 
 def error_response(code: str, message: str, status_code: int) -> JSONResponse:

@@ -1,4 +1,4 @@
-# Architecture / Phase 1
+# Architecture / Phase 2
 
 ## Isolation and ownership
 
@@ -25,14 +25,25 @@ browser (localhost:5173)
 FastAPI (127.0.0.1:8000)
   validated local configuration / structured error handlers
   read-only internal research artifact access (no public file endpoint)
-  replay contract definitions only
+  health only; no replay endpoint in Phase 2
        |
        +-- original research worktree: read frozen artifacts only
-       +-- visualizer/data/local: future generated recordings (gitignored)
+       +-- visualizer/data/local: CLI-generated replay files (gitignored)
+
+manual local invocation (research Python)
+  python -m visualizer.backend.replay_cli
+       |
+       v
+  replay_engine.run_replay_episode
+       |
+       +-- canonical build_canonical_env_config + SoldierEnv
+       +-- existing policy wrappers and frozen artifact catalogs
+       +-- one validated EpisodeTrace -> atomic .json.gz
 ```
 
 There is no database, cloud service, auth service, external control interface,
-WebSocket stream, worker queue or running simulation in Phase 1.
+WebSocket stream, worker queue, REST replay endpoint, or browser-side simulation.
+The React application remains the Phase 1 empty 3D scene.
 
 ## Backend surfaces
 
@@ -52,8 +63,19 @@ WebSocket stream, worker queue or running simulation in Phase 1.
 - [errors.py](../backend/errors.py): `{error: {code, message}}`, status codes,
   explicit validation/application failures and logged unexpected exceptions
   without leaking private stack traces in responses.
-- [replay_contract.py](../backend/replay_contract.py): Pydantic definitions,
-  not a generator. Checked-in schema is generated from these definitions.
+- [replay_contract.py](../backend/replay_contract.py): authoritative Pydantic
+  v1 replay definitions; the single-episode JSON Schema is generated from these
+  definitions and validated on read/write.
+- [replay_engine.py](../backend/replay_engine.py): source-commit-pinned adapter,
+  allowlisted checkpoint resolution/hash checks, deterministic inference,
+  native-state/frame/event recording, semantic trace validation and atomic
+  compressed output. It is a thin recorder, not new simulation dynamics.
+- [replay_cli.py](../backend/replay_cli.py): standalone one-episode command.
+  It has no arbitrary checkpoint or output-path input; output is a stem under
+  the visualization application's ignored `data/local` directory.
+- [application_error.py](../backend/application_error.py): shared expected
+  application failures, importable without FastAPI so the CLI can run in the
+  existing research Python environment. API handlers retain the same errors.
 
 Local dotenv and generated output are ignored. Never call the original
 `build_model_registry()` or campaign writers from the API: they write into
@@ -115,25 +137,24 @@ labeled horizontal projection with fixed display heights.**
 No altitude control, pitch state, 3D collision code or new dynamics is introduced
 by this application. Those already in the scientific source remain unchanged.
 
-## Exact integration seams for Phase 2 (not implemented)
+## Exact Phase 2 integration seams
 
-| Task | Existing entry point / required ordering |
+| Task | Reused entry point / replay behavior |
 |---|---|
-| Canonical scenario | `experiments.journal_clutter_protocol.build_canonical_env_config(level, estimator, awareness_mode=...)`; instantiate `SoldierEnv(config=cfg, render_mode=None)` |
-| Environment lifetime | `reset(seed=simulation_seed)`, policy `reset()`, deterministic inference, `step(np.float32(action))`, stop on `terminated or truncated`, `close()` in `finally` |
-| Simple policies | `uav_defend.policies.registry.get_policy`; RMPC and LR-PPO are not registry entries |
-| RMPC | `RMPCPolicy(config=cfg, rmpc_config=...)`; read frozen `results/rmpc_tuning/selected_rmpc_config.json`, require frozen marker, use selected values rather than class defaults |
-| Clutter learned defenders | `defender_adaptation_evaluation.build_defender_instances` demonstrates exact estimator/feature requirements and registry roles; do not call its writer or bulk `evaluate_all` |
-| Policy information | `build_policy_info(info, estimator)` from sanitizer; full `info` stays recorder-only |
-| Sector features | `compute_sector_features(..., perceived=env._defender_last_perceived, sensor_range=SECTOR_OBSERVATION_V1.sensor_range)`; never feed ground-truth obstacle layout to policy |
-| PPO / PPO-Kalman | Wrapper `.load(path, deterministic=True)` then `.act(obs, sanitized_info)`; concatenate 20 sector features for 36-D clutter checkpoints |
-| LR-PPO | `LeadResidualPPOPolicyWrapper.load(..., residual_max_angle_deg=30.0, config=cfg, deterministic=True)`; `.act(base_16_obs, sanitized_info, extra_features=sector)` internally constructs 39-D clutter input; no external duplicate concatenation |
-| A0 | `env.enemy_tactical_override = None`, not an alternate browser/Python attacker |
-| A1 | `build_attacker_observation(env, cfg.enemy_defender_detection_range)` yields 36-D; frozen `PPO.load` and `predict(..., deterministic=True)` once per decision; set pending action through `env.enemy_tactical_override` before `step` |
-| A1 hook ordering | Mirror `defender_adaptation_evaluation._run_matched_episode`: install callback referencing pending action, reset, compute A1 at current state, compute defender at same pre-step state, then step. Do not substitute the training mixture wrapper for an explicitly selected attacker |
-| State | `reset/step` full `info`: `soldier_pos`, `defender_pos`, `enemy_pos`, velocities, detection/tracking and safety fields; `_get_obs()` / `_get_info()` available where established harness uses them |
-| Static / dynamic geometry | `env._obstacle_layout.obstacles` and `env._dynamic_obstacles`; private access should be confined to one visualizer adapter, not scattered through HTTP handlers |
-| Existing trajectory precedent | `experiments.eval_utils.Trajectory`, `run_episode_with_trajectory`; A1-aware `defender_adaptation_trajectory_analysis._run_episode_with_trajectory` and `adaptive_attacker_trajectory_analysis._run_episode_with_trajectory` |
+| Canonical scenario | `experiments.journal_clutter_protocol.build_canonical_env_config(level, estimator, awareness_mode=...)`; replay instantiates the actual `SoldierEnv(config=cfg)` |
+| Environment lifetime | `reset(seed=simulation_seed)`, policy `reset()`, one deterministic inference per selected policy at each pre-step state, `step(np.float32(action))`, stop on native `terminated or truncated`, `close()` in `finally` |
+| Analytical policies | `uav_defend.policies.registry.get_policy`; Greedy/Kalman Greedy omit unsupported `config` constructor kwargs; PN/Lead use canonical `config`; RMPC uses frozen config |
+| RMPC | `RMPCPolicy(config=cfg, rmpc_config=...)`; frozen selected `C1_FAST` parameters from `clutter_benchmark_protocol._frozen_rmpc_config()`, never class defaults |
+| Learned policies | Exact training seed/generation/role and relative path are derived from the frozen registry or conference `FROZEN_MODELS`; registry path and SHA-256 are verified before/after inference; model obs/action shape is checked |
+| Policy information | `build_policy_info(info, estimator)` is the actual policy sanitizer; full environment info stays in recorder-only `privileged_diagnostics.simulator_info` |
+| Sector features | Existing `compute_sector_features(..., perceived=env._defender_last_perceived, sensor_range=SECTOR_OBSERVATION_V1.sensor_range)`; recorded separately as decision-time controller-visible data |
+| PPO / PPO-Kalman | Existing wrapper `.load(path, deterministic=True)` and `.act(obs, sanitized_info)`; 20 existing sector features are concatenated only for clutter checkpoints, yielding 36-D model input |
+| LR-PPO | Existing `LeadResidualPPOPolicyWrapper.load(..., residual_max_angle_deg=30.0, config=cfg, deterministic=True)`; `.act(base_16_obs, sanitized_info, extra_features=sector)` constructs the actual 19/39-D input |
+| A0 | `env.enemy_tactical_override = None`; no learned tactical callback is injected |
+| A1 | Existing `build_attacker_observation` yields 36-D; frozen `PPO.load` and `predict(..., deterministic=True)` once per pre-step state; pending action is passed through the existing override hook before `env.step` |
+| A1 hook ordering | Same as `defender_adaptation_evaluation._run_matched_episode`: pending-action callback, reset, A1 decision, sanitized defender decision, then step |
+| State | Full returned `reset/step` info includes authoritative positions/velocities, detection, tracking, obstacle and safety diagnostics; initial plus each transitioned state is recorded |
+| Geometry | Static AABBs from `env._obstacle_layout.obstacles`; dynamic obstacle spheres from current `env._dynamic_obstacles`; geometry is read-only and never regenerated in the browser |
 
 Private scientific access is already used in the journal harness; document that
 coupling and test against source commit rather than changing SoldierEnv to make
@@ -142,6 +163,8 @@ telemetry recorder and its NPZ loader uses pickle; do not expose arbitrary NPZ
 uploads. Existing plot-generating entry points write scientific directories and
 must not be called from the app.
 
-Phase 2 should retain one isolated recording adapter with no scientific edits.
-Read-only source imports and small targeted regression tests are permitted;
-training, massive evaluation, checkpoint reselection and data mutation are not.
+The adapter imports private simulator state only at this isolated boundary. It
+does not change the research source. Tests include a real exact-seed comparison
+against `_run_matched_episode`, deterministic repeat, and the source's native
+per-step states/commands/obstacles. Training, large evaluation, checkpoint
+reselection and data mutation are not performed.

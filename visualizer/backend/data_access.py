@@ -2,7 +2,7 @@ import hashlib
 from pathlib import Path, PureWindowsPath
 
 from .config import Settings
-from .errors import ApplicationError
+from .application_error import ApplicationError
 
 
 class ResearchDataStore:

@@ -1,9 +1,11 @@
 # Counter-UAS 3D Simulation Explorer
 
-Phase 1 only: isolated local API, real Three.js empty scene, data-root boundary,
-policy audit, and versioned replay/telemetry contract. No simulation, inference,
-episode endpoint, training, animation, or policy comparison is implemented.
-Disabled controls explicitly show their future phase.
+Phase 2: an isolated local research visualizer with a real Three.js empty scene
+and a standalone, deterministic, single-episode replay engine over the existing
+Python simulator. The backend CLI loads allowlisted frozen policies, records
+authoritative native-3D traces, validates them, and writes compressed replays
+locally. The frontend remains the Phase 1 empty scene; there is no replay API,
+playback, batch runner, training, comparison, or cloud service.
 
 ## Scientific integrity and coordinate decision
 
@@ -72,11 +74,13 @@ has been checked or that replay is available.
 Frozen artifacts are opened only as `rb` through internal `ResearchDataStore`.
 Missing artifacts, read failures, and hash mismatches have explicit errors.
 No browser endpoint accepts filenames, checkpoint paths, output paths or uploads.
-New output is reserved for gitignored `visualizer\data\local`; Phase 1 does not
-write recordings or create this directory on startup. The application does not
-change filesystem ACLs; read-only behavior is enforced by the code boundary,
-not a claim of OS-level isolation. An optional read-only OS account/ACL adds
-defense in depth without changing the research files themselves.
+The CLI accepts policy/scenario selections and an optional filename stem only;
+it never accepts a checkpoint path or output path. Replay output is written to
+gitignored `visualizer\data\local` only when the CLI is explicitly invoked.
+Neither API startup nor the frontend writes recordings. The application does
+not change filesystem ACLs; read-only behavior is enforced by the code
+boundary, not a claim of OS-level isolation. An optional read-only OS
+account/ACL adds defense in depth without changing research files.
 
 ## Tests and build
 
@@ -99,11 +103,32 @@ screenshots to gitignored `frontend\test-results`. Run the backend separately
 to test a live proxy/health connection. Vite production output is a build
 artifact, not a cloud deployment or packaged API server.
 
-The Phase 1 venv deliberately installs only the API/test stack. The scientific
-Gymnasium / SB3 / Torch dependencies remain in the existing research environment;
-they are required for Phase 2, not API health or the empty scene. No checkpoint
-is loaded by importing the backend. The existing root scientific requirements
-are left unchanged.
+The Phase 1 venv deliberately installs only the API/test stack. Run replay
+commands with the existing research Python environment containing the frozen
+scientific Gymnasium / SB3 / Torch dependencies; no scientific package
+installation or requirements change is needed. The CLI imports real simulation
+modules and loads frozen checkpoints only when a replay is explicitly requested.
+The health API and empty frontend do not load models.
+
+### Generate one real replay (Phase 2)
+
+Use the existing research Python with the local data root configured. The
+following is a single episode, no batch mode; the output name is a stem, not a
+path, and files are never overwritten:
+
+```powershell
+Set-Location -LiteralPath 'C:\Users\mimishal\OneDrive\Documents\UIC\PhD\Research\RL-UAV-Extended-visualizer'
+$env:VISUALIZER_RESEARCH_DATA_ROOT = 'C:\Users\mimishal\OneDrive\Documents\UIC\PhD\Research\RL-UAV-Extended-lrppo-clutter'
+python -m visualizer.backend.replay_cli --defender lr_ppo --generation d1 --training-seed 77 --attacker A1-203 --clutter C3 --perception map_local --evaluation-seed 0
+```
+
+Learned defenders require an explicit generation and training seed. Supported
+attacker IDs set their own fixed model seed; A0 has none. The engine verifies
+the source commit, allowlisted checkpoint location, frozen SHA-256, model
+observation/action shapes and selected generation role before execution. Replay
+files are gzip JSON under `visualizer\data\local` (gitignored). See
+[replay-engine validation](docs/replay_engine_validation.md) for actual
+compatibility, smoke, equivalence, and known-limit reports.
 
 ### Phase 1 verification record (2026-10-16)
 
@@ -133,5 +158,6 @@ are left unchanged.
 - [Machine-readable JSON Schema](docs/replay_v1.schema.json)
 - [Eight-phase implementation roadmap](docs/implementation_roadmap.md)
 
-Phase 1 ends here. Implement the real replay engine only after Phase 2 is
-explicitly requested.
+Phase 2 ends with a verified single-episode CLI engine. The React application
+remains an empty 3D scene; do not implement Phase 3 batch/REST execution or
+Phase 4 playback until explicitly requested.
