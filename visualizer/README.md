@@ -1,12 +1,11 @@
 # Counter-UAS 3D Simulation Explorer
 
-Phase 3: an isolated local research visualizer with a live policy/scenario
-catalog, validated multi-episode replay jobs, and a responsive React dashboard
-over the existing Python simulator. The backend invokes the Phase 2 CLI once per
-seed, validates and stores authoritative native-3D traces locally, and exposes
-job status and replay summaries. The Three.js scene intentionally remains empty
-until Phase 4; there is no browser-side simulation, training, comparison, or
-cloud service.
+Phase 4: an isolated local research visualizer with a live policy/scenario
+catalog, validated multi-episode replay jobs, and interactive playback of
+existing authoritative native-3D traces. React Three Fiber renders the recorded
+defender, attacker, asset, obstacles, trajectories, detection, and events; one
+simulated-time clock controls playback and scrubbing. The browser does not
+simulate, train, infer policies, or change recorded outcomes.
 
 ## Scientific integrity and coordinate decision
 
@@ -14,12 +13,12 @@ Based on local research commit `a3bc6c4acf1d0b601945159d682f9f14bc702860`,
 not a remote branch. All additions are confined to this `visualizer` directory.
 Scientific Python, experiment configuration, results, weights and tags are unchanged.
 
-**The audited source is native 3D, not 2D.** `SoldierEnv` already has altitude,
+**The simulator and viewer preserve native 3D.** `SoldierEnv` records altitude,
 three-component actions, climb/descent limits, and 3D collision/detection.
-The researcher approved preserving native 3D recordings while offering a
-**labeled horizontal projection with fixed visual heights**. No source dynamics
-will be flattened or extended. Projection is presentation only; overlapping
-projected paths do not establish a collision. See [architecture](docs/architecture.md).
+Coordinates map from simulator `(x, y, z)` to Three.js `(x, z, -y)` without
+flattening altitude. The top-down camera is an orthographic projection for
+accurate horizontal geometry; it does not alter the underlying replay.
+See [architecture](docs/architecture.md) and [3D playback](docs/3d_playback.md).
 
 ## Windows setup
 
@@ -160,18 +159,45 @@ files are gzip JSON under `visualizer\data\local` (gitignored). See
 [replay-engine validation](docs/replay_engine_validation.md) for actual
 compatibility, smoke, equivalence, and known-limit reports.
 
-### Use the Phase 3 API and browser
+### Use the Phase 4 API and browser
 
 Open <http://127.0.0.1:5173>, select an available defender and attacker, choose
 C0–C3 and `local` or `map_local`, then request 1, 3, 5, or 10 episodes. Jobs
 execute sequentially, with consecutive evaluation seeds and deterministic
-inference. The interface shows actual job status and validated episode summaries;
-the viewport continues to say that playback is planned for Phase 4.
+inference. Select an existing result to lazily load its complete validated trace.
+Play, pause, restart, step, scrub, change simulated-time speed, follow either UAV,
+or switch to a top-down projection. Trajectories show only recorded history up
+to the current time unless **Show full trajectory** is enabled. Obstacle
+geometry, orientation, and event markers come from the trace; interpolation
+between saved frames is display-only.
 
 See [Replay API](docs/replay_api.md) for every endpoint, request/response
 contracts, checkpoint-generation rules, actual successful local examples,
 scenario parameter interpretation, timeout/cancellation behavior, and
 reproducibility limitations.
+
+### Phase 4 validation evidence
+
+The Chromium suite includes deterministic replay fixtures and an opt-in run
+against the already-recorded local Greedy/A0/C0, LR-PPO D0/A0/C2,
+PPO-Kalman D0/A1-203/C3, and LR-PPO D1 seed 77/A1-203/C3 traces. The latter
+contains 974 frames and was scrubbed at its midpoint and terminal frame. No
+episodes were generated for Phase 4.
+
+Run the live replay browser check only while the configured Phase 3 API is
+running:
+
+```powershell
+Set-Location -LiteralPath 'C:\Users\mimishal\OneDrive\Documents\UIC\PhD\Research\RL-UAV-Extended-visualizer\visualizer\frontend'
+$env:VISUALIZER_ENABLE_REAL_REPLAY_TESTS = '1'
+npm run test:browser
+Remove-Item Env:\VISUALIZER_ENABLE_REAL_REPLAY_TESTS
+```
+
+The six full-page screenshots from the real traces are written to the ignored
+`visualizer\frontend\test-results` directory: beginning, mid-episode trails,
+cluttered obstacles, top-down, terminal outcome, and selected multi-episode
+list. The Chromium software renderer does not require a display server.
 
 ### Phase 1 verification record (2026-10-16)
 
@@ -201,7 +227,7 @@ reproducibility limitations.
 - [Machine-readable JSON Schema](docs/replay_v1.schema.json)
 - [Eight-phase implementation roadmap](docs/implementation_roadmap.md)
 - [Phase 3 Replay API](docs/replay_api.md)
+- [Phase 4 native-3D playback details](docs/3d_playback.md)
 
-Phase 3 is complete at the catalog, batch-job, REST-summary, and results-UI
-boundary. Stop here: do not add 3D animation, interpolation, playback controls,
-or policy diagnostic overlays (Phase 4+).
+Phase 4 is complete at validated native-3D episode playback. Policy-specific
+diagnostic overlays are intentionally reserved for Phase 5.

@@ -167,6 +167,164 @@ export interface ReplaySummary {
   };
 }
 
+export type Vec3 = readonly [number, number, number];
+
+export interface ReplayCheckpoint {
+  artifact_id: string;
+  research_relative_path: string;
+  sha256: string;
+  role: 'd0_start' | 'final' | 'secondary_best' | 'conference_best' | 'attacker_best';
+}
+
+export interface ReplayPolicySelection {
+  policy_kind: 'analytical' | 'learned' | 'scripted';
+  policy_id: string;
+  architecture: string | null;
+  generation: 'conference' | 'd0' | 'd0_plus' | 'd1' | null;
+  training_seed: number | null;
+  checkpoint: ReplayCheckpoint | null;
+  observation_shape: number[] | null;
+  action_shape: [3];
+  estimator: 'measurement' | 'kalman' | 'attacker_local' | 'scripted_ground_truth';
+  parameters: Record<string, unknown>;
+}
+
+export interface ReplayEntityState {
+  position_m: Vec3;
+  velocity_mps: Vec3 | null;
+  speed_mps: number | null;
+  horizontal_heading_deg: number | null;
+  movement_direction: Vec3 | null;
+}
+
+export type EntityState = ReplayEntityState;
+
+export interface ReplayStaticObstacle {
+  obstacle_id: string;
+  min_corner_m: Vec3;
+  max_corner_m: Vec3;
+  map_known: boolean;
+  visual_kind: 'block' | 'tree';
+}
+
+export interface ReplayMovingObstacle {
+  obstacle_id: string;
+  kind: 'bird' | 'airborne_clutter';
+  position_m: Vec3;
+  velocity_mps: Vec3;
+  radius_m: number;
+}
+
+export interface ReplayEvent {
+  kind: 'detection' | 'interception' | 'unsafe_interception' | 'asset_reached' | 'collision' | 'timeout';
+  step: number;
+  time_s: number;
+  source: string;
+  entity: 'defender' | 'attacker' | 'asset' | null;
+  obstacle_id: string | null;
+  position_m: Vec3 | null;
+  contact_fraction: number | null;
+  unavailable_fields: Record<string, string>;
+}
+
+export interface ReplayFrame {
+  step: number;
+  time_s: number;
+  defender: ReplayEntityState;
+  attacker: ReplayEntityState;
+  asset: ReplayEntityState;
+  moving_obstacles: ReplayMovingObstacle[];
+  policy_visible: {
+    estimator: 'measurement' | 'kalman';
+    observation: number[];
+    soldier_pos_m: Vec3;
+    defender_pos_m: Vec3;
+    defender_vel_mps: Vec3;
+    enemy_detected: boolean;
+    enemy_measurement_m: Vec3 | null;
+    enemy_measurement_velocity_mps: Vec3 | null;
+    enemy_measurement_velocity_valid: boolean | null;
+    e_hat_m: Vec3 | null;
+    v_hat_mps: Vec3 | null;
+    sector_features: number[] | null;
+    unavailable_fields: Record<string, string>;
+  };
+  telemetry: Record<string, unknown> | null;
+  privileged_diagnostics: {
+    attacker_position_m: Vec3;
+    attacker_velocity_mps: Vec3;
+    tracking_error_m: number | null;
+    defender_attacker_range_m: number;
+    attacker_asset_range_m: number;
+    closing_speed_mps: number | null;
+    simulator_info: Record<string, unknown>;
+    unavailable_fields: Record<string, string>;
+  };
+  detection_radius_m: number;
+  detection_time_step: number | null;
+  defender_action_applied: boolean | null;
+  cumulative_reward: number | null;
+  environmental_state: Record<string, unknown>;
+  unavailable_fields: Record<string, string>;
+  reward: number | null;
+  terminated: boolean;
+  truncated: boolean;
+  outcome: 'ongoing' | 'intercepted' | 'soldier_caught' | 'unsafe_intercept' | 'timeout'
+    | 'defender_static_obstacle_collision' | 'defender_dynamic_obstacle_collision'
+    | 'enemy_static_obstacle_collision' | 'enemy_dynamic_obstacle_collision';
+}
+
+export interface ReplayEpisode {
+  episode_id: string;
+  simulation_seed: number;
+  defender: ReplayPolicySelection;
+  attacker: ReplayPolicySelection;
+  environment: {
+    clutter: string;
+    awareness: string;
+    scenario_kind: 'canonical';
+    builder: 'experiments.journal_clutter_protocol.build_canonical_env_config';
+    config: Record<string, unknown>;
+    config_sha256: string;
+    dt_s: number;
+  };
+  terminal_flags: { terminated: boolean; truncated: boolean };
+  static_obstacles: ReplayStaticObstacle[];
+  frames: ReplayFrame[];
+  events: ReplayEvent[];
+  summary: {
+    outcome: Exclude<ReplayFrame['outcome'], 'ongoing'>;
+    steps: number;
+    duration_s: number;
+    detection_time_step: number | null;
+    detection_time_s: number | null;
+    interception_step: number | null;
+    interception_time_s: number | null;
+    collision_type: string | null;
+    collision_step: number | null;
+    collision_time_s: number | null;
+    final_defender_attacker_distance_m: number;
+    final_attacker_asset_distance_m: number;
+    total_reward: number;
+    safety_metrics: Record<string, unknown>;
+  };
+}
+
+export interface ReplayBundle {
+  schema_version: '1.0.0';
+  coordinate_system: 'simulation_xyz_z_up_m';
+  presentation: 'horizontal_projection_fixed_heights';
+  provenance: ReplaySummary['provenance'] & {
+    deterministic_inference: true;
+    python_version: string;
+    package_versions: Record<string, string>;
+    model_device: string;
+  };
+  episode_count: 1;
+  seed_start: number;
+  episodes: [ReplayEpisode];
+}
+
 export class ApiError extends Error {
   constructor(message: string, readonly status: number, readonly code: string) {
     super(message);
@@ -208,6 +366,10 @@ export function getReplays(limit = 100): Promise<ReplayCatalog> {
 
 export function getReplaySummary(replayId: string): Promise<ReplaySummary> {
   return api(`/api/replays/${encodeURIComponent(replayId)}/summary`);
+}
+
+export function getReplay(replayId: string): Promise<ReplayBundle> {
+  return api(`/api/replays/${encodeURIComponent(replayId)}`);
 }
 
 export function createReplayJob(request: ReplayJobRequest): Promise<ReplayJob> {

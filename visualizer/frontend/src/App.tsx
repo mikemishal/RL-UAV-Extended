@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Battlefield } from './Battlefield';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ReplayPlayback } from './ReplayPlayback';
+import type { PlaybackReadout } from './ReplayPlayback';
 import {
   ApiError,
   cancelReplayJob,
@@ -7,6 +8,7 @@ import {
   getHealth,
   getPolicies,
   getReplayJob,
+  getReplay,
   getReplaySummary,
   getReplays,
   getScenarios,
@@ -16,6 +18,7 @@ import type {
   PolicyCatalog,
   ReplayJob,
   ReplayJobRequest,
+  ReplayBundle,
   ReplayListItem,
   ReplaySummary,
   ScenarioCatalog,
@@ -202,6 +205,7 @@ function EpisodeSelection({
         <button
           className={`episode-result ${selectedId === item.id ? 'selected' : ''}`}
           data-testid="episode-result"
+          data-replay-id={item.id}
           key={item.id}
           onClick={() => onSelect(item.id)}
           role="listitem"
@@ -242,7 +246,23 @@ export function App() {
   const [selectedReplayId, setSelectedReplayId] = useState<string | null>(null);
   const [selectedSummary, setSelectedSummary] = useState<ReplaySummary | null>(null);
   const [summaryError, setSummaryError] = useState<string | null>(null);
+  const [traceBundle, setTraceBundle] = useState<ReplayBundle | null>(null);
+  const [traceReplayId, setTraceReplayId] = useState<string | null>(null);
+  const [traceLoading, setTraceLoading] = useState(false);
+  const [traceError, setTraceError] = useState<string | null>(null);
+  const [sceneError, setSceneError] = useState<string | null>(null);
+  const [playbackReadout, setPlaybackReadout] = useState<PlaybackReadout | null>(null);
   const [loading, setLoading] = useState(true);
+  const handlePlaybackReadout = useCallback((readout: PlaybackReadout | null) => {
+    setPlaybackReadout(previous => previous?.replayId === readout?.replayId
+      && previous?.frame.step === readout?.frame.step
+      && previous?.interpolated === readout?.interpolated
+      ? previous
+      : readout);
+  }, []);
+  const handleSceneError = useCallback((message: string) => {
+    setSceneError(message || null);
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -339,9 +359,14 @@ export function App() {
   useEffect(() => {
     if (!selectedReplayId) {
       setSelectedSummary(null);
+      setTraceBundle(null);
+      setTraceReplayId(null);
+      setTraceError(null);
+      setTraceLoading(false);
       return;
     }
     let active = true;
+    setSelectedSummary(null);
     setSummaryError(null);
     getReplaySummary(selectedReplayId)
       .then(summary => { if (active) setSelectedSummary(summary); })
@@ -352,6 +377,39 @@ export function App() {
         }
       });
     return () => { active = false; };
+  }, [selectedReplayId]);
+
+  useEffect(() => {
+      if (!selectedReplayId) {
+        setTraceBundle(null);
+        setTraceReplayId(null);
+        setTraceError(null);
+        setTraceLoading(false);
+        return;
+      }
+      let active = true;
+      setTraceBundle(null);
+      setTraceError(null);
+      setTraceLoading(true);
+      getReplay(selectedReplayId)
+        .then(bundle => {
+          if (bundle.schema_version !== '1.0.0' || bundle.episodes.length !== 1 || bundle.episodes[0].frames.length < 2) {
+            throw new Error('Replay must contain one validated version 1.0.0 episode with at least two recorded frames.');
+          }
+          if (active) {
+            setTraceBundle(bundle);
+            setTraceReplayId(selectedReplayId);
+          }
+        })
+        .catch(error => {
+          if (active) {
+            setTraceBundle(null);
+            setTraceReplayId(null);
+            setTraceError(error instanceof Error ? error.message : 'Selected replay trace could not be loaded.');
+          }
+        })
+        .finally(() => { if (active) setTraceLoading(false); });
+      return () => { active = false; };
   }, [selectedReplayId]);
 
   useEffect(() => {
@@ -401,6 +459,9 @@ export function App() {
       index,
     }));
   }, [batchSummaries, job, replays]);
+  const selectedReplayIndex = resultItems.findIndex(item => item.id === selectedReplayId);
+  const selectedEpisode = traceReplayId === selectedReplayId ? traceBundle?.episodes[0] ?? null : null;
+  const currentPlaybackReadout = playbackReadout?.replayId === selectedReplayId ? playbackReadout : null;
 
   const batchStats = useMemo(() => {
     const summaries = batchSummaries.map(item => item.summary);
@@ -464,6 +525,10 @@ export function App() {
   }
 
   function selectReplay(id: string) {
+    if (id !== selectedReplayId) {
+      setSelectedSummary(null);
+      setPlaybackReadout(null);
+    }
     setSelectedReplayId(id);
   }
 
@@ -475,7 +540,7 @@ export function App() {
       <header className="app-header">
         <div className="brand-mark" aria-hidden="true">CU</div>
         <div className="brand"><span className="eyebrow">LOCAL RESEARCH WORKSPACE</span><h1>Counter-UAS <span>Simulation Explorer</span></h1></div>
-        <span className="phase-badge">PHASE 3 / EPISODE GENERATION</span>
+        <span className="phase-badge">PHASE 4 / 3D REPLAY</span>
       </header>
       <div className="status-bar"><span className={`status-dot ${health.kind}`} /><span role="status">{health.message}</span><span className="localhost-label">LOCALHOST ONLY</span></div>
       <div className="dashboard">
@@ -550,12 +615,26 @@ export function App() {
           <div className="integrity-note"><strong>Research integrity</strong><p>Allowlisted frozen artifacts, hash verification, deterministic inference, and native Python simulation. No training or browser-side dynamics.</p></div>
         </aside>
         <div className="scene-column">
-          <Battlefield episodeSelected={Boolean(selectedReplayId)} />
-          <section className="playback panel" aria-label="Playback controls">
-            <div><span className="eyebrow">RECORDED PLAYBACK</span><span className="muted">Trajectory playback becomes available in Phase 4</span></div>
-            <p className="muted">{selectedReplayId ? `Replay ${selectedReplayId} metadata is loaded. The 3D scene remains empty until Phase 4 playback.` : 'Select a completed episode to load its validated metadata. No movement is displayed in this phase.'}</p>
-            <span className="muted">No trajectory animation / no fabricated positions</span>
-          </section>
+          <ReplayPlayback
+            replayId={selectedReplayId}
+            episode={selectedEpisode}
+            summary={selectedSummary}
+            traceLoading={traceLoading}
+            traceError={traceError}
+            episodeNumber={selectedReplayIndex + 1}
+            episodeCount={resultItems.length}
+            onSelectPrevious={() => {
+              if (selectedReplayIndex > 0) selectReplay(resultItems[selectedReplayIndex - 1].id);
+            }}
+            onSelectNext={() => {
+              if (selectedReplayIndex >= 0 && selectedReplayIndex < resultItems.length - 1) {
+                selectReplay(resultItems[selectedReplayIndex + 1].id);
+              }
+            }}
+            onReadout={handlePlaybackReadout}
+            onSceneError={handleSceneError}
+          />
+          {sceneError && <p className="inline-error" role="alert">Scene error: {sceneError}</p>}
           <section className="results panel" aria-label="Episode generation progress and results">
             <div className="results-heading">
               <div><span className="eyebrow">REAL SIMULATION JOB</span><h2>Generation progress &amp; episode results</h2></div>
@@ -589,7 +668,32 @@ export function App() {
           </section>
         </div>
         <aside className="diagnostics panel">
-          <span className="eyebrow">SELECTED EPISODE</span><h2>Recorded summary</h2>
+          <span className="eyebrow">LIVE RECORDED STATE</span><h2>Episode information</h2>
+          {!selectedEpisode && <p className="muted">{traceLoading ? 'Loading the complete recorded trace…' : traceError ? 'The selected trace is unavailable; other episodes remain accessible.' : 'Select a completed episode to inspect its recorded state.'}</p>}
+          {selectedEpisode && (
+            <div className="diagnostic-card" aria-label="Current episode information">
+              <h3>{selectedEpisode.defender.policy_id} {selectedEpisode.defender.generation ?? ''} vs {selectedEpisode.attacker.policy_id}</h3>
+              <p>Defender generation: {selectedEpisode.defender.generation ?? 'Not applicable'}</p>
+              <p>Defender training seed: {selectedEpisode.defender.training_seed ?? 'Unavailable'} / checkpoint role: {selectedEpisode.defender.checkpoint?.role ?? 'none / analytical'}</p>
+              <p>Attacker: {selectedEpisode.attacker.policy_id}{selectedEpisode.attacker.training_seed === null ? '' : ` / training seed ${selectedEpisode.attacker.training_seed}`}</p>
+              <p>Clutter: {selectedEpisode.environment.clutter} / perception: {selectedEpisode.environment.awareness}</p>
+              <p>Evaluation seed: {selectedEpisode.simulation_seed} / time step: {selectedEpisode.environment.dt_s.toFixed(3)} s</p>
+              {currentPlaybackReadout && (
+                <>
+                  <p>Current recorded step: {currentPlaybackReadout.frame.step}{currentPlaybackReadout.interpolated ? ' (display between this and the next recorded frame)' : ''}</p>
+                  <p>Detection at this recorded step: {currentPlaybackReadout.frame.policy_visible.enemy_detected ? 'detected' : 'not detected'} / detection time: {selectedEpisode.summary.detection_time_s === null ? 'not recorded' : `${selectedEpisode.summary.detection_time_s.toFixed(1)} s`}</p>
+                  <p>Defender–attacker range at recorded step {currentPlaybackReadout.frame.step}: {currentPlaybackReadout.frame.privileged_diagnostics.defender_attacker_range_m.toFixed(2)} m</p>
+                  <p>Attacker–asset range at recorded step {currentPlaybackReadout.frame.step}: {currentPlaybackReadout.frame.privileged_diagnostics.attacker_asset_range_m.toFixed(2)} m</p>
+                  {currentPlaybackReadout.frame.terminated || currentPlaybackReadout.frame.truncated
+                    ? <p className="terminal-outcome">Terminal simulator outcome: {readableOutcome(currentPlaybackReadout.frame.outcome)}</p>
+                    : <p>Recorded final outcome (known from complete trace): {readableOutcome(selectedEpisode.summary.outcome)}</p>}
+                </>
+              )}
+              {selectedEpisode && !currentPlaybackReadout && <p className="muted">Current step: waiting for trace playback initialization.</p>}
+              <p className="privileged-note">The attacker remains visible to the researcher before policy detection; this is privileged visualization, not defender information.</p>
+            </div>
+          )}
+          <h2>Recorded summary &amp; provenance</h2>
           {!selectedSummary && <p className="muted">Select a completed result to inspect its validated summary and provenance.</p>}
           {selectedSummary && (
             <>
@@ -613,9 +717,9 @@ export function App() {
               </div>
             </>
           )}
-          <div className="diagnostic-card"><h3>Policy telemetry</h3><p>Controller-specific diagnostics remain in the validated replay data. Inspection overlays are planned for Phase 5.</p></div>
-          <div className="legend"><h3>Scene entity colors / planned</h3><span><i className="defender" />Defender UAV</span><span><i className="attacker" />Attacker UAV</span><span><i className="asset" />Protected mobile asset</span><span><i className="obstacle" />Moving obstacles</span></div>
-          <p className="projection-note">Projection is visual only. Native 3D state and collision semantics remain unchanged.</p>
+          <div className="diagnostic-card"><h3>Policy telemetry</h3><p>Optional controller data stays attached to authoritative replay frames. Policy-specific overlays are reserved for Phase 5.</p></div>
+          <div className="legend"><h3>Scene entity colors</h3><span><i className="defender" />Defender UAV / trail</span><span><i className="attacker" />Attacker UAV / trail</span><span><i className="asset" />Protected mobile asset / trail</span><span><i className="obstacle" />Moving obstacles</span></div>
+          <p className="projection-note">The browser interpolates only for display. Native recorded 3D state and simulator collision semantics remain unchanged.</p>
         </aside>
       </div>
       <footer className="app-footer"><span>Real simulation. Recorded evidence. No synthetic results.</span><span>{catalog?.source_commit ? `Research source ${catalog.source_commit}` : 'Waiting for verified policy catalog'}</span></footer>

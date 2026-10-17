@@ -1,4 +1,4 @@
-# Architecture / Phase 3
+# Architecture / Phase 4
 
 ## Isolation and ownership
 
@@ -44,8 +44,8 @@ catalog inspection / replay execution (configured research Python)
 There is no database, cloud service, auth service, external control interface,
 WebSocket stream, distributed queue, or browser-side simulation. A bounded
 single-worker executor permits one active batch; episodes run sequentially in
-fresh configured-Python child processes. The React application keeps the empty
-Phase 1 battlefield and shows a no-playback message until Phase 4.
+fresh configured-Python child processes. During playback, the browser reads
+only an already-validated full replay and never calls policy inference.
 
 ## Backend surfaces
 
@@ -105,30 +105,37 @@ catalog identities, enforces containment, and compares hashes. No fallback to
 an unrelated sibling repository, unregistered final checkpoint, or newly
 generated artifact.
 
-## Frontend scene
+## Frontend scene and playback
 
-[Battlefield.tsx](../frontend/src/Battlefield.tsx) contains a real R3F Canvas:
-100 m square ground, 5 m coordinate grid, origin axes, ambient/directional light,
-perspective camera, demand-driven rendering, resize-aware canvas, orbit/zoom/pan,
-and camera reset through Drei controls. Geometry is static infrastructure only.
-Orbit inertia is disabled so reset returns immediately to the saved camera,
-without pending damping deltas moving it again.
-The empty-state overlay ignores pointer events so camera interaction remains
-available. A WebGL fallback/error boundary and context-loss notice avoid a
-success-looking blank viewport. No models, episode arrays or moving placeholders
-exist. No external assets, fonts or network rendering dependencies are needed.
+[Battlefield.tsx](../frontend/src/Battlefield.tsx) owns the React Three Fiber
+scene. With no selection it renders the ground plane, world grid, origin axes,
+lighting, a resize-aware perspective camera, Drei orbit/pan/zoom controls, and
+the explicit **No episode loaded** overlay. With a selected episode it renders
+the recorded defender, attacker, asset, exact static AABBs, per-frame moving
+obstacle spheres, 3D detection sphere, event markers and efficient trajectory
+lines. Low-poly UAV/asset models are decorative skins around the recorded
+position; no rotor, bank, pitch, or vehicle dynamics are simulated.
 
-[App.tsx](../frontend/src/App.tsx) owns catalog-driven defender/generation/seed,
-attacker, clutter, perception, and episode selection, job polling/cancellation,
-validated episode summaries, exploratory descriptive statistics, and
-provenance. Default batch is five; choices are 1/3/5/10. Incompatible or
-unavailable catalog entries are not selectable. The Three.js viewport stays
-operational and empty, explicitly indicating that trajectory playback starts in
-Phase 4. A backend failure is visible and never replaced with fake outcomes.
+[ReplayPlayback.tsx](../frontend/src/ReplayPlayback.tsx) owns the single
+simulated-time clock, exact-frame seeking, presentation-only interpolation,
+play/pause/loop/speed controls, trail visibility and camera mode. Free and
+follow cameras are perspective views; top-down switches to an orthographic
+camera. Follow motion uses the same interpolated current timestamp as the
+entities. Camera reset returns to an auto-fit view in each mode. Episode traces
+are fetched lazily from the existing validated replay endpoint and are cleared
+before a new episode becomes visible.
 
-Planned camera modes: free orbit (implemented), defender follow, attacker
-follow, and orthographic top-down (Phase 4). Reset is functional now; follow
-and top-down controls are not falsely offered as working.
+[App.tsx](../frontend/src/App.tsx) retains catalog-driven experiment setup,
+job polling/cancellation, results, summary and provenance; it also displays
+frame-accurate detection/range/outcome information. The attacker is explicitly
+labeled as privileged researcher visualization before policy detection.
+Interpolated positions are not reported as extra observations. Missing nullable
+metadata remains unavailable rather than being reconstructed. WebGL loss,
+trace validation, and backend failures are surfaced and do not hide other
+selectable replays. No external assets or render services are used.
+
+See [3D playback](3d_playback.md) for coordinate/time conventions, camera,
+event, interpolation and long-trace behavior.
 
 ## Coordinate discrepancy and approved resolution
 
@@ -138,25 +145,26 @@ altitude influences constraints, detection, interceptions and collisions.
 Existing trajectory comments mentioning `T x 2` and an LR wrapper docstring
 claiming no model has been trained are historical/stale, not authoritative.
 
-Researcher decision in this session: **preserve native 3D data; offer a clearly
-labeled horizontal projection with fixed display heights.**
+Phase 4 requirement: **preserve and display the native 3D state.** The viewer
+does not flatten altitude or apply fixed-height substitutions.
 
 - Recording coordinate system: `[x, y, z]`, meters, simulation z-up.
-- Projection: Three.js `[X,Y,Z] = [x, h_visual, -y]`.
-  Simulation +x maps to scene +X and simulation +y maps to scene -Z;
-  this preserves orientation when viewed from above in a y-up Three.js scene.
-- Future fixed visual entity centers: defender/attacker `h_visual=1.5 m`,
-  asset `h_visual=0.5 m`. These are display offsets, not recorded altitudes.
-- Native alternative, if explicitly enabled later: `[x,z,-y]`; never rewrite
-  source state. Ground entity remains simulation z=0.
-- Native obstacle bounds/radii and all collision evidence are preserved.
-  Buildings/trees are low-poly skins, not alternative collision models.
-  Static simulator geometry is AABB; `map_known` is metadata, not a proven
-  building/tree taxonomy. Any tree skin must be labeled decorative.
-- Heading in the horizontal plane is `atan2(v_y,v_x)` with CCW-positive
-  simulation convention; zero horizontal speed yields undefined/null heading.
-- Projected overlap is not collision, and projected angular change is not the
-  bounded native LR-PPO angular deviation.
+- Central transform: Three.js `[X,Y,Z] = [x,z,-y]`, a right-handed rotation.
+  It is applied to positions, vectors, AABB bounds, dynamic obstacle
+  coordinates, events, trails and camera targets. Distances and vector angles
+  are preserved; a simulator ground altitude `z=0` maps to scene `Y=0`.
+- The replay-v1 `presentation: horizontal_projection_fixed_heights` marker is
+  retained for schema compatibility. The Phase 4 viewer uses the native
+  `position_m` values and does not replace recorded altitude with fixed heights.
+- Static obstacles use the recorded AABB bounds and dimensions. Moving
+  obstacles use each recorded position and radius. Low-poly appearance changes
+  only the visual skin, never collision geometry.
+- Horizontal heading uses recorded heading when present, otherwise recorded
+  velocity/movement direction. If neither exists, orientation is derived from
+  adjacent recorded positions and explicitly labeled display-only.
+- Top-down mode uses an orthographic camera to project the native 3D replay
+  onto the horizontal plane. It does not change replay data or simulator
+  collision semantics.
 
 No altitude control, pitch state, 3D collision code or new dynamics is introduced
 by this application. Those already in the scientific source remain unchanged.

@@ -1,8 +1,8 @@
 # Eight-phase implementation roadmap
 
-Phases 1–3 are implemented and verified. Phase 3 ends at batch generation,
-validated summaries, and a static 3D viewport. Stop here; Phase 4 requires a
-separate explicit request. Later phases remain design boundaries.
+Phases 1–4 are implemented and verified. Phase 4 provides native-3D playback
+from validated stored traces. Stop at this boundary; Phase 5 policy diagnostics
+are intentionally not implemented.
 
 ## 1. Setup and architecture
 
@@ -37,7 +37,8 @@ separate explicit request. Later phases remain design boundaries.
 
 - Render real Python frames with blue defender, red attacker, green asset,
   native obstacle geometry, decorative low-poly skins and distinct moving clutter.
-- Preserve native 3D recordings; default to approved labeled horizontal projection.
+- Preserve and render native 3D recordings. Offer an explicit orthographic
+  top-down camera without altering or flattening the episode data.
 - Add trajectories, detection and recorded event markers, no browser dynamics.
 - Add play/pause/step/scrub/speed/replay/episode navigation and final summaries.
 - Free orbit, defender follow, attacker follow, accurate top-down geometry;
@@ -121,5 +122,41 @@ resolved by the researcher's explicit decision, not by changing the simulator.
   build passed, and 48 focused scientific regression tests passed. Descriptive
   batch statistics are exploratory and not publication-grade estimates.
 
-Phase 4 playback, browser interpolation, moving entities, and policy diagnostic
-overlays remain out of scope for this completed phase.
+## Phase 4 completion / stop boundary
+
+- The selected replay is fetched lazily from the validated full-trace endpoint.
+  The frontend reads recorded frames only and has no inference or simulation
+  API calls during playback.
+- One simulated-time clock drives all entities and moving obstacles. Play,
+  pause, restart, exact frame stepping, timeline scrubbing, jump-to-start/end,
+  and 0.25×–8× simulated-time speeds are available. Playback stops at the
+  recorded terminal time unless the user explicitly enables looping.
+- Interpolation is display-only, clamped to adjacent frames in the selected
+  episode, and never extrapolates beyond its terminal frame. Paused frame
+  stepping and the information panel use authoritative recorded samples.
+- The native right-handed mapping `(x,y,z) → (x,z,-y)` applies to entity and
+  obstacle positions, vectors, AABB geometry, event positions, trails and
+  camera targets. Distances and vector angles are tested.
+- The scene renders low-poly UAV/asset models at native recorded positions,
+  exact static AABBs, recorded dynamic obstacle spheres, a 3D detection sphere,
+  event markers, and trajectories up to the current time. Future positions are
+  hidden unless full-trajectory viewing is enabled.
+- Free perspective orbit, defender/attacker follow, orthographic top-down,
+  reset camera, obstacle display options and per-trail visibility are available.
+  The attacker is labeled as privileged researcher visualization before
+  recorded detection.
+- Verified real browser data: Greedy/A0/C0 (282 frames),
+  LR-PPO D0/A0/C2 (170 frames), PPO-Kalman D0/A1-203/C3 (330 frames), and
+  LR-PPO D1 seed 77/A1-203/C3 (974 frames). Browser checks compare displayed
+  frame-zero coordinates to the API and scrub the long trace to an interpolated
+  midpoint and terminal frame. No episodes were regenerated.
+- Six real-data Chromium screenshots are captured under ignored
+  `visualizer/frontend/test-results/`; the automated pure helper tests cover
+  coordinate/distance/angle preservation, AABB transforms, camera bounds,
+  exact frame selection, interpolation and immutable replay frames.
+- Phase 5 is not started: no policy-specific arrows, LR-PPO vectors, Kalman
+  estimates, residual-angle displays, safety-intervention explanations, or
+  other diagnostic overlays were added.
+
+See [3D playback documentation](3d_playback.md) for implementation details and
+known visualization limitations.
