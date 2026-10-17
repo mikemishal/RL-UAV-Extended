@@ -37,7 +37,7 @@ function WebGLStatus({ onLost }: { onLost: (lost: boolean) => void }) {
   return null;
 }
 
-export function Battlefield() {
+export function Battlefield({ episodeSelected = false }: { episodeSelected?: boolean }) {
   const controls = useRef<ComponentRef<typeof OrbitControls>>(null);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -89,8 +89,10 @@ export function Battlefield() {
         {failed && <div className="scene-error" role="alert">WebGL context lost. Reload to restore the scene.</div>}
         <div className="empty-state">
           <span className="empty-icon" aria-hidden="true">+</span>
-          <h3>No episode loaded</h3>
-          <p>This is an empty scene, not a simulated episode.<br />Real Python replay integration begins in Phase 2.</p>
+          <h3>No episode loaded for playback</h3>
+          <p>{episodeSelected
+            ? 'A real episode is selected for metadata inspection. Trajectory playback begins in Phase 4.'
+            : 'This is an empty scene, not a simulated episode. Select a completed replay to inspect its metadata.'}</p>
         </div>
         <div className="viewport-caption">Horizontal projection view / simulation x,y mapped to scene X,-Z</div>
       </div>

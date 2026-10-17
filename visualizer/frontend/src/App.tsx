@@ -1,98 +1,624 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Battlefield } from './Battlefield';
+import {
+  ApiError,
+  cancelReplayJob,
+  createReplayJob,
+  getHealth,
+  getPolicies,
+  getReplayJob,
+  getReplaySummary,
+  getReplays,
+  getScenarios,
+} from './api';
+import type {
+  DefenderPolicy,
+  PolicyCatalog,
+  ReplayJob,
+  ReplayJobRequest,
+  ReplayListItem,
+  ReplaySummary,
+  ScenarioCatalog,
+} from './api';
 
 type BackendStatus = { kind: 'checking' | 'ok' | 'degraded' | 'error'; message: string };
+type EpisodeCount = 1 | 3 | 5 | 10;
+const MAX_SEED = 2 ** 32 - 1;
+
+const parameterLabels: Record<string, string> = {
+  v_d: 'Defender speed',
+  v_e: 'Attacker speed',
+  v_s: 'Asset speed',
+  detection_radius: 'Detection radius',
+  intercept_radius: 'Interception radius',
+  threat_radius: 'Threat radius',
+  unsafe_intercept_radius: 'Unsafe interception radius',
+  dt: 'Time step',
+  max_steps: 'Maximum steps',
+  max_altitude: 'Maximum altitude',
+  defender_max_accel: 'Defender maximum acceleration',
+  defender_max_climb_rate: 'Maximum climb rate',
+  defender_max_descent_rate: 'Maximum descent rate',
+  defender_max_turn_rate_deg: 'Maximum turn rate',
+  obstacle_count: 'Static obstacle count',
+  dynamic_obstacle_count: 'Moving obstacle count',
+  obstacle_min_size: 'Minimum building size',
+  obstacle_max_size: 'Maximum building size',
+  obstacle_min_height: 'Minimum building height',
+  obstacle_max_height: 'Maximum building height',
+  dynamic_obstacle_min_radius: 'Minimum moving-obstacle radius',
+  dynamic_obstacle_max_radius: 'Maximum moving-obstacle radius',
+};
+
+const units: Record<string, string> = {
+  v_d: 'm/s',
+  v_e: 'm/s',
+  v_s: 'm/s',
+  detection_radius: 'm',
+  intercept_radius: 'm',
+  threat_radius: 'm',
+  unsafe_intercept_radius: 'm',
+  dt: 's',
+  max_altitude: 'm',
+  defender_max_accel: 'm/s²',
+  defender_max_climb_rate: 'm/s',
+  defender_max_descent_rate: 'm/s',
+  defender_max_turn_rate_deg: '°/s',
+  obstacle_min_size: 'm',
+  obstacle_max_size: 'm',
+  obstacle_min_height: 'm',
+  obstacle_max_height: 'm',
+  dynamic_obstacle_min_radius: 'm',
+  dynamic_obstacle_max_radius: 'm',
+};
+
+const outcomeLabels: Record<string, string> = {
+  intercepted: 'Intercepted',
+  soldier_caught: 'Attacker reached protected asset',
+  unsafe_intercept: 'Unsafe interception',
+  timeout: 'Timeout',
+  defender_static_obstacle_collision: 'Defender / static obstacle collision',
+  defender_dynamic_obstacle_collision: 'Defender / moving obstacle collision',
+  enemy_static_obstacle_collision: 'Attacker / static obstacle collision',
+  enemy_dynamic_obstacle_collision: 'Attacker / moving obstacle collision',
+};
+
+function readableOutcome(outcome: string): string {
+  return `${outcome} — ${outcomeLabels[outcome] ?? 'Recorded simulator outcome'}`;
+}
 
 function useBackendHealth(): BackendStatus {
   const [status, setStatus] = useState<BackendStatus>({ kind: 'checking', message: 'Checking backend' });
   useEffect(() => {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
-    async function check() {
-      try {
-        const response = await fetch('/api/health', { signal: controller.signal });
-        if (!response.ok) throw new Error(`Backend returned HTTP ${response.status}`);
-        const data: unknown = await response.json();
-        if (typeof data !== 'object' || data === null || !('status' in data) ||
-            !('service' in data) || data.service !== 'counter-uas-visualizer' ||
-            !('phase' in data) || data.phase !== 1 ||
-            (data.status !== 'ok' && data.status !== 'degraded')) {
-          throw new Error('Backend returned an unexpected health response');
-        }
-        if (!active) return;
-        setStatus(data.status === 'ok'
-          ? { kind: 'ok', message: 'Backend connected / data root configured' }
-          : { kind: 'degraded', message: 'Backend connected / research data root not configured' });
-      } catch (error) {
-        if (!active) return;
-        console.error('Backend health check failed', error);
-        setStatus({ kind: 'error', message: 'Backend unavailable / start the localhost API on port 8000' });
-      } finally {
-        clearTimeout(timeout);
-      }
-    }
     let active = true;
-    void check();
-    return () => { active = false; clearTimeout(timeout); controller.abort(); };
+    getHealth().then(data => {
+      if (!active) return;
+      if (data.phase !== 3 || data.service !== 'counter-uas-visualizer') {
+        throw new Error('Backend returned an unexpected health response');
+      }
+      setStatus(data.status === 'ok'
+        ? { kind: 'ok', message: 'Backend connected / research data root configured' }
+        : { kind: 'degraded', message: 'Backend connected / research data root not configured' });
+    }).catch(error => {
+      if (!active) return;
+      console.error('Backend health check failed', error);
+      setStatus({ kind: 'error', message: 'Backend unavailable / start the localhost API on port 8000' });
+    });
+    return () => { active = false; };
   }, []);
   return status;
 }
 
-const placeholders = [
-  ['Defender policy', 'Policy catalog available in Phase 3'],
-  ['Attacker policy', 'A0 / A1 selection available in Phase 3'],
-  ['Clutter level', 'C0 / C1 / C2 / C3'],
-  ['Awareness level', 'B: local / C: map + local'],
-] as const;
+function formatParameter(value: unknown, key: string): string {
+  if (typeof value !== 'number') return String(value);
+  const digits = Math.abs(value) < 10 ? 2 : 1;
+  return `${Number(value.toFixed(digits))}${units[key] ? ` ${units[key]}` : ''}`;
+}
+
+function isActive(job: ReplayJob | null): boolean {
+  return job?.state === 'queued' || job?.state === 'running';
+}
+
+function DefenderControls({
+  policies,
+  policy,
+  generation,
+  trainingSeed,
+  onPolicy,
+  onGeneration,
+  onTrainingSeed,
+}: {
+  policies: DefenderPolicy[];
+  policy: DefenderPolicy | undefined;
+  generation: string;
+  trainingSeed: number;
+  onPolicy: (policy: DefenderPolicy) => void;
+  onGeneration: (generation: string) => void;
+  onTrainingSeed: (seed: number) => void;
+}) {
+  const generations = policy?.generations.filter(item => item.available) ?? [];
+  const selectedGeneration = generations.find(item => item.generation === generation) ?? generations[0];
+  const seeds = selectedGeneration?.training_seeds.filter(item => item.available) ?? [];
+  return (
+    <>
+      <label>
+        Defender architecture / policy
+        <select
+          aria-label="Defender architecture"
+          value={policy?.policy_id ?? ''}
+          onChange={event => {
+            const selected = policies.find(item => item.policy_id === event.target.value);
+            if (selected) onPolicy(selected);
+          }}
+        >
+          {policies.map(item => <option key={item.policy_id} value={item.policy_id}>{item.display_name}</option>)}
+        </select>
+      </label>
+      {policy?.classification === 'learned' && (
+        <>
+          <label>
+            Model generation
+            <select
+              aria-label="Defender generation"
+              value={selectedGeneration?.generation ?? ''}
+              onChange={event => onGeneration(event.target.value)}
+            >
+              {generations.map(item => <option key={item.generation} value={item.generation}>{item.display_name}</option>)}
+            </select>
+          </label>
+          <label>
+            Training seed
+            <select
+              aria-label="Defender training seed"
+              value={seeds.some(item => item.training_seed === trainingSeed) ? trainingSeed : (seeds[0]?.training_seed ?? '')}
+              onChange={event => onTrainingSeed(Number(event.target.value))}
+            >
+              {seeds.map(item => (
+                <option key={item.training_seed} value={item.training_seed}>
+                  Seed {item.training_seed} / {item.checkpoint_role}
+                </option>
+              ))}
+            </select>
+          </label>
+        </>
+      )}
+    </>
+  );
+}
+
+function EpisodeSelection({
+  items,
+  selectedId,
+  onSelect,
+}: {
+  items: { id: string; seed: number; defender: string; attacker: string; clutter: string; outcome: string; steps: number; duration: number; detection: number | null; reward: number; collision: string | null; intercept: number | null }[];
+  selectedId: string | null;
+  onSelect: (id: string) => void;
+}) {
+  if (!items.length) return <p className="muted">No completed replay episodes are available yet.</p>;
+  return (
+    <div className="episode-list" role="list" aria-label="Episode results">
+      {items.map((item, index) => (
+        <button
+          className={`episode-result ${selectedId === item.id ? 'selected' : ''}`}
+          data-testid="episode-result"
+          key={item.id}
+          onClick={() => onSelect(item.id)}
+          role="listitem"
+          type="button"
+        >
+          <span className="episode-result-heading">
+            <strong>Episode {index + 1} / seed {item.seed}</strong>
+            <span>{readableOutcome(item.outcome)}</span>
+          </span>
+          <span>{item.defender} vs {item.attacker} / {item.clutter}</span>
+          <span>{item.steps} steps / {item.duration.toFixed(1)} s / reward {item.reward.toFixed(2)}</span>
+          <span>{item.detection === null ? 'Detection: not acquired' : `Detection: ${item.detection.toFixed(1)} s`}{item.collision ? ` / ${item.collision}` : ''}{item.intercept === null ? '' : ` / interception ${item.intercept.toFixed(1)} s`}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
 
 export function App() {
   const health = useBackendHealth();
+  const [catalog, setCatalog] = useState<PolicyCatalog | null>(null);
+  const [scenarios, setScenarios] = useState<ScenarioCatalog | null>(null);
+  const [catalogError, setCatalogError] = useState<string | null>(null);
+  const [defenderId, setDefenderId] = useState('greedy');
+  const [generation, setGeneration] = useState('d0');
+  const [trainingSeed, setTrainingSeed] = useState(71);
+  const [attackerId, setAttackerId] = useState('A0');
+  const [clutter, setClutter] = useState('C0');
+  const [perception, setPerception] = useState<'local' | 'map_local'>('map_local');
+  const [episodeCount, setEpisodeCount] = useState<EpisodeCount>(5);
+  const [seedStart, setSeedStart] = useState('0');
+  const [job, setJob] = useState<ReplayJob | null>(null);
+  const [jobError, setJobError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [replays, setReplays] = useState<ReplayListItem[]>([]);
+  const [replayWarnings, setReplayWarnings] = useState<string[]>([]);
+  const [batchSummaries, setBatchSummaries] = useState<ReplaySummary[]>([]);
+  const [selectedReplayId, setSelectedReplayId] = useState<string | null>(null);
+  const [selectedSummary, setSelectedSummary] = useState<ReplaySummary | null>(null);
+  const [summaryError, setSummaryError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    Promise.all([getPolicies(), getScenarios()])
+      .then(([policyData, scenarioData]) => {
+        if (!active) return;
+        setCatalog(policyData);
+        setScenarios(scenarioData);
+        const defaultPolicy = policyData.defenders.find(item => item.policy_id === 'greedy' && item.available)
+          ?? policyData.defenders.find(item => item.available);
+        if (defaultPolicy) {
+          setDefenderId(defaultPolicy.policy_id);
+          const availableGeneration = defaultPolicy.generations.find(item => item.available);
+          if (availableGeneration) {
+            setGeneration(availableGeneration.generation);
+            const availableSeed = availableGeneration.training_seeds.find(item => item.available);
+            if (availableSeed) setTrainingSeed(availableSeed.training_seed);
+          }
+        }
+        const defaultAttacker = policyData.attackers.find(item => item.attacker_id === 'A0' && item.available)
+          ?? policyData.attackers.find(item => item.available);
+        if (defaultAttacker) setAttackerId(defaultAttacker.attacker_id);
+      })
+      .catch(error => {
+        if (active) setCatalogError(error instanceof Error ? error.message : 'Policy catalog could not be loaded.');
+      })
+      .finally(() => { if (active) setLoading(false); });
+    getReplays().then(data => {
+      if (active) {
+        setReplays(data.replays);
+        setReplayWarnings(data.warnings);
+      }
+    })
+      .catch(error => { if (active) console.error('Replay listing failed', error); });
+    return () => { active = false; };
+  }, []);
+
+  const availableDefenders = catalog?.defenders.filter(item => item.available) ?? [];
+  const defender = availableDefenders.find(item => item.policy_id === defenderId) ?? availableDefenders[0];
+  const availableAttackers = catalog?.attackers.filter(item => item.available) ?? [];
+  const attacker = availableAttackers.find(item => item.attacker_id === attackerId) ?? availableAttackers[0];
+  const currentGenerations = defender?.generations.filter(item => item.available) ?? [];
+  const selectedGeneration = currentGenerations.find(item => item.generation === generation) ?? currentGenerations[0];
+  const currentSeeds = selectedGeneration?.training_seeds.filter(item => item.available) ?? [];
+  const activeSeed = currentSeeds.some(item => item.training_seed === trainingSeed)
+    ? trainingSeed
+    : currentSeeds[0]?.training_seed;
+  const estimator = defender?.classification === 'learned'
+    ? selectedGeneration?.estimator
+    : defender?.estimator ?? 'measurement';
+  const selectedScenario = scenarios?.scenarios.find(item => item.clutter === clutter);
+  const selectedPerception = selectedScenario?.perceptions.find(item => item.id === perception);
+  const resolvedConfiguration = estimator === 'kalman'
+    ? selectedPerception?.configurations.kalman
+    : selectedPerception?.configurations.measurement;
+  const activeJob = isActive(job);
+  const batchIdsKey = job?.completed_replay_ids.join(',') ?? '';
+
+  useEffect(() => {
+    if (!job || !isActive(job)) return;
+    let active = true;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const poll = async () => {
+      try {
+        const updated = await getReplayJob(job.job_id);
+        if (!active) return;
+        setJob(updated);
+        if (isActive(updated)) timer = setTimeout(() => { void poll(); }, 1000);
+      } catch (error) {
+        if (!active) return;
+        setJobError(error instanceof Error ? error.message : 'Could not refresh replay job status.');
+        timer = setTimeout(() => { void poll(); }, 1500);
+      }
+    };
+    timer = setTimeout(() => { void poll(); }, 900);
+    return () => { active = false; if (timer) clearTimeout(timer); };
+  }, [job?.job_id, job?.state, job?.updated_at]);
+
+  useEffect(() => {
+    if (!job || !batchIdsKey) return;
+    let active = true;
+    Promise.all(job.completed_replay_ids.map(id => getReplaySummary(id)))
+      .then(items => {
+        if (!active) return;
+        setBatchSummaries(items);
+        if (!selectedReplayId && items[0]) setSelectedReplayId(items[0].replay_id);
+      })
+      .catch(error => {
+        if (active) setJobError(error instanceof Error ? error.message : 'Could not load completed replay summaries.');
+      });
+    return () => { active = false; };
+  }, [job?.job_id, batchIdsKey]);
+
+  useEffect(() => {
+    if (!selectedReplayId) {
+      setSelectedSummary(null);
+      return;
+    }
+    let active = true;
+    setSummaryError(null);
+    getReplaySummary(selectedReplayId)
+      .then(summary => { if (active) setSelectedSummary(summary); })
+      .catch(error => {
+        if (active) {
+          setSelectedSummary(null);
+          setSummaryError(error instanceof Error ? error.message : 'Selected replay metadata could not be loaded.');
+        }
+      });
+    return () => { active = false; };
+  }, [selectedReplayId]);
+
+  useEffect(() => {
+    if (!job || !['completed', 'failed', 'cancelled', 'interrupted'].includes(job.state)) return;
+    let active = true;
+    getReplays().then(data => {
+      if (active) {
+        setReplays(data.replays);
+        setReplayWarnings(data.warnings);
+      }
+    })
+      .catch(error => { if (active) setJobError(error instanceof Error ? error.message : 'Replay list refresh failed.'); });
+    return () => { active = false; };
+  }, [job?.state]);
+
+  const resultItems = useMemo(() => {
+    if (job) {
+      return batchSummaries.map((item, index) => ({
+        id: item.replay_id,
+        seed: item.simulation_seed,
+        defender: item.defender.policy_id,
+        attacker: item.attacker.policy_id,
+        clutter: item.environment.clutter,
+        outcome: item.summary.outcome,
+        steps: item.summary.steps,
+        duration: item.summary.duration_s,
+        detection: item.summary.detection_time_s,
+        reward: item.summary.total_reward,
+        collision: item.summary.collision_type,
+        intercept: item.summary.interception_time_s,
+        index,
+      }));
+    }
+    return replays.map((item, index) => ({
+      id: item.replay_id,
+      seed: item.simulation_seed,
+      defender: item.defender.policy_id,
+      attacker: item.attacker.policy_id,
+      clutter: item.clutter,
+      outcome: item.outcome,
+      steps: item.steps,
+      duration: item.duration_s,
+      detection: item.detection_time_s,
+      reward: item.total_reward,
+      collision: item.collision_type,
+      intercept: item.interception_time_s,
+      index,
+    }));
+  }, [batchSummaries, job, replays]);
+
+  const batchStats = useMemo(() => {
+    const summaries = batchSummaries.map(item => item.summary);
+    if (!summaries.length) return null;
+    return {
+      intercepted: summaries.filter(item => item.outcome === 'intercepted').length,
+      attackerSuccess: summaries.filter(item => item.outcome === 'soldier_caught').length,
+      collisions: summaries.filter(item => item.outcome.endsWith('_obstacle_collision')).length,
+      timeouts: summaries.filter(item => item.outcome === 'timeout').length,
+      meanDuration: summaries.reduce((total, item) => total + item.duration_s, 0) / summaries.length,
+    };
+  }, [batchSummaries]);
+
+  async function submitJob() {
+    setFormError(null);
+    setJobError(null);
+    setBatchSummaries([]);
+    const parsedSeed = Number(seedStart);
+    if (!Number.isSafeInteger(parsedSeed) || parsedSeed < 0 || parsedSeed + episodeCount - 1 > MAX_SEED) {
+      setFormError(`Starting seed must be an integer from 0 through ${MAX_SEED - episodeCount + 1}.`);
+      return;
+    }
+    if (!defender || !attacker) {
+      setFormError('No compatible available defender and attacker selection is loaded.');
+      return;
+    }
+    const request: ReplayJobRequest = {
+      defender_policy_id: defender.policy_id,
+      attacker_condition: attacker.attacker_id,
+      clutter_level: clutter,
+      perception_mode: perception,
+      seed_start: parsedSeed,
+      episode_count: episodeCount,
+      deterministic_inference: true,
+    };
+    if (defender.classification === 'learned') {
+      if (!selectedGeneration || activeSeed === undefined) {
+        setFormError('Select an available learned generation and checkpoint seed.');
+        return;
+      }
+      request.defender_generation = selectedGeneration.generation;
+      request.defender_training_seed = activeSeed;
+    }
+    try {
+      setJob(await createReplayJob(request));
+      setSelectedReplayId(null);
+    } catch (error) {
+      const message = error instanceof ApiError ? error.message : 'Replay job could not be started.';
+      setFormError(message);
+    }
+  }
+
+  async function cancelJob() {
+    if (!job) return;
+    setJobError(null);
+    try {
+      setJob(await cancelReplayJob(job.job_id));
+    } catch (error) {
+      setJobError(error instanceof Error ? error.message : 'Cancellation request failed.');
+    }
+  }
+
+  function selectReplay(id: string) {
+    setSelectedReplayId(id);
+  }
+
+  const scenarioValues = resolvedConfiguration?.parameters ?? {};
+  const physicalKeys = Object.keys(parameterLabels).filter(key => key in scenarioValues);
+
   return (
     <main className="app-shell">
       <header className="app-header">
         <div className="brand-mark" aria-hidden="true">CU</div>
         <div className="brand"><span className="eyebrow">LOCAL RESEARCH WORKSPACE</span><h1>Counter-UAS <span>Simulation Explorer</span></h1></div>
-        <span className="phase-badge">PHASE 1 / FOUNDATION</span>
+        <span className="phase-badge">PHASE 3 / EPISODE GENERATION</span>
       </header>
       <div className="status-bar"><span className={`status-dot ${health.kind}`} /><span role="status">{health.message}</span><span className="localhost-label">LOCALHOST ONLY</span></div>
       <div className="dashboard">
         <aside className="configuration panel">
           <span className="eyebrow">EXPERIMENT SETUP</span><h2>Episode configuration</h2>
-          <p className="muted">Planned controls. No simulation can be launched in this phase.</p>
-          <fieldset disabled>
-            <legend className="sr-only">Episode setup is unavailable until Phase 3</legend>
-            {placeholders.map(([label, text]) => <label key={label}>{label}<select aria-label={label}><option>{text}</option></select></label>)}
-            <label>Episode count<select aria-label="Episode count" defaultValue="5"><option value="1">1 episode</option><option value="3">3 episodes</option><option value="5">5 episodes (planned default)</option><option value="10">10 episodes</option></select></label>
-            <label>Starting simulation seed<input aria-label="Starting simulation seed" placeholder="Consecutive seeds / not yet assigned" /></label>
-            <button className="primary-button" type="button">Run episodes / Phase 3</button>
+          <p className="muted">Select a verified policy and canonical scenario. Physics parameters are read-only.</p>
+          {catalogError && <div className="inline-error" role="alert">Policy catalog unavailable: {catalogError}</div>}
+          <fieldset disabled={loading || !catalog || activeJob || availableDefenders.length === 0 || availableAttackers.length === 0}>
+            <legend className="sr-only">Configure deterministic real simulation episodes</legend>
+            <DefenderControls
+              policies={availableDefenders}
+              policy={defender}
+              generation={selectedGeneration?.generation ?? generation}
+              trainingSeed={activeSeed ?? trainingSeed}
+              onPolicy={next => {
+                setDefenderId(next.policy_id);
+                const nextGeneration = next.generations.find(item => item.available);
+                setGeneration(nextGeneration?.generation ?? '');
+                setTrainingSeed(nextGeneration?.training_seeds.find(item => item.available)?.training_seed ?? 0);
+              }}
+              onGeneration={value => {
+                setGeneration(value);
+                const next = currentGenerations.find(item => item.generation === value)?.training_seeds.find(item => item.available);
+                if (next) setTrainingSeed(next.training_seed);
+              }}
+              onTrainingSeed={setTrainingSeed}
+            />
+            <label>
+              Attacker policy
+              <select aria-label="Attacker policy" value={attacker?.attacker_id ?? ''} onChange={event => setAttackerId(event.target.value)}>
+                {availableAttackers.map(item => <option key={item.attacker_id} value={item.attacker_id}>{item.display_name}</option>)}
+              </select>
+            </label>
+            <label>
+              Clutter level
+              <select aria-label="Clutter level" value={clutter} onChange={event => setClutter(event.target.value)}>
+                {scenarios?.scenarios.map(item => <option key={item.clutter} value={item.clutter}>{item.clutter} — {item.display_name}</option>)}
+              </select>
+            </label>
+            <label>
+              Obstacle perception
+              <select aria-label="Perception mode" value={perception} onChange={event => setPerception(event.target.value as 'local' | 'map_local')}>
+                <option value="local">Local sensing</option>
+                <option value="map_local">Known static map + local sensing</option>
+              </select>
+            </label>
+            <div className="resolved-parameters" aria-label="Resolved simulation parameters">
+              <strong>Resolved canonical parameters / read-only</strong>
+              <span>Estimator track: {estimator ?? 'not resolved'}</span>
+              {physicalKeys.map(key => (
+                <span key={key}>{parameterLabels[key]}: {formatParameter(scenarioValues[key], key)}</span>
+              ))}
+              {resolvedConfiguration && <small>Scenario config SHA-256: {resolvedConfiguration.config_sha256}</small>}
+            </div>
+            <label>
+              Episode count
+              <select aria-label="Episode count" value={episodeCount} onChange={event => setEpisodeCount(Number(event.target.value) as EpisodeCount)}>
+                <option value="1">1 episode</option><option value="3">3 episodes</option>
+                <option value="5">5 episodes (default)</option><option value="10">10 episodes</option>
+              </select>
+            </label>
+            <label>
+              Starting evaluation seed
+              <input aria-label="Starting evaluation seed" type="number" min="0" max={MAX_SEED} step="1" value={seedStart} onChange={event => setSeedStart(event.target.value)} />
+              <small>Episodes use consecutive seeds. Deterministic inference is fixed on.</small>
+            </label>
+            <button className="primary-button" type="button" onClick={() => void submitJob()} disabled={activeJob || !catalog || loading}>
+              {activeJob ? 'Generating episodes…' : 'Generate Episodes'}
+            </button>
           </fieldset>
-          <div className="integrity-note"><strong>Research integrity first</strong><p>Frozen checkpoints are read-only. No training, fabricated frames, or browser-side dynamics.</p></div>
+          {formError && <div className="inline-error" role="alert">{formError}</div>}
+          <div className="integrity-note"><strong>Research integrity</strong><p>Allowlisted frozen artifacts, hash verification, deterministic inference, and native Python simulation. No training or browser-side dynamics.</p></div>
         </aside>
         <div className="scene-column">
-          <Battlefield />
+          <Battlefield episodeSelected={Boolean(selectedReplayId)} />
           <section className="playback panel" aria-label="Playback controls">
-            <div><span className="eyebrow">RECORDED PLAYBACK</span><span className="muted">Available in Phase 4</span></div>
-            <fieldset disabled>
-              <legend className="sr-only">Playback is unavailable without a real recorded episode</legend>
-              <div className="playback-buttons">
-                {['Previous episode', 'Step back', 'Play', 'Step forward', 'Replay', 'Next episode'].map(text => <button key={text}>{text}</button>)}
-                <select aria-label="Playback speed"><option>1x speed</option></select>
+            <div><span className="eyebrow">RECORDED PLAYBACK</span><span className="muted">Trajectory playback becomes available in Phase 4</span></div>
+            <p className="muted">{selectedReplayId ? `Replay ${selectedReplayId} metadata is loaded. The 3D scene remains empty until Phase 4 playback.` : 'Select a completed episode to load its validated metadata. No movement is displayed in this phase.'}</p>
+            <span className="muted">No trajectory animation / no fabricated positions</span>
+          </section>
+          <section className="results panel" aria-label="Episode generation progress and results">
+            <div className="results-heading">
+              <div><span className="eyebrow">REAL SIMULATION JOB</span><h2>Generation progress &amp; episode results</h2></div>
+              {job && <span className={`job-state ${job.state}`}>{job.state}</span>}
+            </div>
+            {job && (
+              <div className="job-progress" aria-live="polite">
+                <p><strong>Job ID:</strong> <code>{job.job_id}</code></p>
+                {job.state === 'running' && job.current_episode_seed !== null
+                  ? <p>Episode {job.completed_count + 1} of {job.requested_episode_count} running — {job.completed_count} completed / seed {job.current_episode_seed}</p>
+                  : <p>{job.completed_count} of {job.requested_episode_count} episodes completed</p>}
+                {job.cancellation_requested && <p className="muted">Cancellation requested; waiting for the simulation process to stop safely.</p>}
+                {job.error && <p className="inline-error" role="alert">{job.error}</p>}
+                {jobError && <p className="inline-error" role="alert">{jobError}</p>}
+                {activeJob && <button type="button" onClick={() => void cancelJob()}>Cancel batch</button>}
               </div>
-              <input type="range" aria-label="Episode timeline" min="0" max="1" value="0" readOnly />
-            </fieldset>
-            <span className="muted">No frames / no outcome</span>
+            )}
+            {batchStats && batchSummaries.length > 0 && (
+              <div className="batch-statistics" aria-label="Exploratory descriptive batch summaries">
+                <strong>Exploratory descriptive summaries / not publication-grade estimates</strong>
+                <span>Intercepted: {batchStats.intercepted}</span>
+                <span>Attacker reached asset: {batchStats.attackerSuccess}</span>
+                <span>Obstacle collisions: {batchStats.collisions}</span>
+                <span>Timeouts: {batchStats.timeouts}</span>
+                <span>Mean simulated duration: {batchStats.meanDuration.toFixed(1)} s</span>
+              </div>
+            )}
+            {replayWarnings.map(warning => <p className="inline-error" role="alert" key={warning}>{warning}</p>)}
+            <EpisodeSelection items={resultItems} selectedId={selectedReplayId} onSelect={selectReplay} />
+            {summaryError && <p className="inline-error" role="alert">{summaryError}</p>}
           </section>
         </div>
         <aside className="diagnostics panel">
-          <span className="eyebrow">POLICY INSPECTOR</span><h2>Decision diagnostics</h2><span className="small-badge">PLANNED / PHASE 5</span>
-          <p className="muted">Telemetry appears only when captured from a real controller.</p>
-          <div className="diagnostic-card"><h3>LR-PPO guidance</h3><p>Lead direction / requested heading / executed movement</p><strong>Canonical correction: 30 deg maximum</strong><p>Signed horizontal adjustment and native 3D angle are distinct.</p></div>
-          <div className="diagnostic-card"><h3>Estimation &amp; actions</h3><p>Policy-visible estimates will be separated from privileged ground truth.</p></div>
-          <div className="legend"><h3>Planned entity colors</h3><span><i className="defender" />Defender UAV</span><span><i className="attacker" />Attacker UAV</span><span><i className="asset" />Protected mobile asset</span><span><i className="obstacle" />Moving obstacles</span></div>
+          <span className="eyebrow">SELECTED EPISODE</span><h2>Recorded summary</h2>
+          {!selectedSummary && <p className="muted">Select a completed result to inspect its validated summary and provenance.</p>}
+          {selectedSummary && (
+            <>
+              <div className="diagnostic-card">
+                <h3>{readableOutcome(selectedSummary.summary.outcome)}</h3>
+                <p>Seed {selectedSummary.simulation_seed} / {selectedSummary.defender.policy_id} {selectedSummary.defender.generation ?? ''} vs {selectedSummary.attacker.policy_id}</p>
+                <p>{selectedSummary.environment.clutter} / {selectedSummary.environment.awareness} / {selectedSummary.summary.steps} steps</p>
+                <p>Duration {selectedSummary.summary.duration_s.toFixed(1)} s / total reward {selectedSummary.summary.total_reward.toFixed(3)}</p>
+                <p>Detection {selectedSummary.summary.detection_time_s === null ? 'not acquired' : `${selectedSummary.summary.detection_time_s.toFixed(1)} s`}</p>
+                <p>{selectedSummary.summary.collision_type ?? (selectedSummary.summary.interception_time_s === null ? 'No collision/interception event' : `Interception at ${selectedSummary.summary.interception_time_s.toFixed(1)} s`)}</p>
+              </div>
+              <div className="diagnostic-card provenance">
+                <h3>Reproducibility provenance</h3>
+                <p>Schema {selectedSummary.schema_version}</p>
+                <p>Simulator {selectedSummary.provenance.simulation_source_commit}</p>
+                <p>Visualizer {selectedSummary.provenance.visualizer_source_commit}{selectedSummary.provenance.visualizer_dirty ? ' / dirty at run time' : ''}</p>
+                <p>Source dirty flag: {String(selectedSummary.provenance.source_dirty)}</p>
+                <p>Defender checkpoint: {selectedSummary.defender.checkpoint?.sha256 ?? 'none / analytical'}</p>
+                <p>Attacker checkpoint: {selectedSummary.attacker.checkpoint?.sha256 ?? 'none / scripted'}</p>
+                <p>Scenario config SHA-256: {selectedSummary.environment.config_sha256}</p>
+              </div>
+            </>
+          )}
+          <div className="diagnostic-card"><h3>Policy telemetry</h3><p>Controller-specific diagnostics remain in the validated replay data. Inspection overlays are planned for Phase 5.</p></div>
+          <div className="legend"><h3>Scene entity colors / planned</h3><span><i className="defender" />Defender UAV</span><span><i className="attacker" />Attacker UAV</span><span><i className="asset" />Protected mobile asset</span><span><i className="obstacle" />Moving obstacles</span></div>
           <p className="projection-note">Projection is visual only. Native 3D state and collision semantics remain unchanged.</p>
         </aside>
       </div>
-      <footer className="app-footer"><span>Real simulation. Recorded evidence. No synthetic results.</span><span>Orbit camera active / follow and top-down modes planned</span></footer>
+      <footer className="app-footer"><span>Real simulation. Recorded evidence. No synthetic results.</span><span>{catalog?.source_commit ? `Research source ${catalog.source_commit}` : 'Waiting for verified policy catalog'}</span></footer>
     </main>
   );
 }

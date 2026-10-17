@@ -27,7 +27,7 @@ def test_health_without_data_root():
         response = client.get("/api/health")
         assert response.status_code == 200
         assert response.json() == {
-            "service": "counter-uas-visualizer", "phase": 1, "status": "degraded",
+            "service": "counter-uas-visualizer", "phase": 3, "status": "degraded",
             "simulation_enabled": False, "data_root": "not_configured",
             "warnings": [{"code": "DATA_ROOT_NOT_CONFIGURED", "message": "Set VISUALIZER_RESEARCH_DATA_ROOT in the local backend configuration."}],
         }

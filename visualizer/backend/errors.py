@@ -36,7 +36,13 @@ def register_error_handlers(app: FastAPI) -> None:
     @app.exception_handler(RequestValidationError)
     async def validation_error(_request: Request, exc: RequestValidationError) -> JSONResponse:
         logger.warning("Request validation failed: %s", exc.errors())
-        return error_response("INVALID_REQUEST", "Request does not match the API contract.", 422)
+        errors = exc.errors()
+        if errors:
+            field = ".".join(str(part) for part in errors[0].get("loc", ()) if part != "body") or "request"
+            message = f"{field}: {errors[0].get('msg', 'invalid value')}"
+        else:
+            message = "Request does not match the API contract."
+        return error_response("INVALID_REQUEST", message, 422)
 
     @app.exception_handler(HTTPException)
     async def http_error(_request: Request, exc: HTTPException) -> JSONResponse:

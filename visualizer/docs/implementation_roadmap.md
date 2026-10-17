@@ -1,7 +1,8 @@
 # Eight-phase implementation roadmap
 
-Each phase requires an explicit request. Complete, test and commit Phase 1,
-then stop. Later phases below are design boundaries, not implemented features.
+Phases 1–3 are implemented and verified. Phase 3 ends at batch generation,
+validated summaries, and a static 3D viewport. Stop here; Phase 4 requires a
+separate explicit request. Later phases remain design boundaries.
 
 ## 1. Setup and architecture
 
@@ -72,12 +73,53 @@ then stop. Later phases below are design boundaries, not implemented features.
 - Reproducible local Windows dependency/startup package, troubleshooting and final audit.
 - No cloud deployment, external control service or scientific source modifications.
 
-## Phase 2 readiness
+## Phase 2 completion / scientific boundary
 
-Source and artifact entry points are identified; 48 journal registry references
-and 9 conference references were checked read-only. Phase 1 skeleton does not
-deserialize models and intentionally keeps the API venv free of heavy scientific
-dependencies. Phase 2 must select/verify a compatible research Python environment,
-resolve frozen manifest identities under the configured data root, and validate
-recording semantics beyond JSON shape. Native 3D/horizontal-projection discrepancy
-is resolved by the researcher's explicit decision, not by changing the simulator.
+The source and artifact entry points were audited read-only; the Phase 2 engine
+uses the configured existing research Python runtime, resolves frozen manifest
+identities under the configured data root, verifies checkpoint hashes, and
+validates recording semantics beyond JSON shape. The API venv remains free of
+heavy scientific dependencies. Native 3D/horizontal-projection discrepancy is
+resolved by the researcher's explicit decision, not by changing the simulator.
+
+## Phase 3 completion / stop boundary
+
+- Registry-backed policy and scenario catalogs expose verified availability,
+  generation roles, training seeds, observation requirements, and canonical
+  scenario configurations without checkpoint paths.
+- A Pydantic request validates policy/generation/seed combinations, A0/A1
+  selections, C0–C3, perception mode, allowed counts (1/3/5/10), deterministic
+  inference, and consecutive evaluation seeds in the simulator's accepted range.
+- A single sequential worker invokes the Phase 2 CLI in the configured research
+  Python subprocess. One active batch is allowed; status and health remain
+  available while simulation runs. Timeout, cancellation, and restart recovery
+  do not become simulation outcomes.
+- Job state is atomically persisted under ignored `visualizer/data/local/jobs`.
+  Replay lookup is opaque-ID-only and reuses full schema and semantic validation.
+  Invalid historical artifacts remain unchanged and are excluded from the
+  current replay listing with an explicit warning.
+- The browser provides functional selectors, progress, cancellation, result
+  selection, summaries, and provenance. The Three.js scene has no episode
+  entities or fabricated movement; animation and diagnostic overlays are not
+  implemented.
+- Verified real batch: Greedy / A0 / C0 / `map_local`, seeds 71030000–71030002:
+  outcomes `intercepted`, `soldier_caught`, `intercepted`, with 117, 655, and
+  26 steps. Seed 71030000 matched a direct Phase 2 CLI run for summary, events,
+  native positions, and telemetry actions.
+- Verified learned request: LR-PPO D1 seed 77 / held-out A1-203 / C3 /
+  `map_local`, evaluation seed 71030010; selected defender role `final` and
+  attacker role `attacker_best`; one validated episode completed.
+- The eight terminal outcomes preserved from SoldierEnv are `intercepted`,
+  `soldier_caught`, `unsafe_intercept`, `timeout`,
+  `defender_static_obstacle_collision`,
+  `defender_dynamic_obstacle_collision`, `enemy_static_obstacle_collision`,
+  and `enemy_dynamic_obstacle_collision`. `ongoing` is used only for non-final
+  frames.
+- Verified validation: 41 backend/API unit tests passed (5 skipped without
+  opt-in scientific runtime configuration), all 3 real catalog/replay
+  integration tests passed, all 6 browser tests passed, the production frontend
+  build passed, and 48 focused scientific regression tests passed. Descriptive
+  batch statistics are exploratory and not publication-grade estimates.
+
+Phase 4 playback, browser interpolation, moving entities, and policy diagnostic
+overlays remain out of scope for this completed phase.

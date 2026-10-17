@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import sys
 
 from pydantic import ValidationError
 
@@ -51,11 +50,16 @@ def main(argv: list[str] | None = None) -> int:
         )
         bundle = run_replay_episode(request, load_settings())
         output_path = save_replay_bundle(bundle, args.output_name)
-    except ValidationError as exc:
-        print(f"Invalid replay selection: {exc}", file=sys.stderr)
+    except ValidationError:
+        print(json.dumps({
+            "error": {
+                "code": "INVALID_REQUEST",
+                "message": "Replay selection does not match the CLI contract.",
+            }
+        }))
         return 2
     except ApplicationError as exc:
-        print(f"{exc.code}: {exc.message}", file=sys.stderr)
+        print(json.dumps({"error": {"code": exc.code, "message": exc.message}}))
         return 1
 
     episode = bundle.episodes[0]

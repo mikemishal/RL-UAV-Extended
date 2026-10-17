@@ -1,11 +1,12 @@
 # Counter-UAS 3D Simulation Explorer
 
-Phase 2: an isolated local research visualizer with a real Three.js empty scene
-and a standalone, deterministic, single-episode replay engine over the existing
-Python simulator. The backend CLI loads allowlisted frozen policies, records
-authoritative native-3D traces, validates them, and writes compressed replays
-locally. The frontend remains the Phase 1 empty scene; there is no replay API,
-playback, batch runner, training, comparison, or cloud service.
+Phase 3: an isolated local research visualizer with a live policy/scenario
+catalog, validated multi-episode replay jobs, and a responsive React dashboard
+over the existing Python simulator. The backend invokes the Phase 2 CLI once per
+seed, validates and stores authoritative native-3D traces locally, and exposes
+job status and replay summaries. The Three.js scene intentionally remains empty
+until Phase 4; there is no browser-side simulation, training, comparison, or
+cloud service.
 
 ## Scientific integrity and coordinate decision
 
@@ -37,7 +38,18 @@ Copy-Item -LiteralPath '.env.example' -Destination '.env'
 
 Review `.env` before starting: the example points to the original sibling
 research worktree using a relative path, not a personal absolute path or secret.
-Do not overwrite an existing `.env`. On subsequent starts:
+Set the simulation interpreter to the existing research Python environment
+that has Gymnasium, Stable-Baselines3, PyTorch, and the frozen project's
+dependencies. The lightweight API venv is not the simulation runtime:
+
+```powershell
+$env:VISUALIZER_SIMULATION_PYTHON = (Get-Command python).Source
+```
+
+Alternatively, put its absolute executable path in the ignored `visualizer\.env`
+as `VISUALIZER_SIMULATION_PYTHON=...`. Do not install or update scientific
+dependencies as part of the visualizer setup. Do not overwrite an existing
+`.env`. On subsequent starts:
 
 ```powershell
 .\start-backend.ps1
@@ -62,14 +74,20 @@ policy approved for your machine; no script changes global execution policy.
 
 ### Health and data configuration
 
-`VISUALIZER_RESEARCH_DATA_ROOT` is read from the process environment, then
-`visualizer\.env`. Relative values are anchored to the `visualizer` directory,
-not the current shell directory. Explicit nonexistent, invalid, or overlapping
-roots fail startup with a configuration error. Unset/blank configuration permits
-an empty-scene-only startup, with health `status: degraded`, a structured
-`DATA_ROOT_NOT_CONFIGURED` warning, and `simulation_enabled: false`.
-`status: ok` means the configured worktree is valid, **not** that every model
-has been checked or that replay is available.
+`VISUALIZER_RESEARCH_DATA_ROOT` and `VISUALIZER_SIMULATION_PYTHON` are read from
+the process environment, then `visualizer\.env`. Relative data roots are
+anchored to the `visualizer` directory. Explicit nonexistent, invalid, or
+overlapping roots fail startup with a configuration error. An unset data root
+permits catalog-independent health only (`status: degraded`,
+`simulation_enabled: false`); policy/scenario and replay endpoints require a
+configured research root. `status: ok` means the configured worktree is valid,
+not that every model is available. The catalog performs registry/path/SHA-256
+checks and marks missing or mismatched checkpoints unavailable.
+
+`VISUALIZER_EPISODE_TIMEOUT_SECONDS` defaults to 900 (allowed 1–3600).
+`VISUALIZER_FRONTEND_ORIGIN` defaults to `http://127.0.0.1:5173`. Both are
+local configuration values; CORS remains restricted to the configured
+localhost frontend origin.
 
 Frozen artifacts are opened only as `rb` through internal `ResearchDataStore`.
 Missing artifacts, read failures, and hash mismatches have explicit errors.
@@ -96,21 +114,33 @@ npx playwright install chromium
 npm run test:browser
 ```
 
+Run the bounded real integration checks with the existing scientific Python
+runtime selected explicitly (three Greedy/A0/C0 episodes plus one learned
+LR-PPO D1/A1-203 episode):
+
+```powershell
+Set-Location -LiteralPath '.\visualizer'
+$env:PYTHONPATH = '..'
+$env:VISUALIZER_RESEARCH_DATA_ROOT = 'C:\Users\mimishal\OneDrive\Documents\UIC\PhD\Research\RL-UAV-Extended-lrppo-clutter'
+$env:VISUALIZER_SIMULATION_PYTHON = (Get-Command python).Source
+.\.venv\Scripts\python.exe -m pytest tests\test_replay_batch_integration.py -q
+```
+
 The browser suite starts Vite itself if needed, uses a real WebGL context
-(software rendering is permitted), tests orbit/reset, disabled controls,
-responsive layout, backend outage and missing configuration, and writes
-screenshots to gitignored `frontend\test-results`. Run the backend separately
-to test a live proxy/health connection. Vite production output is a build
-artifact, not a cloud deployment or packaged API server.
+(software rendering is permitted), tests orbit/reset, policy/scenario selectors,
+job progress and error states, responsive layout, and writes screenshots to
+gitignored `frontend\test-results`. Run the backend separately for real API
+integration. Vite production output is a build artifact, not a cloud deployment
+or packaged API server.
 
-The Phase 1 venv deliberately installs only the API/test stack. Run replay
-commands with the existing research Python environment containing the frozen
-scientific Gymnasium / SB3 / Torch dependencies; no scientific package
-installation or requirements change is needed. The CLI imports real simulation
-modules and loads frozen checkpoints only when a replay is explicitly requested.
-The health API and empty frontend do not load models.
+The API venv deliberately installs only the API/test stack. Replay catalog
+inspection and execution run as bounded subprocesses with
+`VISUALIZER_SIMULATION_PYTHON`; that interpreter must already contain the
+frozen scientific Gymnasium / SB3 / Torch dependencies. The API health endpoint
+does not load models. The policy catalog verifies registry artifacts when read;
+an episode loads only the selected frozen checkpoints.
 
-### Generate one real replay (Phase 2)
+### Generate one real replay directly (Phase 2 engine)
 
 Use the existing research Python with the local data root configured. The
 following is a single episode, no batch mode; the output name is a stem, not a
@@ -129,6 +159,19 @@ observation/action shapes and selected generation role before execution. Replay
 files are gzip JSON under `visualizer\data\local` (gitignored). See
 [replay-engine validation](docs/replay_engine_validation.md) for actual
 compatibility, smoke, equivalence, and known-limit reports.
+
+### Use the Phase 3 API and browser
+
+Open <http://127.0.0.1:5173>, select an available defender and attacker, choose
+C0–C3 and `local` or `map_local`, then request 1, 3, 5, or 10 episodes. Jobs
+execute sequentially, with consecutive evaluation seeds and deterministic
+inference. The interface shows actual job status and validated episode summaries;
+the viewport continues to say that playback is planned for Phase 4.
+
+See [Replay API](docs/replay_api.md) for every endpoint, request/response
+contracts, checkpoint-generation rules, actual successful local examples,
+scenario parameter interpretation, timeout/cancellation behavior, and
+reproducibility limitations.
 
 ### Phase 1 verification record (2026-10-16)
 
@@ -157,7 +200,8 @@ compatibility, smoke, equivalence, and known-limit reports.
 - [Replay v1 contract, units and telemetry](docs/replay_schema_v1.md)
 - [Machine-readable JSON Schema](docs/replay_v1.schema.json)
 - [Eight-phase implementation roadmap](docs/implementation_roadmap.md)
+- [Phase 3 Replay API](docs/replay_api.md)
 
-Phase 2 ends with a verified single-episode CLI engine. The React application
-remains an empty 3D scene; do not implement Phase 3 batch/REST execution or
-Phase 4 playback until explicitly requested.
+Phase 3 is complete at the catalog, batch-job, REST-summary, and results-UI
+boundary. Stop here: do not add 3D animation, interpolation, playback controls,
+or policy diagnostic overlays (Phase 4+).

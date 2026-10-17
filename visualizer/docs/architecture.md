@@ -1,4 +1,4 @@
-# Architecture / Phase 2
+# Architecture / Phase 3
 
 ## Isolation and ownership
 
@@ -24,13 +24,13 @@ browser (localhost:5173)
        v
 FastAPI (127.0.0.1:8000)
   validated local configuration / structured error handlers
-  read-only internal research artifact access (no public file endpoint)
-  health only; no replay endpoint in Phase 2
+  GET policy/scenario catalogs; bounded replay jobs; validated replay metadata
+  one sequential worker -> existing Phase 2 CLI subprocess per episode
        |
        +-- original research worktree: read frozen artifacts only
        +-- visualizer/data/local: CLI-generated replay files (gitignored)
 
-manual local invocation (research Python)
+catalog inspection / replay execution (configured research Python)
   python -m visualizer.backend.replay_cli
        |
        v
@@ -42,8 +42,10 @@ manual local invocation (research Python)
 ```
 
 There is no database, cloud service, auth service, external control interface,
-WebSocket stream, worker queue, REST replay endpoint, or browser-side simulation.
-The React application remains the Phase 1 empty 3D scene.
+WebSocket stream, distributed queue, or browser-side simulation. A bounded
+single-worker executor permits one active batch; episodes run sequentially in
+fresh configured-Python child processes. The React application keeps the empty
+Phase 1 battlefield and shows a no-playback message until Phase 4.
 
 ## Backend surfaces
 
@@ -58,7 +60,7 @@ The React application remains the Phase 1 empty 3D scene.
 - [data_access.py](../backend/data_access.py): internal relative-path resolver,
   traversal/drive/UNC/alternate-stream rejection, resolved containment including
   symlinks, read-only bytes and optional expected SHA-256 verification.
-  No HTTP route exposes this helper. Future APIs must accept allowlisted catalog
+  No HTTP route exposes this helper; HTTP selections use allowlisted catalog
   IDs, not manifest paths supplied by a browser.
 - [errors.py](../backend/errors.py): `{error: {code, message}}`, status codes,
   explicit validation/application failures and logged unexpected exceptions
@@ -73,6 +75,24 @@ The React application remains the Phase 1 empty 3D scene.
 - [replay_cli.py](../backend/replay_cli.py): standalone one-episode command.
   It has no arbitrary checkpoint or output-path input; output is a stem under
   the visualization application's ignored `data/local` directory.
+- [replay_catalog.py](../backend/replay_catalog.py): reads frozen registries and
+  hashes through the audited allowlist, and resolves canonical measurement and
+  Kalman scenario configuration values through the actual scenario builder.
+  Unavailable checkpoints remain visible with a reason; checkpoint paths are
+  never returned by HTTP.
+- [replay_jobs.py](../backend/replay_jobs.py): accepts validated bounded batches,
+  rejects a second active batch, invokes the Phase 2 CLI sequentially, verifies
+  each completed trace, and atomically persists opaque job metadata below
+  `data/local/jobs`. Restarted queued/running jobs become `interrupted`.
+- [replay_validation.py](../backend/replay_validation.py): full trace invariants
+  shared by the Phase 2 writer/reader and Phase 3 API lookup/listing.
+
+The Phase 3 API surfaces `GET /api/policies`, `GET /api/scenarios`,
+`POST /api/replay-jobs`, job GET/cancel, replay list, full replay, and compact
+summary endpoints. See [replay_api.md](replay_api.md) for exact payloads and
+error behavior. Historical local artifacts that do not satisfy the current
+schema/trace contract are excluded from listing with an explicit warning; they
+are never silently presented as current valid replays or modified in place.
 - [application_error.py](../backend/application_error.py): shared expected
   application failures, importable without FastAPI so the CLI can run in the
   existing research Python environment. API handlers retain the same errors.
@@ -80,9 +100,10 @@ The React application remains the Phase 1 empty 3D scene.
 Local dotenv and generated output are ignored. Never call the original
 `build_model_registry()` or campaign writers from the API: they write into
 scientific `results`. Existing manifests contain machine-specific absolute
-paths; Phase 2 must derive approved research-relative paths from the audited
-catalog identity, enforce containment, and compare hashes. No fallback to an
-unrelated sibling repository, final checkpoint, or newly generated artifact.
+paths; the adapter derives approved research-relative paths from audited
+catalog identities, enforces containment, and compares hashes. No fallback to
+an unrelated sibling repository, unregistered final checkpoint, or newly
+generated artifact.
 
 ## Frontend scene
 
@@ -97,10 +118,13 @@ available. A WebGL fallback/error boundary and context-loss notice avoid a
 success-looking blank viewport. No models, episode arrays or moving placeholders
 exist. No external assets, fonts or network rendering dependencies are needed.
 
-[App.tsx](../frontend/src/App.tsx) owns the responsive research layout and health
-status. Configuration, playback and inspector areas are clearly marked as
-future functionality; forms are disabled. Default planned batch is five; choices
-are 1/3/5/10. A backend failure is visible and never replaced with fake outcomes.
+[App.tsx](../frontend/src/App.tsx) owns catalog-driven defender/generation/seed,
+attacker, clutter, perception, and episode selection, job polling/cancellation,
+validated episode summaries, exploratory descriptive statistics, and
+provenance. Default batch is five; choices are 1/3/5/10. Incompatible or
+unavailable catalog entries are not selectable. The Three.js viewport stays
+operational and empty, explicitly indicating that trajectory playback starts in
+Phase 4. A backend failure is visible and never replaced with fake outcomes.
 
 Planned camera modes: free orbit (implemented), defender follow, attacker
 follow, and orthographic top-down (Phase 4). Reset is functional now; follow

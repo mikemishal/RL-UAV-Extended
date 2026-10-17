@@ -16,14 +16,15 @@ import sys
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Annotated, Literal
+from typing import Literal
 
 import numpy as np
-from pydantic import BaseModel, ConfigDict, Field, FiniteFloat, model_validator
+from pydantic import FiniteFloat
 
 from .config import Settings, local_output_root
 from .data_access import ResearchDataStore
 from .application_error import ApplicationError
+from .replay_requests import ATTACKER_SEEDS, CLUTTER_ARCHITECTURES, CONFERENCE_ARCHITECTURES, ReplayRequest
 from .replay_contract import (
     Checkpoint,
     EntityState,
@@ -45,21 +46,11 @@ from .replay_contract import (
     ReplayProvenance,
     StaticObstacle,
 )
+from .replay_validation import validate_trace as _validate_trace
 
 logger = logging.getLogger(__name__)
 EXPECTED_RESEARCH_COMMIT = "a3bc6c4acf1d0b601945159d682f9f14bc702860"
 REGISTRY_RELATIVE_PATH = "results/defender_adaptation_model_registry.json"
-CLUTTER_ARCHITECTURES = {
-    "ppo": ("ppo_clutter_v1", (71, 72, 73), "measurement", True, False),
-    "ppo_kalman": ("ppo_kalman_clutter_v1", (74, 75, 76), "kalman", True, False),
-    "lr_ppo": ("lrppo_clutter_v1", (77, 78, 79), "measurement", True, True),
-}
-CONFERENCE_ARCHITECTURES = {
-    "ppo": ("direct", (45, 46, 47), "measurement", 16),
-    "ppo_kalman": ("kalman", (45, 46, 47), "kalman", 16),
-    "lr_ppo": ("lr_ppo", (55, 56, 57), "measurement", 19),
-}
-ATTACKER_SEEDS = {"A1-201": 201, "A1-202": 202, "A1-203": 203}
 SECTOR_FEATURE_DIM = 20
 LRPPO_MAX_ANGLE_DEG = 30.0
 HEADING_REVERSAL_THRESHOLD_DEG = 120.0
@@ -72,70 +63,6 @@ _COLLISION_OUTCOMES = frozenset(
         "enemy_dynamic_obstacle_collision",
     )
 )
-
-
-class ReplayRequest(BaseModel):
-    """Allowlisted single-episode request; never contains an artifact path."""
-
-    model_config = ConfigDict(extra="forbid", frozen=True)
-
-    defender_policy_id: Literal["greedy", "kalman_greedy", "pn", "lead", "rmpc", "ppo", "ppo_kalman", "lr_ppo"]
-    defender_architecture: str | None = None
-    defender_generation: Literal["conference", "d0", "d0_plus", "d1"] | None = None
-    defender_training_seed: Annotated[int, Field(ge=0)] | None = None
-    checkpoint_role: Literal["conference_best", "d0_start", "final", "secondary_best"] | None = None
-    attacker_condition: Literal["A0", "A1-201", "A1-202", "A1-203"]
-    attacker_model_seed: Annotated[int, Field(ge=0)] | None = None
-    clutter_level: Literal["C0", "C1", "C2", "C3"]
-    perception_mode: Literal["local", "map_local"] = "map_local"
-    evaluation_seed: Annotated[int, Field(ge=0)]
-    deterministic_inference: Literal[True] = True
-
-    @model_validator(mode="after")
-    def validate_selection(self):
-        learned = self.defender_policy_id in CLUTTER_ARCHITECTURES
-        if learned:
-            if self.defender_generation is None or self.defender_training_seed is None:
-                raise ValueError("Learned defenders require an explicit generation and training seed.")
-            if self.defender_generation == "conference":
-                family, seeds, _track, _shape = CONFERENCE_ARCHITECTURES[self.defender_policy_id]
-            else:
-                family, seeds, _track, _sectors, _lr = CLUTTER_ARCHITECTURES[self.defender_policy_id]
-            if self.defender_training_seed not in seeds:
-                raise ValueError(
-                    f"{self.defender_policy_id} {self.defender_generation} supports seeds {seeds}, "
-                    f"not {self.defender_training_seed}."
-                )
-            if self.defender_architecture is not None and self.defender_architecture != family:
-                raise ValueError(
-                    f"{self.defender_policy_id} {self.defender_generation} requires architecture "
-                    f"'{family}', not '{self.defender_architecture}'."
-                )
-            expected_role = {
-                "conference": "conference_best",
-                "d0": "d0_start",
-                "d0_plus": "final",
-                "d1": "final",
-            }[self.defender_generation]
-            if self.checkpoint_role is not None and self.checkpoint_role != expected_role:
-                raise ValueError(
-                    f"{self.defender_generation.upper()} requires checkpoint role '{expected_role}'; "
-                    "secondary best checkpoints are not selectable."
-                )
-        elif any(value is not None for value in (
-            self.defender_architecture, self.defender_generation,
-            self.defender_training_seed, self.checkpoint_role,
-        )):
-            raise ValueError("Analytical defenders do not have an architecture, generation, seed, or checkpoint role.")
-
-        expected_attacker_seed = ATTACKER_SEEDS.get(self.attacker_condition)
-        if self.attacker_model_seed != expected_attacker_seed:
-            if expected_attacker_seed is None and self.attacker_model_seed is None:
-                return self
-            raise ValueError(
-                f"{self.attacker_condition} requires attacker_model_seed={expected_attacker_seed}."
-            )
-        return self
 
 
 @dataclasses.dataclass(frozen=True)
@@ -1455,72 +1382,6 @@ def run_replay_episode(request: ReplayRequest, settings: Settings | None = None)
         return bundle
     finally:
         env.close()
-
-
-def _validate_trace(bundle: ReplayBundle) -> None:
-    if bundle.episode_count != 1 or len(bundle.episodes) != 1:
-        raise _fail("INVALID_REPLAY", "Phase 2 replay bundles must contain exactly one episode.", 500)
-    episode = bundle.episodes[0]
-    if len(episode.frames) != episode.summary.steps + 1:
-        raise _fail("INVALID_REPLAY", "A trace must contain one initial frame plus one frame per executed step.", 500)
-    if [frame.step for frame in episode.frames] != list(range(episode.summary.steps + 1)):
-        raise _fail("INVALID_REPLAY", "Frame indices are not contiguous.", 500)
-    dt = episode.environment.dt_s
-    if any(not math.isclose(frame.time_s, frame.step * dt, rel_tol=0, abs_tol=1e-12) for frame in episode.frames):
-        raise _fail("INVALID_REPLAY", "Frame timestamps do not match the configured simulation timestep.", 500)
-    initial, final = episode.frames[0], episode.frames[-1]
-    if initial.telemetry is not None or initial.reward is not None:
-        raise _fail("INVALID_REPLAY", "The reset frame must not contain a policy action or transition reward.", 500)
-    if initial.outcome != "ongoing":
-        raise _fail("INVALID_REPLAY", "The reset frame must not contain a terminal outcome.", 500)
-    if not (final.terminated or final.truncated):
-        raise _fail("INVALID_REPLAY", "The last recorded frame is not terminal or truncated.", 500)
-    if final.outcome != episode.summary.outcome:
-        raise _fail("INVALID_REPLAY", "Final frame and episode summary outcomes disagree.", 500)
-    if episode.terminal_flags != {"terminated": final.terminated, "truncated": final.truncated}:
-        raise _fail("INVALID_REPLAY", "Episode terminal flags disagree with the final frame.", 500)
-    if not math.isclose(
-        episode.summary.duration_s, episode.summary.steps * dt, rel_tol=0, abs_tol=1e-12
-    ):
-        raise _fail("INVALID_REPLAY", "Episode duration disagrees with its step count and timestep.", 500)
-    if any(frame.outcome != "ongoing" for frame in episode.frames[:-1]):
-        raise _fail("INVALID_REPLAY", "A non-final frame contains a terminal outcome.", 500)
-    detection_step = episode.summary.detection_time_step
-    if detection_step is None:
-        if any(frame.detection_time_step is not None for frame in episode.frames):
-            raise _fail("INVALID_REPLAY", "A frame records detection absent from the episode summary.", 500)
-    elif any(
-        frame.detection_time_step != (detection_step if frame.step >= detection_step else None)
-        for frame in episode.frames
-    ):
-        raise _fail("INVALID_REPLAY", "Frame and summary detection times disagree.", 500)
-    accumulated_reward = 0.0
-    for frame in episode.frames:
-        if frame.step:
-            if frame.reward is None or frame.cumulative_reward is None:
-                raise _fail("INVALID_REPLAY", "Every transition must contain reward and cumulative reward.", 500)
-            accumulated_reward += frame.reward
-            if not math.isclose(frame.cumulative_reward, accumulated_reward, rel_tol=0, abs_tol=1e-10):
-                raise _fail("INVALID_REPLAY", f"Cumulative reward is inconsistent at frame {frame.step}.", 500)
-    if not math.isclose(episode.summary.total_reward, accumulated_reward, rel_tol=0, abs_tol=1e-10):
-        raise _fail("INVALID_REPLAY", "Episode total reward disagrees with its frame rewards.", 500)
-    if any(
-        any(minimum > maximum for minimum, maximum in zip(obstacle.min_corner_m, obstacle.max_corner_m))
-        for obstacle in episode.static_obstacles
-    ):
-        raise _fail("INVALID_REPLAY", "Static obstacle bounds are inverted.", 500)
-    for event in episode.events:
-        if event.step < 1 or event.step > episode.summary.steps:
-            raise _fail("INVALID_REPLAY", "An event lies outside the executed transition range.", 500)
-        if not math.isclose(event.time_s, event.step * dt, rel_tol=0, abs_tol=1e-12):
-            raise _fail("INVALID_REPLAY", "Event timestamp disagrees with its transition index.", 500)
-    if any(len(entity.position_m) != 3 for frame in episode.frames for entity in (
-        frame.defender, frame.attacker, frame.asset
-    )):
-        raise _fail("INVALID_REPLAY", "All authoritative entity positions must be native 3D.", 500)
-    for frame in episode.frames[1:]:
-        if frame.telemetry is None or frame.telemetry.decision_step != frame.step - 1:
-            raise _fail("INVALID_REPLAY", "Every transition requires telemetry for the preceding decision.", 500)
 
 
 def save_replay_bundle(bundle: ReplayBundle, output_name: str | None = None) -> Path:
