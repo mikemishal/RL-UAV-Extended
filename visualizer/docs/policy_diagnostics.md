@@ -281,3 +281,14 @@ confidence intervals or controller rankings.
 
 For complete eligibility and exact matching rules, see
 [policy comparison](policy_comparison.md).
+
+## Phase 7 diagnostic exports
+
+Case exports carry the diagnostic availability already recorded in each replay.
+CSV rows preserve frame/decision timing and leave terminal action fields blank;
+SVG charts are generated only from recorded series. Browser-rasterized PNGs
+retain the SVG aspect ratio and receive backend-validated 300-DPI metadata.
+Comparison exports map the requested absolute or detection-relative interval
+to each replay separately. No export performs another policy inference,
+reconstructs hidden PPO values, or treats missing telemetry as zero. See
+[scientific exports](scientific_exports.md).

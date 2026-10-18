@@ -251,6 +251,10 @@ running.
 
 ## Phase boundary
 
-Phase 6 ends at validated two-policy comparison and descriptive matched-seed
-inspection. Phase 7's case library, annotations/bookmarks, figure exports, and
-automated research-report generation have not started.
+Phase 6 comparison semantics remain unchanged. Three Phase 7 research-case
+sidecars preserve the documented exploratory seed-zero comparisons using four
+distinct existing replay artifacts; no Phase 7 traces were generated. The case
+IDs, replay IDs, outcomes, and limitations are recorded in the
+[research case library](research_case_library.md). Reports and comparison
+exports remain factual summaries of the validated saved data; they do not
+upgrade an exploratory pairing into a controlled or causal result.

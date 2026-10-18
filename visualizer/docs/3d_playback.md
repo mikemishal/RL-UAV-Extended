@@ -284,3 +284,18 @@ when the replay validator confirms the initial world; they do not imply that
 later learned-attacker or protected-asset paths are coupled.
 See [policy comparison](policy_comparison.md) for the comparability criteria
 and analysis definitions.
+
+## Phase 7 scene capture
+
+From a saved research case, selecting a replay capture restores that real
+bundle into the single-episode view, pauses playback, and renders the current
+scene into an on-demand 2560 × 1440 WebGL render target. The temporary target
+is read back and vertically corrected as PNG; camera projection and renderer
+target/viewport/scissor state are restored in `finally`. Global
+`preserveDrawingBuffer` is not enabled. The API verifies the case's replay ID
+and compressed-file hash before storing the screenshot and metadata.
+
+Only WebGL scene geometry is included. Drei `Html` labels and application
+chrome are DOM overlays and are not part of the PNG. This is a visualization
+export of the currently recorded time and camera, not a new episode or
+scientific measurement. See [scientific exports](scientific_exports.md).

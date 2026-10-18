@@ -135,6 +135,74 @@ export interface ReplayCatalog {
   warnings: string[];
 }
 
+export interface ResearchBookmark {
+  bookmark_id: string;
+  label: string;
+  time_s: number;
+  frame_step: number;
+  decision_step: number | null;
+  sync_mode: 'absolute' | 'detection';
+  local_time_a_s: number | null;
+  local_time_b_s: number | null;
+  observation: string;
+  interpretation: string;
+  tags: string[];
+  camera_pose: Record<string, unknown> | null;
+  created_at: string;
+}
+
+export interface ResearchCase {
+  case_id: string;
+  case_type: 'single' | 'comparison';
+  title: string;
+  description: string;
+  tags: string[];
+  notes: string;
+  replay_ids: string[];
+  replay_references: { replay_id: string; artifact_sha256: string; integrity: string }[];
+  integrity: string;
+  comparison_status: 'matched' | 'exploratory' | 'incompatible' | null;
+  comparison_reasons: string[];
+  metadata: {
+    defender_families: string[];
+    generations: string[];
+    training_seeds: number[];
+    attackers: string[];
+    clutter: string[];
+    perception: string[];
+    simulation_seeds: number[];
+    outcomes: string[];
+    source_commits: string[];
+    dirty_provenance: boolean;
+    created_at: string;
+  };
+  bookmarks: ResearchBookmark[];
+  version: number;
+}
+
+export interface CaseCreateRequest {
+  case_type: 'single' | 'comparison';
+  title: string;
+  description?: string;
+  tags?: string[];
+  notes?: string;
+  replay_ids: string[];
+}
+
+export interface BookmarkCreateRequest {
+  label: string;
+  time_s: number;
+  frame_step: number;
+  decision_step?: number | null;
+  sync_mode: 'absolute' | 'detection';
+  local_time_a_s: number;
+  local_time_b_s?: number | null;
+  observation?: string;
+  interpretation?: string;
+  tags?: string[];
+  camera_pose?: Record<string, unknown> | null;
+}
+
 export interface ReplaySummary {
   replay_id: string;
   schema_version: string;
@@ -469,6 +537,128 @@ export function getReplayJob(jobId: string): Promise<ReplayJob> {
 
 export function cancelReplayJob(jobId: string): Promise<ReplayJob> {
   return api(`/api/replay-jobs/${encodeURIComponent(jobId)}/cancel`, { method: 'POST' });
+}
+
+export function getResearchCases(
+  query = '',
+  filters: Partial<Record<'architecture' | 'generation' | 'training_seed' | 'attacker' | 'clutter' | 'perception' | 'evaluation_seed' | 'outcome' | 'case_type' | 'tag' | 'annotations' | 'bookmarked' | 'sort', string>> = {},
+): Promise<{ cases: ResearchCase[]; total: number }> {
+  const search = new URLSearchParams();
+  if (query.trim()) search.set('q', query.trim());
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value !== undefined && value !== '') search.set(key, value);
+  });
+  return api(`/api/cases?${search.toString()}`);
+}
+
+export function createResearchCase(request: CaseCreateRequest): Promise<ResearchCase> {
+  return api('/api/cases', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  });
+}
+
+export function updateResearchCase(
+  caseId: string,
+  patch: Partial<Pick<ResearchCase, 'title' | 'description' | 'tags' | 'notes'>> & { expected_version: number },
+): Promise<ResearchCase> {
+  return api(`/api/cases/${encodeURIComponent(caseId)}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(patch),
+  });
+}
+
+export function deleteResearchCase(caseId: string, version: number): Promise<void> {
+  return api(`/api/cases/${encodeURIComponent(caseId)}?expected_version=${version}`, { method: 'DELETE' });
+}
+
+export function addResearchBookmark(
+  caseId: string,
+  version: number,
+  bookmark: BookmarkCreateRequest,
+): Promise<ResearchCase> {
+  return api(`/api/cases/${encodeURIComponent(caseId)}/bookmarks`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      expected_version: version,
+      bookmark: {
+        ...bookmark,
+        title: bookmark.label,
+        camera: bookmark.camera_pose ?? {},
+      },
+    }),
+  });
+}
+
+export function updateResearchBookmark(
+  caseId: string,
+  bookmarkId: string,
+  version: number,
+  patch: Partial<ResearchBookmark>,
+): Promise<ResearchCase> {
+  const { label, camera_pose, ...fields } = patch;
+  return api(`/api/cases/${encodeURIComponent(caseId)}/bookmarks/${encodeURIComponent(bookmarkId)}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      expected_version: version,
+      ...fields,
+      ...(label !== undefined ? { title: label } : {}),
+      ...(camera_pose !== undefined ? { camera: camera_pose } : {}),
+    }),
+  });
+}
+
+export function deleteResearchBookmark(caseId: string, bookmarkId: string, version: number): Promise<ResearchCase> {
+  return api(`/api/cases/${encodeURIComponent(caseId)}/bookmarks/${encodeURIComponent(bookmarkId)}?expected_version=${version}`, {
+    method: 'DELETE',
+  });
+}
+
+export function createCaseExport(
+  caseId: string,
+  request: { kind: 'report' | 'episode_csv' | 'comparison_csv' | 'trajectory_svg' | 'telemetry_svg' | 'package_zip'; start_time_s?: number; end_time_s?: number; sync_mode?: 'absolute' | 'detection'; camera?: string },
+): Promise<{ export_id: string; case_id: string; kind: string; files: { name: string; sha256: string; bytes: number; download_url: string }[] }> {
+  return api(`/api/cases/${encodeURIComponent(caseId)}/exports`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  });
+}
+
+export function createChartCapture(
+  caseId: string,
+  exportId: string,
+  request: { source_filename: string; source_sha256: string; png_base64: string; width: 2100; height: number; dpi: 300 },
+): Promise<{ export_id: string; files: { name: string; sha256: string; bytes: number; download_url: string; kind?: string }[] }> {
+  return api(`/api/cases/${encodeURIComponent(caseId)}/exports/${encodeURIComponent(exportId)}/chart-capture`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  });
+}
+
+export function createSceneCapture(
+  caseId: string,
+  request: {
+    replay_id: string;
+    replay_sha256: string;
+    png_base64: string;
+    width: number;
+    height: number;
+    time_s: number;
+    camera: string;
+    projection: 'perspective' | 'top-down';
+  },
+): Promise<{ export_id: string; files: { name: string; sha256: string; bytes: number; download_url: string }[] }> {
+  return api(`/api/cases/${encodeURIComponent(caseId)}/exports/scene-capture`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  });
 }
 
 export function getHealth(): Promise<{ service: string; phase: number; status: 'ok' | 'degraded'; data_root: string }> {

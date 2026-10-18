@@ -15,6 +15,8 @@ import type {
   ReplayListItem,
   ReplayPolicySelection,
   ReplayEpisode,
+  ResearchBookmark,
+  ResearchCase,
   ScenarioCatalog,
 } from './api';
 import { Battlefield } from './Battlefield';
@@ -66,6 +68,16 @@ interface ComparisonExplorerProps {
   replayJobActive: boolean;
   onJob: (job: ReplayJob) => void;
   refreshReplays: () => Promise<ReplayListItem[]>;
+  restoreCase: { item: ResearchCase; bookmark?: ResearchBookmark; nonce: number } | null;
+  onCaseContext: (context: {
+    replayIds: string[];
+    axisTimeS: number;
+    localTimeA: number;
+    localTimeB: number;
+    syncMode: ComparisonSyncMode;
+    frameStep: number;
+    decisionStep: number | null;
+  } | null) => void;
 }
 
 function labelPolicy(policy: DefenderPolicy, generation: string | null, trainingSeed: number | null): string {
@@ -250,6 +262,8 @@ export function ComparisonExplorer({
   replayJobActive,
   onJob,
   refreshReplays,
+  restoreCase,
+  onCaseContext,
 }: ComparisonExplorerProps) {
   const [choiceA, setChoiceA] = useState<DefenderChoice>({ policyId: 'lr_ppo', generation: 'd1', trainingSeed: 77 });
   const [choiceB, setChoiceB] = useState<DefenderChoice>({ policyId: 'ppo_kalman', generation: 'd0', trainingSeed: 74 });
@@ -282,6 +296,8 @@ export function ComparisonExplorer({
   const [generationError, setGenerationError] = useState<string | null>(null);
   const [sceneError, setSceneError] = useState<string | null>(null);
   const alive = useRef(true);
+  const restoreConfigKey = useRef<string | null>(null);
+  const pendingRestoreTime = useRef<number | null>(null);
 
   useEffect(() => {
     alive.current = true;
@@ -307,6 +323,34 @@ export function ComparisonExplorer({
       ?? catalog.attackers.find(item => item.available);
     if (preferredAttacker) setAttackerId(preferredAttacker.attacker_id);
   }, [catalog]);
+
+  useEffect(() => {
+    if (!restoreCase || restoreCase.item.case_type !== 'comparison' || replays.length === 0) return;
+    const [recordA, recordB] = restoreCase.item.replay_ids.map(id => replays.find(item => item.replay_id === id));
+    if (!recordA || !recordB) return;
+    restoreConfigKey.current = `${recordA.defender.policy_id}/${recordA.defender.generation}/${recordA.defender.training_seed}|${recordB.defender.policy_id}/${recordB.defender.generation}/${recordB.defender.training_seed}|${recordA.attacker.policy_id}|${recordA.clutter}|${recordA.perception}|${recordA.simulation_seed}|1`;
+    pendingRestoreTime.current = restoreCase.bookmark?.time_s ?? 0;
+    setChoiceA({
+      policyId: recordA.defender.policy_id,
+      generation: recordA.defender.generation,
+      trainingSeed: recordA.defender.training_seed,
+    });
+    setChoiceB({
+      policyId: recordB.defender.policy_id,
+      generation: recordB.defender.generation,
+      trainingSeed: recordB.defender.training_seed,
+    });
+    setAttackerId(recordA.attacker.policy_id);
+    setClutter(recordA.clutter);
+    setPerception(recordA.perception);
+    setSeedStartText(String(recordA.simulation_seed));
+    setEpisodeCount(1);
+    setSeedIndex(0);
+    setOverrides({ [recordA.simulation_seed]: { a: recordA.replay_id, b: recordB.replay_id } });
+    setPairResults({});
+    setSyncMode(restoreCase.bookmark?.sync_mode ?? 'absolute');
+    setPlaying(false);
+  }, [replays, restoreCase]);
 
   const seedStartParsed = Number(seedStartText);
   const validSeedRange = Number.isSafeInteger(seedStartParsed)
@@ -350,6 +394,16 @@ export function ComparisonExplorer({
 
   useEffect(() => {
     setPairResults({});
+    if (restoreConfigKey.current !== null) {
+      if (restoreConfigKey.current === configKey) restoreConfigKey.current = null;
+      setSeedIndex(0);
+      setPlaying(false);
+      setBundleA(null);
+      setBundleB(null);
+      setPairValidation(null);
+      setPairError(null);
+      return;
+    }
     setOverrides({});
     setSeedIndex(0);
     setAxisTimeS(0);
@@ -361,7 +415,11 @@ export function ComparisonExplorer({
   }, [configKey]);
 
   useEffect(() => {
-    if (!scenarioCompatible || !replayIdA || !replayIdB || exactSameController) {
+    const restoredPairSelected = Boolean(restoreCase?.item.case_type === 'comparison'
+      && replayIdA && replayIdB
+      && restoreCase.item.replay_ids.includes(replayIdA)
+      && restoreCase.item.replay_ids.includes(replayIdB));
+    if ((!scenarioCompatible && !restoredPairSelected) || !replayIdA || !replayIdB || (exactSameController && !restoredPairSelected)) {
       setBundleA(null);
       setBundleB(null);
       setPairValidation(null);
@@ -382,8 +440,11 @@ export function ComparisonExplorer({
         }
         const episodeA = a.episodes[0];
         const episodeB = b.episodes[0];
-        if (!selectionMatches(episodeA, choiceA, attackerId, attackerCheckpointHash, clutter, perception, selectedSeed, defenderCheckpointA)
-            || !selectionMatches(episodeB, choiceB, attackerId, attackerCheckpointHash, clutter, perception, selectedSeed, defenderCheckpointB)) {
+        const isRestoredPair = Boolean(restoreCase?.item.case_type === 'comparison'
+          && restoreCase.item.replay_ids.includes(replayIdA)
+          && restoreCase.item.replay_ids.includes(replayIdB));
+        if (!isRestoredPair && (!selectionMatches(episodeA, choiceA, attackerId, attackerCheckpointHash, clutter, perception, selectedSeed, defenderCheckpointA)
+            || !selectionMatches(episodeB, choiceB, attackerId, attackerCheckpointHash, clutter, perception, selectedSeed, defenderCheckpointB))) {
           throw new Error('Replay contents do not match the selected controller, scenario, attacker, perception mode, and evaluation seed.');
         }
         const validation = validateComparisonPair(a, b);
@@ -406,7 +467,7 @@ export function ComparisonExplorer({
       })
       .finally(() => { if (active) setPairLoading(false); });
     return () => { active = false; };
-  }, [attackerId, choiceA, choiceB, clutter, exactSameController, perception, replayIdA, replayIdB, scenarioCompatible, selectedSeed]);
+  }, [attackerId, choiceA, choiceB, clutter, exactSameController, perception, replayIdA, replayIdB, restoreCase, scenarioCompatible, selectedSeed]);
 
   const episodeA = bundleA?.episodes[0] ?? null;
   const episodeB = bundleB?.episodes[0] ?? null;
@@ -425,8 +486,13 @@ export function ComparisonExplorer({
     if (syncMode === 'detection' && detectionUnavailable) setSyncMode('absolute');
   }, [detectionUnavailable, syncMode]);
   useEffect(() => {
-    if (activeRange) setAxisTimeS(activeRange.minimum);
-  }, [episodeA?.episode_id, episodeB?.episode_id, activeRange?.minimum]);
+    if (!activeRange) return;
+    const requested = pendingRestoreTime.current;
+    setAxisTimeS(requested === null
+      ? activeRange.minimum
+      : Math.max(activeRange.minimum, Math.min(activeRange.maximum, requested)));
+    pendingRestoreTime.current = null;
+  }, [episodeA?.episode_id, episodeB?.episode_id, activeRange?.maximum, activeRange?.minimum]);
   useEffect(() => {
     if (!playing || !activeRange) return;
     let previous = performance.now();
@@ -447,6 +513,21 @@ export function ComparisonExplorer({
   const localTimeB = episodeB ? mapAxisTimeToEpisodeTime(axisTimeS, episodeB, syncMode) : 0;
   const readoutA = episodeA && replayIdA ? currentReadout(episodeA, replayIdA, localTimeA) : null;
   const readoutB = episodeB && replayIdB ? currentReadout(episodeB, replayIdB, localTimeB) : null;
+  useEffect(() => {
+    if (!replayIdA || !replayIdB || !readoutA) {
+      onCaseContext(null);
+      return;
+    }
+    onCaseContext({
+      replayIds: [replayIdA, replayIdB],
+      axisTimeS,
+      localTimeA,
+      localTimeB,
+      syncMode,
+      frameStep: readoutA.frame.step,
+      decisionStep: readoutA.decision?.decisionStep ?? null,
+    });
+  }, [axisTimeS, localTimeA, localTimeB, onCaseContext, readoutA, replayIdA, replayIdB, syncMode]);
   const seriesA = useMemo(() => episodeA ? deriveDiagnosticSeries(episodeA) : null, [episodeA]);
   const seriesB = useMemo(() => episodeB ? deriveDiagnosticSeries(episodeB) : null, [episodeB]);
   const eligiblePair = Boolean(episodeA && episodeB && pairValidation && pairValidation.status !== 'incompatible');

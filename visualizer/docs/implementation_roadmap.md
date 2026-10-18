@@ -1,8 +1,8 @@
 # Eight-phase implementation roadmap
 
-Phases 1–6 are implemented and verified, including live API/Chromium validation
-of synchronized comparisons using real replay traces. Phase 7 case-library,
-figure-export and research-report features have not started.
+Phases 1–7 are implemented and verified through live case management and
+provenance-checked exports using existing replay traces. Phase 8 comprehensive
+testing, packaging, and final audit remain.
 
 ## 1. Setup and architecture
 
@@ -81,9 +81,19 @@ figure-export and research-report features have not started.
 
 ## 7. Episode research tools and exports
 
-- Local annotations, bookmarks, trace inspection and versioned evidence exports.
-- Include source commits, hashes, seed/config identities and diagnostic availability.
-- Safe names/catalog IDs only; outputs remain outside frozen experiment directories.
+- Local JSON case sidecars, annotations, bookmarks, trace inspection and
+  optimistic-version metadata updates.
+- Preserve replay IDs/hashes, source commits, seed/config identities, comparison
+  eligibility and diagnostic availability in factual reports and manifests.
+- Produce recorded-value CSV, trajectory/telemetry SVG, ZIP, and chart PNGs
+  validated for source hash, dimensions, aspect ratio and 300-DPI metadata.
+- Capture the actual 3D replay scene on demand through an offscreen render
+  target, restoring renderer/camera state and leaving `preserveDrawingBuffer`
+  unchanged.
+- Reuse indexed traces only; safe IDs and filenames; sidecars and exports stay
+  in ignored local directories outside frozen experiment data.
+- Browser/API flow and focused regressions pass. No training or episode
+  generation occurs in Phase 7.
 
 ## 8. Comprehensive testing and final local packaging
 
@@ -255,5 +265,32 @@ known visualization limitations.
   learned-attacker, asset, or random trajectories.
 - Eight screenshots from real validated data are listed in
   [policy comparison](policy_comparison.md#live-verification-and-evidence).
-- The single-episode explorer remains available. Phase 7 case library,
-  figure exports and automated research-report generation have not begun.
+- The single-episode explorer remains available. Phase 6 stopped before the
+  Phase 7 case library and exports, which are completed below.
+
+## Phase 7 completion / stop boundary
+
+- The case library stores replay references and hashes as local versioned JSON
+  sidecars. Integrity mismatches block exports/captures; deleting a case does
+  not delete its replay. Timestamped bookmarks validate frame/decision and
+  comparison-axis/local-time alignment.
+- Markdown report, frame/telemetry CSV, trajectory and telemetry SVG, package
+  ZIP, 300-DPI chart PNG, and 2560 × 1440 WebGL scene capture are available.
+  The API validates source hashes, PNG chunks/dimensions, replay membership,
+  and captured replay hashes. No browser dynamics are introduced.
+- Three Phase 6 case sidecars were saved from four distinct existing replays
+  (six case references). All are explicitly exploratory because of dirty
+  provenance and/or recorder/runtime/estimator differences. No Phase 7
+  episodes were generated.
+- Live Chromium exercised the Research Cases page and captured the real
+  LR-PPO D0/C3/A1-203 replay at 0.00 s. The local PNG is
+  `visualizer/frontend/test-results/phase7-recorded-battlefield.png`; the
+  2560 × 1440 API capture and its metadata are ignored under
+  `visualizer/data/local/exports/`.
+- The focused API suite passes 22 tests; frontend typecheck and production
+  build pass. Vite emits a nonblocking large-bundle warning. The live policy
+  and scenario catalog endpoints remain unavailable because the configured
+  simulation interpreter lacks scientific dependencies; existing replay,
+  case, and export routes were separately validated.
+- Phase 8 is not implemented. Stop here; do not add packaging automation,
+  broad end-to-end campaign tests, or new simulation outputs in this phase.

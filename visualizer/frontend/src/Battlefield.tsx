@@ -16,7 +16,11 @@ import {
   Mesh,
   OrthographicCamera,
   PerspectiveCamera,
+  RGBAFormat,
+  UnsignedByteType,
   Vector3,
+  Vector4,
+  WebGLRenderTarget,
 } from 'three';
 import type {
   ReplayEpisode,
@@ -78,6 +82,10 @@ export interface BattlefieldProps {
   cameraLeader?: boolean;
   onCameraPose?: (pose: CameraPose) => void;
   sharedBoundsEpisode?: ReplayEpisode | null;
+  captureRequestToken?: number;
+  captureTimeS?: number;
+  sceneActive?: boolean;
+  onCaptureResult?: (result: { pngBase64: string; width: number; height: number; projection: 'perspective' | 'top-down'; camera: CameraMode; timeS: number } | null, error?: string) => void;
 }
 
 interface ErrorBoundaryState {
@@ -1116,6 +1124,107 @@ function EmptyScene({
   );
 }
 
+function CaptureProbe({
+  requestToken,
+  onResult,
+  cameraMode,
+  timeS,
+}: {
+  requestToken: number;
+  onResult?: BattlefieldProps['onCaptureResult'];
+  cameraMode: CameraMode;
+  timeS: number;
+}) {
+  const { gl, scene, camera } = useThree();
+  useEffect(() => {
+    if (!requestToken || !onResult) return;
+    let active = true;
+    const capture = () => {
+      if (!active) return;
+      const width = 2560;
+      const height = 1440;
+      const target = new WebGLRenderTarget(width, height, {
+        format: RGBAFormat,
+        type: UnsignedByteType,
+        depthBuffer: true,
+        stencilBuffer: false,
+      });
+      const previousTarget = gl.getRenderTarget();
+      const previousViewport = gl.getViewport(new Vector4());
+      const previousScissor = gl.getScissor(new Vector4());
+      const previousScissorTest = gl.getScissorTest();
+      const previousAspect = camera instanceof PerspectiveCamera ? camera.aspect : null;
+      const previousOrthoBounds = camera instanceof OrthographicCamera
+        ? [camera.left, camera.right, camera.top, camera.bottom] as const
+        : null;
+      try {
+        if (camera instanceof PerspectiveCamera) {
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+        } else if (camera instanceof OrthographicCamera) {
+          const halfWidth = (camera.top - camera.bottom) * width / height / 2;
+          camera.left = -halfWidth;
+          camera.right = halfWidth;
+          camera.updateProjectionMatrix();
+        }
+        gl.setRenderTarget(target);
+        gl.setViewport(0, 0, width, height);
+        gl.setScissor(0, 0, width, height);
+        gl.setScissorTest(false);
+        gl.clear(true, true, true);
+        gl.render(scene, camera);
+        const pixels = new Uint8Array(width * height * 4);
+        gl.readRenderTargetPixels(target, 0, 0, width, height, pixels);
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const context = canvas.getContext('2d', { alpha: false });
+        if (!context) throw new Error('Could not allocate PNG capture buffer.');
+        const image = context.createImageData(width, height);
+        const rowBytes = width * 4;
+        for (let row = 0; row < height; row += 1) {
+          const source = pixels.subarray((height - row - 1) * rowBytes, (height - row) * rowBytes);
+          image.data.set(source, row * rowBytes);
+        }
+        context.putImageData(image, 0, 0);
+        const dataUrl = canvas.toDataURL('image/png');
+        if (!dataUrl.startsWith('data:image/png;base64,')) throw new Error('Browser did not encode the scene capture as PNG.');
+        onResult({
+          pngBase64: dataUrl.slice('data:image/png;base64,'.length),
+          width,
+          height,
+          projection: camera instanceof OrthographicCamera ? 'top-down' : 'perspective',
+          camera: cameraMode,
+          timeS,
+        });
+      } catch (error) {
+        onResult(null, error instanceof Error ? error.message : 'Scene capture failed.');
+      } finally {
+        gl.setRenderTarget(previousTarget);
+        gl.setViewport(previousViewport);
+        gl.setScissor(previousScissor);
+        gl.setScissorTest(previousScissorTest);
+        if (camera instanceof PerspectiveCamera && previousAspect !== null) {
+          camera.aspect = previousAspect;
+          camera.updateProjectionMatrix();
+        } else if (camera instanceof OrthographicCamera && previousOrthoBounds) {
+          [camera.left, camera.right, camera.top, camera.bottom] = previousOrthoBounds;
+          camera.updateProjectionMatrix();
+        }
+        target.dispose();
+      }
+    };
+    const frame = window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(capture);
+    });
+    return () => {
+      active = false;
+      window.cancelAnimationFrame(frame);
+    };
+  }, [camera, cameraMode, gl, onResult, requestToken, scene, timeS]);
+  return null;
+}
+
 export function Battlefield(props: BattlefieldProps) {
   const ref = useRef<HTMLDivElement>(null);
   const controls = useRef<OrbitControlsImpl>(null);
@@ -1165,6 +1274,7 @@ export function Battlefield(props: BattlefieldProps) {
         }}>
           <Canvas
             dpr={[1, 1.75]}
+            frameloop={props.sceneActive === false ? 'never' : 'always'}
             shadows
             camera={{ position: [65, 52, 70], fov: 48, near: 0.1, far: 10000 }}
             gl={{ antialias: true, alpha: false }}
@@ -1175,6 +1285,12 @@ export function Battlefield(props: BattlefieldProps) {
             {props.episode
               ? <SceneContents {...props} controls={controls} cameraOutput={cameraOutput} />
               : <EmptyScene resetToken={props.resetCameraToken} controls={controls} cameraOutput={cameraOutput} />}
+            <CaptureProbe
+              requestToken={props.captureRequestToken ?? 0}
+              onResult={props.onCaptureResult}
+              cameraMode={props.cameraMode}
+              timeS={props.captureTimeS ?? props.timeS}
+            />
             {props.linkedCamera && (
               <LinkedCamera
                 controls={controls}

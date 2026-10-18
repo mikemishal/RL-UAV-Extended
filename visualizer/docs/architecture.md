@@ -1,4 +1,4 @@
-# Architecture / Phase 6
+# Architecture / Phase 7
 
 ## Isolation and ownership
 
@@ -217,6 +217,34 @@ artifacts indexable for later pairing; incomplete rows are not called matched.
 See [policy comparison](policy_comparison.md) for pair-status semantics,
 attacker/asset coupling limitations, chart formulas, detection alignment,
 camera synchronization, divergence events, live test results and evidence.
+
+## Phase 7 case persistence and exports
+
+`case_library.py` stores versioned JSON sidecars below the ignored local data
+root. Each sidecar references validated replay IDs and compressed-artifact
+SHA-256 values; it does not copy or mutate replay bundles. Case deletion only
+removes the sidecar. Every export/capture reloads the referenced bundle and
+checks its recorded hash. Bookmarks preserve shared-axis and replay-local time,
+frame/decision identity, synchronization mode and researcher-entered notes.
+
+`scientific_exports.py` produces case reports, recorded-value CSVs, SVG charts,
+ZIP packages, and validated capture artifacts. The browser rasterizes exported
+SVGs; the API checks source hashes, dimensions, aspect ratio, PNG checksums and
+300-DPI metadata before persisting chart PNGs. A native scene screenshot comes
+from an on-demand WebGL render target and is accepted only for a replay/hash
+referenced by the case. Export files remain in the ignored local output root.
+
+The React case library is separate from the simulator configuration flow.
+While the case page is displayed, the single-episode workspace remains mounted
+but hidden so Drei `Html` portal roots are not torn down on each case/capture
+view switch. Its render loop is paused while hidden and resumes when the single
+workspace is active. Capture restores an actual saved replay into that view,
+pauses it, and saves the PNG with time/camera/projection metadata. The Three.js
+renderer's global drawing-buffer behavior is unchanged.
+
+Phase 7 documentation and evidence: [case library](research_case_library.md),
+[scientific exports](scientific_exports.md). Three saved exploratory cases
+reuse four distinct Phase 6 replay artifacts; Phase 7 generated no episodes.
 
 ## Coordinate discrepancy and approved resolution
 

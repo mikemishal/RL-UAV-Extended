@@ -235,3 +235,42 @@ button.paired-seed-row { cursor: pointer; }
 @media (max-width: 720px) { .dashboard.diagnostics-collapsed { grid-template-columns: minmax(0, 1fr); }.diagnostics-collapse { width: auto; }.diagnostic-chart-grid { grid-template-columns: minmax(0, 1fr); }.diagnostic-charts-heading { align-items: start; flex-direction: column; } }
 @media (max-width: 900px) { .comparison-shared-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }.comparison-inspectors, .comparison-scenes, .comparison-summary-grid { grid-template-columns: minmax(0, 1fr); }.comparison-scenes .viewport { height: 430px; } }
 @media (max-width: 720px) { .app-mode-switch { order: 3; margin-left: 53px; }.app-mode-switch button { font-size: 10px; }.comparison-selection { grid-template-columns: minmax(0, 1fr); }.comparison-replay-selectors { grid-template-columns: minmax(0, 1fr); }.comparison-heading { align-items: flex-start; flex-direction: column; }.comparison-generation .primary-button { width: 100%; }.paired-seed-row { grid-template-columns: .6fr 1fr 1fr; }.paired-seed-row span:nth-child(n + 4) { grid-column: span 1; } }
+.focus-layout .dashboard { grid-template-columns: minmax(0, 1fr); }
+.focus-layout .configuration, .focus-layout .diagnostics, .focus-layout .results,
+.focus-layout .viewer-options, .focus-layout .playback-status, .focus-layout .diagnostic-charts { display: none; }
+.focus-layout .scene-column { grid-column: 1; }
+.focus-layout .viewport { height: calc(100vh - 310px); min-height: 480px; max-height: 1100px; }
+.focus-layout .comparison-selection, .focus-layout .comparison-inspectors,
+.focus-layout .comparison-summary, .focus-layout .comparison-seed-list { display: none; }
+.focus-layout .comparison-scenes .viewport { height: calc(100vh - 310px); min-height: 480px; max-height: 1100px; }
+.research-cases { padding: 20px; }
+.research-cases-heading { display: flex; align-items: end; gap: 12px; margin-bottom: 18px; }
+.research-cases-heading > div { flex: 1; }
+.research-cases-heading h2 { margin-bottom: 0; }
+.research-cases-heading label { min-width: 260px; margin-bottom: 0; }
+.case-columns { display: grid; grid-template-columns: minmax(260px, .8fr) minmax(0, 1.2fr); gap: 24px; }
+.case-columns > div { min-width: 0; }
+.case-columns h3 { margin: 14px 0 8px; color: #b9d4dc; }
+.case-columns .case-subheading { margin-top: 24px; }
+.case-columns textarea { display: block; width: 100%; margin-top: 7px; padding: 9px; border: 1px solid #365060; border-radius: 4px; background: #0d1822; color: #d5e7ed; font: inherit; font-size: 11px; resize: vertical; }
+.case-list, .bookmark-list { display: grid; gap: 8px; margin: 10px 0 0; padding: 0; list-style: none; }
+.case-list-button { display: grid; width: 100%; gap: 5px; text-align: left; }
+.case-list-button[aria-pressed=true] { border-color: #70b8a9; background: #17383a; }
+.case-list-button span, .case-list-button small, .case-provenance { color: #99b2c1; font-size: 10px; line-height: 1.5; overflow-wrap: anywhere; }
+.case-detail-heading { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+.case-detail-heading h3 { margin-top: 0; }
+.case-detail-heading p { color: #8ea5b5; font-size: 10px; }
+.case-provenance { margin: 12px 0; }
+.case-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 12px; }
+.case-actions { display: flex; flex-wrap: wrap; gap: 7px; margin: 10px 0; }
+.case-actions button, .case-detail-heading button, .case-columns button { font-size: 10px; }
+.case-filter-controls { display: grid; grid-template-columns: repeat(4, minmax(110px, 1fr)); gap: 0 9px; padding: 10px; border: 1px solid #29414f; border-radius: 5px; }
+.case-filter-controls label, .case-export-range label { margin: 0; font-size: 9px; }
+.case-export-range { display: flex; flex-wrap: wrap; align-items: end; gap: 10px; margin: 8px 0 14px; }
+.case-export-range label { min-width: 140px; flex: 1; }
+.case-export-range > span { flex: 1 1 100%; }
+.bookmark-list li { display: grid; gap: 5px; padding: 10px; border: 1px solid #29414f; border-radius: 5px; background: #0d1822; }
+.bookmark-list li > span { color: #a9bdc8; font-size: 10px; line-height: 1.5; }
+.case-success { margin: 8px 0; color: #91dfc0; }
+.capture-status { margin: 8px 0; color: #91dfc0; }
+@media (max-width: 850px) { .case-columns { grid-template-columns: minmax(0, 1fr); }.research-cases-heading { align-items: stretch; flex-direction: column; }.research-cases-heading label { min-width: 0; }.case-form-grid, .case-filter-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

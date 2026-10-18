@@ -15,6 +15,7 @@ import {
   getReplaySummary,
   getReplays,
   getScenarios,
+  createSceneCapture,
 } from './api';
 import type {
   DefenderPolicy,
@@ -25,7 +26,10 @@ import type {
   ReplayListItem,
   ReplaySummary,
   ScenarioCatalog,
+  ResearchBookmark,
+  ResearchCase,
 } from './api';
+import { ResearchCases } from './ResearchCases';
 
 type BackendStatus = { kind: 'checking' | 'ok' | 'degraded' | 'error'; message: string };
 type EpisodeCount = 1 | 3 | 5 | 10;
@@ -249,7 +253,27 @@ function EpisodeSelection({
 
 export function App() {
   const health = useBackendHealth();
-  const [viewMode, setViewMode] = useState<'single' | 'comparison'>('single');
+  const [viewMode, setViewMode] = useState<'single' | 'comparison' | 'cases'>('single');
+  const [caseOrigin, setCaseOrigin] = useState<'single' | 'comparison'>('single');
+  const [layoutMode, setLayoutMode] = useState<'focus' | 'analysis'>('analysis');
+  const [comparisonContext, setComparisonContext] = useState<{
+    replayIds: string[];
+    axisTimeS: number;
+    localTimeA: number;
+    localTimeB: number;
+    syncMode: 'absolute' | 'detection';
+    frameStep: number;
+    decisionStep: number | null;
+  } | null>(null);
+  const [caseRestore, setCaseRestore] = useState<{ item: ResearchCase; bookmark?: ResearchBookmark; nonce: number } | null>(null);
+  const [sceneCaptureRequest, setSceneCaptureRequest] = useState<{
+    token: number;
+    caseId: string;
+    replayId: string;
+    replaySha256: string;
+  } | null>(null);
+  const [sceneCaptureStatus, setSceneCaptureStatus] = useState<string | null>(null);
+  const [caseSeekNonce, setCaseSeekNonce] = useState(0);
   const [catalog, setCatalog] = useState<PolicyCatalog | null>(null);
   const [scenarios, setScenarios] = useState<ScenarioCatalog | null>(null);
   const [catalogError, setCatalogError] = useState<string | null>(null);
@@ -291,6 +315,70 @@ export function App() {
   }, []);
   const handleSceneError = useCallback((message: string) => {
     setSceneError(message || null);
+  }, []);
+  const beginSceneCapture = useCallback((item: ResearchCase, replayId: string, timeS: number) => {
+    const reference = item.replay_references.find(entry => entry.replay_id === replayId);
+    if (!reference) {
+      setSceneCaptureStatus('Scene capture was not started: the selected replay is not referenced by this case.');
+      return;
+    }
+    setSceneCaptureStatus('Rendering a high-resolution capture from the recorded Three.js scene…');
+    setCaseOrigin('single');
+    setSelectedReplayId(replayId);
+    setSelectedSummary(null);
+    setPlaybackReadout(null);
+    setSeekRequest(previous => ({ timeS, nonce: (previous?.nonce ?? 0) + 1 }));
+    setSceneCaptureRequest({
+      token: Date.now(),
+      caseId: item.case_id,
+      replayId,
+      replaySha256: reference.artifact_sha256,
+    });
+    setViewMode('single');
+  }, []);
+  const handleSceneCaptureResult = useCallback(async (
+    result: { pngBase64: string; width: number; height: number; projection: 'perspective' | 'top-down'; camera: string; timeS: number } | null,
+    captureError?: string,
+  ) => {
+    const request = sceneCaptureRequest;
+    if (!request) return;
+    try {
+      if (!result) throw new Error(captureError || 'WebGL scene capture failed.');
+      const saved = await createSceneCapture(request.caseId, {
+        replay_id: request.replayId,
+        replay_sha256: request.replaySha256,
+        png_base64: result.pngBase64,
+        width: result.width,
+        height: result.height,
+        time_s: result.timeS,
+        camera: result.camera,
+        projection: result.projection,
+      });
+      const file = saved.files[0];
+      if (!file) throw new Error('The API saved no scene capture file.');
+      const anchor = document.createElement('a');
+      anchor.href = file.download_url;
+      anchor.download = file.name;
+      anchor.click();
+      setSceneCaptureStatus(`Saved and downloaded ${file.name} (${result.width} × ${result.height}) from replay ${request.replayId.slice(0, 8)} at ${result.timeS.toFixed(2)} s.`);
+    } catch (cause) {
+      setSceneCaptureStatus(cause instanceof Error ? `Scene capture failed: ${cause.message}` : 'Scene capture failed.');
+    } finally {
+      setSceneCaptureRequest(null);
+      setViewMode('cases');
+    }
+  }, [sceneCaptureRequest]);
+  const handleComparisonCaseContext = useCallback((context: typeof comparisonContext) => {
+    setComparisonContext(previous => {
+      if (previous?.replayIds.join('|') === context?.replayIds.join('|')
+          && previous?.axisTimeS === context?.axisTimeS
+          && previous?.localTimeA === context?.localTimeA
+          && previous?.localTimeB === context?.localTimeB
+          && previous?.syncMode === context?.syncMode
+          && previous?.frameStep === context?.frameStep
+          && previous?.decisionStep === context?.decisionStep) return previous;
+      return context;
+    });
   }, []);
   const refreshReplayIndex = useCallback(async () => {
     const data = await getReplays();
@@ -573,21 +661,73 @@ export function App() {
     setSelectedReplayId(id);
   }
 
+  function restoreResearchCase(item: ResearchCase, bookmark?: ResearchBookmark) {
+    if (item.case_type === 'comparison') {
+      setCaseRestore({ item, bookmark, nonce: caseSeekNonce + 1 });
+      setCaseSeekNonce(value => value + 1);
+      setViewMode('comparison');
+      return;
+    }
+    setCaseRestore(null);
+    setSelectedReplayId(item.replay_ids[0] ?? null);
+    setSelectedSummary(null);
+    setPlaybackReadout(null);
+    setViewMode('single');
+    const timeS = bookmark?.local_time_a_s ?? bookmark?.time_s ?? 0;
+    setSeekRequest(previous => ({ timeS, nonce: (previous?.nonce ?? 0) + 1 }));
+  }
+
   const scenarioValues = resolvedConfiguration?.parameters ?? {};
   const physicalKeys = Object.keys(parameterLabels).filter(key => key in scenarioValues);
+  const caseReplayIds = caseOrigin === 'comparison'
+    ? comparisonContext?.replayIds ?? []
+    : selectedReplayId ? [selectedReplayId] : [];
+  const caseTimeA = caseOrigin === 'comparison'
+    ? comparisonContext?.localTimeA ?? 0
+    : playbackReadout?.replayId === selectedReplayId ? playbackReadout.timeS : 0;
+  const caseFrame = caseOrigin === 'comparison'
+    ? comparisonContext?.frameStep ?? 0
+    : playbackReadout?.replayId === selectedReplayId ? playbackReadout.frame.step : 0;
+  const caseDecision = caseOrigin === 'comparison'
+    ? comparisonContext?.decisionStep ?? null
+    : playbackReadout?.replayId === selectedReplayId ? playbackReadout.decision?.decisionStep ?? null : null;
 
   return (
-    <main className="app-shell">
+    <main className={`app-shell ${layoutMode}-layout`}>
       <header className="app-header">
         <div className="brand-mark" aria-hidden="true">CU</div>
         <div className="brand"><span className="eyebrow">LOCAL RESEARCH WORKSPACE</span><h1>Counter-UAS <span>Simulation Explorer</span></h1></div>
         <div className="app-mode-switch" role="group" aria-label="Explorer mode">
           <button type="button" aria-pressed={viewMode === 'single'} onClick={() => setViewMode('single')}>Single episode</button>
           <button type="button" aria-pressed={viewMode === 'comparison'} onClick={() => setViewMode('comparison')}>Compare policies</button>
+          <button type="button" aria-pressed={viewMode === 'cases'} onClick={() => {
+            if (viewMode !== 'cases') setCaseOrigin(viewMode);
+            setViewMode('cases');
+          }}>Research cases</button>
         </div>
-        <span className="phase-badge">PHASE 6 / POLICY COMPARISON</span>
+        {viewMode !== 'cases' && <div className="app-mode-switch" role="group" aria-label="Workspace layout">
+          <button type="button" aria-pressed={layoutMode === 'focus'} onClick={() => setLayoutMode('focus')}>Focus</button>
+          <button type="button" aria-pressed={layoutMode === 'analysis'} onClick={() => setLayoutMode('analysis')}>Analysis</button>
+        </div>}
+        <span className="phase-badge">PHASE 7 / RESEARCH CASES</span>
       </header>
       <div className="status-bar"><span className={`status-dot ${health.kind}`} /><span role="status">{health.message}</span><span className="localhost-label">LOCALHOST ONLY</span></div>
+      {viewMode === 'cases' && (
+        <ResearchCases
+          replayCatalog={replays}
+          replayIds={caseReplayIds}
+          comparison={caseOrigin === 'comparison'}
+          syncMode={comparisonContext?.syncMode ?? 'absolute'}
+          axisTimeS={caseOrigin === 'comparison' ? comparisonContext?.axisTimeS ?? 0 : caseTimeA}
+          localTimeA={caseTimeA}
+          localTimeB={caseOrigin === 'comparison' ? comparisonContext?.localTimeB ?? null : null}
+          frameStep={caseFrame}
+          decisionStep={caseDecision}
+          onRestore={restoreResearchCase}
+          onCaptureScene={beginSceneCapture}
+          captureStatus={sceneCaptureStatus}
+        />
+      )}
       {viewMode === 'comparison' ? (
         <Suspense fallback={<p className="muted">Loading the comparison workspace…</p>}>
           <ComparisonExplorer
@@ -597,9 +737,11 @@ export function App() {
             replayJobActive={activeJob}
             onJob={setJob}
             refreshReplays={refreshReplayIndex}
+            restoreCase={caseRestore}
+            onCaseContext={handleComparisonCaseContext}
           />
         </Suspense>
-      ) : <>
+      ) : <div className="single-workspace" hidden={viewMode === 'cases'}>
       <div className={`dashboard${diagnosticsCollapsed ? ' diagnostics-collapsed' : ''}`}>
         <aside className="configuration panel">
           <span className="eyebrow">EXPERIMENT SETUP</span><h2>Episode configuration</h2>
@@ -695,6 +837,9 @@ export function App() {
             diagnosticVisibility={diagnosticVisibility}
             seekRequest={seekRequest}
             onDiagnosticSeek={timeS => setSeekRequest(previous => ({ timeS, nonce: (previous?.nonce ?? 0) + 1 }))}
+            captureRequestToken={sceneCaptureRequest?.replayId === selectedReplayId && selectedEpisode ? sceneCaptureRequest.token : 0}
+            sceneActive={viewMode === 'single'}
+            onCaptureResult={handleSceneCaptureResult}
           />
           {sceneError && <p className="inline-error" role="alert">Scene error: {sceneError}</p>}
           <section className="results panel" aria-label="Episode generation progress and results">
@@ -816,7 +961,7 @@ export function App() {
         </aside>
       </div>
       <footer className="app-footer"><span>Real simulation. Recorded evidence. No synthetic results.</span><span>{catalog?.source_commit ? `Research source ${catalog.source_commit}` : 'Waiting for verified policy catalog'}</span></footer>
-      </>}
+      </div>}
     </main>
   );
 }

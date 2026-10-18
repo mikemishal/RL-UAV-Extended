@@ -41,6 +41,9 @@ interface ReplayPlaybackProps {
   diagnosticVisibility: DiagnosticVisibility;
   seekRequest: PlaybackSeekRequest | null;
   onDiagnosticSeek: (timeS: number) => void;
+  captureRequestToken?: number;
+  sceneActive?: boolean;
+  onCaptureResult?: (result: { pngBase64: string; width: number; height: number; projection: 'perspective' | 'top-down'; camera: CameraMode; timeS: number } | null, error?: string) => void;
 }
 
 function clockLabel(seconds: number): string {
@@ -66,6 +69,9 @@ export function ReplayPlayback({
   diagnosticVisibility,
   seekRequest,
   onDiagnosticSeek,
+  captureRequestToken = 0,
+  sceneActive,
+  onCaptureResult,
 }: ReplayPlaybackProps) {
   const [timeS, setTimeS] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -125,6 +131,10 @@ export function ReplayPlayback({
     if (!episode || !seekRequest) return;
     setTimeS(Math.max(0, Math.min(episode.summary.duration_s, seekRequest.timeS)));
   }, [episode, seekRequest?.nonce]);
+
+  useEffect(() => {
+    if (captureRequestToken) setPlaying(false);
+  }, [captureRequestToken]);
 
   useEffect(() => {
     if (!playing || !episode) {
@@ -211,6 +221,10 @@ export function ReplayPlayback({
         transparentObstacles={transparentObstacles}
         onWebGlError={onSceneError}
         onResetCamera={resetCamera}
+        captureRequestToken={captureRequestToken}
+        captureTimeS={timeS}
+        sceneActive={sceneActive}
+        onCaptureResult={onCaptureResult}
       />
       {traceLoading && <p className="trace-loading" role="status">Loading and validating recorded replay…</p>}
       {traceError && <div className="inline-error" role="alert">Replay trace could not be loaded: {traceError}</div>}

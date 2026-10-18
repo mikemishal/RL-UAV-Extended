@@ -1,8 +1,9 @@
 # Counter-UAS 3D Simulation Explorer
 
-Phase 6: an isolated local research visualizer with a live policy/scenario
-catalog, validated replay jobs, interactive native-3D playback, policy-specific
-diagnostics, and synchronized side-by-side comparison of two real episodes.
+Phase 7: an isolated local research visualizer with validated replay jobs,
+interactive native-3D playback, policy-specific diagnostics, synchronized
+side-by-side comparison, a persistent research-case library, and scientific
+exports derived from recorded episodes.
 Comparison eligibility is checked against checkpoint hashes, attacker identity,
 resolved physical configuration, initial world state, simulator/runtime
 provenance, and estimator contracts. The browser never simulates, trains,
@@ -247,6 +248,35 @@ See [comparison evidence](docs/policy_comparison.md#live-verification-and-eviden
 for recorded pair identities, exploratory provenance status, generated/reused
 replay counts, and screenshot paths.
 
+### Phase 7 research cases and exports
+
+Research cases are local JSON sidecars referencing existing validated replay
+IDs and compressed-artifact hashes. They support versioned metadata edits,
+timestamped bookmarks, pair-status explanations, report/CSV/SVG/ZIP exports,
+300-DPI chart rasterization, and on-demand high-resolution WebGL scene
+captures. The implementation does not generate replacement traces. Three
+documented Phase 6 comparison cases reuse four distinct existing episodes;
+zero new episodes were generated for Phase 7.
+
+The live Chromium workflow saved a 2560 × 1440 WebGL scene capture from the
+recorded LR-PPO D0 / A1-203 / C3 `map_local` trace. Its ignored API output is
+under `visualizer\data\local\exports\395eba85acb041a59bad313e4b56ab36\`.
+The ignored browser screenshot is
+`visualizer\frontend\test-results\phase7-recorded-battlefield.png`.
+Chromium also created the local case report, six 300-DPI chart PNGs and ZIP
+package (`104896408c1648eb9454f94638732ad8`) through the live API. Case-page
+navigation and scene capture completed without browser page errors.
+
+Focused validation: 22 backend API tests passed; frontend TypeScript checking
+and production build passed. Vite reports its existing large-bundle warning.
+Live replay listing, case management, chart rasterization, ZIP packaging and
+scene capture worked, but the configured simulation interpreter lacks the
+scientific dependencies needed by policy/scenario catalog inspection; those
+catalog calls returned 503. See
+[case library](docs/research_case_library.md) and
+[scientific exports](docs/scientific_exports.md) for full details and
+reproducibility limits.
+
 ### Phase 1 verification record (2026-10-16)
 
 - API/configuration/data-boundary/contract tests: 24 passed, including a real
@@ -278,7 +308,9 @@ replay counts, and screenshot paths.
 - [Phase 4 native-3D playback details](docs/3d_playback.md)
 - [Phase 5 policy diagnostics](docs/policy_diagnostics.md)
 - [Phase 6 matched policy comparison](docs/policy_comparison.md)
+- [Phase 7 research case library](docs/research_case_library.md)
+- [Phase 7 scientific exports](docs/scientific_exports.md)
 
-Phases 1–6 are complete through synchronized, validated, exploratory policy
-comparison. Phase 7's case library, figure export, and research-report
-generation have not started.
+Phases 1–7 are complete through local case management, annotations, and
+provenance-checked exports. Phase 8 comprehensive packaging and final audit
+remain unimplemented.
