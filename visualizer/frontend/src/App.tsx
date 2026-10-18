@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { ReplayPlayback } from './ReplayPlayback';
 import type { PlaybackReadout } from './ReplayPlayback';
 import { PolicyInspector } from './PolicyDiagnostics';
@@ -30,6 +30,7 @@ import type {
 type BackendStatus = { kind: 'checking' | 'ok' | 'degraded' | 'error'; message: string };
 type EpisodeCount = 1 | 3 | 5 | 10;
 const MAX_SEED = 2 ** 32 - 1;
+const ComparisonExplorer = lazy(() => import('./ComparisonExplorer').then(module => ({ default: module.ComparisonExplorer })));
 const defaultDiagnosticVisibility: DiagnosticVisibility = {
   lead: true,
   requested: true,
@@ -248,6 +249,7 @@ function EpisodeSelection({
 
 export function App() {
   const health = useBackendHealth();
+  const [viewMode, setViewMode] = useState<'single' | 'comparison'>('single');
   const [catalog, setCatalog] = useState<PolicyCatalog | null>(null);
   const [scenarios, setScenarios] = useState<ScenarioCatalog | null>(null);
   const [catalogError, setCatalogError] = useState<string | null>(null);
@@ -289,6 +291,12 @@ export function App() {
   }, []);
   const handleSceneError = useCallback((message: string) => {
     setSceneError(message || null);
+  }, []);
+  const refreshReplayIndex = useCallback(async () => {
+    const data = await getReplays();
+    setReplays(data.replays);
+    setReplayWarnings(data.warnings);
+    return data.replays;
   }, []);
 
   useEffect(() => {
@@ -573,9 +581,25 @@ export function App() {
       <header className="app-header">
         <div className="brand-mark" aria-hidden="true">CU</div>
         <div className="brand"><span className="eyebrow">LOCAL RESEARCH WORKSPACE</span><h1>Counter-UAS <span>Simulation Explorer</span></h1></div>
-        <span className="phase-badge">PHASE 5 / POLICY DIAGNOSTICS</span>
+        <div className="app-mode-switch" role="group" aria-label="Explorer mode">
+          <button type="button" aria-pressed={viewMode === 'single'} onClick={() => setViewMode('single')}>Single episode</button>
+          <button type="button" aria-pressed={viewMode === 'comparison'} onClick={() => setViewMode('comparison')}>Compare policies</button>
+        </div>
+        <span className="phase-badge">PHASE 6 / POLICY COMPARISON</span>
       </header>
       <div className="status-bar"><span className={`status-dot ${health.kind}`} /><span role="status">{health.message}</span><span className="localhost-label">LOCALHOST ONLY</span></div>
+      {viewMode === 'comparison' ? (
+        <Suspense fallback={<p className="muted">Loading the comparison workspace…</p>}>
+          <ComparisonExplorer
+            catalog={catalog}
+            scenarios={scenarios}
+            replays={replays}
+            replayJobActive={activeJob}
+            onJob={setJob}
+            refreshReplays={refreshReplayIndex}
+          />
+        </Suspense>
+      ) : <>
       <div className={`dashboard${diagnosticsCollapsed ? ' diagnostics-collapsed' : ''}`}>
         <aside className="configuration panel">
           <span className="eyebrow">EXPERIMENT SETUP</span><h2>Episode configuration</h2>
@@ -792,6 +816,7 @@ export function App() {
         </aside>
       </div>
       <footer className="app-footer"><span>Real simulation. Recorded evidence. No synthetic results.</span><span>{catalog?.source_commit ? `Research source ${catalog.source_commit}` : 'Waiting for verified policy catalog'}</span></footer>
+      </>}
     </main>
   );
 }

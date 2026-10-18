@@ -40,6 +40,8 @@ interface PolicyInspectorProps {
   visibility: DiagnosticVisibility;
   onInformationMode: (mode: InformationMode) => void;
   onVisibility: (visibility: DiagnosticVisibility) => void;
+  comparisonTimeS?: number;
+  hideInformationModeControl?: boolean;
 }
 
 function formatVector(vector: Vec3 | null | undefined, unit: string): string {
@@ -156,13 +158,15 @@ export function PolicyInspector({
   visibility,
   onInformationMode,
   onVisibility,
+  comparisonTimeS,
+  hideInformationModeControl = false,
 }: PolicyInspectorProps) {
   const liveTimeS = usePlaybackClock(replayId);
   if (!episode) return null;
   const currentReadout = readout?.replayId === replayId ? readout : null;
   const frame = currentReadout?.frame ?? episode.frames[0];
   const telemetry = currentReadout?.decision?.telemetry ?? null;
-  const currentTimeS = liveTimeS ?? currentReadout?.timeS ?? 0;
+  const currentTimeS = comparisonTimeS ?? liveTimeS ?? currentReadout?.timeS ?? 0;
   const isLrppo = episode.defender.policy_id === 'lr_ppo';
   const isKalman = episode.defender.estimator === 'kalman';
   const lead = telemetry?.lrppo?.lead_direction ?? null;
@@ -186,7 +190,7 @@ export function PolicyInspector({
       <details open>
         <summary>Policy Decision Inspector</summary>
         <div className="inspector-content">
-          <div className="information-mode">
+          {!hideInformationModeControl && <div className="information-mode">
             <span>Research display mode</span>
             <div role="group" aria-label="Research display mode">
               <button type="button" aria-pressed={informationMode === 'ground-truth'} onClick={() => onInformationMode('ground-truth')}>Ground Truth</button>
@@ -195,7 +199,7 @@ export function PolicyInspector({
             <p>{informationMode === 'policy-visible'
               ? 'Partial policy-visible reconstruction: recorded state, target observations, and sector features are available; full local sensing geometry and the complete controller observation scene are not.'
               : 'Researcher privileged view. Actual attacker state is shown separately from policy-visible estimate/measurement data.'}</p>
-          </div>
+          </div>}
           <dl className="inspector-grid">
             <DataField label="Controller" value={readablePolicy(episode.defender.policy_id)} />
             <DataField label="Generation / training seed" value={`${episode.defender.generation ?? 'Not applicable'} / ${episode.defender.training_seed ?? 'Not applicable'}`} />
@@ -377,6 +381,7 @@ function SeriesChart({
   durationS,
   onSeek,
   reference,
+  axisStartS = 0,
 }: {
   title: string;
   unit: string;
@@ -386,6 +391,7 @@ function SeriesChart({
   durationS: number;
   onSeek: (timeS: number) => void;
   reference?: { value: number; label: string };
+  axisStartS?: number;
 }) {
   const chartModel = useMemo(() => {
     const values = lines.flatMap(line => line.points.flatMap(item => item.value === null ? [] : [item.value]));
@@ -400,19 +406,24 @@ function SeriesChart({
       min,
       max,
       referenceY: reference ? 12 + 110 - ((reference.value - min) / (max - min || 1)) * 110 : null,
-      paths: lines.map(line => pathFor(line.points, durationS, min, max)),
+      paths: lines.map(line => pathFor(
+        line.points.map(item => ({ ...item, timeS: item.timeS - axisStartS })),
+        durationS,
+        min,
+        max,
+      )),
     };
-  }, [durationS, lines, reference]);
+  }, [axisStartS, durationS, lines, reference]);
   const eventMarkers = useMemo(() => events.map(event => ({
     event,
-    x: 35 + Math.max(0, Math.min(1, event.time_s / Math.max(durationS, 1e-9))) * 760,
-  })), [durationS, events]);
-  const cursorX = 35 + Math.max(0, Math.min(1, timeS / Math.max(durationS, 1e-9))) * 760;
+    x: 35 + Math.max(0, Math.min(1, (event.time_s - axisStartS) / Math.max(durationS, 1e-9))) * 760,
+  })), [axisStartS, durationS, events]);
+  const cursorX = 35 + Math.max(0, Math.min(1, (timeS - axisStartS) / Math.max(durationS, 1e-9))) * 760;
   function seekFromPointer(event: ReactMouseEvent<SVGSVGElement> | ReactPointerEvent<SVGSVGElement>) {
     const rect = event.currentTarget.getBoundingClientRect();
     const chartX = (event.clientX - rect.left) / rect.width * 830;
     const normalized = Math.max(0, Math.min(1, (chartX - 35) / 760));
-    onSeek(normalized * durationS);
+    onSeek(axisStartS + normalized * durationS);
   }
   return (
     <article className="diagnostic-chart">
@@ -456,8 +467,8 @@ function SeriesChart({
               return <line key={`${event.kind}-${event.step}-${index}`} x1={x} x2={x} y1="12" y2="122" className={`chart-event ${event.kind}`} />;
             })}
             <line x1={cursorX} x2={cursorX} y1="8" y2="126" className="chart-cursor" />
-            <text x="35" y="144" className="chart-axis-label">0 s</text>
-            <text x="795" y="144" textAnchor="end" className="chart-axis-label">{durationS.toFixed(1)} s</text>
+            <text x="35" y="144" className="chart-axis-label">{axisStartS.toFixed(1)} s</text>
+            <text x="795" y="144" textAnchor="end" className="chart-axis-label">{(axisStartS + durationS).toFixed(1)} s</text>
           </svg>
           <div className="chart-legend">
             {lines.map(line => <span key={line.label}><i style={{ background: line.color }} />{line.label}</span>)}
@@ -467,6 +478,104 @@ function SeriesChart({
         </>
       )}
     </article>
+  );
+}
+
+function comparisonPathSeries(episode: ReplayEpisode, offsetS: number): SeriesPoint[] {
+  let total = 0;
+  return episode.frames.map((frame, index) => {
+    if (index > 0) {
+      const previous = episode.frames[index - 1].defender.position_m;
+      const current = frame.defender.position_m;
+      total += Math.hypot(current[0] - previous[0], current[1] - previous[1], current[2] - previous[2]);
+    }
+    return { timeS: frame.time_s - offsetS, step: frame.step, value: total };
+  });
+}
+
+function comparisonSafetySeries(episode: ReplayEpisode, offsetS: number): SeriesPoint[] {
+  return episode.frames.slice(1).map((frame, index) => ({
+    timeS: episode.frames[index].time_s - offsetS,
+    step: episode.frames[index].step,
+    value: frame.telemetry ? Number(frame.telemetry.avoidance_active) : null,
+  }));
+}
+
+function alignedPoints(points: SeriesPoint[], offsetS: number): SeriesPoint[] {
+  return points.map(item => ({ ...item, timeS: item.timeS - offsetS }));
+}
+
+export function ComparisonDiagnosticCharts({
+  episodeA,
+  episodeB,
+  seriesA,
+  seriesB,
+  axisTimeS,
+  axisStartS,
+  durationS,
+  detectionAligned,
+  informationMode,
+  onSeek,
+}: {
+  episodeA: ReplayEpisode;
+  episodeB: ReplayEpisode;
+  seriesA: DiagnosticSeries;
+  seriesB: DiagnosticSeries;
+  axisTimeS: number;
+  axisStartS: number;
+  durationS: number;
+  detectionAligned: boolean;
+  informationMode: InformationMode;
+  onSeek: (timeS: number) => void;
+}) {
+  const offsetA = detectionAligned ? episodeA.summary.detection_time_s ?? 0 : 0;
+  const offsetB = detectionAligned ? episodeB.summary.detection_time_s ?? 0 : 0;
+  const events = useMemo(() => {
+    const selected = (episode: ReplayEpisode, offset: number) => episode.events
+      .filter(event => informationMode === 'ground-truth' || event.kind === 'detection')
+      .map(event => ({ ...event, time_s: event.time_s - offset }));
+    return [...selected(episodeA, offsetA), ...selected(episodeB, offsetB)];
+  }, [episodeA, episodeB, informationMode, offsetA, offsetB]);
+  const defenderDistanceLines = useMemo<ChartLine[]>(() => [
+    { label: 'Policy A', points: alignedPoints(seriesA.defenderAttackerDistance, offsetA), color: '#65acff' },
+    { label: 'Policy B', points: alignedPoints(seriesB.defenderAttackerDistance, offsetB), color: '#c084fc' },
+  ], [offsetA, offsetB, seriesA.defenderAttackerDistance, seriesB.defenderAttackerDistance]);
+  const attackerAssetLines = useMemo<ChartLine[]>(() => [
+    { label: 'Policy A', points: alignedPoints(seriesA.attackerAssetDistance, offsetA), color: '#fa777d' },
+    { label: 'Policy B', points: alignedPoints(seriesB.attackerAssetDistance, offsetB), color: '#f0abfc' },
+  ], [offsetA, offsetB, seriesA.attackerAssetDistance, seriesB.attackerAssetDistance]);
+  const pathLengthLines = useMemo<ChartLine[]>(() => [
+    { label: 'Policy A', points: comparisonPathSeries(episodeA, offsetA), color: '#65acff' },
+    { label: 'Policy B', points: comparisonPathSeries(episodeB, offsetB), color: '#c084fc' },
+  ], [episodeA, episodeB, offsetA, offsetB]);
+  const actionTurnLines = useMemo<ChartLine[]>(() => [
+    { label: 'Policy A', points: alignedPoints(seriesA.requestedActionTurn, offsetA), color: '#65acff' },
+    { label: 'Policy B', points: alignedPoints(seriesB.requestedActionTurn, offsetB), color: '#c084fc' },
+  ], [offsetA, offsetB, seriesA.requestedActionTurn, seriesB.requestedActionTurn]);
+  const safetyLines = useMemo<ChartLine[]>(() => [
+    { label: 'Policy A', points: comparisonSafetySeries(episodeA, offsetA), color: '#f59e0b' },
+    { label: 'Policy B', points: comparisonSafetySeries(episodeB, offsetB), color: '#22d3ee' },
+  ], [episodeA, episodeB, offsetA, offsetB]);
+  const charts: ReactNode[] = [];
+  if (informationMode === 'ground-truth') {
+    charts.push(
+      <SeriesChart key="distance" title="Defender → attacker distance" unit="m" lines={defenderDistanceLines} events={events} timeS={axisTimeS} durationS={durationS} axisStartS={axisStartS} onSeek={onSeek} />,
+      <SeriesChart key="asset-distance" title="Attacker → asset distance" unit="m" lines={attackerAssetLines} events={events} timeS={axisTimeS} durationS={durationS} axisStartS={axisStartS} onSeek={onSeek} />,
+      <SeriesChart key="path" title="Accumulated defender path length" unit="m" lines={pathLengthLines} events={events} timeS={axisTimeS} durationS={durationS} axisStartS={axisStartS} onSeek={onSeek} />,
+    );
+  }
+  charts.push(
+    <SeriesChart key="action-turn" title="Requested action turn angle" unit="3D degrees" lines={actionTurnLines} events={events} timeS={axisTimeS} durationS={durationS} axisStartS={axisStartS} onSeek={onSeek} />,
+    <SeriesChart key="safety" title="Recorded safety intervention" unit="active (1) / inactive (0)" lines={safetyLines} events={events} timeS={axisTimeS} durationS={durationS} axisStartS={axisStartS} onSeek={onSeek} />,
+  );
+  return (
+    <section className="diagnostic-charts panel" aria-label="Synchronized policy comparison charts">
+      <div className="diagnostic-charts-heading">
+        <div><span className="eyebrow">RECORDED COMPARATIVE TELEMETRY</span><h2>Shared-time charts</h2></div>
+        <p>{detectionAligned ? 'Horizontal axis is seconds relative to each episode’s first detection; panes keep independent local simulation time.' : 'Horizontal axis is absolute simulation seconds. Each trace ends at its recorded terminal state.'} Click any chart to seek both panes.</p>
+      </div>
+      <div className="diagnostic-chart-grid">{charts}</div>
+    </section>
   );
 }
 

@@ -240,3 +240,44 @@ Known limitations: raw LR-PPO residual/clipping internals are unavailable;
 not every policy emits every optional diagnostic; Policy-Visible is partial;
 and requested-to-actual velocity deviation can have multiple physical causes.
 These limitations are surfaced rather than filled with inferred values.
+
+## Phase 6 side-by-side diagnostics
+
+Each comparison pane receives only its own replay bundle and its own
+`deriveDiagnosticSeries` result. The shared display toggle applies the same
+privacy rule to both panes without copying an estimate, observation or truth
+state between controllers. In Policy-Visible mode the comparison also hides
+privileged outcomes, event times, collisions, ranges and aggregate outcome
+counts; it retains the explicit partial-reconstruction warning.
+
+Common comparative charts use the pair's shared axis but retain separate A/B
+recorded samples:
+
+| Comparison view | Definition / source | Interpretation |
+|---|---|---|
+| Defender → attacker range | Recorded privileged diagnostic | Comparable only in Ground Truth; state paths may diverge after reset |
+| Attacker → asset range | Recorded privileged diagnostic | Each episode's own attacker and asset; not a coupled trajectory |
+| Defender path length | Sum of Euclidean distances between consecutive recorded native positions | Derived metric; no interpolated display samples |
+| Requested turn angle | Recorded requested-action vectors and adjacent recorded actions | Omitted where unavailable; architecture-specific meaning is retained |
+| Safety intervention | Recorded `avoidance_active` decision telemetry | Missing telemetry is unavailable, not zero; decision frames are counted once |
+| Detection / terminal markers | Recorded event and terminal times | Shared cursor is display alignment only |
+| Policy-specific charts | Existing LR-PPO, PPO-Kalman or analytical telemetry | Separate per-pane scales/labels; missing metrics are not zero-filled |
+
+Clicking a comparative chart seeks the shared axis; absolute mode maps that
+time to both local episode times, while detection-relative mode maps through
+each trace's own first detection. Samples stop at each trace's terminal state.
+The first-position-divergence helper uses recorded defender coordinates only
+at exact timestamps available in both traces; it does not compare an
+interpolated coordinate or infer a cause. Its explicit threshold is a
+display-only exploratory navigation aid, not a causal test.
+
+Per-episode summaries identify native outcomes and the canonical
+`intercepted` success label, duration, detection/interception times, derived
+path length, recorded collisions, available safety telemetry, and final
+privileged ranges. Policy-Visible mode masks this block. A/B duration and path
+differences, and loaded-pair outcome counts, are descriptive for those
+recordings only; small exploratory batches do not yield publication-grade
+confidence intervals or controller rankings.
+
+For complete eligibility and exact matching rules, see
+[policy comparison](policy_comparison.md).

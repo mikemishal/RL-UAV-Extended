@@ -1,12 +1,12 @@
 # Counter-UAS 3D Simulation Explorer
 
-Phase 5: an isolated local research visualizer with a live policy/scenario
-catalog, validated multi-episode replay jobs, interactive native-3D playback,
-and synchronized policy-specific decision diagnostics. The inspector follows
-the recorded decision interval; LR-PPO guidance, Kalman estimates, requested
-versus executed commands, safety state, and synchronized charts are derived
-from validated traces. The browser does not simulate, train, infer policies,
-or change recorded outcomes.
+Phase 6: an isolated local research visualizer with a live policy/scenario
+catalog, validated replay jobs, interactive native-3D playback, policy-specific
+diagnostics, and synchronized side-by-side comparison of two real episodes.
+Comparison eligibility is checked against checkpoint hashes, attacker identity,
+resolved physical configuration, initial world state, simulator/runtime
+provenance, and estimator contracts. The browser never simulates, trains,
+performs policy inference, or changes recorded outcomes.
 
 ## Scientific integrity and coordinate decision
 
@@ -160,7 +160,7 @@ files are gzip JSON under `visualizer\data\local` (gitignored). See
 [replay-engine validation](docs/replay_engine_validation.md) for actual
 compatibility, smoke, equivalence, and known-limit reports.
 
-### Use the replay API and Phase 5 browser
+### Use the replay API and Phase 6 browser
 
 Open <http://127.0.0.1:5173>, select an available defender and attacker, choose
 C0–C3 and `local` or `map_local`, then request 1, 3, 5, or 10 episodes. Jobs
@@ -176,6 +176,17 @@ See [Replay API](docs/replay_api.md) for every endpoint, request/response
 contracts, checkpoint-generation rules, actual successful local examples,
 scenario parameter interpretation, timeout/cancellation behavior, and
 reproducibility limitations.
+
+Choose **Compare policies** to independently select two available controllers
+and generations, then choose the shared attacker, clutter/perception scenario,
+and matched evaluation seeds. The app reuses exact-hash replay artifacts first;
+only the explicit **Generate missing replays** action invokes sequential
+single-episode jobs through the existing one-active-job API. A mismatched
+physical configuration, initial world state, frozen attacker, schema, runtime,
+or simulator provenance is rejected; estimator-only differences are disclosed
+and dirty-source traces are downgraded to exploratory. See
+[policy comparison](docs/policy_comparison.md) for matching rules, coupling
+limitations, timeline/camera behavior, metrics, and research interpretation.
 
 ### Phase 5 validation evidence
 
@@ -204,6 +215,37 @@ and cone, the LR-PPO angle chart, PPO-Kalman estimate versus truth, a paused
 inspector, Policy-Visible mode, and a Greedy view without LR-PPO controls. The
 Chromium software renderer does not require a display server. The separate
 `VISUALIZER_ENABLE_REAL_REPLAY_TESTS=1` check uses the configured Phase 3 API.
+
+### Phase 6 live comparison validation
+
+With the configured FastAPI service and Vite server already running, the
+opt-in live browser check loads existing validated replay pairs from the API,
+checks both recorded canvases, synchronized playback/scrubbing, terminal
+freezing, camera linking, detection-relative time, and policy-visible masking:
+
+```powershell
+$env:VISUALIZER_ENABLE_LIVE_COMPARISON_TESTS = '1'
+npm run test:browser
+Remove-Item Env:\VISUALIZER_ENABLE_LIVE_COMPARISON_TESTS
+```
+
+The read-only screenshot check captures the requested comparison evidence from
+the three seed-0 replay pairs generated for Phase 6; it does not start jobs:
+
+```powershell
+$env:VISUALIZER_ENABLE_COMPARISON_SCREENSHOTS = '1'
+npm run test:browser
+Remove-Item Env:\VISUALIZER_ENABLE_COMPARISON_SCREENSHOTS
+```
+
+The separate `VISUALIZER_ENABLE_LIVE_COMPARISON_GENERATION=1` test is
+stateful: it intentionally creates the minimum missing real replay artifacts
+through the API. It must be opted into explicitly and run only when bounded
+episode generation is appropriate.
+
+See [comparison evidence](docs/policy_comparison.md#live-verification-and-evidence)
+for recorded pair identities, exploratory provenance status, generated/reused
+replay counts, and screenshot paths.
 
 ### Phase 1 verification record (2026-10-16)
 
@@ -235,7 +277,8 @@ Chromium software renderer does not require a display server. The separate
 - [Phase 3 Replay API](docs/replay_api.md)
 - [Phase 4 native-3D playback details](docs/3d_playback.md)
 - [Phase 5 policy diagnostics](docs/policy_diagnostics.md)
+- [Phase 6 matched policy comparison](docs/policy_comparison.md)
 
-Phase 5 is complete at policy decision inspection, synchronized telemetry,
-native-3D guidance diagnostics, and explicitly partial Policy-Visible display.
-Stop here; side-by-side policy comparison remains Phase 6 and has not started.
+Phases 1–6 are complete through synchronized, validated, exploratory policy
+comparison. Phase 7's case library, figure export, and research-report
+generation have not started.

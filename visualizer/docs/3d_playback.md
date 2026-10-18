@@ -253,4 +253,34 @@ evidence of a native 3D collision. No collision contact point is invented.
 Phase 5 adds these read-only policy diagnostics. Raw PPO residual values,
 internal residual clipping details, and an exact complete perception scene
 remain unavailable; see [the coverage matrix and limitations](policy_diagnostics.md).
-Phase 6 side-by-side policy comparison has not started.
+
+## Phase 6 synchronized comparison
+
+Compare Policies mounts two independent `Battlefield` scenes using the same
+renderer, world-coordinate mapping, and shared union bounds. Each scene owns
+its replay, frame sample, moving-obstacle state, trails, event markers and
+diagnostics. A single shared clock maps axis time through each trace's recorded
+timestamps. Absolute mode starts both at local simulation time zero;
+detection-relative mode maps axis zero to each trace's own recorded detection
+time and always displays the two local simulation times. It changes no replay
+state or action.
+
+When one trace reaches its recorded terminal duration, its selected state is
+clamped to the final authoritative frame and the pane explicitly says
+"Episode ended · frozen at ...". The shared timeline continues only for the
+longer recorded episode. There is no post-terminal interpolation, action,
+attacker path substitution, or simulated movement.
+
+Free and top-down camera poses may be linked in world space; pose updates are
+suppressed when they are echoes from the paired controls to avoid a feedback
+loop. Follow-defender and follow-attacker remain pane-local, so each view
+follows its own entity. Both viewports share world bounds and projection
+settings; disabling camera linking allows independent inspection.
+
+Comparison overlays and charts reuse the native Phase 5 diagnostic series.
+Policy-specific arrows appear only when that episode records the relevant
+telemetry. Matching evaluation seeds establish a shared initial scenario only
+when the replay validator confirms the initial world; they do not imply that
+later learned-attacker or protected-asset paths are coupled.
+See [policy comparison](policy_comparison.md) for the comparability criteria
+and analysis definitions.

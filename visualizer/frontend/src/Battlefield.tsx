@@ -37,7 +37,7 @@ import {
   staticObstacleBounds,
   trajectoryPath,
 } from './playback';
-import type { DisplaySample, ThreeVector } from './playback';
+import type { Bounds3, DisplaySample, ThreeVector } from './playback';
 import type { DiagnosticVisibility, InformationMode } from './PolicyDiagnostics';
 
 export type CameraMode = 'free' | 'follow-defender' | 'follow-attacker' | 'top-down';
@@ -49,7 +49,14 @@ export interface TrailVisibility {
   obstacles: boolean;
 }
 
-interface BattlefieldProps {
+export interface CameraPose {
+  position: [number, number, number];
+  quaternion: [number, number, number, number];
+  up: [number, number, number];
+  target: [number, number, number];
+}
+
+export interface BattlefieldProps {
   episode: ReplayEpisode | null;
   timeS: number;
   cameraMode: CameraMode;
@@ -64,6 +71,13 @@ interface BattlefieldProps {
   decision: DecisionInterval | null;
   onWebGlError: (message: string) => void;
   onResetCamera: () => void;
+  panelId?: string;
+  heading?: string;
+  linkedCamera?: boolean;
+  cameraPose?: CameraPose | null;
+  cameraLeader?: boolean;
+  onCameraPose?: (pose: CameraPose) => void;
+  sharedBoundsEpisode?: ReplayEpisode | null;
 }
 
 interface ErrorBoundaryState {
@@ -121,6 +135,57 @@ function CameraProbe({
       );
     }
   });
+  return null;
+}
+
+function LinkedCamera({
+  controls,
+  enabled,
+  leader,
+  pose,
+  onPose,
+}: {
+  controls: RefObject<OrbitControlsImpl | null>;
+  enabled: boolean;
+  leader: boolean;
+  pose: CameraPose | null;
+  onPose?: (pose: CameraPose) => void;
+}) {
+  const { camera } = useThree();
+  const applying = useRef(false);
+  const initialized = useRef(false);
+  useEffect(() => {
+    if (!enabled) {
+      initialized.current = false;
+      return;
+    }
+    if (!pose || !controls.current) return;
+    initialized.current = true;
+    applying.current = true;
+    camera.position.fromArray(pose.position);
+    camera.quaternion.fromArray(pose.quaternion);
+    camera.up.fromArray(pose.up);
+    controls.current.target.fromArray(pose.target);
+    controls.current.update();
+    applying.current = false;
+  }, [camera, controls, enabled, pose]);
+  useEffect(() => {
+    const orbit = controls.current;
+    if (!enabled || !orbit || !onPose) return;
+    const publish = () => {
+      if (applying.current || !controls.current) return;
+      initialized.current = true;
+      onPose({
+        position: camera.position.toArray() as CameraPose['position'],
+        quaternion: camera.quaternion.toArray() as CameraPose['quaternion'],
+        up: camera.up.toArray() as CameraPose['up'],
+        target: controls.current.target.toArray() as CameraPose['target'],
+      });
+    };
+    orbit.addEventListener('change', publish);
+    if (leader && !pose && !initialized.current) publish();
+    return () => orbit.removeEventListener('change', publish);
+  }, [camera, controls, enabled, leader, onPose, pose]);
   return null;
 }
 
@@ -724,8 +789,27 @@ function sceneBounds(episode: ReplayEpisode, informationMode: InformationMode) {
   };
 }
 
+function sharedSceneBounds(
+  episode: ReplayEpisode,
+  otherEpisode: ReplayEpisode | null | undefined,
+  informationMode: InformationMode,
+): Bounds3 {
+  const first = sceneBounds(episode, informationMode);
+  if (!otherEpisode) return first;
+  const second = sceneBounds(otherEpisode, informationMode);
+  const min: ThreeVector = first.min.map((value, index) => Math.min(value, second.min[index])) as ThreeVector;
+  const max: ThreeVector = first.max.map((value, index) => Math.max(value, second.max[index])) as ThreeVector;
+  return {
+    min,
+    max,
+    center: min.map((value, index) => (value + max[index]) / 2) as ThreeVector,
+    extent: Math.max(max[0] - min[0], max[1] - min[1], max[2] - min[2]),
+  };
+}
+
 function PerspectiveCameraRig({
   episode,
+  boundsEpisode,
   sample,
   mode,
   informationMode,
@@ -733,6 +817,7 @@ function PerspectiveCameraRig({
   controls,
 }: {
   episode: ReplayEpisode;
+  boundsEpisode: ReplayEpisode | null;
   sample: DisplaySample;
   mode: Exclude<CameraMode, 'top-down'>;
   informationMode: InformationMode;
@@ -741,7 +826,7 @@ function PerspectiveCameraRig({
 }) {
   const lastFollowPosition = useRef<Vector3 | null>(null);
   const { camera, size } = useThree();
-  const bounds = useMemo(() => sceneBounds(episode, informationMode), [episode, informationMode]);
+  const bounds = useMemo(() => sharedSceneBounds(episode, boundsEpisode, informationMode), [boundsEpisode, episode, informationMode]);
   const target = useMemo(() => vector(bounds.center), [bounds]);
   const sampleRef = useRef(sample);
   sampleRef.current = sample;
@@ -809,18 +894,20 @@ function PerspectiveCameraRig({
 
 function TopDownCameraRig({
   episode,
+  boundsEpisode,
   resetToken,
   controls,
   informationMode,
 }: {
   episode: ReplayEpisode;
+  boundsEpisode: ReplayEpisode | null;
   resetToken: number;
   controls: RefObject<OrbitControlsImpl | null>;
   informationMode: InformationMode;
 }) {
   const cameraRef = useRef<OrthographicCamera>(null);
   const { size } = useThree();
-  const bounds = useMemo(() => sceneBounds(episode, informationMode), [episode, informationMode]);
+  const bounds = useMemo(() => sharedSceneBounds(episode, boundsEpisode, informationMode), [boundsEpisode, episode, informationMode]);
   const target = useMemo(() => vector(bounds.center), [bounds]);
   const aspect = Math.max(0.5, size.width / Math.max(1, size.height));
   const halfHeight = Math.max(bounds.max[2] - bounds.min[2], (bounds.max[0] - bounds.min[0]) / aspect, 10) * 0.58;
@@ -874,6 +961,7 @@ function TopDownCameraRig({
 
 function CameraRig(props: {
   episode: ReplayEpisode;
+  boundsEpisode: ReplayEpisode | null;
   sample: DisplaySample;
   mode: CameraMode;
   informationMode: InformationMode;
@@ -881,7 +969,7 @@ function CameraRig(props: {
   controls: RefObject<OrbitControlsImpl | null>;
 }) {
   if (props.mode === 'top-down') {
-    return <TopDownCameraRig episode={props.episode} informationMode={props.informationMode} resetToken={props.resetToken} controls={props.controls} />;
+    return <TopDownCameraRig episode={props.episode} boundsEpisode={props.boundsEpisode} informationMode={props.informationMode} resetToken={props.resetToken} controls={props.controls} />;
   }
   const mode = props.informationMode === 'policy-visible' && props.mode === 'follow-attacker'
     ? 'free'
@@ -902,6 +990,7 @@ function SceneContents({
   informationMode,
   diagnosticVisibility,
   decision,
+  sharedBoundsEpisode,
   controls,
   cameraOutput,
 }: BattlefieldProps & {
@@ -910,7 +999,7 @@ function SceneContents({
 }) {
   const sample = useMemo(() => sampleAtTime(episode!, timeS), [episode, timeS]);
   const frame = episode!.frames[sample.lowerIndex];
-  const bounds = useMemo(() => sceneBounds(episode!, informationMode), [episode, informationMode]);
+  const bounds = useMemo(() => sharedSceneBounds(episode!, sharedBoundsEpisode, informationMode), [episode, informationMode, sharedBoundsEpisode]);
   const policyVisible = decision?.telemetry.decision_policy_visible;
   const estimatePosition = policyVisible?.enemy_detected
     ? policyVisible.estimator === 'kalman' ? policyVisible.e_hat_m : policyVisible.enemy_measurement_m
@@ -985,7 +1074,7 @@ function SceneContents({
           )}
         </>
       )}
-      <CameraRig episode={episode!} sample={sample} mode={cameraMode} informationMode={informationMode} resetToken={resetCameraToken} controls={controls} />
+      <CameraRig episode={episode!} boundsEpisode={sharedBoundsEpisode ?? null} sample={sample} mode={cameraMode} informationMode={informationMode} resetToken={resetCameraToken} controls={controls} />
       <CameraProbe controls={controls} output={cameraOutput} />
     </>
   );
@@ -1059,9 +1148,9 @@ export function Battlefield(props: BattlefieldProps) {
   }, [props.onWebGlError]);
 
   return (
-    <section className="battlefield panel" aria-label="3D episode battlefield">
+    <section className="battlefield panel" aria-label={props.heading ?? '3D episode battlefield'}>
       <div className="viewer-toolbar">
-        <div><span className="eyebrow">AUTHORITATIVE REPLAY · NATIVE 3D</span><h2>Interactive battlefield</h2></div>
+        <div><span className="eyebrow">AUTHORITATIVE REPLAY · NATIVE 3D</span><h2>{props.heading ?? 'Interactive battlefield'}</h2></div>
         <div className="camera-tools">
           <span className="camera-mode">{props.cameraMode === 'top-down' ? 'Top-down projection of 3D replay' : `Camera: ${props.cameraMode.replaceAll('-', ' ')}`}</span>
           <button type="button" aria-label="Reset camera" onClick={() => {
@@ -1086,6 +1175,15 @@ export function Battlefield(props: BattlefieldProps) {
             {props.episode
               ? <SceneContents {...props} controls={controls} cameraOutput={cameraOutput} />
               : <EmptyScene resetToken={props.resetCameraToken} controls={controls} cameraOutput={cameraOutput} />}
+            {props.linkedCamera && (
+              <LinkedCamera
+                controls={controls}
+                enabled={props.linkedCamera}
+                leader={props.cameraLeader ?? false}
+                pose={props.cameraPose ?? null}
+                onPose={props.onCameraPose}
+              />
+            )}
           </Canvas>
         </SceneErrorBoundary>
         {!props.episode && (
@@ -1098,7 +1196,8 @@ export function Battlefield(props: BattlefieldProps) {
         {props.episode && displayedSample && (
           <output
             className="sr-only"
-            data-testid="rendered-replay-state"
+            data-testid={props.panelId ? `rendered-replay-state-${props.panelId}` : 'rendered-replay-state'}
+            data-panel-id={props.panelId}
             data-step={props.episode.frames[displayedSample.lowerIndex].step}
             data-upper-step={props.episode.frames[displayedSample.upperIndex].step}
             data-interpolated={String(displayedSample.fraction > 0)}
@@ -1116,7 +1215,7 @@ export function Battlefield(props: BattlefieldProps) {
             data-asset-position={displayedSample.asset.join(',')}
           />
         )}
-        <div className="sr-only" data-testid="camera-state" ref={cameraOutput} />
+        <div className="sr-only" data-testid={props.panelId ? `camera-state-${props.panelId}` : 'camera-state'} ref={cameraOutput} />
         {props.episode && (
           <span className="viewport-caption">
             {props.informationMode === 'ground-truth'

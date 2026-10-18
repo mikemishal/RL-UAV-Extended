@@ -1,8 +1,8 @@
 # Eight-phase implementation roadmap
 
-Phases 1–5 are implemented and verified. Phase 5 provides synchronized
-policy-specific diagnostics over validated native-3D replay traces. Stop at
-this boundary; Phase 6 side-by-side policy comparison has not started.
+Phases 1–6 are implemented and verified, including live API/Chromium validation
+of synchronized comparisons using real replay traces. Phase 7 case-library,
+figure-export and research-report features have not started.
 
 ## 1. Setup and architecture
 
@@ -63,9 +63,21 @@ this boundary; Phase 6 side-by-side policy comparison has not started.
 
 ## 6. Side-by-side policy comparison
 
-- Replay matched seeds/environment snapshots and explicit attacker/checkpoint roles.
-- Synchronized views and trajectories with independent camera options.
-- Clearly separate native outcomes from projected geometry and existing journal claims.
+- Resolve available policies, generations, seeds, and checkpoint roles/hashes
+  from the live catalog. Share and validate attacker, canonical scenario,
+  perception, and matched evaluation seeds.
+- Reuse exact replay pairs; only after explicit user action generate missing A/B
+  traces sequentially through the existing single-active-job API.
+- Reject incompatible source/runtime, scenario/physical configuration,
+  attacker/checkpoint, schema, or initial-world state. Downgrade dirty or
+  estimator-different evidence to exploratory, never claim coupled future
+  attacker/asset trajectories from a common seed.
+- Render two independent authoritative replay states with one absolute or
+  detection-relative playback axis, terminal clamping, linked/independent
+  cameras, per-pane diagnostics, charts, outcome summaries, and event jumps.
+- Keep the browser read-only with respect to simulator behavior and model
+  inference. Phase 7 case libraries and export/report generation remain out of
+  scope.
 
 ## 7. Episode research tools and exports
 
@@ -192,4 +204,56 @@ known visualization limitations.
   PPO-Kalman D0/A1-203/C3, and LR-PPO D1/A1-203/C3 (974 frames). Six Phase 5
   screenshots are captured without generating new episodes.
 - Coverage and validation details: [policy diagnostics](policy_diagnostics.md).
-- Phase 6 comparison remains unimplemented.
+- Phase 5 completion remains the single-episode boundary documented above.
+
+## Phase 6 completion / stop boundary
+
+- The Compare Policies mode independently selects Policy A/B from the live
+  catalog, including generation, training seed, exact checkpoint role/hash,
+  architecture and compatibility metadata. Shared attacker checkpoint,
+  clutter/perception, evaluation seed and batch size use the canonical API
+  contracts; the default batch is one matched seed.
+- Replay pairing indexes the existing catalog by policy/checkpoint identity,
+  attacker identity/hash, scenario, perception, seed and provenance. Full
+  replay schema/integrity and initial entity/obstacle geometry are checked
+  before a pair is shown as matched or exploratory. Python/scientific package
+  versions and inference device must also agree. Estimator-only differences
+  are disclosed; dirty sources are exploratory.
+- The browser exposes an explicit Generate Missing Replays action and
+  sequentially reuses the existing one-active-job API. It does not duplicate
+  the process manager or run missing rollouts on dropdown change. Existing
+  successful artifacts remain available if a later requested rollout fails.
+- Both native-3D panels reuse `Battlefield`; each reads its own authoritative
+  replay. Absolute simulation time is the default; optional first-detection
+  alignment uses separate local times. Shorter episodes clamp at the recorded
+  terminal frame while the shared clock continues to the later terminal time.
+  Linked world-space free/top-down cameras suppress echo updates; entity
+  follow modes remain pane-local.
+- Phase 5 inspectors/diagnostic overlays and comparative charts are reused.
+  Policy-Visible mode masks privileged data in both panes. Path length is the
+  sum of Euclidean distances over recorded coordinates; divergence is tested
+  only at common recorded timestamps and is descriptive, not causal. Missing
+  metrics remain unavailable, and exploratory batch counts are not inferential.
+- Live FastAPI/Vite and Chromium tests loaded both real traces from the API,
+  verified frame-zero coordinates, shared stepping/playback, scrub seeking,
+  terminal freeze, detection-relative mapping, camera link/unlink, and
+  policy-visible masking. A separate bounded generation flow produced the
+  three missing requested seed-0 traces through the existing job API.
+- Pair A — LR-PPO D0 seed 77 vs D1 seed 77, A1-203/C3/map-local/seed 0:
+  D0 used the `d0_start` checkpoint and terminated `soldier_caught` at
+  760.0 s; D1 used `final` and was `intercepted` at 486.5 s.
+- Pair B — LR-PPO D1 seed 77 vs PPO-Kalman D1 seed 74, same attacker,
+  C3/map-local/seed 0: both were intercepted (486.5 s vs 442.5 s). The
+  Kalman estimator configuration differs by its declared tracking flag.
+- Pair C — Lead vs LR-PPO D1 seed 77, same attacker, C3/map-local/seed 0:
+  Lead terminated `soldier_caught` at 27.0 s; LR-PPO was `intercepted` at
+  486.5 s.
+- Each requested pair reused the existing LR-PPO D1 replay; exactly three
+  missing defender replays were generated. Every inspected trace reports dirty
+  source provenance, so these cases are explicitly exploratory, not clean
+  controlled comparisons. Matching reset conditions do not couple later
+  learned-attacker, asset, or random trajectories.
+- Eight screenshots from real validated data are listed in
+  [policy comparison](policy_comparison.md#live-verification-and-evidence).
+- The single-episode explorer remains available. Phase 7 case library,
+  figure exports and automated research-report generation have not begun.

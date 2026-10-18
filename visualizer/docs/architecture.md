@@ -1,4 +1,4 @@
-# Architecture / Phase 5
+# Architecture / Phase 6
 
 ## Isolation and ownership
 
@@ -165,6 +165,58 @@ coverage matrix, formulas, derivations, limitations, and validation evidence.
 
 See [3D playback](3d_playback.md) for coordinate/time conventions, camera,
 event, interpolation and long-trace behavior.
+
+## Phase 6 synchronized comparison
+
+[ComparisonExplorer.tsx](../frontend/src/ComparisonExplorer.tsx) is lazy-loaded
+only after the user selects Compare Policies. It reads the same live policy,
+scenario, replay-index, full-trace, and job APIs as the single-episode explorer.
+There is no comparison-specific simulator, inference code, backend process
+manager, persistence format, or HTTP endpoint. Existing exact checkpoint-role
+and SHA-256 selections are resolved against the policy catalog; replay matching
+also requires the frozen attacker identity/hash, scenario, perception, and
+evaluation seed.
+
+Both independent replay requests must yield one schema-v1 episode. The pair
+validator requires equivalent simulator source revision, Python and scientific
+package versions, model device, coordinate/presentation contract, timestep,
+canonical scenario and physical parameters. The only allowed physical-config
+hash difference is the declared `use_kalman_tracking` estimator setting; its
+presence makes the pair exploratory and is surfaced to the researcher.
+Checkpoint roles/hashes are exact, deterministic inference must be recorded,
+and initial entity plus obstacle geometry is compared from the first recorded
+state. Runtime, scenario, attacker, checkpoint, initial-state, or schema
+mismatches reject the pair. Dirty simulator or visualizer source provenance
+downgrades a compatible pair to exploratory rather than claiming a controlled
+replication.
+
+The shared comparison clock maps its axis independently into each episode's
+recorded timestamps. Absolute mode uses simulation seconds from each reset;
+detection mode subtracts each trace's recorded first-detection time and reports
+both local times. Sampling uses the shared Phase 4 display-only interpolator,
+clamped to each trace's terminal duration. A shorter episode remains frozen at
+its own final state while the clock continues to the longer terminal time.
+Events, trajectories and chart samples come from each pane's own bundle;
+neither pane receives the other's attacker path or observations.
+
+Two `Battlefield` instances reuse the same renderer with a common union bound.
+Linked free/top-down cameras publish a world-space pose from one OrbitControls
+instance to the other with change suppression; independent cameras and entity-
+local follow modes remain available. Each pane receives its own readout,
+telemetry series, policy inspector and display-information mode. Ground Truth /
+Policy-Visible is one shared display-policy toggle; it masks privileged ranges,
+outcomes, collisions and attacker truth in both panes.
+
+Comparison jobs are front-end orchestration over existing single-episode job
+requests. The UI first reuses indexed valid traces, then starts missing A/B
+rollouts sequentially only after explicit confirmation. The API's existing
+single-active-job guard, timeout, cancellation, atomic artifact persistence and
+interrupted-job recovery remain authoritative. A failure leaves prior replay
+artifacts indexable for later pairing; incomplete rows are not called matched.
+
+See [policy comparison](policy_comparison.md) for pair-status semantics,
+attacker/asset coupling limitations, chart formulas, detection alignment,
+camera synchronization, divergence events, live test results and evidence.
 
 ## Coordinate discrepancy and approved resolution
 

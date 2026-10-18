@@ -1,7 +1,7 @@
 import { expect, test, type Page, type Route } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { gunzipSync } from 'node:zlib';
-import type { ReplayBundle, ReplayEntityState, ReplayEpisode, ReplayFrame, ReplayPolicyTelemetry } from '../src/api';
+import type { ReplayBundle, ReplayEntityState, ReplayEpisode, ReplayFrame, ReplayListItem, ReplayPolicyTelemetry } from '../src/api';
 import {
   angleBetween3dDeg,
   decisionIntervalAtTime,
@@ -10,6 +10,14 @@ import {
   signedAzimuthDifferenceDeg,
 } from '../src/diagnostics';
 import { sampleAtTime, scenarioBounds, simToThree, simVectorToThree, staticObstacleBounds } from '../src/playback';
+import {
+  comparisonAxisRange,
+  defenderPathLength,
+  firstPositionDivergence,
+  mapAxisTimeToEpisodeTime,
+  matchesDefenderChoice,
+  validateComparisonPair,
+} from '../src/comparison';
 
 const fixtureReplayId = 'f'.repeat(32);
 function fixtureTelemetry(decisionStep: number, detected: boolean): ReplayPolicyTelemetry {
@@ -434,6 +442,127 @@ test('policy diagnostics calculate native angles and align telemetry to recorded
   expect(fixtureFrames[1].telemetry?.lrppo?.residual_action).toBeNull();
   expect(fixtureFrames[1].telemetry?.lrppo?.residual_norm_clipped).toBeNull();
   expect(JSON.stringify(fixtureEpisode)).toBe(before);
+});
+
+test('comparison eligibility distinguishes exact initial matching from exploratory estimator differences', () => {
+  const kalmanD0: ReplayEpisode = {
+    ...kalmanFixtureEpisode,
+    defender: {
+      ...kalmanFixtureEpisode.defender,
+      generation: 'd0',
+      training_seed: 74,
+      architecture: 'ppo_kalman_clutter_v1',
+      checkpoint: {
+        ...kalmanFixtureEpisode.defender.checkpoint!,
+        artifact_id: 'ppo-kalman-d0-seed-74',
+        sha256: 'd'.repeat(64),
+        role: 'd0_start',
+      },
+    },
+    environment: {
+      ...kalmanFixtureEpisode.environment,
+      config: { ...kalmanFixtureEpisode.environment.config, use_kalman_tracking: true },
+      config_sha256: 'e'.repeat(64),
+    },
+  };
+  const left = fixtureBundleFor('a'.repeat(32));
+  const right = fixtureBundleFor('b'.repeat(32), 0, kalmanD0);
+  const validation = validateComparisonPair(left, right);
+  expect(validation.status).toBe('exploratory');
+  expect(validation.reasons.join(' ')).toContain('estimator contracts differ');
+
+  const differentWorld: ReplayBundle = {
+    ...right,
+    episodes: [{
+      ...kalmanD0,
+      frames: kalmanD0.frames.map((frame, index) => index === 0
+        ? { ...frame, asset: { ...frame.asset, position_m: [1, 0, 0] as const } }
+        : frame),
+    }],
+  };
+  expect(validateComparisonPair(left, differentWorld).status).toBe('incompatible');
+  const differentAttacker: ReplayBundle = {
+    ...right,
+    episodes: [{
+      ...kalmanD0,
+      attacker: {
+        ...kalmanD0.attacker,
+        checkpoint: { ...kalmanD0.attacker.checkpoint!, sha256: 'f'.repeat(64) },
+      },
+    }],
+  };
+  expect(validateComparisonPair(left, differentAttacker).reasons.join(' ')).toContain('Attacker identity');
+  const differentRuntime: ReplayBundle = {
+    ...right,
+    provenance: { ...right.provenance, package_versions: { numpy: '2.0' } },
+  };
+  expect(validateComparisonPair(left, differentRuntime).status).toBe('incompatible');
+  expect(validateComparisonPair(left, differentRuntime).reasons.join(' ')).toContain('scientific package versions differ');
+
+  const replayItem: ReplayListItem = {
+    replay_id: 'a'.repeat(32),
+    simulation_seed: 20,
+    defender: { policy_id: 'lr_ppo', architecture: 'lrppo_clutter_v1', generation: 'd1', training_seed: 77, checkpoint: { sha256: 'a'.repeat(64), role: 'final' } },
+    attacker: { policy_id: 'A1-203', checkpoint: { sha256: 'c'.repeat(64), role: 'attacker_best' } },
+    clutter: 'C3',
+    perception: 'map_local',
+    outcome: 'intercepted',
+    steps: 2,
+    duration_s: 1,
+    detection_time_s: 0.5,
+    total_reward: -2,
+    collision_type: null,
+    interception_time_s: 1,
+    provenance: {
+      simulation_source_commit: 'a'.repeat(40),
+      visualizer_source_commit: 'b'.repeat(40),
+      source_dirty: false,
+      visualizer_dirty: false,
+      registry_sha256: 'b'.repeat(64),
+    },
+  };
+  expect(matchesDefenderChoice(replayItem, { policyId: 'lr_ppo', generation: 'd1', trainingSeed: 77 })).toBe(true);
+  expect(matchesDefenderChoice(replayItem, { policyId: 'lr_ppo', generation: 'd1', trainingSeed: 77 }, {
+    sha256: 'a'.repeat(64), role: 'final',
+  })).toBe(true);
+  expect(matchesDefenderChoice(replayItem, { policyId: 'lr_ppo', generation: 'd1', trainingSeed: 77 }, {
+    sha256: 'f'.repeat(64), role: 'final',
+  })).toBe(false);
+  expect(matchesDefenderChoice(replayItem, { policyId: 'lr_ppo', generation: 'd1', trainingSeed: 77 }, {
+    sha256: 'a'.repeat(64), role: 'd0_start',
+  })).toBe(false);
+  expect(matchesDefenderChoice(replayItem, { policyId: 'lr_ppo', generation: 'd0', trainingSeed: 77 })).toBe(false);
+});
+
+test('comparison clock maps actual durations and detection offsets without post-terminal extrapolation', () => {
+  const shorter: ReplayEpisode = {
+    ...fixtureEpisode,
+    frames: fixtureEpisode.frames.slice(0, 2).map((frame, index) => ({
+      ...frame,
+      terminated: index === 1,
+      outcome: index === 1 ? 'intercepted' : 'ongoing',
+    })),
+    summary: { ...fixtureEpisode.summary, steps: 1, duration_s: 0.5 },
+  };
+  expect(comparisonAxisRange(shorter, fixtureEpisode, 'absolute')).toEqual({ minimum: 0, maximum: 1 });
+  expect(mapAxisTimeToEpisodeTime(1, shorter, 'absolute')).toBe(0.5);
+  expect(comparisonAxisRange(shorter, fixtureEpisode, 'detection')).toEqual({ minimum: -0.5, maximum: 0.5 });
+  expect(mapAxisTimeToEpisodeTime(-0.25, fixtureEpisode, 'detection')).toBe(0.25);
+  expect(mapAxisTimeToEpisodeTime(50, shorter, 'detection')).toBe(0.5);
+  expect(defenderPathLength(fixtureEpisode)).toBeCloseTo(Math.sqrt(2) * 2, 10);
+  const separated: ReplayEpisode = {
+    ...fixtureEpisode,
+    frames: fixtureEpisode.frames.map((frame, index) => index === 1
+      ? { ...frame, defender: { ...frame.defender, position_m: [6, 0, 5] as const } }
+      : frame),
+  };
+  expect(firstPositionDivergence(fixtureEpisode, separated, 'absolute', 5)?.axisTimeS).toBe(0.5);
+  const asynchronouslySampled: ReplayEpisode = {
+    ...separated,
+    frames: separated.frames.map((frame, index) => index === 1 ? { ...frame, time_s: 0.75 } : frame),
+  };
+  expect(firstPositionDivergence(fixtureEpisode, asynchronouslySampled, 'absolute', 5)).toBeNull();
+  expect(firstPositionDivergence(fixtureEpisode, separated, 'absolute', 50)).toBeNull();
 });
 
 const scenarioLevels = ['C0', 'C1', 'C2', 'C3'];
@@ -993,6 +1122,7 @@ test('captures Phase 5 diagnostics from the four existing local replay artifacts
       },
     };
   });
+
   await page.route('**/api/health', route => route.fulfill({
     json: { service: 'counter-uas-visualizer', phase: 3, status: 'ok', data_root: 'configured', simulation_enabled: true, warnings: [] },
   }));
@@ -1096,4 +1226,182 @@ test('captures Phase 5 diagnostics from the four existing local replay artifacts
   await expect(page.getByText('Attacker UAV · privileged ground truth')).toHaveCount(0);
   await expect(page.getByTestId('attacker-truth-label')).toHaveCount(0);
   await page.locator('.battlefield').screenshot({ path: 'test-results/phase5-policy-visible-mode.png' });
+});
+
+test('verifies synchronized comparison against live API replays in Chromium', async ({ page }) => {
+  test.skip(process.env.VISUALIZER_ENABLE_LIVE_COMPARISON_TESTS !== '1', 'Set VISUALIZER_ENABLE_LIVE_COMPARISON_TESTS=1 to verify two validated real API replays.');
+  test.setTimeout(240_000);
+  const pageErrors: string[] = [];
+  page.on('pageerror', error => pageErrors.push(error.message));
+  page.on('response', response => {
+    if (response.url().startsWith('http://127.0.0.1:5173/api/') && response.status() >= 500) {
+      pageErrors.push(`API HTTP ${response.status()} ${response.url()}`);
+    }
+  });
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Compare policies' }).click();
+  const pairStatus = page.locator('.comparison-pair .pair-status');
+  await expect(pairStatus).toHaveText(/exploratory|matched/, { timeout: 60_000 });
+  await expect(page.getByTestId('rendered-replay-state-A')).toBeVisible();
+  await expect(page.getByTestId('rendered-replay-state-B')).toBeVisible();
+  await expect(page.locator('.comparison-scenes canvas')).toHaveCount(2);
+  const livePair = await page.evaluate(async () => {
+    const listResponse = await fetch('/api/replays?limit=100');
+    if (!listResponse.ok) throw new Error(`Live replay index returned HTTP ${listResponse.status}`);
+    const listing = await listResponse.json() as { replays: Array<{ replay_id: string; defender: { policy_id: string; generation: string; training_seed: number }; simulation_seed: number; attacker: { policy_id: string }; clutter: string; perception: string }> };
+    const find = (policy: string, generation: string, trainingSeed: number) => listing.replays.find(item =>
+      item.defender.policy_id === policy && item.defender.generation === generation
+      && item.defender.training_seed === trainingSeed && item.simulation_seed === 0
+      && item.attacker.policy_id === 'A1-203' && item.clutter === 'C3' && item.perception === 'map_local');
+    const left = find('lr_ppo', 'd1', 77);
+    const right = find('ppo_kalman', 'd0', 74);
+    if (!left || !right) throw new Error('The live API does not contain the previously validated seed-0 replay pair.');
+    const [leftResponse, rightResponse] = await Promise.all([
+      fetch(`/api/replays/${left.replay_id}`),
+      fetch(`/api/replays/${right.replay_id}`),
+    ]);
+    if (!leftResponse.ok || !rightResponse.ok) throw new Error('The live API could not load both full replay bundles.');
+    const [a, b] = await Promise.all([leftResponse.json(), rightResponse.json()]) as Array<{ episodes: Array<{ frames: Array<{ defender: { position_m: number[] } }> }> }>;
+    return { a: a.episodes[0], b: b.episodes[0] };
+  });
+  expect(await page.getByTestId('rendered-replay-state-A').getAttribute('data-defender-position'))
+    .toBe(livePair.a.frames[0].defender.position_m.join(','));
+  expect(await page.getByTestId('rendered-replay-state-B').getAttribute('data-defender-position'))
+    .toBe(livePair.b.frames[0].defender.position_m.join(','));
+  await page.screenshot({ path: 'test-results/phase6-real-lrppo-d1-vs-ppo-kalman-d0.png', fullPage: true });
+
+  const stateA = page.getByTestId('rendered-replay-state-A');
+  const stateB = page.getByTestId('rendered-replay-state-B');
+  await page.getByRole('button', { name: 'Step forward' }).click();
+  await expect(stateA).toHaveAttribute('data-step', '1');
+  await expect(stateB).toHaveAttribute('data-step', '1');
+  await page.getByRole('button', { name: 'Play', exact: true }).click();
+  await expect.poll(async () => Number(await stateA.getAttribute('data-step'))).toBeGreaterThan(1);
+  await expect.poll(async () => Number(await stateB.getAttribute('data-step'))).toBeGreaterThan(1);
+  await page.getByRole('button', { name: 'Pause', exact: true }).click();
+  await page.getByRole('button', { name: 'End', exact: true }).click();
+  const lengths = await page.evaluate(async () => {
+    const ids = ['32b7d3bf27c755da0d73821c9c495603', '2edecf334ae265f70e1981c3e872b462'];
+    return Promise.all(ids.map(async id => {
+      const response = await fetch(`/api/replays/${id}`);
+      if (!response.ok) throw new Error(`Could not load replay ${id}`);
+      const data = await response.json() as { episodes: Array<{ frames: unknown[] }> };
+      return data.episodes[0].frames.length - 1;
+    }));
+  });
+  await expect(stateA).toHaveAttribute('data-step', String(lengths[0]));
+  await expect(stateB).toHaveAttribute('data-step', String(lengths[1]));
+  await expect(page.getByText(/Episode ended · frozen at/)).toHaveCount(2);
+  await page.screenshot({ path: 'test-results/phase6-real-different-terminal-outcomes.png', fullPage: true });
+
+  await page.getByLabel('Alignment').selectOption('detection');
+  await expect(page.getByRole('heading', { name: 'Seconds relative to first detection' })).toBeVisible();
+  await page.screenshot({ path: 'test-results/phase6-real-detection-aligned.png', fullPage: true });
+  await page.getByRole('button', { name: /top down/i }).click();
+  await expect(page.getByTestId('camera-state-A')).toHaveAttribute('data-camera-position', /,/);
+  await expect(page.getByTestId('camera-state-B')).toHaveAttribute('data-camera-position', /,/);
+  await page.screenshot({ path: 'test-results/phase6-real-linked-top-down.png', fullPage: true });
+  await page.getByRole('checkbox', { name: /Link free \/ top-down cameras/ }).uncheck();
+  await page.getByRole('checkbox', { name: /Link free \/ top-down cameras/ }).check();
+
+  await page.getByRole('button', { name: 'Policy-Visible', exact: true }).click();
+  await expect(stateA).toHaveAttribute('data-attacker-position', 'unavailable');
+  await expect(stateB).toHaveAttribute('data-attacker-position', 'unavailable');
+  await expect(page.getByText(/Canonical outcome:/)).toHaveCount(0);
+  await expect(page.locator('.comparison-scenes > div').nth(0).getByTestId('guidance-legend')).toHaveCount(1);
+  await expect(page.locator('.comparison-scenes > div').nth(1).getByTestId('guidance-legend')).toHaveCount(0);
+  await expect.poll(() => pageErrors).toEqual([]);
+});
+
+test('generates only missing requested comparison replays sequentially through the live job API', async ({ page }) => {
+  test.skip(process.env.VISUALIZER_ENABLE_LIVE_COMPARISON_GENERATION !== '1', 'Set VISUALIZER_ENABLE_LIVE_COMPARISON_GENERATION=1 to run the three minimum missing seed-0 real rollouts.');
+  test.setTimeout(540_000);
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Compare policies' }).click();
+  await expect(page.locator('.comparison-pair')).toBeVisible();
+  const choices = page.locator('.comparison-policy-choice');
+  const choose = async (side: number, policy: string, generation?: string, trainingSeed?: number) => {
+    const selector = choices.nth(side);
+    await selector.getByLabel('Controller family').selectOption(policy);
+    if (generation) {
+      await selector.getByLabel('Generation').selectOption(generation);
+      if (trainingSeed !== undefined) await selector.getByLabel('Training seed').selectOption(String(trainingSeed));
+    }
+  };
+  const generateOneMissing = async (screenshot: string) => {
+    await expect(page.getByText('1 rollout(s) are missing from the replay index; valid existing replays will be reused.')).toBeVisible();
+    await page.getByRole('button', { name: 'Generate missing replays' }).click();
+    await expect(page.getByRole('button', { name: 'Generating sequentially…' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Generate missing replays' })).toBeDisabled({ timeout: 420_000 });
+    await expect(page.locator('.comparison-pair .pair-status')).toHaveText(/exploratory|matched/, { timeout: 90_000 });
+    await expect(page.locator('.comparison-scenes canvas')).toHaveCount(2);
+    await page.screenshot({ path: `test-results/${screenshot}`, fullPage: true });
+  };
+
+  await choose(0, 'lr_ppo', 'd0', 77);
+  await choose(1, 'lr_ppo', 'd1', 77);
+  await generateOneMissing('phase6-real-lrppo-d0-vs-d1.png');
+
+  await choose(0, 'lr_ppo', 'd1', 77);
+  await choose(1, 'ppo_kalman', 'd1', 74);
+  await generateOneMissing('phase6-real-lrppo-d1-vs-ppo-kalman-d1.png');
+
+  await choose(0, 'lead');
+  await choose(1, 'lr_ppo', 'd1', 77);
+  await generateOneMissing('phase6-real-lead-vs-lrppo-d1.png');
+  await page.screenshot({ path: 'test-results/phase6-real-paired-seed-list.png', fullPage: true });
+});
+
+test('captures requested side-by-side screenshots from validated real replay pairs', async ({ page }) => {
+  test.skip(process.env.VISUALIZER_ENABLE_COMPARISON_SCREENSHOTS !== '1', 'Set VISUALIZER_ENABLE_COMPARISON_SCREENSHOTS=1 to capture validated local replay comparisons.');
+  test.setTimeout(300_000);
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Compare policies' }).click();
+  const choices = page.locator('.comparison-policy-choice');
+  const choose = async (side: number, policy: string, generation?: string, trainingSeed?: number) => {
+    const selector = choices.nth(side);
+    await selector.getByLabel('Controller family').selectOption(policy);
+    if (generation) {
+      await selector.getByLabel('Generation').selectOption(generation);
+      if (trainingSeed !== undefined) await selector.getByLabel('Training seed').selectOption(String(trainingSeed));
+    }
+  };
+  const waitForPair = async (left: string, right: string) => {
+    await expect(page.locator('.comparison-pair .pair-status')).toHaveText(/exploratory|matched/, { timeout: 90_000 });
+    await expect(page.locator('.comparison-scenes canvas')).toHaveCount(2);
+    await expect(page.locator('.comparison-pane-title').nth(0)).toContainText(new RegExp(left, 'i'), { timeout: 90_000 });
+    await expect(page.locator('.comparison-pane-title').nth(1)).toContainText(new RegExp(right, 'i'), { timeout: 90_000 });
+  };
+
+  await choose(0, 'lr_ppo', 'd0', 77);
+  await choose(1, 'lr_ppo', 'd1', 77);
+  await waitForPair('d0', 'd1');
+  await page.screenshot({ path: 'test-results/phase6-real-lrppo-d0-vs-d1.png', fullPage: true });
+
+  await choose(0, 'lr_ppo', 'd1', 77);
+  await choose(1, 'ppo_kalman', 'd1', 74);
+  await waitForPair('d1', 'ppo_kalman');
+  await page.screenshot({ path: 'test-results/phase6-real-lrppo-d1-vs-ppo-kalman-d1.png', fullPage: true });
+  await page.screenshot({ path: 'test-results/phase6-real-synchronized-timeline-and-charts.png', fullPage: true });
+  await page.getByLabel('Alignment').selectOption('detection');
+  await expect(page.getByRole('heading', { name: 'Seconds relative to first detection' })).toBeVisible();
+  await page.screenshot({ path: 'test-results/phase6-real-detection-aligned.png', fullPage: true });
+  await page.getByRole('button', { name: /top down/i }).click();
+  await page.screenshot({ path: 'test-results/phase6-real-linked-top-down.png', fullPage: true });
+
+  await page.getByLabel('Alignment').selectOption('absolute');
+  await choose(0, 'lead');
+  await choose(1, 'lr_ppo', 'd1', 77);
+  await waitForPair('lead', 'd1');
+  await page.screenshot({ path: 'test-results/phase6-real-lead-vs-lrppo-d1.png', fullPage: true });
+
+  await choose(0, 'lr_ppo', 'd0', 77);
+  await choose(1, 'lr_ppo', 'd1', 77);
+  await waitForPair('d0', 'd1');
+  await page.getByRole('button', { name: 'End', exact: true }).click();
+  await expect(page.getByText(/Episode ended · frozen at/)).toHaveCount(2);
+  await page.screenshot({ path: 'test-results/phase6-real-different-terminal-outcomes.png', fullPage: true });
+  const seedList = page.locator('.comparison-seed-list');
+  await seedList.scrollIntoViewIfNeeded();
+  await seedList.screenshot({ path: 'test-results/phase6-real-paired-episode-list.png' });
 });
