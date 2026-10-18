@@ -8,6 +8,8 @@ import {
   BoxGeometry,
   BufferGeometry,
   Color,
+  ConeGeometry,
+  DoubleSide,
   Group,
   Line,
   LineBasicMaterial,
@@ -21,17 +23,22 @@ import type {
   ReplayEvent,
   ReplayFrame,
   ReplayMovingObstacle,
+  ReplayPolicyTelemetry,
+  Vec3,
 } from './api';
+import type { DecisionInterval } from './diagnostics';
 import {
   dynamicObstaclePaths,
   orientationYaw,
   sampleAtTime,
+  simVectorToThree,
   scenarioBounds,
   simToThree,
   staticObstacleBounds,
   trajectoryPath,
 } from './playback';
 import type { DisplaySample, ThreeVector } from './playback';
+import type { DiagnosticVisibility, InformationMode } from './PolicyDiagnostics';
 
 export type CameraMode = 'free' | 'follow-defender' | 'follow-attacker' | 'top-down';
 
@@ -52,6 +59,9 @@ interface BattlefieldProps {
   showDetectionVolume: boolean;
   wireframeObstacles: boolean;
   transparentObstacles: boolean;
+  informationMode: InformationMode;
+  diagnosticVisibility: DiagnosticVisibility;
+  decision: DecisionInterval | null;
   onWebGlError: (message: string) => void;
   onResetCamera: () => void;
 }
@@ -290,12 +300,14 @@ function Vehicle({
   entityName,
   label,
   color,
+  visible = true,
 }: {
   episode: ReplayEpisode;
   sample: DisplaySample;
   entityName: 'defender' | 'attacker';
   label: string;
   color: string;
+  visible?: boolean;
 }) {
   const ref = useRef<Group>(null);
   const position = sample[entityName];
@@ -313,13 +325,21 @@ function Vehicle({
   );
   useFrame(() => {
     if (!ref.current) return;
+    ref.current.visible = visible;
+    if (!visible) return;
     ref.current.position.set(...position);
     ref.current.rotation.set(0, orientation.yaw, 0);
   });
+  if (!visible) return null;
   return (
-    <group ref={ref} data-testid={`${entityName}-vehicle`}>
+    <group ref={ref} visible={visible} data-testid={`${entityName}-vehicle`}>
       <DroneModel color={color} />
-      <Html position={[0, 1.25, 0]} center style={{ color: '#e8f0f5', whiteSpace: 'nowrap', fontSize: '11px', textShadow: '0 1px 4px #000' }}>
+      <Html
+        position={[0, 1.25, 0]}
+        center
+        data-testid={entityName === 'attacker' ? 'attacker-truth-label' : undefined}
+        style={{ color: '#e8f0f5', whiteSpace: 'nowrap', fontSize: '11px', textShadow: '0 1px 4px #000' }}
+      >
         {label}{orientation.source === 'display orientation derived from recorded positions'
           ? ' · display heading derived from recorded positions'
           : orientation.source === 'unavailable'
@@ -354,14 +374,16 @@ function StaticObstacle({
   episode,
   wireframe,
   transparent,
+  informationMode,
 }: {
   episode: ReplayEpisode;
   wireframe: boolean;
   transparent: boolean;
+  informationMode: InformationMode;
 }) {
   return (
     <>
-      {episode.static_obstacles.map(obstacle => {
+      {episode.static_obstacles.filter(obstacle => informationMode === 'ground-truth' || obstacle.map_known).map(obstacle => {
         const bounds = staticObstacleBounds(obstacle.min_corner_m, obstacle.max_corner_m);
         const size: ThreeVector = [
           bounds.max[0] - bounds.min[0],
@@ -527,22 +549,199 @@ function EpisodeEventMarkers({ episode, timeS }: { episode: ReplayEpisode; timeS
   );
 }
 
+const normalizedUp = new Vector3(0, 1, 0);
+
+function DirectionIndicator({
+  origin,
+  direction,
+  color,
+  visible,
+  label,
+}: {
+  origin: ThreeVector;
+  direction: Vec3 | null | undefined;
+  color: string;
+  visible: boolean;
+  label: string;
+}) {
+  const ref = useRef<Group>(null);
+  const vectorRef = useRef(new Vector3());
+  useFrame(() => {
+    const group = ref.current;
+    if (!group) return;
+    const converted = direction ? simVectorToThree(direction) : null;
+    const vector = converted ? vectorRef.current.set(...converted) : null;
+    const magnitude = vector?.length() ?? 0;
+    group.visible = visible && magnitude > 1e-9;
+    if (!group.visible || !vector) return;
+    vector.normalize();
+    group.position.set(...origin);
+    group.quaternion.setFromUnitVectors(normalizedUp, vector);
+  });
+  return (
+    <group ref={ref} userData={{ diagnosticLabel: label }}>
+      <mesh position={[0, 6, 0]} renderOrder={20}>
+        <cylinderGeometry args={[0.14, 0.14, 10, 8]} />
+        <meshBasicMaterial color={color} depthTest={false} />
+      </mesh>
+      <mesh position={[0, 11, 0]} renderOrder={20}>
+        <coneGeometry args={[0.55, 1.5, 8]} />
+        <meshBasicMaterial color={color} depthTest={false} />
+      </mesh>
+    </group>
+  );
+}
+
+function CorrectionCone({ origin, direction, visible }: { origin: ThreeVector; direction: Vec3 | null | undefined; visible: boolean }) {
+  const ref = useRef<Group>(null);
+  const vectorRef = useRef(new Vector3());
+  const geometry = useMemo(() => new ConeGeometry(12 * Math.tan(Math.PI / 6), 12, 32, 1, true), []);
+  useEffect(() => () => geometry.dispose(), [geometry]);
+  useFrame(() => {
+    const group = ref.current;
+    if (!group) return;
+    const converted = direction ? simVectorToThree(direction) : null;
+    const vector = converted ? vectorRef.current.set(...converted) : null;
+    const magnitude = vector?.length() ?? 0;
+    group.visible = visible && magnitude > 1e-9;
+    if (!group.visible || !vector) return;
+    vector.normalize();
+    group.position.set(
+      origin[0] + vector.x * 6,
+      origin[1] + vector.y * 6,
+      origin[2] + vector.z * 6,
+    );
+    group.quaternion.setFromUnitVectors(normalizedUp, vector.negate());
+  });
+  return (
+    <group ref={ref} userData={{ diagnosticLabel: '30 degree native 3D correction allowance' }}>
+      <mesh geometry={geometry} renderOrder={10}>
+        <meshBasicMaterial color="#ffad32" transparent opacity={0.28} side={DoubleSide} depthWrite={false} depthTest={false} />
+      </mesh>
+    </group>
+  );
+}
+
+function EstimateMarker({ position, color, label, visible = true }: { position: Vec3 | null; color: string; label: string; visible?: boolean }) {
+  const ref = useRef<Mesh>(null);
+  useFrame(() => {
+    const mesh = ref.current;
+    if (!mesh || !visible || !position) {
+      if (mesh) mesh.visible = false;
+      return;
+    }
+    mesh.visible = true;
+    mesh.position.set(...simToThree(position));
+  });
+  return (
+    <mesh ref={ref} userData={{ diagnosticLabel: label }}>
+      <octahedronGeometry args={[0.85, 0]} />
+      <meshBasicMaterial color={color} wireframe />
+    </mesh>
+  );
+}
+
+function TrackingErrorLine({ from, to, visible }: { from: Vec3 | null; to: Vec3 | null; visible: boolean }) {
+  const ref = useRef<Line>(null);
+  useFrame(() => {
+    const line = ref.current;
+    if (!line) return;
+    const available = visible && from !== null && to !== null;
+    line.visible = Boolean(available);
+    if (!available) return;
+    const start = simToThree(from);
+    const end = simToThree(to);
+    const attribute = line.geometry.getAttribute('position') as BufferAttribute;
+    attribute.setXYZ(0, ...start);
+    attribute.setXYZ(1, ...end);
+    attribute.needsUpdate = true;
+    line.geometry.computeBoundingSphere();
+  });
+  const line = useMemo(() => {
+    const geometry = new BufferGeometry();
+    geometry.setAttribute('position', new BufferAttribute(new Float32Array(6), 3));
+    const material = new LineBasicMaterial({ color: '#ff77bb', linewidth: 2 });
+    const result = new Line(geometry, material);
+    result.frustumCulled = false;
+    return result;
+  }, []);
+  useEffect(() => () => {
+    line.geometry.dispose();
+    (line.material as LineBasicMaterial).dispose();
+  }, [line]);
+  return <primitive ref={ref} object={line} />;
+}
+
+function GuidanceOverlays({
+  origin,
+  telemetry,
+  visibility,
+}: {
+  origin: ThreeVector;
+  telemetry: ReplayPolicyTelemetry | null;
+  visibility: DiagnosticVisibility;
+}) {
+  if (!telemetry) return null;
+  const lead = telemetry.lrppo?.lead_direction;
+  return (
+    <>
+      {telemetry.lrppo && (
+        <>
+          <DirectionIndicator origin={origin} direction={lead} color="#f59e0b" visible={visibility.lead} label="Analytical Lead direction" />
+          <DirectionIndicator origin={origin} direction={telemetry.requested_action} color="#c084fc" visible={visibility.requested} label="Final LR-PPO requested direction" />
+          <DirectionIndicator origin={origin} direction={telemetry.executed_velocity_mps} color="#22d3ee" visible={visibility.executed} label="Actual post-transition velocity direction" />
+          <CorrectionCone origin={origin} direction={lead} visible={visibility.cone} />
+        </>
+      )}
+      {visibility.safetyMarker && telemetry.avoidance_active && (
+        <mesh position={[origin[0], origin[1] + 2.2, origin[2]]} userData={{ diagnosticLabel: 'Recorded safety avoidance active' }}>
+          <octahedronGeometry args={[0.7, 0]} />
+          <meshBasicMaterial color="#ff9f43" wireframe />
+        </mesh>
+      )}
+    </>
+  );
+}
+
+function sceneBounds(episode: ReplayEpisode, informationMode: InformationMode) {
+  if (informationMode === 'ground-truth') return scenarioBounds(episode);
+  const configuredExtent = episode.environment.config.L;
+  const configuredAltitude = episode.environment.config.max_altitude;
+  if (typeof configuredExtent !== 'number' || !Number.isFinite(configuredExtent) || configuredExtent <= 0) {
+    throw new Error('Policy-Visible framing unavailable: replay does not record a valid engagement extent.');
+  }
+  if (typeof configuredAltitude !== 'number' || !Number.isFinite(configuredAltitude) || configuredAltitude <= 0) {
+    throw new Error('Policy-Visible framing unavailable: replay does not record a valid maximum altitude.');
+  }
+  const extent = configuredExtent;
+  const altitude = configuredAltitude;
+  const max = Math.max(extent * 2, altitude);
+  return {
+    min: [-extent, 0, -extent] as ThreeVector,
+    max: [extent, altitude, extent] as ThreeVector,
+    center: [0, altitude / 2, 0] as ThreeVector,
+    extent: max,
+  };
+}
+
 function PerspectiveCameraRig({
   episode,
   sample,
   mode,
+  informationMode,
   resetToken,
   controls,
 }: {
   episode: ReplayEpisode;
   sample: DisplaySample;
   mode: Exclude<CameraMode, 'top-down'>;
+  informationMode: InformationMode;
   resetToken: number;
   controls: RefObject<OrbitControlsImpl | null>;
 }) {
   const lastFollowPosition = useRef<Vector3 | null>(null);
   const { camera, size } = useThree();
-  const bounds = useMemo(() => scenarioBounds(episode), [episode]);
+  const bounds = useMemo(() => sceneBounds(episode, informationMode), [episode, informationMode]);
   const target = useMemo(() => vector(bounds.center), [bounds]);
   const sampleRef = useRef(sample);
   sampleRef.current = sample;
@@ -612,14 +811,16 @@ function TopDownCameraRig({
   episode,
   resetToken,
   controls,
+  informationMode,
 }: {
   episode: ReplayEpisode;
   resetToken: number;
   controls: RefObject<OrbitControlsImpl | null>;
+  informationMode: InformationMode;
 }) {
   const cameraRef = useRef<OrthographicCamera>(null);
   const { size } = useThree();
-  const bounds = useMemo(() => scenarioBounds(episode), [episode]);
+  const bounds = useMemo(() => sceneBounds(episode, informationMode), [episode, informationMode]);
   const target = useMemo(() => vector(bounds.center), [bounds]);
   const aspect = Math.max(0.5, size.width / Math.max(1, size.height));
   const halfHeight = Math.max(bounds.max[2] - bounds.min[2], (bounds.max[0] - bounds.min[0]) / aspect, 10) * 0.58;
@@ -675,13 +876,17 @@ function CameraRig(props: {
   episode: ReplayEpisode;
   sample: DisplaySample;
   mode: CameraMode;
+  informationMode: InformationMode;
   resetToken: number;
   controls: RefObject<OrbitControlsImpl | null>;
 }) {
   if (props.mode === 'top-down') {
-    return <TopDownCameraRig episode={props.episode} resetToken={props.resetToken} controls={props.controls} />;
+    return <TopDownCameraRig episode={props.episode} informationMode={props.informationMode} resetToken={props.resetToken} controls={props.controls} />;
   }
-  return <PerspectiveCameraRig {...props} mode={props.mode} />;
+  const mode = props.informationMode === 'policy-visible' && props.mode === 'follow-attacker'
+    ? 'free'
+    : props.mode;
+  return <PerspectiveCameraRig {...props} mode={mode} />;
 }
 
 function SceneContents({
@@ -694,6 +899,9 @@ function SceneContents({
   showDetectionVolume,
   wireframeObstacles,
   transparentObstacles,
+  informationMode,
+  diagnosticVisibility,
+  decision,
   controls,
   cameraOutput,
 }: BattlefieldProps & {
@@ -702,7 +910,14 @@ function SceneContents({
 }) {
   const sample = useMemo(() => sampleAtTime(episode!, timeS), [episode, timeS]);
   const frame = episode!.frames[sample.lowerIndex];
-  const bounds = useMemo(() => scenarioBounds(episode!), [episode]);
+  const bounds = useMemo(() => sceneBounds(episode!, informationMode), [episode, informationMode]);
+  const policyVisible = decision?.telemetry.decision_policy_visible;
+  const estimatePosition = policyVisible?.enemy_detected
+    ? policyVisible.estimator === 'kalman' ? policyVisible.e_hat_m : policyVisible.enemy_measurement_m
+    : null;
+  const estimateVelocity = policyVisible?.enemy_detected
+    ? policyVisible.estimator === 'kalman' ? policyVisible.v_hat_mps : policyVisible.enemy_measurement_velocity_mps
+    : null;
   const gridSize = Math.max(40, Math.ceil(bounds.extent * 1.15 / 10) * 10);
   return (
     <>
@@ -716,18 +931,61 @@ function SceneContents({
       </mesh>
       <gridHelper args={[gridSize * 2, 40, new Color('#759a92'), new Color('#405b58')]} position={[0, 0, 0]} />
       <axesHelper args={[Math.max(8, bounds.extent * 0.07)]} position={[0, 0.02, 0]} />
-      <StaticObstacle episode={episode!} wireframe={wireframeObstacles} transparent={transparentObstacles} />
-      <MovingObstacles episode={episode!} sample={sample} />
-      <Trajectory episode={episode!} sample={sample} visible={trails.defender} full={showFullTrajectory} entity="defender" />
-      <Trajectory episode={episode!} sample={sample} visible={trails.attacker} full={showFullTrajectory} entity="attacker" />
-      <Trajectory episode={episode!} sample={sample} visible={trails.asset} full={showFullTrajectory} entity="asset" />
-      <DynamicObstacleTrails episode={episode!} sample={sample} visible={trails.obstacles} full={showFullTrajectory} />
+      <StaticObstacle episode={episode!} wireframe={wireframeObstacles} transparent={transparentObstacles} informationMode={informationMode} />
+      {informationMode === 'ground-truth' && <MovingObstacles episode={episode!} sample={sample} />}
+      <Trajectory episode={episode!} sample={sample} visible={trails.defender && informationMode === 'ground-truth'} full={showFullTrajectory} entity="defender" />
+      {informationMode === 'ground-truth' && <Trajectory episode={episode!} sample={sample} visible={trails.attacker} full={showFullTrajectory} entity="attacker" />}
+      <Trajectory episode={episode!} sample={sample} visible={trails.asset && informationMode === 'ground-truth'} full={showFullTrajectory} entity="asset" />
+      {informationMode === 'ground-truth' && <DynamicObstacleTrails episode={episode!} sample={sample} visible={trails.obstacles} full={showFullTrajectory} />}
       <DetectionVolume frame={frame} position={sample.defender} visible={showDetectionVolume} />
       <Vehicle episode={episode!} sample={sample} entityName="defender" label="Defender UAV" color="#2786df" />
-      <Vehicle episode={episode!} sample={sample} entityName="attacker" label="Attacker UAV · privileged view" color="#df4e59" />
+      {informationMode === 'ground-truth' &&       <Vehicle
+        episode={episode!}
+        sample={sample}
+        entityName="attacker"
+        label="Attacker UAV · privileged ground truth"
+        color="#df4e59"
+        visible={informationMode === 'ground-truth'}
+      />}
       <AssetMarker position={sample.asset} />
-      <EpisodeEventMarkers episode={episode!} timeS={timeS} />
-      <CameraRig episode={episode!} sample={sample} mode={cameraMode} resetToken={resetCameraToken} controls={controls} />
+      {informationMode === 'ground-truth' && <EpisodeEventMarkers episode={episode!} timeS={timeS} />}
+      <GuidanceOverlays origin={sample.defender} telemetry={decision?.telemetry ?? null} visibility={diagnosticVisibility} />
+      {decision && (
+        <>
+          <EstimateMarker
+            position={estimatePosition ?? null}
+            color="#d68cff"
+            label="Policy-visible target estimate or measurement"
+            visible={diagnosticVisibility.estimate}
+          />
+          <EstimateMarker
+            position={informationMode === 'ground-truth' && diagnosticVisibility.truthMarker
+              ? decision.startFrame.privileged_diagnostics.attacker_position_m
+              : null}
+            color="#fa777d"
+            label="Privileged ground-truth attacker position"
+          />
+          <TrackingErrorLine
+            from={decision.telemetry.decision_policy_visible.enemy_detected
+              ? (decision.telemetry.decision_policy_visible.estimator === 'kalman'
+                ? decision.telemetry.decision_policy_visible.e_hat_m
+                : decision.telemetry.decision_policy_visible.enemy_measurement_m)
+              : null}
+            to={informationMode === 'ground-truth' ? decision.startFrame.privileged_diagnostics.attacker_position_m : null}
+            visible={diagnosticVisibility.trackingError && decision.telemetry.decision_policy_visible.enemy_detected}
+          />
+          {estimatePosition && estimateVelocity && (
+            <DirectionIndicator
+              origin={simToThree(estimatePosition)}
+              direction={estimateVelocity}
+              color="#d68cff"
+              visible={diagnosticVisibility.estimateVelocity}
+              label="Recorded policy-visible target velocity estimate"
+            />
+          )}
+        </>
+      )}
+      <CameraRig episode={episode!} sample={sample} mode={cameraMode} informationMode={informationMode} resetToken={resetCameraToken} controls={controls} />
       <CameraProbe controls={controls} output={cameraOutput} />
     </>
   );
@@ -844,19 +1102,36 @@ export function Battlefield(props: BattlefieldProps) {
             data-step={props.episode.frames[displayedSample.lowerIndex].step}
             data-upper-step={props.episode.frames[displayedSample.upperIndex].step}
             data-interpolated={String(displayedSample.fraction > 0)}
-            data-static-obstacle-count={props.episode.static_obstacles.length}
-            data-moving-obstacle-count={props.episode.frames[displayedSample.lowerIndex].moving_obstacles.length}
-            data-visible-event-count={props.episode.events.filter(event => event.time_s <= displayedSample.timeS).length}
+            data-static-obstacle-count={props.informationMode === 'ground-truth'
+              ? props.episode.static_obstacles.length
+              : props.episode.static_obstacles.filter(obstacle => obstacle.map_known).length}
+            data-moving-obstacle-count={props.informationMode === 'ground-truth'
+              ? props.episode.frames[displayedSample.lowerIndex].moving_obstacles.length
+              : 0}
+            data-visible-event-count={props.informationMode === 'ground-truth'
+              ? props.episode.events.filter(event => event.time_s <= displayedSample.timeS).length
+              : 0}
             data-defender-position={displayedSample.defender.join(',')}
-            data-attacker-position={displayedSample.attacker.join(',')}
+            data-attacker-position={props.informationMode === 'ground-truth' ? displayedSample.attacker.join(',') : 'unavailable'}
             data-asset-position={displayedSample.asset.join(',')}
           />
         )}
         <div className="sr-only" data-testid="camera-state" ref={cameraOutput} />
         {props.episode && (
           <span className="viewport-caption">
-            Researcher view: attacker is visible before detection · 1 Three.js unit = 1 simulator meter · coordinates (x, y, z) → (x, z, −y)
+            {props.informationMode === 'ground-truth'
+              ? 'Ground Truth researcher view · attacker position is privileged · 1 unit = 1 m · (x, y, z) → (x, z, −y)'
+              : 'Policy-Visible partial reconstruction · no privileged attacker position or trajectory · (x, y, z) → (x, z, −y)'}
           </span>
+        )}
+        {props.episode?.defender.policy_id === 'lr_ppo' && props.decision?.telemetry.lrppo && (
+          <div className="guidance-legend" data-testid="guidance-legend" aria-label="LR-PPO guidance direction legend">
+            <span><i className="lead-vector" />Lead direction</span>
+            <span><i className="requested-vector" />Final requested direction</span>
+            <span><i className="executed-vector" />Actual post-transition velocity</span>
+            <span><i className="correction-cone" />30° native 3D allowance</span>
+            <small>Arrows are normalized direction indicators, not magnitude.</small>
+          </div>
         )}
       </div>
     </section>

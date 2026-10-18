@@ -1,11 +1,12 @@
 # Counter-UAS 3D Simulation Explorer
 
-Phase 4: an isolated local research visualizer with a live policy/scenario
-catalog, validated multi-episode replay jobs, and interactive playback of
-existing authoritative native-3D traces. React Three Fiber renders the recorded
-defender, attacker, asset, obstacles, trajectories, detection, and events; one
-simulated-time clock controls playback and scrubbing. The browser does not
-simulate, train, infer policies, or change recorded outcomes.
+Phase 5: an isolated local research visualizer with a live policy/scenario
+catalog, validated multi-episode replay jobs, interactive native-3D playback,
+and synchronized policy-specific decision diagnostics. The inspector follows
+the recorded decision interval; LR-PPO guidance, Kalman estimates, requested
+versus executed commands, safety state, and synchronized charts are derived
+from validated traces. The browser does not simulate, train, infer policies,
+or change recorded outcomes.
 
 ## Scientific integrity and coordinate decision
 
@@ -159,7 +160,7 @@ files are gzip JSON under `visualizer\data\local` (gitignored). See
 [replay-engine validation](docs/replay_engine_validation.md) for actual
 compatibility, smoke, equivalence, and known-limit reports.
 
-### Use the Phase 4 API and browser
+### Use the replay API and Phase 5 browser
 
 Open <http://127.0.0.1:5173>, select an available defender and attacker, choose
 C0–C3 and `local` or `map_local`, then request 1, 3, 5, or 10 episodes. Jobs
@@ -176,28 +177,33 @@ contracts, checkpoint-generation rules, actual successful local examples,
 scenario parameter interpretation, timeout/cancellation behavior, and
 reproducibility limitations.
 
-### Phase 4 validation evidence
+### Phase 5 validation evidence
 
-The Chromium suite includes deterministic replay fixtures and an opt-in run
-against the already-recorded local Greedy/A0/C0, LR-PPO D0/A0/C2,
-PPO-Kalman D0/A1-203/C3, and LR-PPO D1 seed 77/A1-203/C3 traces. The latter
-contains 974 frames and was scrubbed at its midpoint and terminal frame. No
-episodes were generated for Phase 4.
+The Chromium suite includes numerical diagnostics tests, fixture-based timing,
+view-mode privacy, Kalman estimate/truth separation, chart seeking, episode
+state reset, and an opt-in run against the already-recorded local
+Greedy/A0/C0, LR-PPO D0/A0/C2, PPO-Kalman D0/A1-203/C3, and LR-PPO D1 seed
+77/A1-203/C3 traces. The latter contains 974 frames / 973 transitions and is
+scrubbed through recorded decision intervals and the terminal frame. No
+episodes were generated for Phase 5.
 
 Run the live replay browser check only while the configured Phase 3 API is
 running:
 
 ```powershell
 Set-Location -LiteralPath 'C:\Users\mimishal\OneDrive\Documents\UIC\PhD\Research\RL-UAV-Extended-visualizer\visualizer\frontend'
-$env:VISUALIZER_ENABLE_REAL_REPLAY_TESTS = '1'
+$env:VISUALIZER_ENABLE_LOCAL_REPLAY_SCREENSHOTS = '1'
 npm run test:browser
-Remove-Item Env:\VISUALIZER_ENABLE_REAL_REPLAY_TESTS
+Remove-Item Env:\VISUALIZER_ENABLE_LOCAL_REPLAY_SCREENSHOTS
 ```
 
-The six full-page screenshots from the real traces are written to the ignored
-`visualizer\frontend\test-results` directory: beginning, mid-episode trails,
-cluttered obstacles, top-down, terminal outcome, and selected multi-episode
-list. The Chromium software renderer does not require a display server.
+This browser test loads the four existing compressed replay artifacts without
+running new simulation episodes. Six screenshots are written to the ignored
+`visualizer\frontend\test-results` directory: LR-PPO's three guidance vectors
+and cone, the LR-PPO angle chart, PPO-Kalman estimate versus truth, a paused
+inspector, Policy-Visible mode, and a Greedy view without LR-PPO controls. The
+Chromium software renderer does not require a display server. The separate
+`VISUALIZER_ENABLE_REAL_REPLAY_TESTS=1` check uses the configured Phase 3 API.
 
 ### Phase 1 verification record (2026-10-16)
 
@@ -228,6 +234,8 @@ list. The Chromium software renderer does not require a display server.
 - [Eight-phase implementation roadmap](docs/implementation_roadmap.md)
 - [Phase 3 Replay API](docs/replay_api.md)
 - [Phase 4 native-3D playback details](docs/3d_playback.md)
+- [Phase 5 policy diagnostics](docs/policy_diagnostics.md)
 
-Phase 4 is complete at validated native-3D episode playback. Policy-specific
-diagnostic overlays are intentionally reserved for Phase 5.
+Phase 5 is complete at policy decision inspection, synchronized telemetry,
+native-3D guidance diagnostics, and explicitly partial Policy-Visible display.
+Stop here; side-by-side policy comparison remains Phase 6 and has not started.

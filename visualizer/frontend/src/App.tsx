@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ReplayPlayback } from './ReplayPlayback';
 import type { PlaybackReadout } from './ReplayPlayback';
+import { PolicyInspector } from './PolicyDiagnostics';
+import type { DiagnosticVisibility, InformationMode } from './PolicyDiagnostics';
+import { deriveDiagnosticSeries } from './diagnostics';
 import {
   ApiError,
   cancelReplayJob,
@@ -27,6 +30,17 @@ import type {
 type BackendStatus = { kind: 'checking' | 'ok' | 'degraded' | 'error'; message: string };
 type EpisodeCount = 1 | 3 | 5 | 10;
 const MAX_SEED = 2 ** 32 - 1;
+const defaultDiagnosticVisibility: DiagnosticVisibility = {
+  lead: true,
+  requested: true,
+  executed: true,
+  cone: true,
+  estimate: true,
+  truthMarker: true,
+  trackingError: true,
+  estimateVelocity: true,
+  safetyMarker: true,
+};
 
 const parameterLabels: Record<string, string> = {
   v_d: 'Defender speed',
@@ -193,10 +207,12 @@ function EpisodeSelection({
   items,
   selectedId,
   onSelect,
+  informationMode,
 }: {
   items: { id: string; seed: number; defender: string; attacker: string; clutter: string; outcome: string; steps: number; duration: number; detection: number | null; reward: number; collision: string | null; intercept: number | null }[];
   selectedId: string | null;
   onSelect: (id: string) => void;
+  informationMode: InformationMode;
 }) {
   if (!items.length) return <p className="muted">No completed replay episodes are available yet.</p>;
   return (
@@ -213,11 +229,17 @@ function EpisodeSelection({
         >
           <span className="episode-result-heading">
             <strong>Episode {index + 1} / seed {item.seed}</strong>
-            <span>{readableOutcome(item.outcome)}</span>
+            {informationMode === 'ground-truth' && <span>{readableOutcome(item.outcome)}</span>}
           </span>
-          <span>{item.defender} vs {item.attacker} / {item.clutter}</span>
-          <span>{item.steps} steps / {item.duration.toFixed(1)} s / reward {item.reward.toFixed(2)}</span>
-          <span>{item.detection === null ? 'Detection: not acquired' : `Detection: ${item.detection.toFixed(1)} s`}{item.collision ? ` / ${item.collision}` : ''}{item.intercept === null ? '' : ` / interception ${item.intercept.toFixed(1)} s`}</span>
+          {informationMode === 'ground-truth' ? (
+            <>
+              <span>{item.defender} vs {item.attacker} / {item.clutter}</span>
+              <span>{item.steps} steps / {item.duration.toFixed(1)} s / reward {item.reward.toFixed(2)}</span>
+              <span>{item.detection === null ? 'Detection: not acquired' : `Detection: ${item.detection.toFixed(1)} s`}{item.collision ? ` / ${item.collision}` : ''}{item.intercept === null ? '' : ` / interception ${item.intercept.toFixed(1)} s`}</span>
+            </>
+          ) : (
+            <span>{item.defender} / {item.clutter} / {item.steps} recorded steps / {item.duration.toFixed(1)} s</span>
+          )}
         </button>
       ))}
     </div>
@@ -252,10 +274,15 @@ export function App() {
   const [traceError, setTraceError] = useState<string | null>(null);
   const [sceneError, setSceneError] = useState<string | null>(null);
   const [playbackReadout, setPlaybackReadout] = useState<PlaybackReadout | null>(null);
+  const [informationMode, setInformationMode] = useState<InformationMode>('ground-truth');
+  const [diagnosticVisibility, setDiagnosticVisibility] = useState(defaultDiagnosticVisibility);
+  const [diagnosticsCollapsed, setDiagnosticsCollapsed] = useState(false);
+  const [seekRequest, setSeekRequest] = useState<{ timeS: number; nonce: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const handlePlaybackReadout = useCallback((readout: PlaybackReadout | null) => {
     setPlaybackReadout(previous => previous?.replayId === readout?.replayId
       && previous?.frame.step === readout?.frame.step
+      && previous?.decision?.decisionStep === readout?.decision?.decisionStep
       && previous?.interpolated === readout?.interpolated
       ? previous
       : readout);
@@ -461,6 +488,10 @@ export function App() {
   }, [batchSummaries, job, replays]);
   const selectedReplayIndex = resultItems.findIndex(item => item.id === selectedReplayId);
   const selectedEpisode = traceReplayId === selectedReplayId ? traceBundle?.episodes[0] ?? null : null;
+  const diagnosticSeries = useMemo(
+    () => selectedEpisode ? deriveDiagnosticSeries(selectedEpisode) : null,
+    [selectedEpisode],
+  );
   const currentPlaybackReadout = playbackReadout?.replayId === selectedReplayId ? playbackReadout : null;
 
   const batchStats = useMemo(() => {
@@ -528,6 +559,8 @@ export function App() {
     if (id !== selectedReplayId) {
       setSelectedSummary(null);
       setPlaybackReadout(null);
+      setInformationMode('ground-truth');
+      setDiagnosticVisibility(defaultDiagnosticVisibility);
     }
     setSelectedReplayId(id);
   }
@@ -540,10 +573,10 @@ export function App() {
       <header className="app-header">
         <div className="brand-mark" aria-hidden="true">CU</div>
         <div className="brand"><span className="eyebrow">LOCAL RESEARCH WORKSPACE</span><h1>Counter-UAS <span>Simulation Explorer</span></h1></div>
-        <span className="phase-badge">PHASE 4 / 3D REPLAY</span>
+        <span className="phase-badge">PHASE 5 / POLICY DIAGNOSTICS</span>
       </header>
       <div className="status-bar"><span className={`status-dot ${health.kind}`} /><span role="status">{health.message}</span><span className="localhost-label">LOCALHOST ONLY</span></div>
-      <div className="dashboard">
+      <div className={`dashboard${diagnosticsCollapsed ? ' diagnostics-collapsed' : ''}`}>
         <aside className="configuration panel">
           <span className="eyebrow">EXPERIMENT SETUP</span><h2>Episode configuration</h2>
           <p className="muted">Select a verified policy and canonical scenario. Physics parameters are read-only.</p>
@@ -633,6 +666,11 @@ export function App() {
             }}
             onReadout={handlePlaybackReadout}
             onSceneError={handleSceneError}
+            informationMode={informationMode}
+            diagnosticSeries={diagnosticSeries}
+            diagnosticVisibility={diagnosticVisibility}
+            seekRequest={seekRequest}
+            onDiagnosticSeek={timeS => setSeekRequest(previous => ({ timeS, nonce: (previous?.nonce ?? 0) + 1 }))}
           />
           {sceneError && <p className="inline-error" role="alert">Scene error: {sceneError}</p>}
           <section className="results panel" aria-label="Episode generation progress and results">
@@ -663,37 +701,67 @@ export function App() {
               </div>
             )}
             {replayWarnings.map(warning => <p className="inline-error" role="alert" key={warning}>{warning}</p>)}
-            <EpisodeSelection items={resultItems} selectedId={selectedReplayId} onSelect={selectReplay} />
+            <EpisodeSelection items={resultItems} selectedId={selectedReplayId} onSelect={selectReplay} informationMode={informationMode} />
             {summaryError && <p className="inline-error" role="alert">{summaryError}</p>}
           </section>
         </div>
-        <aside className="diagnostics panel">
+        <aside className={`diagnostics panel${diagnosticsCollapsed ? ' collapsed' : ''}`}>
+          <button
+            className="diagnostics-collapse"
+            type="button"
+            aria-expanded={!diagnosticsCollapsed}
+            aria-label={diagnosticsCollapsed ? 'Expand diagnostics panel' : 'Collapse diagnostics panel'}
+            onClick={() => setDiagnosticsCollapsed(value => !value)}
+          >
+            {diagnosticsCollapsed ? '›' : 'Collapse diagnostics'}
+          </button>
+          {!diagnosticsCollapsed && <>
           <span className="eyebrow">LIVE RECORDED STATE</span><h2>Episode information</h2>
+          <PolicyInspector
+            episode={selectedEpisode}
+            replayId={selectedReplayId}
+            readout={currentPlaybackReadout}
+            diagnosticSeries={diagnosticSeries}
+            informationMode={informationMode}
+            visibility={diagnosticVisibility}
+            onInformationMode={setInformationMode}
+            onVisibility={setDiagnosticVisibility}
+          />
           {!selectedEpisode && <p className="muted">{traceLoading ? 'Loading the complete recorded trace…' : traceError ? 'The selected trace is unavailable; other episodes remain accessible.' : 'Select a completed episode to inspect its recorded state.'}</p>}
           {selectedEpisode && (
             <div className="diagnostic-card" aria-label="Current episode information">
-              <h3>{selectedEpisode.defender.policy_id} {selectedEpisode.defender.generation ?? ''} vs {selectedEpisode.attacker.policy_id}</h3>
+              <h3>{selectedEpisode.defender.policy_id} {selectedEpisode.defender.generation ?? ''}{informationMode === 'ground-truth' ? ` vs ${selectedEpisode.attacker.policy_id}` : ''}</h3>
               <p>Defender generation: {selectedEpisode.defender.generation ?? 'Not applicable'}</p>
               <p>Defender training seed: {selectedEpisode.defender.training_seed ?? 'Unavailable'} / checkpoint role: {selectedEpisode.defender.checkpoint?.role ?? 'none / analytical'}</p>
-              <p>Attacker: {selectedEpisode.attacker.policy_id}{selectedEpisode.attacker.training_seed === null ? '' : ` / training seed ${selectedEpisode.attacker.training_seed}`}</p>
+              {informationMode === 'ground-truth' && <p>Attacker: {selectedEpisode.attacker.policy_id}{selectedEpisode.attacker.training_seed === null ? '' : ` / training seed ${selectedEpisode.attacker.training_seed}`}</p>}
               <p>Clutter: {selectedEpisode.environment.clutter} / perception: {selectedEpisode.environment.awareness}</p>
               <p>Evaluation seed: {selectedEpisode.simulation_seed} / time step: {selectedEpisode.environment.dt_s.toFixed(3)} s</p>
               {currentPlaybackReadout && (
                 <>
                   <p>Current recorded step: {currentPlaybackReadout.frame.step}{currentPlaybackReadout.interpolated ? ' (display between this and the next recorded frame)' : ''}</p>
-                  <p>Detection at this recorded step: {currentPlaybackReadout.frame.policy_visible.enemy_detected ? 'detected' : 'not detected'} / detection time: {selectedEpisode.summary.detection_time_s === null ? 'not recorded' : `${selectedEpisode.summary.detection_time_s.toFixed(1)} s`}</p>
-                  <p>Defender–attacker range at recorded step {currentPlaybackReadout.frame.step}: {currentPlaybackReadout.frame.privileged_diagnostics.defender_attacker_range_m.toFixed(2)} m</p>
-                  <p>Attacker–asset range at recorded step {currentPlaybackReadout.frame.step}: {currentPlaybackReadout.frame.privileged_diagnostics.attacker_asset_range_m.toFixed(2)} m</p>
-                  {currentPlaybackReadout.frame.terminated || currentPlaybackReadout.frame.truncated
+                  <p>Detection at this recorded step: {currentPlaybackReadout.frame.policy_visible.enemy_detected ? 'detected' : 'not detected'}{informationMode === 'ground-truth' ? ` / detection time: ${selectedEpisode.summary.detection_time_s === null ? 'not recorded' : `${selectedEpisode.summary.detection_time_s.toFixed(1)} s`}` : ''}</p>
+                  {informationMode === 'ground-truth' ? (
+                    <>
+                      <p>Defender–attacker range at recorded step {currentPlaybackReadout.frame.step}: {currentPlaybackReadout.frame.privileged_diagnostics.defender_attacker_range_m.toFixed(2)} m</p>
+                      <p>Attacker–asset range at recorded step {currentPlaybackReadout.frame.step}: {currentPlaybackReadout.frame.privileged_diagnostics.attacker_asset_range_m.toFixed(2)} m</p>
+                    </>
+                  ) : <p>Privileged entity ranges are hidden in Policy-Visible mode.</p>}
+                  {informationMode === 'ground-truth' && (currentPlaybackReadout.frame.terminated || currentPlaybackReadout.frame.truncated
                     ? <p className="terminal-outcome">Terminal simulator outcome: {readableOutcome(currentPlaybackReadout.frame.outcome)}</p>
-                    : <p>Recorded final outcome (known from complete trace): {readableOutcome(selectedEpisode.summary.outcome)}</p>}
+                    : <p>Recorded final outcome (known from complete trace): {readableOutcome(selectedEpisode.summary.outcome)}</p>)}
                 </>
               )}
               {selectedEpisode && !currentPlaybackReadout && <p className="muted">Current step: waiting for trace playback initialization.</p>}
-              <p className="privileged-note">The attacker remains visible to the researcher before policy detection; this is privileged visualization, not defender information.</p>
+              <p className="privileged-note">{informationMode === 'ground-truth'
+                ? 'The attacker remains visible to the researcher before policy detection; this is privileged visualization, not defender information.'
+                : 'Policy-Visible mode hides privileged attacker state and trajectories. The reconstructed scene is partial because full sensing geometry is not recorded.'}</p>
             </div>
           )}
           <h2>Recorded summary &amp; provenance</h2>
+          {informationMode === 'policy-visible' && (
+            <p className="privileged-note">Policy-Visible mode presents the partial policy-known scene and diagnostics. Researcher-only episode outcomes and provenance remain hidden until Ground Truth mode is selected.</p>
+          )}
+          {informationMode === 'ground-truth' && <>
           {!selectedSummary && <p className="muted">Select a completed result to inspect its validated summary and provenance.</p>}
           {selectedSummary && (
             <>
@@ -717,8 +785,9 @@ export function App() {
               </div>
             </>
           )}
-          <div className="diagnostic-card"><h3>Policy telemetry</h3><p>Optional controller data stays attached to authoritative replay frames. Policy-specific overlays are reserved for Phase 5.</p></div>
+          </>}
           <div className="legend"><h3>Scene entity colors</h3><span><i className="defender" />Defender UAV / trail</span><span><i className="attacker" />Attacker UAV / trail</span><span><i className="asset" />Protected mobile asset / trail</span><span><i className="obstacle" />Moving obstacles</span></div>
+          </>}
           <p className="projection-note">The browser interpolates only for display. Native recorded 3D state and simulator collision semantics remain unchanged.</p>
         </aside>
       </div>

@@ -1,4 +1,4 @@
-# Native-3D episode playback
+# Native-3D episode playback and Phase 5 diagnostics
 
 Phase 4 renders only complete, validated replay bundles produced by the Python
 simulator. The browser does not run policies, estimate dynamics, generate
@@ -68,6 +68,8 @@ altitudes; the viewer displays the native values in each `position_m`.
 - **Follow defender** and **Follow attacker** keep the selected recorded entity
   as the camera target. The camera follows the same playback time as the scene;
   it has no independent animation clock.
+- In Policy-Visible mode, Follow attacker is disabled and camera fitting uses
+  the configured engagement bounds rather than privileged entity trajectories.
 - **Top-down** uses an orthographic camera looking down the Three.js vertical
   axis. Horizontal distances and relative positions are not changed by
   perspective scaling. It is a view of the original 3D episode, not a
@@ -126,13 +128,14 @@ new location. If a replay lacks required geometry, it is not synthesized.
   defender position and scaled by that frame's recorded `detection_radius_m`.
 - Recorded detection, interception, unsafe interception, asset-reached,
   collision and timeout events are shown only once their recorded event time is
-  reached. Event positions use `position_m` where present. Otherwise the
+  reached in Ground Truth mode. Policy-Visible mode hides privileged event
+  markers. Event positions use `position_m` where present. Otherwise the
   corresponding entity's recorded position at the event step is used and
   identified as the entity position, not an inferred contact point.
 - Collision labels retain the actual terminal taxonomy (defender/enemy and
   static/dynamic obstacle). At the terminal frame, playback stops and the
   actual outcome and simulated duration are highlighted.
-- The complete episode outcome is known to the researcher from the saved trace;
+- In Ground Truth mode the complete episode outcome is known to the researcher from the saved trace;
   before terminal playback the panel explicitly labels it as a known final
   result, not an event that has already occurred.
 
@@ -141,14 +144,75 @@ new location. If a replay lacks required geometry, it is not synthesized.
 The information panel uses the replay's policy IDs, defender generation and
 training seed, checkpoint role when present, attacker, clutter, awareness,
 evaluation seed, recorded detection, privileged range metrics, and terminal
-outcome. If an optional field is null or has an explicit unavailable reason, it
-is shown as unavailable or not recorded. The viewer does not infer hidden
-controller state.
+outcome in Ground Truth mode. Policy-Visible mode masks privileged ranges,
+truth markers, collision events, outcomes and provenance. If an optional field
+is null or has an explicit unavailable reason, it is shown as unavailable or
+not recorded. The viewer does not infer hidden controller state.
 
 Recorded velocity/heading is used for display orientation when available. If
 orientation data are absent, the viewer may derive an orientation from adjacent
 recorded positions; that label explicitly states that the orientation is
 visualization-derived. It is never treated as an additional physical state.
+
+## Decision timing and diagnostic overlays
+
+The replay recorder attaches the telemetry for pre-transition decision `k` to
+the resulting frame `k+1`, with `decision_step=k`. The command applies during
+the transition `k → k+1`. `decisionIntervalAtTime` selects that interval from
+the lower/current frame; telemetry is not moved to the end frame's displayed
+state as a new decision. At the terminal time there is no upcoming command, so
+the inspector and scene omit decision arrows and show the relevant fields as
+unavailable. If `controller_action_executed` is false, the requested command is
+identified as recorded but not applied during simulator standby.
+
+The LR-PPO scene draws equal-length direction-only arrows at the defender:
+orange for analytical Lead, purple for the final requested LR-PPO direction,
+and cyan for actual post-transition velocity. The cyan arrow is actual
+movement, not a safety command. The translucent cone is aligned with Lead and
+has a 30-degree half-angle. Simulator vectors use the same `(x, y, z) → (x, z,
+-y)` mapping as positions. Its cone geometry follows the existing residual
+composition's native 3D angular bound; no altitude-control or 3D dynamics are
+added. A zero or unavailable vector is not drawn.
+
+The inspector calculates native angular separation as
+`acos(clamp(dot(normalize(lead), normalize(requested)), -1, 1))`, in degrees.
+This is a nonnegative 3D angle. Signed horizontal azimuth is calculated
+separately with a wrap to `[-180°, 180°)` and is unavailable when either
+horizontal projection is near zero. Elevation difference is separately
+calculated from the two simulator-space vectors. The 30° maximum is a
+reference bound, not evidence that the actor saturated or clipped.
+
+Requested policy action, environment desired command, safety-adjusted command,
+and actual velocity are distinct recorded quantities. Obstacle arbitration is
+called a safety intervention only when the replay records `avoidance_active`.
+Requested-to-velocity deviation can also reflect acceleration, turn and climb
+constraints; the UI does not attribute that deviation solely to safety.
+
+## Synchronized charts and information modes
+
+Diagnostic series use actual frame or decision timestamps in seconds. They
+contain no samples at interpolated display times. The cursor follows the same
+playback clock; pointer click/drag maps the chart plot-area coordinate back to
+recorded episode time. Series arrays are derived once per selected episode.
+Common Ground Truth charts show recorded defender-attacker and
+attacker-asset separation, transition and cumulative reward, and recorded event
+markers. LR-PPO charts show native Lead-to-requested angle with the 30° bound,
+signed azimuth, and the separate desired-to-safe/requested-to-velocity angles.
+Kalman-enabled charts show derived estimate-to-truth position and velocity
+errors plus decision-to-decision action turn angle. Each metric's source,
+units and availability are described in
+[policy diagnostics](policy_diagnostics.md).
+
+**Ground Truth** is the default research view and identifies privileged
+attacker state, trajectories and evaluator metrics. **Policy-Visible** displays
+the recorded defender, protected asset, known static-map obstacles, and
+detection-conditioned policy estimate/measurement. It hides the attacker and
+its trail, moving/unknown obstacles, future paths, events, privileged
+separations, reward and final outcome. Attacker-follow camera is disabled, and
+camera bounds use only scenario engagement limits. This remains a partial
+reconstruction: the replay does not preserve complete local sensing geometry
+or every occlusion/measurement volume. It is not a reconstruction of the exact
+policy observation tensor.
 
 ## Long traces and verification
 
@@ -186,6 +250,7 @@ and low-poly appearance must not be interpreted as measured airframe geometry
 or unrecorded attitude dynamics. Orthographic top-down overlap is not by itself
 evidence of a native 3D collision. No collision contact point is invented.
 
-Policy-specific diagnostic overlays, including LR-PPO guidance vectors,
-Kalman-state explanations, residual angles and safety interventions, are not
-implemented in Phase 4 and remain Phase 5 work.
+Phase 5 adds these read-only policy diagnostics. Raw PPO residual values,
+internal residual clipping details, and an exact complete perception scene
+remain unavailable; see [the coverage matrix and limitations](policy_diagnostics.md).
+Phase 6 side-by-side policy comparison has not started.

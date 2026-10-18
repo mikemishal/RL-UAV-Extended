@@ -1,4 +1,4 @@
-# Architecture / Phase 4
+# Architecture / Phase 5
 
 ## Isolation and ownership
 
@@ -126,13 +126,42 @@ are fetched lazily from the existing validated replay endpoint and are cleared
 before a new episode becomes visible.
 
 [App.tsx](../frontend/src/App.tsx) retains catalog-driven experiment setup,
-job polling/cancellation, results, summary and provenance; it also displays
-frame-accurate detection/range/outcome information. The attacker is explicitly
-labeled as privileged researcher visualization before policy detection.
+job polling/cancellation, results, summary and provenance. `Ground Truth`
+shows privileged ranges and outcomes; `Policy-Visible` masks them from the
+scene, event overlays, chart markers, inspector, and result summaries. It
+retains experiment-selection controls and identifies the scene as a partial
+reconstruction because exact local sensing geometry is absent from the replay.
 Interpolated positions are not reported as extra observations. Missing nullable
 metadata remains unavailable rather than being reconstructed. WebGL loss,
 trace validation, and backend failures are surfaced and do not hide other
 selectable replays. No external assets or render services are used.
+
+## Phase 5 policy diagnostics
+
+[PolicyDiagnostics.tsx](../frontend/src/PolicyDiagnostics.tsx) displays the
+selected episode's controller metadata, pre-step decision telemetry, action
+disposition, recorded safety arbitration, and controller-specific diagnostics.
+The current simulated time and the inspector/chart cursor share the playback
+clock. Recorded command data on frame `k+1` is labeled as the command selected
+at step `k` and applied during transition `k → k+1`; the terminal state has no
+upcoming decision. Smooth position interpolation does not invent additional
+policy decisions.
+
+[diagnostics.ts](../frontend/src/diagnostics.ts) performs pure derivations over
+the immutable episode when it is selected. `App.tsx` memoizes these series once
+per episode and shares them with the inspector and chart panel. The 974-frame
+LR-PPO trace therefore produces one set of decision-time diagnostic arrays,
+not a set of React/Three.js objects per animation frame. The scene updates
+mutable Three.js vectors in `useFrame`, memoizes geometry/material resources,
+and disposes line and cone resources when their replay components unmount.
+
+The diagnostics separate three quantities: the requested policy vector, the
+environment's desired/safety-adjusted command, and actual post-transition
+velocity. An observed requested-to-velocity angle is not attributed solely to
+obstacle safety because acceleration/turn/climb constraints also affect motion.
+Only the recorded `avoidance_active` flag is presented as a verified safety
+override. See [policy diagnostics](policy_diagnostics.md) for the telemetry
+coverage matrix, formulas, derivations, limitations, and validation evidence.
 
 See [3D playback](3d_playback.md) for coordinate/time conventions, camera,
 event, interpolation and long-trace behavior.

@@ -1,8 +1,87 @@
 import { expect, test, type Page, type Route } from '@playwright/test';
-import type { ReplayBundle, ReplayEntityState, ReplayEpisode, ReplayFrame } from '../src/api';
-import { sampleAtTime, scenarioBounds, simToThree, staticObstacleBounds } from '../src/playback';
+import { readFile } from 'node:fs/promises';
+import { gunzipSync } from 'node:zlib';
+import type { ReplayBundle, ReplayEntityState, ReplayEpisode, ReplayFrame, ReplayPolicyTelemetry } from '../src/api';
+import {
+  angleBetween3dDeg,
+  decisionIntervalAtTime,
+  deriveDiagnosticSeries,
+  elevationDifferenceDeg,
+  signedAzimuthDifferenceDeg,
+} from '../src/diagnostics';
+import { sampleAtTime, scenarioBounds, simToThree, simVectorToThree, staticObstacleBounds } from '../src/playback';
 
 const fixtureReplayId = 'f'.repeat(32);
+function fixtureTelemetry(decisionStep: number, detected: boolean): ReplayPolicyTelemetry {
+  const estimatedPosition = detected ? [9.4, 2, 13] as const : null;
+  return {
+    decision_step: decisionStep,
+    decision_policy_visible: {
+      estimator: 'measurement',
+      observation: Array(39).fill(0),
+      soldier_pos_m: [0, decisionStep, 0],
+      defender_pos_m: [decisionStep, 0, 4 + decisionStep],
+      defender_vel_mps: [2, 0, 2],
+      enemy_detected: detected,
+      enemy_measurement_m: estimatedPosition,
+      enemy_measurement_velocity_mps: detected ? [-2, 4, 2] : null,
+      enemy_measurement_velocity_valid: detected,
+      e_hat_m: null,
+      v_hat_mps: null,
+      sector_features: null,
+      unavailable_fields: {},
+    },
+    requested_action: [Math.sqrt(3) / 2, 0, 0.5],
+    requested_action_norm: 1,
+    defender_policy_input: Array(39).fill(0),
+    defender_model_input: Array(39).fill(0),
+    attacker_observation: null,
+    attacker_tactical_command: null,
+    attacker_command_source: null,
+    attacker_mission_command: null,
+    attacker_final_command: null,
+    desired_command: [Math.sqrt(3) / 2, 0, 0.5],
+    safe_command: [Math.sqrt(3) / 2, 0, 0.5],
+    requested_to_desired_delta: [0, 0, 0],
+    requested_to_desired_angle_deg: 0,
+    desired_to_safe_delta: [0, 0, 0],
+    desired_to_safe_angle_deg: 0,
+    requested_to_velocity_angle_deg: 60,
+    controller_action_executed: true,
+    defender_standby: false,
+    avoidance_active: false,
+    avoidance_angle_deg: null,
+    executed_velocity_mps: [0, 0, 4],
+    executed_acceleration_mps2: null,
+    executed_turn_rate_degps: null,
+    acceleration_saturated: null,
+    turn_saturated: null,
+    climb_saturated: null,
+    requested_horizontal_heading_deg: null,
+    executed_horizontal_heading_deg: null,
+    heading_change_deg: null,
+    heading_reversal: null,
+    lrppo: {
+      lead_direction: [1, 0, 0],
+      residual_action: null,
+      residual_norm_raw: null,
+      residual_perpendicular: null,
+      residual_norm_clipped: null,
+      native_adjustment_deg: 30,
+      signed_horizontal_adjustment_deg: 0,
+      max_adjustment_deg: 30,
+      near_bound: false,
+      near_bound_margin_deg: null,
+    },
+    lead: null,
+    pn: null,
+    rmpc: null,
+    unavailable_fields: {
+      'telemetry.lrppo.residual_action': 'raw PPO output is not exposed by the current wrapper',
+      'telemetry.lrppo.residual_norm_clipped': 'internal clipping status is not exposed by the current wrapper',
+    },
+  };
+}
 const fixtureFrames: ReplayFrame[] = [0, 1, 2].map(step => {
   const defender: ReplayEntityState = {
     position_m: [step, 0, 4 + step],
@@ -53,7 +132,7 @@ const fixtureFrames: ReplayFrame[] = [0, 1, 2].map(step => {
       sector_features: null,
       unavailable_fields: {},
     },
-    telemetry: null,
+    telemetry: step === 0 ? null : fixtureTelemetry(step - 1, step >= 2),
     privileged_diagnostics: {
       attacker_position_m: attacker.position_m,
       attacker_velocity_mps: attacker.velocity_mps!,
@@ -119,7 +198,7 @@ const fixtureEpisode: ReplayEpisode = {
     awareness: 'map_local',
     scenario_kind: 'canonical',
     builder: 'experiments.journal_clutter_protocol.build_canonical_env_config',
-    config: {},
+    config: { L: 40, max_altitude: 30 },
     config_sha256: 'd'.repeat(64),
     dt_s: 0.5,
   },
@@ -174,6 +253,30 @@ const fixtureEpisode: ReplayEpisode = {
   },
 };
 
+const kalmanFixtureEpisode: ReplayEpisode = {
+  ...fixtureEpisode,
+  defender: { ...fixtureEpisode.defender, policy_id: 'ppo_kalman', estimator: 'kalman' },
+  frames: fixtureEpisode.frames.map(frame => ({
+    ...frame,
+    policy_visible: {
+      ...frame.policy_visible,
+      estimator: 'kalman',
+      e_hat_m: frame.policy_visible.enemy_detected ? [9.4, 2, 13] : null,
+      v_hat_mps: frame.policy_visible.enemy_detected ? [-1, 4, 2] : null,
+    },
+    telemetry: frame.telemetry ? {
+      ...frame.telemetry,
+      lrppo: null,
+      decision_policy_visible: {
+        ...frame.telemetry.decision_policy_visible,
+        estimator: 'kalman',
+        e_hat_m: frame.telemetry.decision_policy_visible.enemy_detected ? [9.4, 2, 13] : null,
+        v_hat_mps: frame.telemetry.decision_policy_visible.enemy_detected ? [-1, 4, 2] : null,
+      },
+    } : null,
+  })),
+};
+
 const fixtureBundle: ReplayBundle = {
   schema_version: '1.0.0',
   coordinate_system: 'simulation_xyz_z_up_m',
@@ -194,14 +297,14 @@ const fixtureBundle: ReplayBundle = {
   episodes: [fixtureEpisode],
 };
 
-function fixtureBundleFor(replayId: string, seedOffset = 0): ReplayBundle {
+function fixtureBundleFor(replayId: string, seedOffset = 0, episode: ReplayEpisode = fixtureEpisode): ReplayBundle {
   return {
     ...fixtureBundle,
     seed_start: fixtureBundle.seed_start + seedOffset,
     episodes: [{
-      ...fixtureEpisode,
+      ...episode,
       episode_id: replayId,
-      simulation_seed: fixtureEpisode.simulation_seed + seedOffset,
+      simulation_seed: episode.simulation_seed + seedOffset,
     }],
   };
 }
@@ -225,7 +328,7 @@ function fixtureSummaryFor(replayId: string, seedOffset = 0) {
   };
 }
 
-async function mockFixtureEpisodes(page: Page, replayIds: string[]) {
+async function mockFixtureEpisodes(page: Page, replayIds: string[], episode: ReplayEpisode = fixtureEpisode) {
   const items = replayIds.map((id, index) => ({
     replay_id: id,
     simulation_seed: 20 + index,
@@ -254,7 +357,7 @@ async function mockFixtureEpisodes(page: Page, replayIds: string[]) {
     if (path.endsWith('/summary')) return route.fallback();
     const id = path.split('/').at(-1) ?? replayIds[0];
     const index = replayIds.indexOf(id);
-    await route.fulfill({ json: fixtureBundleFor(id, Math.max(0, index)) });
+    await route.fulfill({ json: fixtureBundleFor(id, Math.max(0, index), episode) });
   });
   await page.route('**/api/replays/*/summary', route => {
     const id = new URL(route.request().url()).pathname.split('/').at(-2) ?? replayIds[0];
@@ -265,6 +368,7 @@ async function mockFixtureEpisodes(page: Page, replayIds: string[]) {
 
 test('coordinate transforms, geometry, sampling, and interpolation preserve recorded state', () => {
   expect(simToThree([2, -3, 5])).toEqual([2, 5, 3]);
+  expect(simVectorToThree([2, -3, 5])).toEqual([2, 5, 3]);
   const first: [number, number, number] = [3, -2, 4];
   const second: [number, number, number] = [1, 5, -2];
   const firstTransformed = simToThree(first);
@@ -282,6 +386,7 @@ test('coordinate transforms, geometry, sampling, and interpolation preserve reco
     center: [6, 3, 0],
     extent: 6,
   });
+
   expect(scenarioBounds(fixtureEpisode).center).toEqual([5, 7, -1]);
   const original = JSON.stringify(fixtureEpisode.frames);
   const exact = sampleAtTime(fixtureEpisode, 0.5);
@@ -295,6 +400,40 @@ test('coordinate transforms, geometry, sampling, and interpolation preserve reco
   expect(sampleAtTime(fixtureEpisode, -5).defender).toEqual(simToThree(fixtureFrames[0].defender.position_m));
   expect(sampleAtTime(fixtureEpisode, 50).defender).toEqual(simToThree(fixtureFrames[2].defender.position_m));
   expect(JSON.stringify(fixtureEpisode.frames)).toBe(original);
+});
+
+test('policy diagnostics calculate native angles and align telemetry to recorded transitions', () => {
+  const lead: [number, number, number] = [1, 0, 0];
+  const requested: [number, number, number] = [Math.sqrt(3) / 2, 0, 0.5];
+  expect(angleBetween3dDeg(lead, requested)).toBeCloseTo(30, 10);
+  expect(elevationDifferenceDeg(lead, requested)).toBeCloseTo(30, 10);
+  expect(signedAzimuthDifferenceDeg([1, 0, 0], [0, 1, 0])).toBeCloseTo(90, 10);
+  expect(signedAzimuthDifferenceDeg([1, 0, 0], [0, -1, 0])).toBeCloseTo(-90, 10);
+  expect(angleBetween3dDeg([1e-12, 0, 0], requested)).toBeNull();
+  expect(angleBetween3dDeg([Number.NaN, 0, 0], requested)).toBeNull();
+  expect(signedAzimuthDifferenceDeg([0, 0, 1], requested)).toBeNull();
+  expect(angleBetween3dDeg([0, 0, 0], requested)).toBeNull();
+  expect(angleBetween3dDeg(lead, null)).toBeNull();
+
+  const first = decisionIntervalAtTime(fixtureEpisode, 0);
+  expect(first).not.toBeNull();
+  expect(first?.decisionStep).toBe(0);
+  expect(first?.startFrame.step).toBe(0);
+  expect(first?.endFrame.step).toBe(1);
+  expect(first?.telemetry.controller_action_executed).toBe(true);
+  expect(decisionIntervalAtTime(fixtureEpisode, fixtureEpisode.summary.duration_s)).toBeNull();
+
+  const before = JSON.stringify(fixtureEpisode);
+  const series = deriveDiagnosticSeries(fixtureEpisode);
+  const leadRequestedAngles = series.leadRequestedAngle.map(item => item.value);
+  expect(leadRequestedAngles).toHaveLength(2);
+  leadRequestedAngles.forEach(value => expect(value).toBeCloseTo(30, 10));
+  expect(series.trackingError[0].value).toBeNull();
+  expect(series.trackingError[1].value).toBeCloseTo(0.4, 10);
+  expect(series.requestedVelocityAngle[0].value).toBe(60);
+  expect(fixtureFrames[1].telemetry?.lrppo?.residual_action).toBeNull();
+  expect(fixtureFrames[1].telemetry?.lrppo?.residual_norm_clipped).toBeNull();
+  expect(JSON.stringify(fixtureEpisode)).toBe(before);
 });
 
 const scenarioLevels = ['C0', 'C1', 'C2', 'C3'];
@@ -463,7 +602,27 @@ async function scrubTimeline(page: Page, timeS: number) {
   }, timeS);
 }
 
+async function focusDefenderAndZoom(page: Page) {
+  await page.getByRole('button', { name: 'Follow defender' }).click();
+  await expect(page.getByRole('button', { name: 'Follow defender' })).toHaveAttribute('aria-pressed', 'true');
+  await page.waitForTimeout(500);
+  const viewport = page.getByTestId('battlefield-viewport');
+  const box = await viewport.boundingBox();
+  if (!box) throw new Error('Battlefield viewport has no layout box');
+  const cameraState = page.getByTestId('camera-state');
+  const distance = async () => {
+    const position = (await cameraState.getAttribute('data-camera-position'))?.split(',').map(Number);
+    const target = (await cameraState.getAttribute('data-camera-target'))?.split(',').map(Number);
+    return position && target ? Math.hypot(...position.map((value, index) => value - target[index])) : Infinity;
+  };
+  const initialDistance = await distance();
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  for (let index = 0; index < 16; index += 1) await page.mouse.wheel(0, -120);
+  await expect.poll(distance).toBeLessThan(initialDistance * 0.9);
+}
+
 test('plays real-schema frames, scrubs exactly, maps entities and obstacles, and switches episodes', async ({ page }) => {
+  test.setTimeout(90_000);
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   await mockCatalog(page);
@@ -483,10 +642,11 @@ test('plays real-schema frames, scrubs exactly, maps entities and obstacles, and
   await expect(rendered).toHaveAttribute('data-moving-obstacle-count', '1');
   await page.screenshot({ path: 'test-results/phase4-fixture-start.png', fullPage: true });
 
-  await page.getByLabel('Playback speed').selectOption('0.5');
+  await page.getByLabel('Playback speed').selectOption('8');
   await page.getByRole('button', { name: 'Play' }).click();
-  await expect(rendered).toHaveAttribute('data-step', '1', { timeout: 3000 });
-  await page.getByRole('button', { name: 'Pause' }).click();
+  await expect(rendered).toHaveAttribute('data-step', '2', { timeout: 3000 });
+  await page.getByRole('button', { name: 'Restart episode' }).click();
+  await expect(rendered).toHaveAttribute('data-step', '0');
   await scrubTimeline(page, 0.5);
   await expect(rendered).toHaveAttribute('data-step', '1');
   await expect(rendered).toHaveAttribute('data-interpolated', 'false');
@@ -502,14 +662,89 @@ test('plays real-schema frames, scrubs exactly, maps entities and obstacles, and
   await page.getByRole('button', { name: 'Return to 3D' }).click();
   await expect(page.getByRole('button', { name: 'Free 3D' })).toHaveAttribute('aria-pressed', 'true');
 
+  await page.getByRole('checkbox', { name: 'Lead vector' }).uncheck();
   await page.getByRole('button', { name: 'Jump to end' }).click();
   await expect(rendered).toHaveAttribute('data-step', '2');
   await expect(page.getByText(/Terminal simulator outcome: intercepted/)).toBeVisible();
+  await expect(page.getByText(/no policy decision is recorded for this selected terminal time/)).toBeVisible();
   await page.getByRole('button', { name: 'Next episode' }).click();
   await expect(page.getByText(/Episode 2 \/ 2 · seed 21/)).toBeVisible();
   await expect(rendered).toHaveAttribute('data-step', '0');
+  await expect(page.getByRole('checkbox', { name: 'Lead vector' })).toBeChecked();
   await page.screenshot({ path: 'test-results/phase4-fixture-episode-switch.png', fullPage: true });
   expect(errors).toEqual([]);
+});
+
+test('synchronizes the decision inspector and charts, and masks privileged fields in Policy-Visible mode', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await mockCatalog(page);
+  await mockFixtureEpisodes(page, [fixtureReplayId]);
+  await page.goto('/');
+  await page.locator(`[data-replay-id="${fixtureReplayId}"]`).click();
+  await expect(page.getByText(/command applies during step 0 → 1/)).toBeVisible();
+  await expect(page.getByText('Raw PPO residual')).toBeVisible();
+  await expect(page.getByText(/Unavailable: raw PPO output/)).toBeVisible();
+  await expect(page.getByLabel('Lead vector')).toBeChecked();
+  await expect(page.getByLabel('30° correction cone')).toBeChecked();
+
+  await scrubTimeline(page, 0.5);
+  await expect(page.getByText(/command applies during step 1 → 2/)).toBeVisible();
+  await expect(page.getByText(/Native 3D Lead → requested angle/).first()).toBeVisible();
+  const chart = page.getByRole('img', { name: 'LR-PPO native 3D Lead → requested angle against simulation time' });
+  await expect(chart).toBeVisible();
+  await chart.scrollIntoViewIfNeeded();
+  const chartBox = await chart.boundingBox();
+  if (!chartBox) throw new Error('Diagnostic chart has no layout box');
+  const fraction = 0.75;
+  await page.mouse.click(
+    chartBox.x + ((35 + fraction * 760) / 830) * chartBox.width,
+    chartBox.y + chartBox.height * 0.5,
+  );
+  await expect(page.getByLabel('Episode timeline')).toHaveValue('0.75');
+  await expect(page.getByTestId('rendered-replay-state')).toHaveAttribute('data-step', '1');
+  const selectedTimeS = Number.parseFloat((await page.locator('.inspector-field').filter({ hasText: 'Playback state time' }).locator('dd').textContent()) ?? '');
+  const cursorX = Number(await chart.locator('.chart-cursor').getAttribute('x1'));
+  expect(selectedTimeS).toBeGreaterThan(0.7);
+  expect(selectedTimeS).toBeLessThan(0.8);
+  expect(cursorX).toBeCloseTo(35 + selectedTimeS * 760, 0);
+
+  await page.getByRole('button', { name: 'Policy-Visible' }).click();
+  const scene = page.getByTestId('rendered-replay-state');
+  await expect(scene).toHaveAttribute('data-attacker-position', 'unavailable');
+  await expect(scene).toHaveAttribute('data-visible-event-count', '0');
+  await expect(page.getByText(/privileged separation is hidden/).first()).toBeVisible();
+  await expect(page.getByText(/reward is not part of the policy-visible scene/).first()).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Follow attacker' })).toBeDisabled();
+  await expect(page.locator('.chart-event')).toHaveCount(0);
+  await expect(page.getByText(/Researcher-only episode outcomes and provenance remain hidden/)).toBeVisible();
+  await page.getByRole('button', { name: 'Collapse diagnostics panel' }).click();
+  await expect(page.getByRole('button', { name: 'Expand diagnostics panel' })).toBeVisible();
+  await page.getByRole('button', { name: 'Expand diagnostics panel' }).click();
+  await expect(page.getByRole('button', { name: 'Collapse diagnostics panel' })).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+test('keeps Kalman estimates separate from privileged truth and masks estimates before detection', async ({ page }) => {
+  await mockCatalog(page);
+  await mockFixtureEpisodes(page, [fixtureReplayId], kalmanFixtureEpisode);
+  await page.goto('/');
+  await page.locator(`[data-replay-id="${fixtureReplayId}"]`).click();
+  await expect(page.getByText(/Policy-visible target estimate unavailable before detection/)).toBeVisible();
+  await expect(page.getByText(/Derived target position tracking error/)).toBeVisible();
+
+  await scrubTimeline(page, 0.5);
+  await expect(page.getByText('Kalman estimate position')).toBeVisible();
+  await expect(page.getByText('[9.4, 2, 13] m')).toBeVisible();
+  await expect(page.getByText('Privileged ground-truth position')).toBeVisible();
+  await expect(page.getByText('[9, 2, 13] m')).toBeVisible();
+  await expect(page.getByText(/Derived Euclidean tracking error/)).toBeVisible();
+  await expect(page.getByText('0.40 m')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Policy-Visible' }).click();
+  await expect(page.getByText(/never supplied to the policy/).first()).toBeVisible();
+  await expect(page.getByLabel('Ground-truth marker')).toHaveCount(0);
+  await expect(page.getByTestId('rendered-replay-state')).toHaveAttribute('data-attacker-position', 'unavailable');
 });
 
 test('submits a compatible learned selection and shows actual job progress and results', async ({ page }) => {
@@ -705,4 +940,160 @@ test('loads and scrubs all four existing real replay cases, including the 974-fr
     }
   }
   expect(errors).toEqual([]);
+});
+
+test('captures Phase 5 diagnostics from the four existing local replay artifacts', async ({ page }) => {
+  test.skip(process.env.VISUALIZER_ENABLE_LOCAL_REPLAY_SCREENSHOTS !== '1', 'Set VISUALIZER_ENABLE_LOCAL_REPLAY_SCREENSHOTS=1 to load the four existing gzip replay artifacts.');
+  test.setTimeout(300_000);
+  const artifactCases = [
+    { id: '02b97c96328d9bdc772f791ec21e6d32', file: 'phase2-final-greedy-a0-c0.json.gz', frames: 282 },
+    { id: '6f36d9fdab26b18a06036496d1e6e74d', file: 'phase2-final-lrppo-d0-a0-c2.json.gz', frames: 170 },
+    { id: '2edecf334ae265f70e1981c3e872b462', file: 'phase2-final-ppo-kalman-d0-a1-203-c3.json.gz', frames: 330 },
+    { id: '32b7d3bf27c755da0d73821c9c495603', file: 'phase2-final-lrppo-d1-a1-203-c3.json.gz', frames: 974 },
+  ];
+  const bundles = await Promise.all(artifactCases.map(async item => {
+    const url = new URL(`../../data/local/${item.file}`, import.meta.url);
+    const compressed = await readFile(url);
+    return JSON.parse(gunzipSync(compressed).toString('utf8')) as ReplayBundle;
+  }));
+  const replayRecords = artifactCases.map((item, index) => {
+    const bundle = bundles[index];
+    const episode = bundle.episodes[0];
+    const checkpoint = episode.defender.checkpoint;
+    const attackerCheckpoint = episode.attacker.checkpoint;
+    return {
+      replay_id: item.id,
+      simulation_seed: episode.simulation_seed,
+      defender: {
+        policy_id: episode.defender.policy_id,
+        architecture: episode.defender.architecture,
+        generation: episode.defender.generation,
+        training_seed: episode.defender.training_seed,
+        checkpoint: checkpoint ? { sha256: checkpoint.sha256, role: checkpoint.role } : null,
+      },
+      attacker: {
+        policy_id: episode.attacker.policy_id,
+        checkpoint: attackerCheckpoint ? { sha256: attackerCheckpoint.sha256, role: attackerCheckpoint.role } : null,
+      },
+      clutter: episode.environment.clutter,
+      perception: episode.environment.awareness,
+      outcome: episode.summary.outcome,
+      steps: episode.summary.steps,
+      duration_s: episode.summary.duration_s,
+      detection_time_s: episode.summary.detection_time_s,
+      total_reward: episode.summary.total_reward,
+      collision_type: episode.summary.collision_type,
+      interception_time_s: episode.summary.interception_time_s,
+      provenance: {
+        simulation_source_commit: bundle.provenance.simulation_source_commit,
+        visualizer_source_commit: bundle.provenance.visualizer_source_commit,
+        source_dirty: bundle.provenance.source_dirty,
+        visualizer_dirty: bundle.provenance.visualizer_dirty,
+        registry_sha256: bundle.provenance.registry_sha256,
+      },
+    };
+  });
+  await page.route('**/api/health', route => route.fulfill({
+    json: { service: 'counter-uas-visualizer', phase: 3, status: 'ok', data_root: 'configured', simulation_enabled: true, warnings: [] },
+  }));
+  await page.route('**/api/policies', route => route.fulfill({ json: policies }));
+  await page.route('**/api/scenarios', route => route.fulfill({ json: scenarios }));
+  await page.route('**/api/replays?limit=100', route => route.fulfill({ json: { replays: replayRecords, warnings: [] } }));
+  await page.route('**/api/replays/*', route => {
+    const path = new URL(route.request().url()).pathname;
+    const id = path.split('/').at(-1) ?? '';
+    const index = artifactCases.findIndex(item => item.id === id);
+    return index < 0
+      ? route.fulfill({ status: 404, json: { error: { code: 'NOT_FOUND', message: 'Unknown local replay.' } } })
+      : route.fulfill({ json: bundles[index] });
+  });
+  await page.route('**/api/replays/*/summary', route => {
+    const path = new URL(route.request().url()).pathname;
+    const id = path.split('/').at(-2) ?? '';
+    const index = artifactCases.findIndex(item => item.id === id);
+    if (index < 0) return route.fulfill({ status: 404, json: { error: { code: 'NOT_FOUND', message: 'Unknown local replay.' } } });
+    const item = replayRecords[index];
+    const bundle = bundles[index];
+    const episode = bundle.episodes[0];
+    return route.fulfill({ json: {
+      replay_id: item.replay_id,
+      schema_version: bundle.schema_version,
+      simulation_seed: item.simulation_seed,
+      defender: item.defender,
+      attacker: { policy_id: episode.attacker.policy_id, training_seed: episode.attacker.training_seed, checkpoint: episode.attacker.checkpoint },
+      environment: { clutter: item.clutter, awareness: item.perception, config_sha256: episode.environment.config_sha256, dt_s: episode.environment.dt_s },
+      summary: {
+        outcome: item.outcome,
+        steps: item.steps,
+        duration_s: item.duration_s,
+        detection_time_step: episode.summary.detection_time_step,
+        detection_time_s: item.detection_time_s,
+        interception_time_s: item.interception_time_s,
+        collision_type: item.collision_type,
+        total_reward: item.total_reward,
+      },
+      provenance: item.provenance,
+    } });
+  });
+
+  await page.goto('/');
+  const rendered = page.getByTestId('rendered-replay-state');
+  const greedy = artifactCases[0];
+  expect(bundles[0].episodes[0].frames).toHaveLength(greedy.frames);
+  await page.locator(`[data-replay-id="${greedy.id}"]`).click();
+  await expect(rendered).toHaveAttribute('data-step', '0');
+  await expect(page.getByRole('heading', { name: 'LR-PPO native 3D correction' })).toHaveCount(0);
+  await focusDefenderAndZoom(page);
+  await page.locator('.battlefield').screenshot({ path: 'test-results/phase5-greedy-no-lrppo-overlays.png' });
+
+  const lrppoD0 = artifactCases[1];
+  expect(bundles[1].episodes[0].frames).toHaveLength(lrppoD0.frames);
+  await page.locator(`[data-replay-id="${lrppoD0.id}"]`).click();
+  await expect(page.getByRole('heading', { name: 'LR-PPO native 3D correction' })).toBeVisible();
+  await scrubTimeline(page, Math.min(2, bundles[1].episodes[0].summary.duration_s));
+  await expect(rendered).toHaveAttribute('data-step', /[1-9]/);
+
+  const kalman = artifactCases[2];
+  const kalmanEpisode = bundles[2].episodes[0];
+  expect(kalmanEpisode.frames).toHaveLength(kalman.frames);
+  await page.locator(`[data-replay-id="${kalman.id}"]`).click();
+  const kalmanTime = Math.min(kalmanEpisode.summary.duration_s, (kalmanEpisode.summary.detection_time_s ?? 1) + 0.5);
+  await scrubTimeline(page, kalmanTime);
+  await expect(page.getByRole('heading', { name: /Policy-visible target \/ privileged truth/ })).toBeVisible();
+  await focusDefenderAndZoom(page);
+  await page.locator('.battlefield').screenshot({ path: 'test-results/phase5-ppo-kalman-estimate-truth.png' });
+  await page.locator('.policy-inspector').screenshot({ path: 'test-results/phase5-paused-policy-inspector.png' });
+
+  const lrppoD1 = artifactCases[3];
+  const longEpisode = bundles[3].episodes[0];
+  expect(longEpisode.frames).toHaveLength(974);
+  const decisionFrame = longEpisode.frames.find(frame =>
+    frame.telemetry?.lrppo && frame.telemetry.decision_policy_visible.enemy_detected
+      && frame.telemetry.controller_action_executed);
+  if (!decisionFrame?.telemetry) throw new Error('The real LR-PPO trace has no detectable applied decision interval.');
+  const selectedDecisionTime = longEpisode.frames[decisionFrame.telemetry.decision_step].time_s;
+  await page.locator(`[data-replay-id="${lrppoD1.id}"]`).click();
+  await scrubTimeline(page, selectedDecisionTime);
+  await expect(page.getByRole('heading', { name: 'LR-PPO native 3D correction' })).toBeVisible();
+  await expect(page.getByText(/Native 3D Lead → requested angle/).first()).toBeVisible();
+  await expect(page.getByRole('checkbox', { name: 'Lead vector' })).toBeChecked();
+  await expect(page.getByRole('checkbox', { name: 'Requested direction' })).toBeChecked();
+  await expect(page.getByRole('checkbox', { name: 'Actual velocity' })).toBeChecked();
+  await expect(page.getByRole('checkbox', { name: '30° correction cone' })).toBeChecked();
+  await focusDefenderAndZoom(page);
+  await page.locator('.battlefield').screenshot({ path: 'test-results/phase5-lrppo-three-vectors-cone.png' });
+  const angleChart = page.getByRole('img', { name: 'LR-PPO native 3D Lead → requested angle against simulation time' });
+  await angleChart.scrollIntoViewIfNeeded();
+  await angleChart.locator('xpath=..').screenshot({ path: 'test-results/phase5-lrppo-angle-chart.png' });
+  await scrubTimeline(page, 0);
+  await expect(rendered).toHaveAttribute('data-step', '0');
+  await scrubTimeline(page, longEpisode.summary.duration_s);
+  await expect(rendered).toHaveAttribute('data-step', '973');
+  await expect(page.getByText(/no policy decision is recorded for this selected terminal time\/state/i)).toBeVisible();
+  await scrubTimeline(page, selectedDecisionTime);
+  await page.getByRole('button', { name: 'Policy-Visible' }).click();
+  await expect(rendered).toHaveAttribute('data-attacker-position', 'unavailable');
+  await expect(page.getByText('Attacker UAV · privileged ground truth')).toHaveCount(0);
+  await expect(page.getByTestId('attacker-truth-label')).toHaveCount(0);
+  await page.locator('.battlefield').screenshot({ path: 'test-results/phase5-policy-visible-mode.png' });
 });

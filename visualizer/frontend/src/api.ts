@@ -215,6 +215,103 @@ export interface ReplayMovingObstacle {
   radius_m: number;
 }
 
+export interface ReplayPolicyVisible {
+  estimator: 'measurement' | 'kalman';
+  observation: number[];
+  soldier_pos_m: Vec3;
+  defender_pos_m: Vec3;
+  defender_vel_mps: Vec3;
+  enemy_detected: boolean;
+  enemy_measurement_m: Vec3 | null;
+  enemy_measurement_velocity_mps: Vec3 | null;
+  enemy_measurement_velocity_valid: boolean | null;
+  e_hat_m: Vec3 | null;
+  v_hat_mps: Vec3 | null;
+  sector_features: number[] | null;
+  unavailable_fields: Record<string, string>;
+}
+
+export interface ReplayLeadGuidance {
+  guidance_mode: string | null;
+  target_position_m: Vec3 | null;
+  target_velocity_mps: Vec3 | null;
+  intercept_time_s: number | null;
+  intercept_point_m: Vec3 | null;
+  discriminant: number | null;
+}
+
+export interface ReplayPNGuidance {
+  guidance_mode: string | null;
+  range_m: number | null;
+  closing_speed_mps: number | null;
+  los_unit: Vec3 | null;
+  los_rate_radps: Vec3 | null;
+  acceleration_mps2: Vec3 | null;
+}
+
+export interface ReplayRMPCGuidance {
+  guidance_mode: string | null;
+  initialization_mode: string | null;
+  scenario_scores: Record<string, number> | null;
+  robust_score: number | null;
+  best_sequence: Vec3[] | null;
+  objective_evaluations: number | null;
+  decision_time_s: number | null;
+}
+
+export interface ReplayLRPPOGuidance {
+  lead_direction: Vec3;
+  residual_action: Vec3 | null;
+  residual_norm_raw: number | null;
+  residual_perpendicular: Vec3 | null;
+  residual_norm_clipped: boolean | null;
+  native_adjustment_deg: number | null;
+  signed_horizontal_adjustment_deg: number | null;
+  max_adjustment_deg: 30;
+  near_bound: boolean | null;
+  near_bound_margin_deg: number | null;
+}
+
+export interface ReplayPolicyTelemetry {
+  decision_step: number;
+  decision_policy_visible: ReplayPolicyVisible;
+  requested_action: Vec3;
+  requested_action_norm: number;
+  defender_policy_input: number[];
+  defender_model_input: number[] | null;
+  attacker_observation: number[] | null;
+  attacker_tactical_command: Vec3 | null;
+  attacker_command_source: 'a0_scripted' | 'a1_learned' | null;
+  attacker_mission_command: Vec3 | null;
+  attacker_final_command: Vec3 | null;
+  desired_command: Vec3 | null;
+  safe_command: Vec3 | null;
+  requested_to_desired_delta: Vec3 | null;
+  requested_to_desired_angle_deg: number | null;
+  desired_to_safe_delta: Vec3 | null;
+  desired_to_safe_angle_deg: number | null;
+  requested_to_velocity_angle_deg: number | null;
+  controller_action_executed: boolean;
+  defender_standby: boolean;
+  avoidance_active: boolean;
+  avoidance_angle_deg: number | null;
+  executed_velocity_mps: Vec3;
+  executed_acceleration_mps2: number | null;
+  executed_turn_rate_degps: number | null;
+  acceleration_saturated: boolean | null;
+  turn_saturated: boolean | null;
+  climb_saturated: boolean | null;
+  requested_horizontal_heading_deg: number | null;
+  executed_horizontal_heading_deg: number | null;
+  heading_change_deg: number | null;
+  heading_reversal: boolean | null;
+  lrppo: ReplayLRPPOGuidance | null;
+  lead: ReplayLeadGuidance | null;
+  pn: ReplayPNGuidance | null;
+  rmpc: ReplayRMPCGuidance | null;
+  unavailable_fields: Record<string, string>;
+}
+
 export interface ReplayEvent {
   kind: 'detection' | 'interception' | 'unsafe_interception' | 'asset_reached' | 'collision' | 'timeout';
   step: number;
@@ -234,22 +331,8 @@ export interface ReplayFrame {
   attacker: ReplayEntityState;
   asset: ReplayEntityState;
   moving_obstacles: ReplayMovingObstacle[];
-  policy_visible: {
-    estimator: 'measurement' | 'kalman';
-    observation: number[];
-    soldier_pos_m: Vec3;
-    defender_pos_m: Vec3;
-    defender_vel_mps: Vec3;
-    enemy_detected: boolean;
-    enemy_measurement_m: Vec3 | null;
-    enemy_measurement_velocity_mps: Vec3 | null;
-    enemy_measurement_velocity_valid: boolean | null;
-    e_hat_m: Vec3 | null;
-    v_hat_mps: Vec3 | null;
-    sector_features: number[] | null;
-    unavailable_fields: Record<string, string>;
-  };
-  telemetry: Record<string, unknown> | null;
+  policy_visible: ReplayPolicyVisible;
+  telemetry: ReplayPolicyTelemetry | null;
   privileged_diagnostics: {
     attacker_position_m: Vec3;
     attacker_velocity_mps: Vec3;

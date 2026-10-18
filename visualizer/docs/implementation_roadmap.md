@@ -1,8 +1,8 @@
 # Eight-phase implementation roadmap
 
-Phases 1–4 are implemented and verified. Phase 4 provides native-3D playback
-from validated stored traces. Stop at this boundary; Phase 5 policy diagnostics
-are intentionally not implemented.
+Phases 1–5 are implemented and verified. Phase 5 provides synchronized
+policy-specific diagnostics over validated native-3D replay traces. Stop at
+this boundary; Phase 6 side-by-side policy comparison has not started.
 
 ## 1. Setup and architecture
 
@@ -44,15 +44,22 @@ are intentionally not implemented.
 - Free orbit, defender follow, attacker follow, accurate top-down geometry;
   projected overlap is not evidence of native collision.
 
-## 5. Policy diagnostics and LR-PPO angular visualization
+## 5. Policy diagnostics and LR-PPO angular visualization — complete
 
-- Inspector separates legitimate observations from privileged evaluator truth.
-- Capture available Lead/PN/RMPC diagnostics without duplicate stateful decisions.
-- Show PPO requested/safe/executed actions, Kalman estimates/errors and heading changes.
-- Verify observational LR residual capture against canonical composition;
-  three guidance arrows, bounded native 30-degree cone, separately labeled signed
-  horizontal angle, residual clipping/saturation vs safety/dynamics distinction.
-- Null unavailable quantities with explicit reasons; never fabricate explanations.
+- Inspector separates policy-visible estimates/measurements from privileged
+  evaluator truth and follows the recorded decision-to-frame interval.
+- Shows available Lead/PN/RMPC telemetry and common requested/safe/executed
+  command records without another policy inference.
+- Kalman estimates and velocities are shown only after detection; derived
+  estimate-to-truth errors are researcher-only in Ground Truth mode.
+- LR-PPO shows Lead, final requested direction, actual post-transition velocity,
+  native 3D angle, the source-verified 30° cone, and separate signed azimuth.
+  Raw PPO residual and internal clipping remain explicitly unavailable.
+- Ground Truth and partial Policy-Visible modes mask privileged data
+  consistently. Synchronized charts seek to recorded timestamps only.
+- Numerical, timing, masking, chart-seeking, state-reset, immutability and
+  local real-trace browser checks are implemented. No scientific behavior or
+  evaluation data changed.
 
 ## 6. Side-by-side policy comparison
 
@@ -150,13 +157,39 @@ resolved by the researcher's explicit decision, not by changing the simulator.
   LR-PPO D1 seed 77/A1-203/C3 (974 frames). Browser checks compare displayed
   frame-zero coordinates to the API and scrub the long trace to an interpolated
   midpoint and terminal frame. No episodes were regenerated.
-- Six real-data Chromium screenshots are captured under ignored
+- Phase 4's real-data Chromium screenshots are captured under ignored
   `visualizer/frontend/test-results/`; the automated pure helper tests cover
   coordinate/distance/angle preservation, AABB transforms, camera bounds,
   exact frame selection, interpolation and immutable replay frames.
-- Phase 5 is not started: no policy-specific arrows, LR-PPO vectors, Kalman
-  estimates, residual-angle displays, safety-intervention explanations, or
-  other diagnostic overlays were added.
 
 See [3D playback documentation](3d_playback.md) for implementation details and
 known visualization limitations.
+
+## Phase 5 completion / stop boundary
+
+- Added a collapsible inspector showing controller/generation/seed/role,
+  current recorded state/time, detection, policy commands, safety-adjusted
+  command, actual post-transition velocity, reward and available parameters.
+- Telemetry on frame `k+1` represents the command chosen at step `k` and applied
+  during `k → k+1`. Standby is not reported as applied, and terminal time has
+  no fabricated next command.
+- LR-PPO arrows identify Lead, final requested direction and actual velocity
+  separately. Their native 3D angle is calculated from recorded vectors; the
+  cone is the verified 30° spherical correction allowance. Raw residual and
+  clipping internals are unavailable in the existing wrapper.
+- PPO-Kalman/measurement channels are detection-conditioned and separate from
+  privileged truth. Position/velocity tracking errors are explicitly derived.
+- Safety markers use recorded arbitration flags; requested-to-velocity
+  deviation is not attributed only to safety, since constrained dynamics also
+  affect movement.
+- Ground Truth is the default. Policy-Visible hides privileged attacker
+  trajectories, events, ranges, outcomes, reward and provenance, and is
+  explicitly labeled a partial reconstruction because full local sensing
+  geometry is not in the replay. Both modes change display only.
+- Chart cursor/seek follows the playback clock; arrays are precomputed once
+  per loaded episode and samples remain at actual recorded frame/decision times.
+- Existing replay artifacts were browser-checked: Greedy/A0/C0, LR-PPO D0/A0/C2,
+  PPO-Kalman D0/A1-203/C3, and LR-PPO D1/A1-203/C3 (974 frames). Six Phase 5
+  screenshots are captured without generating new episodes.
+- Coverage and validation details: [policy diagnostics](policy_diagnostics.md).
+- Phase 6 comparison remains unimplemented.

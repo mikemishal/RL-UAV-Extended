@@ -2,14 +2,26 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Battlefield } from './Battlefield';
 import type { CameraMode, TrailVisibility } from './Battlefield';
 import type { ReplayEpisode, ReplayFrame, ReplaySummary } from './api';
+import type { DecisionInterval, DiagnosticSeries } from './diagnostics';
+import { decisionIntervalAtTime } from './diagnostics';
 import { sampleAtTime } from './playback';
+import { DiagnosticCharts } from './PolicyDiagnostics';
+import type { DiagnosticVisibility, InformationMode } from './PolicyDiagnostics';
+import { setPlaybackClock } from './playbackClock';
 
 const playbackSpeeds = [0.25, 0.5, 1, 2, 4, 8] as const;
 
 export interface PlaybackReadout {
   replayId: string;
   frame: ReplayFrame;
+  timeS: number;
+  decision: DecisionInterval | null;
   interpolated: boolean;
+}
+
+export interface PlaybackSeekRequest {
+  timeS: number;
+  nonce: number;
 }
 
 interface ReplayPlaybackProps {
@@ -24,6 +36,11 @@ interface ReplayPlaybackProps {
   onSelectNext: () => void;
   onReadout: (readout: PlaybackReadout | null) => void;
   onSceneError: (message: string) => void;
+  informationMode: InformationMode;
+  diagnosticSeries: DiagnosticSeries | null;
+  diagnosticVisibility: DiagnosticVisibility;
+  seekRequest: PlaybackSeekRequest | null;
+  onDiagnosticSeek: (timeS: number) => void;
 }
 
 function clockLabel(seconds: number): string {
@@ -44,6 +61,11 @@ export function ReplayPlayback({
   onSelectNext,
   onReadout,
   onSceneError,
+  informationMode,
+  diagnosticSeries,
+  diagnosticVisibility,
+  seekRequest,
+  onDiagnosticSeek,
 }: ReplayPlaybackProps) {
   const [timeS, setTimeS] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -63,6 +85,7 @@ export function ReplayPlayback({
     obstacles: false,
   });
   const sample = useMemo(() => episode ? sampleAtTime(episode, timeS) : null, [episode, timeS]);
+  const decision = useMemo(() => episode ? decisionIntervalAtTime(episode, timeS) : null, [episode, timeS]);
   const duration = episode?.summary.duration_s ?? 0;
   const dt = episode?.environment.dt_s ?? 0.5;
   const lastTick = useRef<number | null>(null);
@@ -88,9 +111,20 @@ export function ReplayPlayback({
     readoutRef.current({
       replayId,
       frame: episode.frames[sample.lowerIndex],
+      timeS,
+      decision,
       interpolated: sample.fraction > 0,
     });
-  }, [episode, replayId, sample]);
+  }, [decision, episode, replayId, sample, timeS]);
+
+  useEffect(() => {
+    setPlaybackClock(replayId, timeS);
+  }, [replayId, timeS]);
+
+  useEffect(() => {
+    if (!episode || !seekRequest) return;
+    setTimeS(Math.max(0, Math.min(episode.summary.duration_s, seekRequest.timeS)));
+  }, [episode, seekRequest?.nonce]);
 
   useEffect(() => {
     if (!playing || !episode) {
@@ -156,17 +190,23 @@ export function ReplayPlayback({
   }
 
   const selectedOutcome = summary?.summary.outcome ?? episode?.summary.outcome;
+  const effectiveCameraMode = informationMode === 'policy-visible' && cameraMode === 'follow-attacker'
+    ? 'free'
+    : cameraMode;
 
   return (
     <>
       <Battlefield
         episode={episode}
         timeS={timeS}
-        cameraMode={cameraMode}
+        cameraMode={effectiveCameraMode}
         resetCameraToken={resetCameraToken}
         showFullTrajectory={showFullTrajectory}
         trails={trails}
         showDetectionVolume={showDetectionVolume}
+        informationMode={informationMode}
+        diagnosticVisibility={diagnosticVisibility}
+        decision={decision}
         wireframeObstacles={wireframeObstacles}
         transparentObstacles={transparentObstacles}
         onWebGlError={onSceneError}
@@ -218,10 +258,10 @@ export function ReplayPlayback({
           <>
             <div className="viewer-options" aria-label="Scene display options">
               <div className="camera-presets" role="group" aria-label="Camera mode">
-                <button type="button" aria-pressed={cameraMode === 'free'} onClick={() => setCamera('free')}>Free 3D</button>
-                <button type="button" aria-pressed={cameraMode === 'follow-defender'} onClick={() => setCamera('follow-defender')}>Follow defender</button>
-                <button type="button" aria-pressed={cameraMode === 'follow-attacker'} onClick={() => setCamera('follow-attacker')}>Follow attacker</button>
-                <button type="button" aria-pressed={cameraMode === 'top-down'} onClick={goTopDown}>Top-down</button>
+                <button type="button" aria-pressed={effectiveCameraMode === 'free'} onClick={() => setCamera('free')}>Free 3D</button>
+                <button type="button" aria-pressed={effectiveCameraMode === 'follow-defender'} onClick={() => setCamera('follow-defender')}>Follow defender</button>
+                <button type="button" aria-pressed={effectiveCameraMode === 'follow-attacker'} onClick={() => setCamera('follow-attacker')} disabled={informationMode === 'policy-visible'} title={informationMode === 'policy-visible' ? 'Unavailable in Policy-Visible mode because it would reveal privileged attacker position' : undefined}>Follow attacker</button>
+                <button type="button" aria-pressed={effectiveCameraMode === 'top-down'} onClick={goTopDown}>Top-down</button>
                 {cameraMode === 'top-down' && (
                   <button type="button" onClick={() => setCamera(previous3dMode === 'top-down' ? 'free' : previous3dMode)}>Return to 3D</button>
                 )}
@@ -243,12 +283,21 @@ export function ReplayPlayback({
             </div>
             <div className="playback-status" aria-live="polite">
               <span>{episode.frames[lowerIndex].policy_visible.enemy_detected ? `Detected at ${episode.summary.detection_time_s?.toFixed(1) ?? 'recorded'} s` : 'Not detected at selected recorded frame'}</span>
-              <span>{terminalReached ? `Terminal outcome: ${episode.summary.outcome} · ${duration.toFixed(1)} simulated s` : `Recorded outcome known: ${selectedOutcome ?? 'unavailable'} (not yet reached)`}</span>
+              {informationMode === 'ground-truth' && (
+                <span>{terminalReached ? `Terminal outcome: ${episode.summary.outcome} · ${duration.toFixed(1)} simulated s` : `Recorded outcome known: ${selectedOutcome ?? 'unavailable'} (not yet reached)`}</span>
+              )}
               <span>Continuous positions between recorded samples are display-only interpolation; step controls select exact recorded frames.</span>
             </div>
           </>
         )}
       </section>
+      <DiagnosticCharts
+        episode={episode}
+        series={diagnosticSeries}
+        timeS={timeS}
+        informationMode={informationMode}
+        onSeek={onDiagnosticSeek}
+      />
     </>
   );
 }
