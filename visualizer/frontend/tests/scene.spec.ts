@@ -674,6 +674,12 @@ async function mockCatalog(page: Page) {
   await page.route('**/api/replays?limit=100', route => route.fulfill({ json: { replays: [], warnings: [] } }));
 }
 
+async function openAnalysis(page: Page) {
+  await page.getByRole('button', { name: 'Analysis', exact: true }).click();
+  const expand = page.getByRole('button', { name: 'Expand diagnostics panel' });
+  if (await expand.count()) await expand.click();
+}
+
 test('renders the no-episode battlefield, supports camera reset, and keeps Phase 3 selectors', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -709,8 +715,13 @@ test('renders the no-episode battlefield, supports camera reset, and keeps Phase
     const current = (await cameraState.getAttribute('data-camera-position'))?.split(',').map(Number);
     return current ? Math.hypot(...current.map((value, index) => value - initialPosition[index])) : Infinity;
   }).toBeLessThan(0.1);
-  await expect(page.getByRole('button', { name: 'Generate Episodes' })).toBeEnabled();
-  await expect(page.getByLabel('Episode count', { exact: true })).toHaveValue('5');
+  await expect(page.getByRole('button', { name: 'Simulation Viewer', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('button', { name: 'Run Episode', exact: true })).toBeEnabled();
+  await expect(page.getByRole('button', { name: 'Watch Recorded Episode' })).toBeVisible();
+  await expect(page.getByLabel('Episode count', { exact: true })).toHaveValue('1');
+  await expect(page.getByLabel('Attacker policy')).toHaveValue('A0');
+  await expect(page.getByLabel('Clutter level')).toHaveValue('C0');
+  await expect(page.getByRole('button', { name: 'Expand diagnostics panel' })).toBeVisible();
   await expect(page.getByLabel('Defender architecture')).toHaveValue('greedy');
   await expect(page.getByText('Defender speed: 18 m/s')).toBeVisible();
   await page.screenshot({ path: 'test-results/phase4-empty-battlefield.png', fullPage: true });
@@ -758,6 +769,7 @@ test('plays real-schema frames, scrubs exactly, maps entities and obstacles, and
   const ids = [fixtureReplayId, 'e'.repeat(32)];
   await mockFixtureEpisodes(page, ids);
   await page.goto('/');
+  await openAnalysis(page);
   await page.locator(`[data-replay-id="${fixtureReplayId}"]`).click();
   const rendered = page.getByTestId('rendered-replay-state');
   await expect(rendered).toHaveAttribute('data-step', '0');
@@ -810,6 +822,7 @@ test('synchronizes the decision inspector and charts, and masks privileged field
   await mockCatalog(page);
   await mockFixtureEpisodes(page, [fixtureReplayId]);
   await page.goto('/');
+  await openAnalysis(page);
   await page.locator(`[data-replay-id="${fixtureReplayId}"]`).click();
   await expect(page.getByText(/command applies during step 0 → 1/)).toBeVisible();
   await expect(page.getByText('Raw PPO residual')).toBeVisible();
@@ -858,7 +871,8 @@ test('keeps Kalman estimates separate from privileged truth and masks estimates 
   await mockCatalog(page);
   await mockFixtureEpisodes(page, [fixtureReplayId], kalmanFixtureEpisode);
   await page.goto('/');
-  await page.locator(`[data-replay-id="${fixtureReplayId}"]`).click();
+    await openAnalysis(page);
+    await page.locator(`[data-replay-id="${fixtureReplayId}"]`).click();
   await expect(page.getByText(/Policy-visible target estimate unavailable before detection/)).toBeVisible();
   await expect(page.getByText(/Derived target position tracking error/)).toBeVisible();
 
@@ -927,6 +941,7 @@ test('submits a compatible learned selection and shows actual job progress and r
   });
 
   await page.goto('/');
+  await openAnalysis(page);
   await page.getByLabel('Defender architecture').selectOption('lr_ppo');
   await page.getByLabel('Defender generation').selectOption('d1');
   await page.getByLabel('Defender training seed').selectOption('77');
@@ -934,7 +949,7 @@ test('submits a compatible learned selection and shows actual job progress and r
   await page.getByLabel('Clutter level').selectOption('C3');
   await page.getByLabel('Episode count').selectOption('3');
   await page.getByLabel('Starting evaluation seed').fill('20');
-  await page.getByRole('button', { name: 'Generate Episodes' }).click();
+  await page.getByRole('button', { name: 'Run 3 Episodes' }).click();
   await expect.poll(() => postBody).toEqual({
     defender_policy_id: 'lr_ppo', defender_generation: 'd1', defender_training_seed: 77,
     attacker_condition: 'A1-203', clutter_level: 'C3', perception_mode: 'map_local',
@@ -945,7 +960,8 @@ test('submits a compatible learned selection and shows actual job progress and r
   await expect(page.getByText('Obstacle collisions: 1')).toBeVisible();
   await expect(page.getByText('Attacker reached asset: 1')).toBeVisible();
   await expect(page.getByText('Source dirty flag: true')).toBeVisible();
-  await expect(page.getByTestId('rendered-replay-state')).toHaveAttribute('data-step', '0');
+  await expect(page.getByTestId('rendered-replay-state')).toBeAttached();
+  await expect(page.getByLabel('Current simulation job')).toContainText('3 of 3 episodes completed');
   await page.screenshot({ path: 'test-results/phase4-results.png', fullPage: true });
 });
 
@@ -956,8 +972,9 @@ test('shows actionable submission and service errors without invented results', 
     json: { error: { code: 'REPLAY_JOB_BUSY', message: 'Another replay batch is running; retry when it finishes.' } },
   }));
   await page.goto('/');
-  await page.getByRole('button', { name: 'Generate Episodes' }).click();
+  await page.getByRole('button', { name: 'Run Episode', exact: true }).click();
   await expect(page.getByRole('alert')).toContainText('Another replay batch is running');
+  await openAnalysis(page);
   await expect(page.getByText('No completed replay episodes are available yet.')).toBeVisible();
 });
 
@@ -965,6 +982,9 @@ test('backend outage is visible without inventing episode results', async ({ pag
   await page.route('**/api/health', route => route.abort());
   await page.goto('/');
   await expect(page.getByRole('status')).toContainText('Backend unavailable');
+  await expect(page.getByRole('heading', { name: 'No episode loaded' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Run Episode', exact: true })).toBeDisabled();
+  await openAnalysis(page);
   await expect(page.getByText('No completed replay episodes are available yet.')).toBeVisible();
 });
 
@@ -1008,6 +1028,7 @@ test('loads and scrubs all four existing real replay cases, including the 974-fr
   const replayListResponse = page.waitForResponse(response => response.url().includes('/api/replays?limit=100'));
   await page.goto('/');
   const listResponse = await replayListResponse;
+  await openAnalysis(page);
   expect(listResponse.ok()).toBe(true);
   const replayList = await listResponse.json() as { replays: { replay_id: string }[] };
   expect(replayList.replays.some(item => item.replay_id === '32b7d3bf27c755da0d73821c9c495603')).toBe(true);

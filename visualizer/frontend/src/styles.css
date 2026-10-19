@@ -235,14 +235,45 @@ button.paired-seed-row { cursor: pointer; }
 @media (max-width: 720px) { .dashboard.diagnostics-collapsed { grid-template-columns: minmax(0, 1fr); }.diagnostics-collapse { width: auto; }.diagnostic-chart-grid { grid-template-columns: minmax(0, 1fr); }.diagnostic-charts-heading { align-items: start; flex-direction: column; } }
 @media (max-width: 900px) { .comparison-shared-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }.comparison-inspectors, .comparison-scenes, .comparison-summary-grid { grid-template-columns: minmax(0, 1fr); }.comparison-scenes .viewport { height: 430px; } }
 @media (max-width: 720px) { .app-mode-switch { order: 3; margin-left: 53px; }.app-mode-switch button { font-size: 10px; }.comparison-selection { grid-template-columns: minmax(0, 1fr); }.comparison-replay-selectors { grid-template-columns: minmax(0, 1fr); }.comparison-heading { align-items: flex-start; flex-direction: column; }.comparison-generation .primary-button { width: 100%; }.paired-seed-row { grid-template-columns: .6fr 1fr 1fr; }.paired-seed-row span:nth-child(n + 4) { grid-column: span 1; } }
-.focus-layout .dashboard { grid-template-columns: minmax(0, 1fr); }
-.focus-layout .configuration, .focus-layout .diagnostics, .focus-layout .results,
-.focus-layout .viewer-options, .focus-layout .playback-status, .focus-layout .diagnostic-charts { display: none; }
-.focus-layout .scene-column { grid-column: 1; }
+.focus-layout .dashboard { grid-template-columns: minmax(230px, .27fr) minmax(0, 1fr) 46px; }
+.focus-layout .configuration, .focus-layout .diagnostics { display: block; }
+.focus-layout .results, .focus-layout .diagnostic-charts { display: none; }
+.focus-layout .configuration { grid-column: 1; }
+.focus-layout .scene-column { grid-column: 2; }
+.focus-layout .diagnostics { grid-column: 3; }
+.focus-layout .viewer-options, .focus-layout .playback-status { display: flex; }
 .focus-layout .viewport { height: calc(100vh - 310px); min-height: 480px; max-height: 1100px; }
 .focus-layout .comparison-selection, .focus-layout .comparison-inspectors,
 .focus-layout .comparison-summary, .focus-layout .comparison-seed-list { display: none; }
 .focus-layout .comparison-scenes .viewport { height: calc(100vh - 310px); min-height: 480px; max-height: 1100px; }
+.focus-layout .dashboard.diagnostics-collapsed { grid-template-columns: minmax(230px, .27fr) minmax(0, 1fr) 46px; }
+.watch-recorded-controls { margin-top: 10px; }
+.watch-recorded-controls label { display: grid; gap: 5px; color: #a9c0cc; font-size: 11px; }
+.watch-recorded-button { width: 100%; margin-top: 8px; }
+.job-compact-status { display: grid; gap: 5px; margin-top: 9px; padding: 9px; border: 1px solid #294454; border-radius: 5px; background: #101c25; color: #a9c0cc; font-size: 11px; }
+.job-compact-status strong { color: #dff3ff; text-transform: capitalize; }
+.job-compact-status progress { width: 100%; accent-color: #55b8a7; }
+.job-compact-status.failed, .job-compact-status.interrupted { border-color: #814747; }
+.episode-status { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 18px; padding: 9px 12px; font-size: 11px; }
+.episode-status strong { color: #dff3ff; }
+.replay-stage:fullscreen { overflow: auto; padding: 12px; background: #09121a; color: #d8e7ef; }
+.replay-stage:fullscreen .viewport { height: min(62vh, 760px); min-height: 320px; }
+.replay-stage:fullscreen .episode-status, .replay-stage:fullscreen .playback { margin-top: 8px; }
+@media (max-width: 1150px) {
+  .focus-layout .dashboard, .focus-layout .dashboard.diagnostics-collapsed { grid-template-columns: minmax(210px, .36fr) minmax(0, 1fr); }
+  .focus-layout .configuration { grid-column: 1; grid-row: 1; }
+  .focus-layout .scene-column { grid-column: 2; grid-row: 1; }
+  .focus-layout .diagnostics { display: none; }
+  .focus-layout .viewport { height: 64vh; min-height: 430px; }
+}
+@media (max-width: 720px) {
+  .focus-layout .dashboard, .focus-layout .dashboard.diagnostics-collapsed { grid-template-columns: minmax(0, 1fr); }
+  .focus-layout .configuration, .focus-layout .scene-column { grid-column: 1; }
+  .focus-layout .scene-column { grid-row: 1; }
+  .focus-layout .configuration { grid-row: 2; }
+  .focus-layout .viewport { height: 55vh; min-height: 360px; }
+  .episode-status { align-items: flex-start; flex-direction: column; gap: 5px; }
+}
 .research-cases { padding: 20px; }
 .research-cases-heading { display: flex; align-items: end; gap: 12px; margin-bottom: 18px; }
 .research-cases-heading > div { flex: 1; }

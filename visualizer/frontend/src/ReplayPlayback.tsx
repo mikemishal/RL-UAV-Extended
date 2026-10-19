@@ -43,6 +43,7 @@ interface ReplayPlaybackProps {
   onDiagnosticSeek: (timeS: number) => void;
   captureRequestToken?: number;
   sceneActive?: boolean;
+  autoPlayOnLoad?: boolean;
   onCaptureResult?: (result: { pngBase64: string; width: number; height: number; projection: 'perspective' | 'top-down'; camera: CameraMode; timeS: number } | null, error?: string) => void;
 }
 
@@ -71,8 +72,12 @@ export function ReplayPlayback({
   onDiagnosticSeek,
   captureRequestToken = 0,
   sceneActive,
+  autoPlayOnLoad = false,
   onCaptureResult,
 }: ReplayPlaybackProps) {
+  const stageRef = useRef<HTMLDivElement>(null);
+  const autoPlayedReplayId = useRef<string | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [timeS, setTimeS] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState<number>(1);
@@ -108,6 +113,18 @@ export function ReplayPlayback({
     setShowFullTrajectory(false);
     readoutRef.current(null);
   }, [replayId]);
+
+  useEffect(() => {
+    if (!episode || !replayId || !autoPlayOnLoad || autoPlayedReplayId.current === replayId) return;
+    autoPlayedReplayId.current = replayId;
+    setPlaying(true);
+  }, [autoPlayOnLoad, episode, replayId]);
+
+  useEffect(() => {
+    const updateFullscreen = () => setIsFullscreen(document.fullscreenElement === stageRef.current);
+    document.addEventListener('fullscreenchange', updateFullscreen);
+    return () => document.removeEventListener('fullscreenchange', updateFullscreen);
+  }, []);
 
   useEffect(() => {
     if (!episode || !sample || !replayId) {
@@ -206,6 +223,7 @@ export function ReplayPlayback({
 
   return (
     <>
+      <div className="replay-stage" ref={stageRef} data-testid="replay-stage">
       <Battlefield
         episode={episode}
         timeS={timeS}
@@ -228,6 +246,17 @@ export function ReplayPlayback({
       />
       {traceLoading && <p className="trace-loading" role="status">Loading and validating recorded replay…</p>}
       {traceError && <div className="inline-error" role="alert">Replay trace could not be loaded: {traceError}</div>}
+      {episode && sample && (
+        <section className="episode-status panel" aria-label="Current episode status">
+          <strong>{episode.defender.policy_id}{episode.defender.generation ? ` ${episode.defender.generation.toUpperCase()}` : ''}{informationMode === 'ground-truth' ? ` vs ${episode.attacker.policy_id}` : ''}</strong>
+          <span>Time {clockLabel(timeS)} · step {episode.frames[sample.lowerIndex].step}</span>
+          <span>Detection {episode.frames[sample.lowerIndex].policy_visible.enemy_detected ? 'acquired' : 'not acquired'}</span>
+          {informationMode === 'ground-truth'
+            ? <span>Defender–attacker range {episode.frames[sample.lowerIndex].privileged_diagnostics.defender_attacker_range_m.toFixed(1)} m</span>
+            : <span>Privileged entity range hidden in Policy-Visible mode</span>}
+          {informationMode === 'ground-truth' && <span>{terminalReached ? `Terminal outcome: ${episode.summary.outcome}` : `Recorded outcome: ${episode.summary.outcome} (pending)`}</span>}
+        </section>
+      )}
       <section className="playback panel" aria-label="Playback controls">
         <div className="playback-heading">
           <div><span className="eyebrow">RECORDED PLAYBACK</span><h2>{episode ? `Episode ${episodeNumber} / ${episodeCount} · seed ${episode.simulation_seed}` : 'Choose a completed episode'}</h2></div>
@@ -236,6 +265,12 @@ export function ReplayPlayback({
           </span>
         </div>
         <div className="playback-buttons" aria-label="Episode transport controls">
+          <button type="button" onClick={() => {
+            if (document.fullscreenElement === stageRef.current) void document.exitFullscreen();
+            else void stageRef.current?.requestFullscreen();
+          }} disabled={!episode} aria-label={isFullscreen ? 'Exit fullscreen viewer' : 'Fullscreen viewer'}>
+            {isFullscreen ? 'Exit fullscreen' : 'Fullscreen Viewer'}
+          </button>
           <button type="button" aria-label="Previous episode" onClick={onSelectPrevious} disabled={episodeNumber <= 1}>Previous episode</button>
           <button type="button" aria-label="Jump to beginning" onClick={() => seekToFrame(0)} disabled={!episode || atBeginning}>Beginning</button>
           <button type="button" aria-label="Previous frame" onClick={() => seekToFrame(sample?.fraction ? lowerIndex : lowerIndex - 1)} disabled={!episode || atBeginning}>− Frame</button>
@@ -305,6 +340,7 @@ export function ReplayPlayback({
           </>
         )}
       </section>
+      </div>
       <DiagnosticCharts
         episode={episode}
         series={diagnosticSeries}

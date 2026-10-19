@@ -255,7 +255,7 @@ export function App() {
   const health = useBackendHealth();
   const [viewMode, setViewMode] = useState<'single' | 'comparison' | 'cases'>('single');
   const [caseOrigin, setCaseOrigin] = useState<'single' | 'comparison'>('single');
-  const [layoutMode, setLayoutMode] = useState<'focus' | 'analysis'>('analysis');
+  const [layoutMode, setLayoutMode] = useState<'focus' | 'analysis'>('focus');
   const [comparisonContext, setComparisonContext] = useState<{
     replayIds: string[];
     axisTimeS: number;
@@ -283,7 +283,7 @@ export function App() {
   const [attackerId, setAttackerId] = useState('A0');
   const [clutter, setClutter] = useState('C0');
   const [perception, setPerception] = useState<'local' | 'map_local'>('map_local');
-  const [episodeCount, setEpisodeCount] = useState<EpisodeCount>(5);
+  const [episodeCount, setEpisodeCount] = useState<EpisodeCount>(1);
   const [seedStart, setSeedStart] = useState('0');
   const [job, setJob] = useState<ReplayJob | null>(null);
   const [jobError, setJobError] = useState<string | null>(null);
@@ -292,6 +292,7 @@ export function App() {
   const [replayWarnings, setReplayWarnings] = useState<string[]>([]);
   const [batchSummaries, setBatchSummaries] = useState<ReplaySummary[]>([]);
   const [selectedReplayId, setSelectedReplayId] = useState<string | null>(null);
+  const [recordedReplayId, setRecordedReplayId] = useState<string | null>(null);
   const [selectedSummary, setSelectedSummary] = useState<ReplaySummary | null>(null);
   const [summaryError, setSummaryError] = useState<string | null>(null);
   const [traceBundle, setTraceBundle] = useState<ReplayBundle | null>(null);
@@ -302,7 +303,7 @@ export function App() {
   const [playbackReadout, setPlaybackReadout] = useState<PlaybackReadout | null>(null);
   const [informationMode, setInformationMode] = useState<InformationMode>('ground-truth');
   const [diagnosticVisibility, setDiagnosticVisibility] = useState(defaultDiagnosticVisibility);
-  const [diagnosticsCollapsed, setDiagnosticsCollapsed] = useState(false);
+  const [diagnosticsCollapsed, setDiagnosticsCollapsed] = useState(true);
   const [seekRequest, setSeekRequest] = useState<{ timeS: number; nonce: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const handlePlaybackReadout = useCallback((readout: PlaybackReadout | null) => {
@@ -423,6 +424,10 @@ export function App() {
     return () => { active = false; };
   }, []);
 
+  useEffect(() => {
+    if (!recordedReplayId && replays[0]) setRecordedReplayId(replays[0].replay_id);
+  }, [recordedReplayId, replays]);
+
   const availableDefenders = catalog?.defenders.filter(item => item.available) ?? [];
   const defender = availableDefenders.find(item => item.policy_id === defenderId) ?? availableDefenders[0];
   const availableAttackers = catalog?.attackers.filter(item => item.available) ?? [];
@@ -471,7 +476,7 @@ export function App() {
       .then(items => {
         if (!active) return;
         setBatchSummaries(items);
-        if (!selectedReplayId && items[0]) setSelectedReplayId(items[0].replay_id);
+            if (!selectedReplayId && items[0]) setSelectedReplayId(items[0].replay_id);
       })
       .catch(error => {
         if (active) setJobError(error instanceof Error ? error.message : 'Could not load completed replay summaries.');
@@ -549,7 +554,8 @@ export function App() {
   }, [job?.state]);
 
   const resultItems = useMemo(() => {
-    if (job) {
+    const selectedJobReplay = batchSummaries.some(item => item.replay_id === selectedReplayId);
+    if (job && batchSummaries.length > 0 && (!selectedReplayId || selectedJobReplay)) {
       return batchSummaries.map((item, index) => ({
         id: item.replay_id,
         seed: item.simulation_seed,
@@ -581,7 +587,7 @@ export function App() {
       intercept: item.interception_time_s,
       index,
     }));
-  }, [batchSummaries, job, replays]);
+  }, [batchSummaries, job, replays, selectedReplayId]);
   const selectedReplayIndex = resultItems.findIndex(item => item.id === selectedReplayId);
   const selectedEpisode = traceReplayId === selectedReplayId ? traceBundle?.episodes[0] ?? null : null;
   const diagnosticSeries = useMemo(
@@ -613,6 +619,11 @@ export function App() {
     }
     if (!defender || !attacker) {
       setFormError('No compatible available defender and attacker selection is loaded.');
+      return;
+    }
+    if (!defender.supported_scenarios.some(item => item.clutter === clutter && item.perception_modes.includes(perception))
+        || !resolvedConfiguration) {
+      setFormError(`${defender.display_name} does not support ${clutter} with ${perception === 'map_local' ? 'known-map' : 'local'} perception.`);
       return;
     }
     const request: ReplayJobRequest = {
@@ -661,6 +672,18 @@ export function App() {
     setSelectedReplayId(id);
   }
 
+  function watchRecordedEpisode() {
+    const replayId = recordedReplayId;
+    if (!replayId) {
+      setFormError('No validated recorded episodes are available yet. Run an episode or check the replay catalog.');
+      return;
+    }
+    setFormError(null);
+    setViewMode('single');
+    selectReplay(replayId);
+    window.setTimeout(() => document.querySelector('.scene-column')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
+  }
+
   function restoreResearchCase(item: ResearchCase, bookmark?: ResearchBookmark) {
     if (item.case_type === 'comparison') {
       setCaseRestore({ item, bookmark, nonce: caseSeekNonce + 1 });
@@ -698,7 +721,7 @@ export function App() {
         <div className="brand-mark" aria-hidden="true">CU</div>
         <div className="brand"><span className="eyebrow">LOCAL RESEARCH WORKSPACE</span><h1>Counter-UAS <span>Simulation Explorer</span></h1></div>
         <div className="app-mode-switch" role="group" aria-label="Explorer mode">
-          <button type="button" aria-pressed={viewMode === 'single'} onClick={() => setViewMode('single')}>Single episode</button>
+          <button type="button" aria-pressed={viewMode === 'single'} onClick={() => setViewMode('single')}>Simulation Viewer</button>
           <button type="button" aria-pressed={viewMode === 'comparison'} onClick={() => setViewMode('comparison')}>Compare policies</button>
           <button type="button" aria-pressed={viewMode === 'cases'} onClick={() => {
             if (viewMode !== 'cases') setCaseOrigin(viewMode);
@@ -709,7 +732,7 @@ export function App() {
           <button type="button" aria-pressed={layoutMode === 'focus'} onClick={() => setLayoutMode('focus')}>Focus</button>
           <button type="button" aria-pressed={layoutMode === 'analysis'} onClick={() => setLayoutMode('analysis')}>Analysis</button>
         </div>}
-        <span className="phase-badge">PHASE 7 / RESEARCH CASES</span>
+        <span className="phase-badge">LOCAL SIMULATION</span>
       </header>
       <div className="status-bar"><span className={`status-dot ${health.kind}`} /><span role="status">{health.message}</span><span className="localhost-label">LOCALHOST ONLY</span></div>
       {viewMode === 'cases' && (
@@ -744,8 +767,8 @@ export function App() {
       ) : <div className="single-workspace" hidden={viewMode === 'cases'}>
       <div className={`dashboard${diagnosticsCollapsed ? ' diagnostics-collapsed' : ''}`}>
         <aside className="configuration panel">
-          <span className="eyebrow">EXPERIMENT SETUP</span><h2>Episode configuration</h2>
-          <p className="muted">Select a verified policy and canonical scenario. Physics parameters are read-only.</p>
+          <span className="eyebrow">SIMULATION VIEWER</span><h2>Episode configuration</h2>
+          <p className="muted">Select a verified policy and canonical scenario. Episodes use the actual Python simulator.</p>
           {catalogError && <div className="inline-error" role="alert">Policy catalog unavailable: {catalogError}</div>}
           <fieldset disabled={loading || !catalog || activeJob || availableDefenders.length === 0 || availableAttackers.length === 0}>
             <legend className="sr-only">Configure deterministic real simulation episodes</legend>
@@ -797,8 +820,8 @@ export function App() {
             <label>
               Episode count
               <select aria-label="Episode count" value={episodeCount} onChange={event => setEpisodeCount(Number(event.target.value) as EpisodeCount)}>
-                <option value="1">1 episode</option><option value="3">3 episodes</option>
-                <option value="5">5 episodes (default)</option><option value="10">10 episodes</option>
+                <option value="1">1 episode (default)</option><option value="3">3 episodes</option>
+                <option value="5">5 episodes</option><option value="10">10 episodes</option>
               </select>
             </label>
             <label>
@@ -807,9 +830,36 @@ export function App() {
               <small>Episodes use consecutive seeds. Deterministic inference is fixed on.</small>
             </label>
             <button className="primary-button" type="button" onClick={() => void submitJob()} disabled={activeJob || !catalog || loading}>
-              {activeJob ? 'Generating episodes…' : 'Generate Episodes'}
+              {activeJob ? 'Running simulation…' : episodeCount === 1 ? 'Run Episode' : `Run ${episodeCount} Episodes`}
             </button>
           </fieldset>
+          {job && (
+            <section className={`job-compact-status ${job.state}`} aria-label="Current simulation job">
+              <strong>Simulation job: {job.state}</strong>
+              <span>{job.completed_count} of {job.requested_episode_count} episodes completed</span>
+              {job.state === 'running' && job.current_episode_seed !== null && <span>Running evaluation seed {job.current_episode_seed}</span>}
+              {isActive(job) && <progress aria-label="Episodes completed" max={job.requested_episode_count} value={job.completed_count} />}
+              {job.state === 'completed' && <span>Validated replay loaded automatically for playback.</span>}
+              {job.error && <span role="alert">{job.error}</span>}
+              {jobError && <span role="alert">{jobError}</span>}
+              {activeJob && <button type="button" onClick={() => void cancelJob()}>Cancel batch</button>}
+            </section>
+          )}
+          <div className="watch-recorded-controls">
+            <label>
+              Validated recording
+              <select aria-label="Recorded episode" value={recordedReplayId ?? ''} onChange={event => setRecordedReplayId(event.target.value || null)} disabled={activeJob || replays.length === 0}>
+                {replays.map(item => (
+                  <option key={item.replay_id} value={item.replay_id}>
+                    {item.defender.policy_id}{item.defender.generation ? ` ${item.defender.generation.toUpperCase()}` : ''}{item.defender.training_seed === null ? '' : ` seed ${item.defender.training_seed}`} vs {item.attacker.policy_id} / {item.clutter} / eval ${item.simulation_seed} / {item.outcome}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button className="secondary-button watch-recorded-button" type="button" onClick={watchRecordedEpisode} disabled={activeJob || !recordedReplayId}>
+              Watch Recorded Episode
+            </button>
+          </div>
           {formError && <div className="inline-error" role="alert">{formError}</div>}
           <div className="integrity-note"><strong>Research integrity</strong><p>Allowlisted frozen artifacts, hash verification, deterministic inference, and native Python simulation. No training or browser-side dynamics.</p></div>
         </aside>
@@ -840,11 +890,12 @@ export function App() {
             captureRequestToken={sceneCaptureRequest?.replayId === selectedReplayId && selectedEpisode ? sceneCaptureRequest.token : 0}
             sceneActive={viewMode === 'single'}
             onCaptureResult={handleSceneCaptureResult}
+            autoPlayOnLoad={Boolean(job?.state === 'completed' && selectedReplayId && job.completed_replay_ids.includes(selectedReplayId))}
           />
           {sceneError && <p className="inline-error" role="alert">Scene error: {sceneError}</p>}
           <section className="results panel" aria-label="Episode generation progress and results">
             <div className="results-heading">
-              <div><span className="eyebrow">REAL SIMULATION JOB</span><h2>Generation progress &amp; episode results</h2></div>
+              <div><span className="eyebrow">REAL SIMULATION JOB</span><h2>Progress &amp; episode results</h2></div>
               {job && <span className={`job-state ${job.state}`}>{job.state}</span>}
             </div>
             {job && (
@@ -854,6 +905,7 @@ export function App() {
                   ? <p>Episode {job.completed_count + 1} of {job.requested_episode_count} running — {job.completed_count} completed / seed {job.current_episode_seed}</p>
                   : <p>{job.completed_count} of {job.requested_episode_count} episodes completed</p>}
                 {job.cancellation_requested && <p className="muted">Cancellation requested; waiting for the simulation process to stop safely.</p>}
+                {job.state === 'completed' && <p role="status">Validated replay artifacts are ready. The first episode is loaded for playback.</p>}
                 {job.error && <p className="inline-error" role="alert">{job.error}</p>}
                 {jobError && <p className="inline-error" role="alert">{jobError}</p>}
                 {activeJob && <button type="button" onClick={() => void cancelJob()}>Cancel batch</button>}

@@ -1,6 +1,6 @@
 # Counter-UAS 3D Simulation Explorer
 
-Phase 7: an isolated local research visualizer with validated replay jobs,
+An isolated local research visualizer with validated replay jobs,
 interactive native-3D playback, policy-specific diagnostics, synchronized
 side-by-side comparison, a persistent research-case library, and scientific
 exports derived from recorded episodes.
@@ -24,51 +24,34 @@ See [architecture](docs/architecture.md) and [3D playback](docs/3d_playback.md).
 
 ## Windows setup
 
-Prerequisites: Python 3.11+ (verified with 3.13.14), Node 22.12+ (verified with
-24.16.0), npm, and a WebGL2-capable browser. Use two PowerShell terminals.
-Commands below use the requested worktree location; replace it if relocated.
-Scripts resolve their own paths and work independently of the calling directory.
-
-Terminal 1:
+Prerequisites: Python 3.11+, Node 22.12+, npm, and a WebGL2-capable browser.
+The default workspace is the **Simulation Viewer**. First-time setup prompts
+for the absolute path to the existing scientific Python runtime:
 
 ```powershell
-Set-Location -LiteralPath 'C:\Users\mimishal\OneDrive\Documents\UIC\PhD\Research\RL-UAV-Extended-visualizer\visualizer'
-Copy-Item -LiteralPath '.env.example' -Destination '.env'
-.\start-backend.ps1 -Install
+.\visualizer\setup-visualizer.ps1
 ```
 
-Review `.env` before starting: the example points to the original sibling
-research worktree using a relative path, not a personal absolute path or secret.
-Set the simulation interpreter to the existing research Python environment
-that has Gymnasium, Stable-Baselines3, PyTorch, and the frozen project's
-dependencies. The lightweight API venv is not the simulation runtime:
+If required frontend/API packages are not installed, install them once:
 
 ```powershell
-$env:VISUALIZER_SIMULATION_PYTHON = (Get-Command python).Source
+.\visualizer\setup-visualizer.ps1 -InstallApiDependencies -InstallFrontendDependencies
 ```
 
-Alternatively, put its absolute executable path in the ignored `visualizer\.env`
-as `VISUALIZER_SIMULATION_PYTHON=...`. Do not install or update scientific
-dependencies as part of the visualizer setup. Do not overwrite an existing
-`.env`. On subsequent starts:
+Normal start and safe shutdown:
 
 ```powershell
-.\start-backend.ps1
+.\visualizer\start-visualizer.ps1
+.\visualizer\stop-visualizer.ps1
 ```
 
-Terminal 2:
-
-```powershell
-Set-Location -LiteralPath 'C:\Users\mimishal\OneDrive\Documents\UIC\PhD\Research\RL-UAV-Extended-visualizer\visualizer'
-.\start-frontend.ps1 -Install
-```
-
-On subsequent starts use `.\start-frontend.ps1`. Open
-<http://127.0.0.1:5173>. Backend: <http://127.0.0.1:8000/api/health>;
-local API reference: <http://127.0.0.1:8000/docs>. Stop each server with Ctrl+C.
-The frontend's Vite proxy sends `/api` to `127.0.0.1:8000`. No CORS wildcard
-or external binding is needed. Ports do not silently change. Never bind
-these development servers to `0.0.0.0`.
+The launcher verifies the exact configured interpreter, data root, model
+registry, frontend dependencies, and both required ports before opening the
+browser. It never terminates a pre-existing listener or silently falls back to
+another Python. Its PID record is used by `stop-visualizer.ps1`; inspect
+`visualizer\data\local\logs` for server output. The Vite proxy forwards `/api`
+to FastAPI at `http://127.0.0.1:8000`; both services bind only to localhost.
+For the episode and camera controls see [QUICK_START](QUICK_START.md).
 
 If local execution policy blocks scripts, invoke them under the execution
 policy approved for your machine; no script changes global execution policy.

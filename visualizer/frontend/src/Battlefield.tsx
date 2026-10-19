@@ -1,7 +1,7 @@
 import { Component, useEffect, useMemo, useRef, useState } from 'react';
 import type { ErrorInfo, ReactNode, RefObject } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Html, OrbitControls, OrthographicCamera as DreiOrthographicCamera } from '@react-three/drei';
+import { OrbitControls, OrthographicCamera as DreiOrthographicCamera, Text } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import {
   BufferAttribute,
@@ -367,6 +367,30 @@ function DroneModel({ color }: { color: string }) {
   );
 }
 
+function BillboardLabel({
+  position,
+  color,
+  fontSize,
+  children,
+}: {
+  position: ThreeVector;
+  color: string;
+  fontSize: number;
+  children: ReactNode;
+}) {
+  const ref = useRef<Group>(null);
+  useFrame(({ camera }) => {
+    if (ref.current) ref.current.quaternion.copy(camera.quaternion);
+  });
+  return (
+    <group ref={ref} position={position}>
+      <Text color={color} fontSize={fontSize} anchorX="center" anchorY="middle" outlineColor="#071017" outlineWidth={fontSize * 0.07} depthOffset={-1}>
+        {children}
+      </Text>
+    </group>
+  );
+}
+
 function Vehicle({
   episode,
   sample,
@@ -405,21 +429,18 @@ function Vehicle({
   });
   if (!visible) return null;
   return (
-    <group ref={ref} visible={visible} data-testid={`${entityName}-vehicle`}>
-      <DroneModel color={color} />
-      <Html
-        position={[0, 1.25, 0]}
-        center
-        data-testid={entityName === 'attacker' ? 'attacker-truth-label' : undefined}
-        style={{ color: '#e8f0f5', whiteSpace: 'nowrap', fontSize: '11px', textShadow: '0 1px 4px #000' }}
-      >
+    <>
+      <group ref={ref} visible={visible} data-testid={`${entityName}-vehicle`}>
+        <DroneModel color={color} />
+      </group>
+      <BillboardLabel position={[position[0], position[1] + 1.25, position[2]]} color="#e8f0f5" fontSize={1.1}>
         {label}{orientation.source === 'display orientation derived from recorded positions'
           ? ' · display heading derived from recorded positions'
           : orientation.source === 'unavailable'
             ? ' · orientation unavailable'
             : ''}
-      </Html>
-    </group>
+      </BillboardLabel>
+    </>
   );
 }
 
@@ -427,6 +448,7 @@ function AssetMarker({ position }: { position: ThreeVector }) {
   const ref = useRef<Group>(null);
   useFrame(() => { if (ref.current) ref.current.position.set(...position); });
   return (
+    <>
     <group ref={ref} data-testid="asset-marker">
       <mesh position={[0, 0.7, 0]}>
         <cylinderGeometry args={[0.9, 1.05, 1.4, 6]} />
@@ -436,10 +458,11 @@ function AssetMarker({ position }: { position: ThreeVector }) {
         <cylinderGeometry args={[0.52, 0.68, 0.18, 6]} />
         <meshStandardMaterial color="#aad7bd" />
       </mesh>
-      <Html position={[0, 2.1, 0]} center style={{ color: '#d5f4df', whiteSpace: 'nowrap', fontSize: '10px', textShadow: '0 1px 4px #000' }}>
-        Protected asset
-      </Html>
     </group>
+      <BillboardLabel position={[position[0], position[1] + 2.1, position[2]]} color="#d5f4df" fontSize={1}>
+        Protected asset
+      </BillboardLabel>
+    </>
   );
 }
 
@@ -611,10 +634,10 @@ function EpisodeEventMarkers({ episode, timeS }: { episode: ReplayEpisode; timeS
               <sphereGeometry args={[terminal ? 1.15 : 0.8, 12, 10]} />
               <meshBasicMaterial color={event.kind === 'detection' ? '#79d6d0' : '#ffd270'} wireframe />
             </mesh>
-            <Html position={[0, 1.8, 0]} center style={{ color: '#f4eee0', whiteSpace: 'nowrap', fontSize: '10px', textShadow: '0 1px 5px #000' }}>
+            <BillboardLabel position={[0, 1.8, 0]} color="#f4eee0" fontSize={1}>
               {label} · {event.time_s.toFixed(1)} s
               {event.position_m ? '' : ' · entity position'}
-            </Html>
+            </BillboardLabel>
           </group>
         );
       })}
