@@ -28,7 +28,7 @@ PPO-C's D1 effect is negative at C0 for low noise (−26.0 [−45.0, −10.3]) a
 
 ### 2.2 Detection radius (R2)
 
-Short detection lowers success for all defenders (e.g. C0 D0+: 0.41 PPO-C, 0.33 PPO-Kalman-C, 0.34 LR-PPO-C) and raises the unsafe-intercept share to 9–22% (Table 3).
+Short detection lowers success for all defenders (e.g. C0 D0+: 0.41 PPO-C, 0.33 PPO-Kalman-C, 0.34 LR-PPO-C) and raises the unsafe-intercept share to 13–22% for D0+ (9–22% across D0+ and D1; Table 3).
 
 PPO-Kalman-C retains a significant D1 benefit at C0 under short (+11.3 [+3.0, +19.7]) and long (+18.7 [+8.7, +29.0]) detection. At C2 the benefit shrinks to +1.3 [−7.7, +10.7] at short and +5.0 [−9.0, +19.3] at long detection, compared with +16.7 [+3.7, +28.3] at nominal. This C2 contrast was not formally tested. At C0 the short-minus-nominal difference is −7.3 [−23.0, +9.0].
 
