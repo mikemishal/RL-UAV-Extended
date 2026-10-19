@@ -331,6 +331,28 @@ class RoutePlanner:
         self._last_progress_efficiency_num = 0.0
         self._last_progress_efficiency_den = 0.0
 
+    def invalidate_route(self) -> None:
+        """Discard the current route (V2 corrected A0): once the direct path
+        to the target is feasible again, no stale bypass waypoint may
+        survive; the next `plan()` call replans from scratch. Unlike
+        `reset()`, keeps cumulative replan/diagnostic counters."""
+        self._route = None
+
+    def direct_path_clear(self, position: np.ndarray, true_target: np.ndarray, perceived: PerceivedObstacleSet) -> bool:
+        """True iff the straight segment position -> true_target avoids every
+        PERCEIVED static obstacle inflated by `clearance` (same inflation the
+        route graph uses). Uses perception only -- never ground truth."""
+        from uav_defend.obstacles.geometry import AABBObstacle
+        position = np.asarray(position, dtype=np.float64)
+        true_target = np.asarray(true_target, dtype=np.float64)
+        for o in perceived.static:
+            inflated = AABBObstacle.from_center_half_extents(
+                (o.min_corner + o.max_corner) / 2.0, (o.max_corner - o.min_corner) / 2.0 + self.clearance,
+            )
+            if inflated.segment_intersects(position, true_target):
+                return False
+        return True
+
     def _local_goal(self, position: np.ndarray, true_target: np.ndarray) -> np.ndarray:
         """Phase 9: use the true target directly if within the planning
         horizon, else project a point toward it at `planning_range`."""

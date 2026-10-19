@@ -34,6 +34,7 @@ from dataclasses import dataclass, field
 import numpy as np
 
 from uav_defend.dynamics.constrained_point_mass import advance_velocity, apply_boundary
+from uav_defend.obstacles.swept_contact import first_contact
 from uav_defend.obstacles.geometry import AABBObstacle
 from uav_defend.obstacles.layout import ObstacleLayout
 
@@ -152,6 +153,23 @@ def predict_constrained_trajectory(
         positions.append(p.copy())
         velocities.append(v.copy())
     return positions, velocities
+
+
+def truncate_prediction_at_target(
+    positions: list[np.ndarray], target_position: np.ndarray, stop_radius: float,
+) -> list[np.ndarray]:
+    """Cut a predicted trajectory at the first instant it enters the sphere
+    of `stop_radius` around `target_position` (the mission contact, which
+    ends the episode). Anything after that point never happens, so an
+    obstacle lying beyond the target is not a conflict. The contact point is
+    kept as the final position. Returns `positions` unchanged if the path
+    never reaches the target sphere."""
+    target = np.asarray(target_position, dtype=np.float64)
+    for i in range(len(positions) - 1):
+        hit = first_contact(positions[i], positions[i + 1], target, target, stop_radius)
+        if hit is not None:
+            return list(positions[: i + 1]) + [hit.position_a]
+    return positions
 
 
 def predict_collision(positions: list[np.ndarray], layout: ObstacleLayout) -> CollisionPrediction:
@@ -379,6 +397,7 @@ def evaluate_and_select_candidate(
     limits: DynamicsLimits,
     horizon_steps: int,
     required_clearance: float,
+    stop_radius: float | None = None,
 ) -> tuple[CandidateEvaluation, bool]:
     """Simulate every candidate with the real constrained dynamics and pick
     one via a LEXICOGRAPHIC rule (no tuned weights, no scoring function).
@@ -422,6 +441,8 @@ def evaluate_and_select_candidate(
     evaluations: list[CandidateEvaluation] = []
     for order_index, candidate in enumerate(candidates):
         positions, _velocities = predict_constrained_trajectory(position, velocity, candidate.direction, limits, horizon_steps)
+        if stop_radius is not None:
+            positions = truncate_prediction_at_target(positions, target_position, stop_radius)
         prediction = predict_collision(positions, layout)
         end_dist = float(np.linalg.norm(positions[-1] - np.asarray(target_position, dtype=np.float64)))
         progress = start_dist - end_dist
@@ -467,6 +488,19 @@ class ObstacleAvoidancePlanner:
     release_steps: int
     max_altitude: float
     eps: float = 1e-8
+    # V2 corrected A0 (enemy_nominal_guidance_mode == "direct_obstacle_only"):
+    # release avoidance as soon as the base (direct-to-target) command is
+    # predicted collision-free AND the straight line to the target touches
+    # no obstacle. Replaces the V1 release rule (release_steps consecutive
+    # clear checks plus an extra clearance + max_speed*dt margin).
+    # Default False => V1 behavior.
+    immediate_release: bool = False
+    # V2 corrected A0: radius of the target (asset) capture sphere. When set,
+    # every look-ahead (base command, persisted waypoint, bypass candidates)
+    # is truncated at the first entry into that sphere, because mission
+    # contact ends the episode -- obstacles beyond the target are not
+    # conflicts. Default None => V1 behavior.
+    mission_stop_radius: float | None = None
 
     active: bool = field(default=False, init=False)
     obstacle_index: int | None = field(default=None, init=False)
@@ -506,6 +540,8 @@ class ObstacleAvoidancePlanner:
             return self._result(direction=u_base, predicted=CollisionPrediction(collision=False), fallback_used=False)
 
         base_positions, _ = predict_constrained_trajectory(position, velocity, u_base, limits, self.horizon_steps)
+        if self.mission_stop_radius is not None:
+            base_positions = truncate_prediction_at_target(base_positions, target_position, self.mission_stop_radius)
         base_prediction = predict_collision(base_positions, layout)
 
         if not self.active:
@@ -524,15 +560,20 @@ class ObstacleAvoidancePlanner:
         # so that one-step worst-case travel distance is required as
         # extra release margin (a physically-motivated, deterministic
         # quantity -- not a tuned gain).
-        release_clearance = self.clearance + limits.max_speed * limits.dt
-        actual_clearance = layout[self.obstacle_index].clearance_to_point(position)
-        if not base_prediction.collision and actual_clearance >= release_clearance:
-            self._clear_streak += 1
-            if self._clear_streak >= self.release_steps:
+        if self.immediate_release:
+            if not base_prediction.collision and self._direct_line_is_clear(position, target_position, layout):
                 self.reset()
                 return self._result(direction=u_base, predicted=base_prediction, fallback_used=False)
         else:
-            self._clear_streak = 0
+            release_clearance = self.clearance + limits.max_speed * limits.dt
+            actual_clearance = layout[self.obstacle_index].clearance_to_point(position)
+            if not base_prediction.collision and actual_clearance >= release_clearance:
+                self._clear_streak += 1
+                if self._clear_streak >= self.release_steps:
+                    self.reset()
+                    return self._result(direction=u_base, predicted=base_prediction, fallback_used=False)
+            else:
+                self._clear_streak = 0
 
         # Feasibility of the PERSISTED waypoint -- direction is re-derived
         # from the CURRENT position toward the SAME fixed waypoint (not
@@ -542,6 +583,8 @@ class ObstacleAvoidancePlanner:
         # never leave obstacle_index/waypoint undefined here.
         current_direction = _direction_to(position, self.waypoint, fallback=u_base, eps=self.eps)
         positions, _ = predict_constrained_trajectory(position, velocity, current_direction, limits, self.horizon_steps)
+        if self.mission_stop_radius is not None:
+            positions = truncate_prediction_at_target(positions, target_position, self.mission_stop_radius)
         current_feasible = not predict_collision(positions, layout).collision
 
         if current_feasible:
@@ -553,17 +596,31 @@ class ObstacleAvoidancePlanner:
         candidates = generate_bypass_candidates(position, obstacle, u_base, self.clearance, self.max_altitude, self.eps)
         best, fallback_used = evaluate_and_select_candidate(
             position, velocity, u_base, candidates, layout, target_position, limits, self.horizon_steps, self.clearance,
+            stop_radius=self.mission_stop_radius,
         )
         self.mode = best.mode
         self.waypoint = best.waypoint
         self._clear_streak = 0
         return self._result(direction=best.direction, predicted=base_prediction, fallback_used=fallback_used)
 
+    def _direct_line_is_clear(self, position: np.ndarray, target_position: np.ndarray, layout: ObstacleLayout) -> bool:
+        """True iff the straight segment position -> target_position does not
+        touch any obstacle's physical geometry. Deliberately the SAME
+        (uninflated) geometry that triggers avoidance in `plan()`: using a
+        clearance-inflated test here can never release when the target lies
+        within `clearance` of an obstacle, which leaves the mover hovering
+        at its bypass waypoint indefinitely. Clearance is still enforced when
+        bypass candidates are generated and selected."""
+        return not layout.segment_intersects(
+            np.asarray(position, dtype=np.float64), np.asarray(target_position, dtype=np.float64),
+        )
+
     def _activate(self, position, velocity, u_base, layout, target_position, limits, base_prediction) -> dict:
         obstacle = layout[base_prediction.obstacle_index]
         candidates = generate_bypass_candidates(position, obstacle, u_base, self.clearance, self.max_altitude, self.eps)
         best, fallback_used = evaluate_and_select_candidate(
             position, velocity, u_base, candidates, layout, target_position, limits, self.horizon_steps, self.clearance,
+            stop_radius=self.mission_stop_radius,
         )
         self.active = True
         self.obstacle_index = base_prediction.obstacle_index

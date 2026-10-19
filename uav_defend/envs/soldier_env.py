@@ -25,6 +25,7 @@ from gymnasium import spaces
 from uav_defend.config.env_config import EnvConfig
 from uav_defend.tracking import EnemyKalmanFilter
 from uav_defend.dynamics.constrained_point_mass import advance_velocity, apply_boundary
+from uav_defend.obstacles.swept_contact import first_contact
 from uav_defend.obstacles import DynamicsLimits, ObstacleAvoidancePlanner, ObstacleLayout, generate_layout
 from uav_defend.obstacles.dynamic import (
     DynamicObstacle,
@@ -38,6 +39,25 @@ from uav_defend.obstacles.dynamic import (
 from uav_defend.obstacles.perception import EnemyObstaclePerception, PerceivedObstacleSet
 from uav_defend.obstacles.route_planner import RoutePlanner
 
+# Same-instant tolerance (in fractions of one step) for swept event ordering.
+EVENT_TIE_TOLERANCE = 1e-9
+# Range-rate deadband (m/s) for counting approach->recede transitions.
+OVERSHOOT_RANGE_RATE_DEADBAND = 1.0
+# Horizontal speed (m/s) below which a heading is undefined.
+MIN_HEADING_SPEED = 0.1
+
+_DEFENDER_COLLISION_ATTRS = (
+    "_defender_obstacle_collision", "_defender_collision_obstacle_index", "_defender_collision_point",
+    "_defender_collision_count", "_defender_ever_collided", "_defender_was_in_collision",
+    "_defender_dynamic_obstacle_collision", "_defender_collision_obstacle_id",
+    "_defender_dynamic_collision_count", "_defender_dynamic_ever_collided", "_defender_was_in_dynamic_collision",
+)
+_ENEMY_COLLISION_ATTRS = (
+    "_enemy_obstacle_collision", "_enemy_collision_obstacle_index", "_enemy_collision_point",
+    "_enemy_collision_count", "_enemy_ever_collided", "_enemy_was_in_collision",
+    "_enemy_dynamic_obstacle_collision", "_enemy_collision_obstacle_id",
+    "_enemy_dynamic_collision_count", "_enemy_dynamic_ever_collided", "_enemy_was_in_dynamic_collision",
+)
 
 class SoldierEnv(gym.Env):
     """
@@ -336,6 +356,10 @@ class SoldierEnv(gym.Env):
             release_steps=self.config.enemy_obstacle_release_steps,
             max_altitude=self.config.max_altitude,
             eps=self.config.eps,
+            immediate_release=self.config.enemy_nominal_guidance_mode == "direct_obstacle_only",
+            mission_stop_radius=(
+                self.config.threat_radius if self.config.enemy_nominal_guidance_mode == "direct_obstacle_only" else None
+            ),
         )
         # Environmental-awareness/perception layer (journal extension): the
         # planner above is fed ONLY this object's output (see _move_enemy()),
@@ -394,6 +418,7 @@ class SoldierEnv(gym.Env):
         self._enemy_evasion_clear_streak: int = self.config.enemy_obstacle_release_steps
         self._enemy_route_was_suspended: bool = False
         self._enemy_route_suspended: bool = False
+        self._reset_v2_episode_state(0.0)
         # Adaptive Attacker v1 hook (learned tactical policy, journal
         # extension): when set (by an external training wrapper, NEVER by
         # SoldierEnv itself), _move_enemy() replaces its ENTIRE hand-designed
@@ -747,6 +772,7 @@ class SoldierEnv(gym.Env):
         
         # Store for reward shaping
         self._prev_defender_enemy_dist = initial_defender_enemy_dist
+        self._reset_v2_episode_state(float(initial_enemy_soldier_dist))
         
         return self._get_obs(), self._get_info(
             "ongoing", initial_enemy_soldier_dist, initial_defender_enemy_dist,
@@ -755,6 +781,83 @@ class SoldierEnv(gym.Env):
             just_detected=False,
         )
     
+    # ------------------------------------------------------------------
+    # V2 corrected-semantics helpers (see docs/corrected_attacker_semantics_v2.md)
+    # ------------------------------------------------------------------
+    def _empty_contact_info(self) -> dict:
+        return {
+            "mission_contact_mode": self.config.mission_contact_mode,
+            "capture_contact_fraction": None,
+            "capture_contact_position": None,
+            "capture_contact_distance": None,
+            "interception_contact_fraction": None,
+            "interception_contact_position": None,
+            "interception_contact_distance": None,
+            "terminal_event": None,
+            "terminal_event_fraction": None,
+        }
+
+    def _reset_v2_episode_state(self, initial_range: float = 0.0) -> None:
+        """Per-episode contact record and attacker mission-efficiency
+        counters. Observational only: never read by guidance, reward or
+        termination."""
+        self._contact_info = self._empty_contact_info()
+        self._attacker_initial_range = float(initial_range)
+        self._attacker_path_length = 0.0
+        self._attacker_heading_change_deg = 0.0
+        self._attacker_prev_heading_rad: float | None = None
+        self._attacker_overshoot_count = 0
+        self._attacker_prev_range = float(initial_range)
+        self._attacker_range_trend = 0  # -1 closing, +1 receding, 0 undetermined
+        self._episode_time_s = 0.0
+
+    def _update_attacker_efficiency(self, enemy_prev_pos: np.ndarray, event_fraction: float) -> None:
+        dt = self.config.dt
+        self._attacker_path_length += float(np.linalg.norm(self._enemy_pos - enemy_prev_pos))
+        self._episode_time_s += dt * float(event_fraction)
+
+        vel = np.asarray(self._enemy_vel, dtype=np.float64)
+        if float(np.hypot(vel[0], vel[1])) > MIN_HEADING_SPEED:
+            heading = float(np.arctan2(vel[1], vel[0]))
+            if self._attacker_prev_heading_rad is not None:
+                delta = (heading - self._attacker_prev_heading_rad + np.pi) % (2.0 * np.pi) - np.pi
+                self._attacker_heading_change_deg += abs(float(np.degrees(delta)))
+            self._attacker_prev_heading_rad = heading
+
+        current_range = float(np.linalg.norm(self._enemy_pos - self._soldier_pos))
+        range_rate = (current_range - self._attacker_prev_range) / dt
+        if range_rate < -OVERSHOOT_RANGE_RATE_DEADBAND:
+            self._attacker_range_trend = -1
+        elif range_rate > OVERSHOOT_RANGE_RATE_DEADBAND:
+            if self._attacker_range_trend == -1:
+                self._attacker_overshoot_count += 1
+            self._attacker_range_trend = 1
+        self._attacker_prev_range = current_range
+
+    def _snapshot_collision_state(self) -> dict:
+        return {name: getattr(self, name, None) for name in _DEFENDER_COLLISION_ATTRS + _ENEMY_COLLISION_ATTRS}
+
+    def _restore_collision_state(self, snapshot: dict, who: str) -> None:
+        names = _DEFENDER_COLLISION_ATTRS if who == "defender" else _ENEMY_COLLISION_ATTRS
+        for name in names:
+            setattr(self, name, snapshot[name])
+
+    def _attacker_efficiency_info(self) -> dict:
+        path = self._attacker_path_length
+        efficiency = (self._attacker_initial_range / path) if path > 1e-9 else None
+        return {
+            "attacker_initial_range": self._attacker_initial_range,
+            "attacker_path_length": path,
+            "attacker_flight_time_s": self._episode_time_s,
+            "attacker_heading_change_total_deg": self._attacker_heading_change_deg,
+            "attacker_overshoot_count": self._attacker_overshoot_count,
+            # initial straight-line range / actual path length. The asset
+            # random-walks (sigma = v_s*dt per axis per step), so this ratio
+            # can marginally exceed 1; the capped value is also reported.
+            "attacker_path_efficiency": efficiency,
+            "attacker_path_efficiency_capped": None if efficiency is None else min(1.0, efficiency),
+        }
+
     def _spawn_enemy_at_edge(self) -> np.ndarray:
         """
         Spawn enemy at a random location on the vertical lateral boundary of
@@ -899,6 +1002,9 @@ class SoldierEnv(gym.Env):
         # tunneling through a thin obstacle within one dt.
         defender_prev_pos = self._defender_pos.copy()
         enemy_prev_pos = self._enemy_pos.copy()
+        soldier_prev_pos = self._soldier_pos.copy()
+        swept_contact_mode = self.config.mission_contact_mode == "swept"
+        self._contact_info = self._empty_contact_info()
 
         # Advance dynamic obstacles (journal extension) BEFORE the enemy's
         # own move, so its avoidance planning this step reacts to their
@@ -981,6 +1087,23 @@ class SoldierEnv(gym.Env):
             defender_collision_segment_start = defender_prev_pos
         else:
             defender_collision_segment_start = self._defender_pos
+
+        # Swept mission contacts (mission_contact_mode == "swept"): all three
+        # bodies move linearly over the step. Standby synchronization of the
+        # defender onto the asset is bookkeeping, not flight, so (exactly as
+        # for the obstacle sweep above) the defender is treated as
+        # stationary at its post-sync position that step.
+        capture_hit = interception_hit = None
+        collision_snapshot = None
+        if swept_contact_mode:
+            capture_hit = first_contact(
+                enemy_prev_pos, self._enemy_pos, soldier_prev_pos, self._soldier_pos, self.config.threat_radius,
+            )
+            interception_hit = first_contact(
+                defender_collision_segment_start, self._defender_pos, enemy_prev_pos, self._enemy_pos,
+                self.config.intercept_radius,
+            )
+            collision_snapshot = self._snapshot_collision_state()
         defender_collision = self._obstacle_layout.first_segment_intersection(
             defender_collision_segment_start, self._defender_pos
         )
@@ -1093,6 +1216,75 @@ class SoldierEnv(gym.Env):
             self._enemy_collision_event_type = "dynamic"
             self._enemy_collision_event_point = enemy_dynamic_hit_point
 
+        # Swept-contact event arbitration (V2): the physically EARLIEST event
+        # in this step wins -- defender/attacker obstacle collision, attacker
+        # capture of the asset, or defender interception. Ties within
+        # EVENT_TIE_TOLERANCE (in step fractions) are broken by the fixed
+        # priority: defender collision > attacker collision > asset capture
+        # > interception (mission failure outranks mission success, and
+        # collisions outrank both, matching the V1 end-of-step precedence).
+        # Events that lose are discarded: a later collision is un-counted
+        # (collision bookkeeping above is rolled back) so it can never end
+        # or annotate an episode a mission event already ended.
+        terminal_event: str | None = None
+        terminal_fraction = 1.0
+        if swept_contact_mode:
+            def _collision_fraction(event_type, static_t, dynamic_t):
+                if event_type == "static":
+                    return static_t
+                if event_type == "dynamic":
+                    return dynamic_t
+                return None
+
+            candidates = []
+            defender_col_t = _collision_fraction(
+                self._defender_collision_event_type, defender_static_t, defender_dynamic_hit_t,
+            )
+            enemy_col_t = _collision_fraction(
+                self._enemy_collision_event_type, enemy_static_t, enemy_dynamic_hit_t,
+            )
+            if defender_col_t is not None:
+                candidates.append((float(defender_col_t), 0, "defender_collision"))
+            if enemy_col_t is not None:
+                candidates.append((float(enemy_col_t), 1, "enemy_collision"))
+            if capture_hit is not None:
+                candidates.append((capture_hit.fraction, 2, "capture"))
+            if interception_hit is not None:
+                candidates.append((interception_hit.fraction, 3, "interception"))
+            if candidates:
+                earliest = min(c[0] for c in candidates)
+                terminal_fraction, _, terminal_event = min(
+                    (c for c in candidates if c[0] <= earliest + EVENT_TIE_TOLERANCE),
+                    key=lambda c: c[1],
+                )
+            if terminal_event != "defender_collision":
+                self._restore_collision_state(collision_snapshot, "defender")
+                self._defender_collision_event_type = None
+                self._defender_collision_event_point = None
+            if terminal_event != "enemy_collision":
+                self._restore_collision_state(collision_snapshot, "enemy")
+                self._enemy_collision_event_type = None
+                self._enemy_collision_event_point = None
+            if terminal_event in ("capture", "interception"):
+                # State at the contact instant; distances/classification
+                # below are evaluated on these interpolated positions.
+                tau = terminal_fraction
+                self._enemy_pos = (enemy_prev_pos + tau * (self._enemy_pos - enemy_prev_pos)).astype(np.float32)
+                self._defender_pos = (
+                    defender_collision_segment_start + tau * (self._defender_pos - defender_collision_segment_start)
+                ).astype(np.float32)
+                self._soldier_pos = (soldier_prev_pos + tau * (self._soldier_pos - soldier_prev_pos)).astype(np.float32)
+            self._contact_info.update(
+                capture_contact_fraction=None if capture_hit is None else capture_hit.fraction,
+                capture_contact_position=None if capture_hit is None else capture_hit.position_a.copy(),
+                capture_contact_distance=None if capture_hit is None else capture_hit.distance,
+                interception_contact_fraction=None if interception_hit is None else interception_hit.fraction,
+                interception_contact_position=None if interception_hit is None else interception_hit.position_b.copy(),
+                interception_contact_distance=None if interception_hit is None else interception_hit.distance,
+                terminal_event=terminal_event,
+                terminal_event_fraction=terminal_fraction if terminal_event is not None else None,
+            )
+
         if self._defender_collision_event_type is not None:
             self._defender_collision_event_speed = float(np.linalg.norm(self._defender_vel))
             self._defender_pos = self._defender_collision_event_point.astype(np.float32)
@@ -1129,6 +1321,17 @@ class SoldierEnv(gym.Env):
         
         # LOSS: Unsafe intercept (caught enemy but too close to soldier - collateral risk)
         unsafe_intercept = can_intercept and unsafe_zone and not soldier_caught
+
+        if swept_contact_mode:
+            # Contact outcomes come from the swept event arbitration above;
+            # the end-of-step flags just computed are superseded. The
+            # safe/unsafe classification still uses the existing
+            # unsafe_intercept_radius, evaluated at the interpolated
+            # interception instant (positions were set to that instant).
+            soldier_caught = terminal_event == "capture"
+            can_intercept = terminal_event == "interception"
+            intercepted = can_intercept and not unsafe_zone
+            unsafe_intercept = can_intercept and unsafe_zone
         
         truncated = False
 
@@ -1210,6 +1413,7 @@ class SoldierEnv(gym.Env):
         
         # Update previous distance for next step
         self._prev_defender_enemy_dist = defender_enemy_dist
+        self._update_attacker_efficiency(enemy_prev_pos, terminal_fraction)
         
         return self._get_obs(), reward, terminated, truncated, self._get_info(
             outcome, enemy_soldier_dist, defender_enemy_dist,
@@ -1800,9 +2004,16 @@ class SoldierEnv(gym.Env):
         # Intentionally independent of self._enemy_detected (see
         # _compute_enemy_evasion docstring).
         evasion_info = self._compute_enemy_evasion(self._defender_pos, self._enemy_pos)
+        direct_guidance = self.config.enemy_nominal_guidance_mode == "direct_obstacle_only"
+        if direct_guidance:
+            # Corrected scripted A0: no tactical defender evasion. The
+            # defender-proximity diagnostics (range, activation) are kept for
+            # logging, but the component never enters the command.
+            evasion_info = dict(evasion_info)
+            evasion_info["evasion_component"] = np.zeros(3, dtype=np.float32)
         self._enemy_evasion_info = evasion_info
         self._enemy_evasion_command = evasion_info["evasion_component"].astype(np.float32)
-        evasion_active_this_step = bool(evasion_info["activation"] > 1e-6)
+        evasion_active_this_step = (not direct_guidance) and bool(evasion_info["activation"] > 1e-6)
 
         # Behavior-arbitration hysteresis (Phase 7): reuse the EXISTING
         # obstacle-avoidance release-steps hysteresis parameter rather than
@@ -1817,6 +2028,8 @@ class SoldierEnv(gym.Env):
         route_suspended = self.config.enemy_route_arbitration_enabled and (
             evasion_active_this_step or self._enemy_evasion_clear_streak < self.config.enemy_obstacle_release_steps
         )
+        if direct_guidance:
+            route_suspended = False
         just_resumed = (not route_suspended) and self._enemy_route_was_suspended
         self._enemy_route_was_suspended = route_suspended
 
@@ -1840,7 +2053,14 @@ class SoldierEnv(gym.Env):
         )
         self._enemy_route_command = None
         if self.config.enemy_obstacle_avoidance_enabled and self.config.enemy_route_planning_enabled and perceived is not None and not route_suspended:
-            if just_resumed:
+            if direct_guidance and self._enemy_route_planner.direct_path_clear(
+                self._enemy_pos, self._soldier_pos, perceived,
+            ):
+                # Corrected A0: the direct line to the asset is feasible, so
+                # no route is followed and any previous bypass is discarded.
+                self._enemy_route_planner.invalidate_route()
+                route_result = None
+            elif just_resumed:
                 route_result = self._enemy_route_planner.resume_or_rejoin(
                     self._enemy_pos, self._soldier_pos, perceived, self.config.enemy_obstacle_awareness_mode,
                 )
@@ -1848,11 +2068,12 @@ class SoldierEnv(gym.Env):
                 route_result = self._enemy_route_planner.plan(
                     self._enemy_pos, self._soldier_pos, perceived, self.config.enemy_obstacle_awareness_mode,
                 )
-            self._enemy_route_last_result = route_result
-            route_direction = np.asarray(route_result["direction"], dtype=np.float64)
-            self._enemy_route_command = route_direction.astype(np.float32)
-            if np.linalg.norm(route_direction) > eps:
-                r_hat = route_direction
+            if route_result is not None:
+                self._enemy_route_last_result = route_result
+                route_direction = np.asarray(route_result["direction"], dtype=np.float64)
+                self._enemy_route_command = route_direction.astype(np.float32)
+                if np.linalg.norm(route_direction) > eps:
+                    r_hat = route_direction
         
         # Horizontal lateral vector (perpendicular to the horizontal
         # projection of the pursuit direction, 90° CCW rotation in XY)
@@ -1867,21 +2088,26 @@ class SoldierEnv(gym.Env):
             lateral = np.array([1.0, 0.0, 0.0])
         
         # Update weave bias with AR(1) process: a <- rho * a + sigma_a * eta
-        eta = self._rng_enemy_motion.normal(0.0, 1.0)
-        self._weave_bias = self.config.rho * self._weave_bias + self.config.sigma_a * eta
-        
-        # Heading noise, generalized to 3 dimensions
-        z = self._rng_enemy_motion.normal(0.0, 1.0, size=(3,))
-
-        # Base command: exactly the pre-obstacle hostile model (pursuit +
-        # weave + heading noise + evasion), unnormalized then normalized.
-        weave_component = self._weave_bias * self.config.weave_amplitude * lateral
-        u_base_raw = r_hat + weave_component + self.config.sigma_e * z + evasion_info["evasion_component"]
-        u_base_norm = np.linalg.norm(u_base_raw)
-        if u_base_norm > eps:
-            u_base = u_base_raw / u_base_norm
+        # (legacy only; corrected A0 draws no randomness and has no weave).
+        if direct_guidance:
+            self._weave_bias = 0.0
+            u_base = r_hat / np.linalg.norm(r_hat)
         else:
-            u_base = r_hat  # Fallback to direct pursuit
+            eta = self._rng_enemy_motion.normal(0.0, 1.0)
+            self._weave_bias = self.config.rho * self._weave_bias + self.config.sigma_a * eta
+
+            # Heading noise, generalized to 3 dimensions
+            z = self._rng_enemy_motion.normal(0.0, 1.0, size=(3,))
+
+            # Base command: exactly the pre-obstacle hostile model (pursuit +
+            # weave + heading noise + evasion), unnormalized then normalized.
+            weave_component = self._weave_bias * self.config.weave_amplitude * lateral
+            u_base_raw = r_hat + weave_component + self.config.sigma_e * z + evasion_info["evasion_component"]
+            u_base_norm = np.linalg.norm(u_base_raw)
+            if u_base_norm > eps:
+                u_base = u_base_raw / u_base_norm
+            else:
+                u_base = r_hat  # Fallback to direct pursuit
 
         # Learned-attacker tactical override (Adaptive Attacker v1, Phase
         # 3/8, journal extension): when set, REPLACES the entire
@@ -2500,6 +2726,9 @@ class SoldierEnv(gym.Env):
             "enemy_behavior_mode": self._enemy_behavior_mode,
             "enemy_behavior_mode_switch_count": self._enemy_behavior_mode_switch_count,
             "enemy_route_suspended": self._enemy_route_suspended,
+            "enemy_nominal_guidance_mode": self.config.enemy_nominal_guidance_mode,
+            **self._contact_info,
+            **self._attacker_efficiency_info(),
         }
     
     def render(self) -> np.ndarray | None:

@@ -335,8 +335,43 @@ class EnvConfig:
     # always-persistent route-planning behavior (pre-arbitration ablation).
     enemy_route_arbitration_enabled: bool = True
 
+    # =========================================================================
+    # Journal V2 corrected-semantics switches (see
+    # docs/corrected_attacker_semantics_v2.md). DEFAULTS REPRODUCE V1 EXACTLY;
+    # publication V2 experiments must select the corrected values explicitly
+    # via experiments/journal_v2_protocol.build_v2_env_config.
+    #
+    # mission_contact_mode:
+    #   "endpoint" (V1): attacker->asset capture and defender->attacker
+    #       interception are tested only at the step's final positions, so a
+    #       fast pass through the contact sphere inside one dt is missed.
+    #   "swept"   (V2): both contacts are tested continuously over the step
+    #       with a moving-sphere (relative-motion) test; the earliest event
+    #       in the step (obstacle collision, capture, interception) wins.
+    # enemy_nominal_guidance_mode:
+    #   "legacy" (V1): pursuit + AR(1) weave + heading noise + reactive
+    #       defender evasion, with the persistent-release avoidance planner.
+    #   "direct_obstacle_only" (V2 scripted A0): direct unit pursuit of the
+    #       asset; deviates only while an obstacle predictively blocks the
+    #       direct path and returns to direct pursuit as soon as the straight
+    #       line to the asset is again clear. No weave, noise or evasion.
+    #       A learned tactical override, when present, still replaces the
+    #       command exactly as in V1.
+    # =========================================================================
+    mission_contact_mode: str = "endpoint"
+    enemy_nominal_guidance_mode: str = "legacy"
+
     def __post_init__(self) -> None:
         """Validate altitude and dynamics configuration."""
+        if self.mission_contact_mode not in ("endpoint", "swept"):
+            raise ValueError(
+                f"mission_contact_mode must be 'endpoint' or 'swept', got {self.mission_contact_mode!r}"
+            )
+        if self.enemy_nominal_guidance_mode not in ("legacy", "direct_obstacle_only"):
+            raise ValueError(
+                "enemy_nominal_guidance_mode must be 'legacy' or 'direct_obstacle_only', got "
+                f"{self.enemy_nominal_guidance_mode!r}"
+            )
         if self.enemy_spawn_altitude_min < 0:
             raise ValueError(
                 f"enemy_spawn_altitude_min must be >= 0, got {self.enemy_spawn_altitude_min}"
