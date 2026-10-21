@@ -1,0 +1,41 @@
+[
+  {
+    "name": "defender interception earlier (defender at x=-0.1)",
+    "defender_x": -0.1,
+    "x_start": -3.2,
+    "x_end": 2.8,
+    "threat_radius": 2.0,
+    "intercept_radius": 2.5,
+    "capture_fraction": 0.20000000794728595,
+    "interception_fraction": 0.1000000076989333,
+    "terminal_event": "interception",
+    "outcome": "unsafe_intercept",
+    "terminal_fraction": 0.1000000076989333
+  },
+  {
+    "name": "asset capture earlier (defender at x=+1.5)",
+    "defender_x": 1.5,
+    "x_start": -3.2,
+    "x_end": 2.8,
+    "threat_radius": 2.0,
+    "intercept_radius": 2.5,
+    "capture_fraction": 0.20000000794728595,
+    "interception_fraction": 0.3666666746139526,
+    "terminal_event": "capture",
+    "outcome": "soldier_caught",
+    "terminal_fraction": 0.20000000794728595
+  },
+  {
+    "name": "simultaneous contact (defender at x=+0.5): documented tie rule",
+    "defender_x": 0.5,
+    "x_start": -3.2,
+    "x_end": 2.8,
+    "threat_radius": 2.0,
+    "intercept_radius": 2.5,
+    "capture_fraction": 0.20000000794728595,
+    "interception_fraction": 0.20000000794728595,
+    "terminal_event": "capture",
+    "outcome": "soldier_caught",
+    "terminal_fraction": 0.20000000794728595
+  }
+]

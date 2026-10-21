@@ -1,0 +1,14 @@
+{
+  "tau": 0.4413194345555628,
+  "contact_distance": 2.5,
+  "endpoint_distance": 3.3487810153197737,
+  "endpoint_only_outcome": "ongoing",
+  "contact_position": [
+    -0.3311290740966797,
+    4.5614013671875,
+    2.3241586685180664
+  ],
+  "level": "C0",
+  "controller": "greedy",
+  "seed": 130000
+}

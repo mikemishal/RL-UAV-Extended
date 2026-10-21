@@ -1,0 +1,5 @@
+terminal_event,endpoint_would_miss_terminal,episodes
+capture,False,62
+capture,True,5
+interception,False,135
+interception,True,38

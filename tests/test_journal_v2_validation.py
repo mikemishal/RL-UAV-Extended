@@ -1,0 +1,227 @@
+"""Tests for the V2 validation instrumentation (observational code only)."""
+
+from __future__ import annotations
+
+import math
+
+import numpy as np
+import pytest
+
+from experiments.journal_v2_validation_core import (
+    count_overshoots,
+    dense_min_distance,
+    deviation_segments,
+    orbit_revolutions,
+    record_episode,
+    summarize,
+)
+from uav_defend.obstacles.swept_contact import first_contact
+
+
+# ---------------------------------------------------------- definitions
+def test_overshoot_counts_one_approach_then_recede():
+    ranges = np.array([50, 38, 26, 14, 4, 4.2, 12, 20.0])
+    assert count_overshoots(ranges, dt=0.5) == 1
+
+
+def test_overshoot_ignores_monotone_closing_and_initial_recede():
+    assert count_overshoots(np.array([50, 40, 30, 20, 10, 2.0]), dt=0.5) == 0
+    assert count_overshoots(np.array([10, 18, 26, 34.0]), dt=0.5) == 0  # never approached first
+
+
+def test_overshoot_deadband_ignores_jitter():
+    ranges = np.array([30, 24, 18, 12, 6, 6.1, 5.9, 6.2, 6.0])
+    assert count_overshoots(ranges, dt=0.5) == 0
+
+
+def test_overshoot_counts_repeated_passes():
+    ranges = np.array([40, 30, 20, 10, 3, 12, 22, 14, 6, 3, 14, 26.0])
+    assert count_overshoots(ranges, dt=0.5) == 2
+
+
+def _circle(n_rev: float, radius: float = 10.0, n: int = 200):
+    t = np.linspace(0, 2 * math.pi * n_rev, n)
+    return np.stack([radius * np.cos(t), radius * np.sin(t), np.zeros(n)], axis=1)
+
+
+def test_orbit_detects_full_revolution_and_ignores_straight_pass():
+    asset = np.zeros((200, 3))
+    assert orbit_revolutions(_circle(1.25), asset)[0] == pytest.approx(1.25, abs=0.02)
+    straight = np.stack([np.linspace(-15, 15, 200), np.full(200, 3.0), np.zeros(200)], axis=1)
+    assert orbit_revolutions(straight, np.zeros((200, 3)))[0] < 0.51  # half-turn of bearing at most
+
+
+def test_orbit_ignores_trajectories_outside_local_radius():
+    far = _circle(3.0, radius=40.0)
+    assert orbit_revolutions(far, np.zeros((200, 3))) == (0.0, 0.0)
+
+
+def test_orbit_direction_is_irrelevant():
+    asset = np.zeros((200, 3))
+    assert orbit_revolutions(_circle(1.0)[::-1], asset)[0] == pytest.approx(orbit_revolutions(_circle(1.0), asset)[0], abs=1e-6)
+
+
+def test_dense_audit_agrees_with_analytic_solver():
+    rng = np.random.default_rng(3)
+    for _ in range(300):
+        p0a, p1a, p0b, p1b = (rng.uniform(-8, 8, 3) for _ in range(4))
+        d, _ = dense_min_distance(p0a, p1a, p0b, p1b)
+        analytic = first_contact(p0a, p1a, p0b, p1b, 2.0)
+        if analytic is not None:
+            assert d <= 2.0 + 1e-3
+        elif d <= 2.0:
+            pytest.fail("dense sampling found a contact the analytic solver missed")
+
+
+# ------------------------------------------------------ segment analysis
+def _row(mode, perceived=()):
+    return {"behavior_mode": mode, "perceived_static_ids": list(perceived), "attacker_pos": [0, 0, 0],
+            "asset_pos": [0, 0, 0], "attacker_mission_direction": None, "attacker_final_command": None, "detected": False}
+
+
+def _extra(blocked=None, dynamic=None, otype=None, oid=None):
+    return {"line_blocked_static": blocked, "line_blocked_dynamic": dynamic, "avoid_obstacle_type": otype,
+            "avoid_obstacle_id": oid, "dynamic_obstacles": [], "defender_standby": False, "weave_bias": 0.0,
+            "evasion_active": False}
+
+
+def test_deviation_segment_entry_exit_and_classification():
+    modes = ["DIRECT", "DIRECT", "DIRECT", "OBSTACLE_AVOID", "OBSTACLE_AVOID", "DIRECT", "DIRECT"]
+    rows = [_row(m, perceived=(4,)) for m in modes]
+    ex = [_extra() for _ in modes]
+    ex[2] = _extra(blocked=4)               # line blocked at the decision before step 3
+    ex[3] = _extra(blocked=4, otype="static", oid=4)
+    ex[4] = _extra(blocked=None, otype="static", oid=4)
+    segs = deviation_segments({"rows": rows, "extras": ex})
+    assert len(segs) == 1
+    s = segs[0]
+    assert (s["activation_step"], s["last_avoid_step"], s["return_to_direct_step"]) == (3, 4, 5)
+    assert s["duration_steps"] == 2 and s["kind"] == "static_line_blocked"
+    assert s["associated_with_perceived_obstacle"] and s["line_clear_at_return"] is True
+
+
+def test_unassociated_and_evasion_segments_are_flagged():
+    rows = [_row("DIRECT"), _row("EVADE"), _row("DIRECT")]
+    segs = deviation_segments({"rows": rows, "extras": [_extra(), _extra(), _extra()]})
+    assert segs[0]["kind"] == "evasion" and not segs[0]["associated_with_perceived_obstacle"]
+    rows = [_row("DIRECT"), _row("OBSTACLE_AVOID", perceived=(1,)), _row("DIRECT")]
+    ex = [_extra(), _extra(otype="static", oid=9), _extra()]  # id 9 not in the perceived set
+    segs = deviation_segments({"rows": rows, "extras": ex})
+    assert not segs[0]["associated_with_perceived_obstacle"] and segs[0]["kind"] == "static_prediction_only"
+
+
+def test_segment_terminated_while_avoiding_has_no_return_step():
+    rows = [_row("DIRECT"), _row("OBSTACLE_AVOID", perceived=(2,))]
+    segs = deviation_segments({"rows": rows, "extras": [_extra(), _extra(otype="static", oid=2)]})
+    assert segs[0]["return_to_direct_step"] is None and segs[0]["terminated_while_avoiding"]
+
+
+def test_linger_run_counts_avoiding_steps_with_a_clear_line():
+    modes = ["DIRECT"] + ["OBSTACLE_AVOID"] * 5 + ["DIRECT"]
+    rows = [_row(m, perceived=(1,)) for m in modes]
+    ex = [_extra(), _extra(blocked=1, otype="static", oid=1)] + [_extra(otype="static", oid=1) for _ in range(5)]
+    segs = deviation_segments({"rows": rows, "extras": ex})
+    assert segs[0]["max_linger_run_steps"] == 3  # decisions for steps 3..5 saw a clear line (ex[0] is blocked at activation)
+
+
+# ------------------------------------------------- recorder invariants
+@pytest.fixture(scope="module")
+def c0_records():
+    return {c: record_episode("C0", "V2", c, 130000, counterfactual=True) for c in ("passive", "greedy")}
+
+
+def test_recorder_matches_environment_counters(c0_records):
+    for rec in c0_records.values():
+        s = summarize(rec)
+        assert s["overshoots"] == s["overshoots_from_trace"]
+        assert s["steps"] == len(rec["rows"]) - 1
+        assert rec["rows"][-1]["outcome"] == rec["final_info"]["outcome"]
+
+
+def test_c0_v2_attacker_is_direct_and_unweaving(c0_records):
+    s = summarize(c0_records["passive"])
+    assert s["frac_direct"] == 1.0 and s["max_abs_weave_bias"] == 0.0 and s["max_direct_command_error_deg"] < 0.1
+    assert s["overshoots"] == 0 and not s["orbit_event"] and s["captured"]
+    assert s["missed_attacker_contacts"] == 0 and s["missed_defender_contacts"] == 0
+
+
+def test_attacker_track_is_independent_of_the_defender(c0_records):
+    a = np.array([r["attacker_pos"] for r in c0_records["passive"]["rows"]])
+    b = np.array([r["attacker_pos"] for r in c0_records["greedy"]["rows"]])
+    m = min(len(a), len(b)) - 1
+    assert m > 5 and np.allclose(a[:m], b[:m], atol=1e-6)
+
+
+def test_counterfactual_endpoint_semantics_would_not_have_ended_the_step(c0_records):
+    rec = c0_records["greedy"]
+    assert rec["final_info"]["terminal_event"] == "interception"
+    cf = rec["counterfactual"]
+    assert cf is not None and cf["terminal"] is False and cf["defender_enemy_dist"] > rec["config"]["intercept_radius"]
+    # The swept contact fraction places the interception strictly inside the step.
+    assert 0.0 < rec["final_info"]["terminal_event_fraction"] < 1.0
+
+
+def test_recording_does_not_perturb_the_episode():
+    plain = record_episode("C2", "V2", "greedy", 130001, counterfactual=False)
+    with_cf = record_episode("C2", "V2", "greedy", 130001, counterfactual=True)
+    assert [r["attacker_pos"] for r in plain["rows"]] == [r["attacker_pos"] for r in with_cf["rows"]]
+    assert plain["final_info"]["outcome"] == with_cf["final_info"]["outcome"]
+
+
+def test_v1_endpoint_audit_reports_the_known_missed_crossings():
+    rec = record_episode("C0", "V1", "passive", 130000)
+    assert rec["final_info"]["mission_contact_mode"] == "endpoint"
+    assert len(rec["missed_attacker"]) >= 4  # the near-passes seen in the original visualization
+    assert all(m["min_distance"] <= rec["config"]["threat_radius"] < m["endpoint_distance"] for m in rec["missed_attacker"])
+
+
+# ------------------------------------------------ constructed obstacle scenarios
+def _scenario(spec):
+    import dataclasses
+
+    def transform(cfg):
+        return dataclasses.replace(cfg, obstacle_layout_mode="fixed", obstacle_fixed_spec=spec, dynamic_obstacles_enabled=False)
+
+    def setup(env):
+        env._enemy_pos = np.array([-20.0, 0.0, 3.0], dtype=np.float32)
+        env._enemy_vel = np.zeros(3, dtype=np.float32)
+        env._soldier_pos = np.array([45.0, 0.0, 0.0], dtype=np.float32)
+        env._move_soldier = lambda: None
+
+    return record_episode("C2", "V2", "passive", 0, detour_cf=True, cfg_transform=transform, setup=setup)
+
+
+def test_blocking_obstacle_detour_is_counterfactually_necessary_and_returns_to_direct():
+    rec = _scenario(((15.0, 0.0, 5.0, 4.0, 4.0, 5.0),))
+    segs = deviation_segments(rec)
+    assert len(segs) == 1 and segs[0]["necessity"] == "necessary_collision"
+    assert segs[0]["return_to_direct_step"] is not None and segs[0]["line_clear_at_return"] is True
+    s = summarize(rec)
+    assert s["captured"] and s["max_lateral_deviation_m"] > 3.0 and s["detours_unnecessary"] == 0
+
+
+def test_nearby_nonblocking_obstacle_causes_no_deviation():
+    rec = _scenario(((15.0, 14.0, 5.0, 4.0, 4.0, 5.0),))
+    s = summarize(rec)
+    assert s["n_avoidance_segments"] == 0 and s["frac_direct"] == 1.0 and s["captured"]
+    assert s["max_lateral_deviation_m"] < 1e-3
+
+
+def test_two_staggered_obstacles_give_two_returned_excursions():
+    rec = _scenario(((5.0, 2.0, 5.0, 3.0, 3.0, 5.0), (35.0, -2.0, 5.0, 3.0, 3.0, 5.0)))
+    segs = deviation_segments(rec)
+    assert len(segs) >= 2 and all(s["return_to_direct_step"] is not None for s in segs)
+    assert summarize(rec)["captured"]
+
+
+def test_detour_counterfactual_does_not_perturb_the_recorded_episode():
+    a = record_episode("C2", "V2", "passive", 130002, detour_cf=False)
+    b = record_episode("C2", "V2", "passive", 130002, detour_cf=True)
+    assert [r["attacker_pos"] for r in a["rows"]] == [r["attacker_pos"] for r in b["rows"]]
+    assert b["detour_cf"] and all(v["collides"] for v in b["detour_cf"].values())
+
+
+def test_unnecessary_detours_are_detected_in_the_legacy_attacker():
+    rec = record_episode("C2", "V1", "passive", 130000, detour_cf=True)
+    s = summarize(rec)
+    assert s["detours_unnecessary"] > 0  # V1's persistent-release avoidance makes pointless detours

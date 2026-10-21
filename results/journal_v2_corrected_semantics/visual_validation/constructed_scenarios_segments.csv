@@ -1,0 +1,3 @@
+scenario,activation_step,last_avoid_step,return_to_direct_step,duration_steps,kind,necessity,line_clear_at_return,associated_with_perceived_obstacle
+S1_single_blocking_obstacle,1,7,8,7,static_line_blocked,necessary_collision,True,True
+S3_two_staggered_obstacles,1,5,6,5,static_line_blocked,necessary_collision,True,True

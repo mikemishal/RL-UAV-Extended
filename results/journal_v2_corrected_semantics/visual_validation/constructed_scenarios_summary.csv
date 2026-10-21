@@ -1,0 +1,4 @@
+scenario,outcome,steps,path_length_m,heading_change_deg,overshoots,n_avoidance_segments,detours_necessary_collision,detours_unnecessary,max_lateral_deviation_m,straight_line_distance_m,path_excess_ratio
+S1_single_blocking_obstacle,soldier_caught,13,64.5919052362442,25.185843348124063,0,1,1,0,6.685985088348389,65.06919393998976,0.9926649052363283
+S2_nearby_nonblocking_obstacle,soldier_caught,13,63.069226808846,0.0,0,0,0,0,0.0,65.06919393998976,0.9692639940647146
+S3_two_staggered_obstacles,soldier_caught,13,65.00058710575104,30.194173618242395,0,1,1,0,7.438758850097656,65.06919393998976,0.9989456326398941

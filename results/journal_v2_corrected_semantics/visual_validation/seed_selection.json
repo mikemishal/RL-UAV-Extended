@@ -1,0 +1,127 @@
+{
+  "seeds": [
+    130000,
+    130001,
+    130002,
+    130003,
+    130004,
+    130005,
+    130006,
+    130007,
+    130008,
+    130009
+  ],
+  "extension_seeds": [
+    130000,
+    130099
+  ],
+  "levels": [
+    "C0",
+    "C1",
+    "C2",
+    "C3"
+  ],
+  "controllers": [
+    "passive",
+    "greedy",
+    "kalman_greedy",
+    "pn",
+    "lead",
+    "rmpc"
+  ],
+  "visual_cases_per_level": {
+    "C0": {
+      "130000": [
+        "first3",
+        "longest_path"
+      ],
+      "130001": [
+        "first3"
+      ],
+      "130002": [
+        "first3"
+      ]
+    },
+    "C1": {
+      "130000": [
+        "first3"
+      ],
+      "130001": [
+        "first3"
+      ],
+      "130002": [
+        "first3"
+      ],
+      "130063": [
+        "max_avoidance"
+      ],
+      "130089": [
+        "longest_path"
+      ]
+    },
+    "C2": {
+      "130000": [
+        "first3"
+      ],
+      "130001": [
+        "first3"
+      ],
+      "130002": [
+        "first3"
+      ],
+      "130065": [
+        "max_avoidance",
+        "longest_path"
+      ]
+    },
+    "C3": {
+      "130000": [
+        "first3"
+      ],
+      "130001": [
+        "first3"
+      ],
+      "130002": [
+        "first3"
+      ],
+      "130063": [
+        "max_avoidance",
+        "longest_path"
+      ]
+    }
+  },
+  "presentation_cases": {
+    "p1_c0_direct_attack": [
+      "C0",
+      "passive",
+      130001
+    ],
+    "p2_c0_seed130000_swept_capture": [
+      "C0",
+      "passive",
+      130000
+    ],
+    "p3_single_obstacle_bypass": [
+      "C2",
+      "passive",
+      130063
+    ],
+    "p4_c3_complex_path": [
+      "C3",
+      "passive",
+      130063
+    ],
+    "p5_scripted_interception": [
+      "C0",
+      "lead",
+      130000
+    ]
+  },
+  "swept_interception_example": [
+    "C0",
+    "greedy",
+    130000
+  ],
+  "disclosure": "The 10-seed set produced only 0/1/4 avoidance segments in C1/C2/C3, so a 100-seed passive coverage extension was added AFTER that observation; presentation cases p3/p4 and the C1-C3 max-avoidance/longest-path visual cases are selected from it by the objective rules in select_visual_cases/select_presentation_cases.",
+  "rules": "see module docstring of experiments/journal_v2_visual_validation.py"
+}

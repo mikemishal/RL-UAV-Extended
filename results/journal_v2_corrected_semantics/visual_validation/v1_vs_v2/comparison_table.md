@@ -1,0 +1,10 @@
+| Level | Controller | Semantics | N | Asset-capture rate | Interception rate | Timeout rate | Mean capture time (s) | Mean path length (m) | Mean heading change (deg) | Median pursuit efficiency | Overshoots | Orbit events | Missed attacker contacts | Missed defender contacts | Avoidance/evasion segments | Segments w/o blocked line or dynamic obstacle | Evasion segments | Detours necessary (direct flight would collide or breach 2 m) | Detours UNnecessary | Detours not evaluated | % flight DIRECT | % flight OBSTACLE_AVOID | % flight EVADE |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| C0 | passive | V1 | 10 | 1.00 | 0.00 | 0.00 | 399.50 | 4238.62 | 12636.84 | 0.01 | 479 | 4 | 13 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 100.00 | 0.00 | 0.00 |
+| C0 | passive | V2 | 10 | 1.00 | 0.00 | 0.00 | 4.98 | 59.36 | 20.20 | 1.00 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 100.00 | 0.00 | 0.00 |
+| C0 | greedy | V1 | 10 | 0.30 | 0.70 | 0.00 | 118.00 | 1127.49 | 3292.56 | 0.04 | 120 | 0 | 3 | 6 | 100 | 0 | 100 | 0 | 0 | 100 | 71.91 | 0.00 | 28.09 |
+| C0 | greedy | V2 | 10 | 0.00 | 1.00 | 0.00 | nan | 56.02 | 18.16 | 1.00 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 100.00 | 0.00 | 0.00 |
+| C2 | passive | V1 | 10 | 0.70 | 0.00 | 0.20 | 440.43 | 5642.50 | 18065.78 | 0.01 | 595 | 1 | 7 | 0 | 700 | 611 | 1 | 366 | 333 | 1 | 48.06 | 51.86 | 0.08 |
+| C2 | passive | V2 | 10 | 1.00 | 0.00 | 0.00 | 4.99 | 59.48 | 20.86 | 1.00 | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 98.00 | 2.00 | 0.00 |
+| C2 | greedy | V1 | 10 | 0.00 | 1.00 | 0.00 | nan | 892.43 | 2683.45 | 0.03 | 95 | 0 | 0 | 8 | 106 | 71 | 30 | 0 | 0 | 106 | 37.94 | 45.58 | 16.49 |
+| C2 | greedy | V2 | 10 | 0.20 | 0.70 | 0.00 | 4.78 | 56.82 | 18.81 | 1.00 | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 1 | 98.00 | 2.00 | 0.00 |
