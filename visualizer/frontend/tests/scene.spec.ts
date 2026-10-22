@@ -952,7 +952,7 @@ test('submits a compatible learned selection and shows actual job progress and r
   await page.getByRole('button', { name: 'Run 3 Episodes' }).click();
   await expect.poll(() => postBody).toEqual({
     defender_policy_id: 'lr_ppo', defender_generation: 'd1', defender_training_seed: 77,
-    attacker_condition: 'A1-203', clutter_level: 'C3', perception_mode: 'map_local',
+    attacker_condition: 'A1-203', clutter_level: 'C3', perception_mode: 'map_local', semantics: 'V1',
     seed_start: 20, episode_count: 3, deterministic_inference: true,
   });
   await expect(page.getByText('Episode 2 of 3 running — 1 completed / seed 21')).toBeVisible();
@@ -965,6 +965,100 @@ test('submits a compatible learned selection and shows actual job progress and r
   await page.screenshot({ path: 'test-results/phase4-results.png', fullPage: true });
 });
 
+const v2Episode: ReplayEpisode = {
+  ...fixtureEpisode,
+  environment: {
+    ...fixtureEpisode.environment,
+    clutter: 'C0',
+    builder: 'experiments.journal_v2_protocol.build_v2_env_config',
+    semantics: 'V2',
+    config: { mission_contact_mode: 'swept', enemy_nominal_guidance_mode: 'direct_obstacle_only' },
+  },
+  frames: fixtureEpisode.frames.map((frame, index) => ({
+    ...frame,
+    environmental_state: {
+      ...frame.environmental_state,
+      enemy_behavior_mode: index === 1 ? 'COLLISION_AVOID' : 'MISSION',
+      enemy_obstacle_avoidance_mode: index === 1 ? 'climb' : null,
+      enemy_avoidance_obstacle_id: index === 1 ? 7 : null,
+      enemy_avoidance_obstacle_type: index === 1 ? 'static' : null,
+    },
+    privileged_diagnostics: {
+      ...frame.privileged_diagnostics,
+      simulator_info: index === fixtureEpisode.frames.length - 1
+        ? { mission_contact_mode: 'swept', terminal_event: 'capture', terminal_event_fraction: 0.42 }
+        : { mission_contact_mode: 'swept' },
+    },
+  })),
+};
+
+test('semantics selector defaults to V1, sends V2 explicitly, and the replay shows a V2 badge and swept contact', async ({ page }) => {
+  await mockCatalog(page);
+  let postBody: Record<string, unknown> | null = null;
+  await page.route('**/api/replay-jobs', async (route: Route) => {
+    postBody = route.request().postDataJSON() as Record<string, unknown>;
+    await route.fulfill({ status: 202, json: { ...jobBase, state: 'queued' } });
+  });
+  await page.route(`**/api/replay-jobs/${jobBase.job_id}`, route => route.fulfill({
+    json: {
+      ...jobBase, state: 'completed', requested_episode_count: 1, completed_count: 1, current_episode_seed: null,
+      completed_replay_ids: [replayId], started_at: jobBase.created_at,
+      completed_at: '2026-10-16T10:00:03Z', updated_at: '2026-10-16T10:00:03Z',
+    },
+  }));
+  await mockFixtureEpisodes(page, [replayId], v2Episode);
+
+  await page.goto('/');
+  await expect(page.getByLabel('Simulation semantics')).toHaveValue('V1');
+  await page.getByLabel('Simulation semantics').selectOption('V2');
+  await page.getByLabel('Starting evaluation seed').fill('130000');
+  await page.getByRole('button', { name: 'Run Episode', exact: true }).click();
+  await expect.poll(() => postBody).toMatchObject({
+    defender_policy_id: 'greedy', attacker_condition: 'A0', clutter_level: 'C0',
+    semantics: 'V2', seed_start: 130000, episode_count: 1,
+  });
+  await expect(page.getByTestId('semantics-badge')).toHaveText('Semantics: V2');
+  await expect(page.getByTestId('attacker-mode')).toBeVisible();
+  await page.screenshot({ path: 'test-results/semantics-v2-selected.png', fullPage: true });
+});
+
+test('semantics badge and attacker readout: V1 for legacy replays, V2 detail only in ground-truth mode', async ({ page }) => {
+  await mockCatalog(page);
+  await mockFixtureEpisodes(page, [replayId], v2Episode);
+  await page.goto('/');
+  await openAnalysis(page);
+  await page.getByRole('button', { name: 'Watch Recorded Episode' }).click();
+  await expect(page.getByTestId('semantics-badge')).toHaveText('Semantics: V2');
+  await scrubTimeline(page, 0.5);
+  await expect(page.getByTestId('attacker-mode')).toContainText('OBSTACLE_AVOID (climb, static #7)');
+  await scrubTimeline(page, 0);
+  await expect(page.getByTestId('attacker-mode')).toHaveText('Attacker mode: DIRECT');
+  const last = v2Episode.frames[v2Episode.frames.length - 1].time_s;
+  await scrubTimeline(page, last);
+  await expect(page.getByTestId('swept-contact')).toContainText('capture at τ = 0.42');
+});
+
+test('a replay recorded before the selector existed is labelled V1', async ({ page }) => {
+  await mockCatalog(page);
+  await mockFixtureEpisodes(page, [replayId]);
+  await page.goto('/');
+  await openAnalysis(page);
+  await page.getByRole('button', { name: 'Watch Recorded Episode' }).click();
+  await expect(page.getByTestId('semantics-badge')).toHaveText('Semantics: V1');
+  await expect(page.getByTestId('swept-contact')).toHaveCount(0);
+});
+
+test('URL presets open the requested semantics, clutter and seed without changing the V1 default', async ({ page }) => {
+  await mockCatalog(page);
+  await page.goto('/?semantics=V2&clutter=C2&seed=130065');
+  await expect(page.getByLabel('Simulation semantics')).toHaveValue('V2');
+  await expect(page.getByLabel('Clutter level')).toHaveValue('C2');
+  await expect(page.getByLabel('Starting evaluation seed')).toHaveValue('130065');
+  await page.goto('/?semantics=bogus&clutter=C9&seed=-3');
+  await expect(page.getByLabel('Simulation semantics')).toHaveValue('V1');
+  await expect(page.getByLabel('Clutter level')).toHaveValue('C0');
+  await expect(page.getByLabel('Starting evaluation seed')).toHaveValue('0');
+});
 test('shows actionable submission and service errors without invented results', async ({ page }) => {
   await mockCatalog(page);
   await page.route('**/api/replay-jobs', route => route.fulfill({

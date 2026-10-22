@@ -11,9 +11,43 @@ performs policy inference, or changes recorded outcomes.
 
 ## Scientific integrity and coordinate decision
 
-Based on local research commit `a3bc6c4acf1d0b601945159d682f9f14bc702860`,
+Based on local research commit `181f466339133095bd0710af332bace5cf59128c`
+(branch `research/journal-corrected-attacker-v2`),
 not a remote branch. All additions are confined to this `visualizer` directory.
 Scientific Python, experiment configuration, results, weights and tags are unchanged.
+The engine refuses to run against any other research commit
+(`EXPECTED_RESEARCH_COMMIT` in `backend/replay_engine.py`); update that pin only
+after auditing the new research source.
+
+### Simulation semantics: V1 and V2
+
+The research repository contains two simulation semantics, selectable per replay:
+
+| | V1 (default) | V2 |
+|---|---|---|
+| Mission contact (attacker→asset capture, defender→attacker interception) | endpoint only (tested at each step's final positions) | swept: first contact over the whole step |
+| Scripted attacker A0 | pursuit + weave + noise + defender evasion | direct pursuit; deviates only while an obstacle blocks the direct path |
+| Research builder | `build_canonical_env_config` | `experiments.journal_v2_protocol.build_v2_env_config` |
+
+The visualizer **implements neither**: it only passes the choice to the research
+repository's own builders, then asserts that the resolved config really has the
+expected switches (`mission_contact_mode`, `enemy_nominal_guidance_mode`) so the
+label can never disagree with the simulator that ran. V1 is the default and is
+unchanged (frame-for-frame identical to the previous visualizer).
+
+* UI: **Simulation semantics** dropdown in the run form; the playback status bar
+  always shows a `Semantics: V1/V2` badge, the recorded-episode list is prefixed
+  `[V1]`/`[V2]`, and the episode/provenance cards repeat it.
+* Links: `http://127.0.0.1:5173/?semantics=V2&clutter=C2&seed=130065` pre-fills
+  the form (invalid values fall back to V1 / C0 / seed 0).
+* CLI: `python -m visualizer.backend.replay_cli ... --semantics V2`.
+* API: optional `"semantics": "V1" | "V2"` on `POST /api/replay-jobs` (default `V1`).
+* Replays recorded before the selector existed load as V1.
+* In Ground Truth mode the status bar also shows the recorded attacker mode
+  (`DIRECT`, `OBSTACLE_AVOID (climb, static #7)`, …), attacker–asset range, and
+  for V2 the swept contact (`capture at τ = 0.42 of the step`). These are read from
+  recorded simulator state only.
+* The Comparison Explorer works with V1 replays only.
 
 **The simulator and viewer preserve native 3D.** `SoldierEnv` records altitude,
 three-component actions, climb/descent limits, and 3D collision/detection.

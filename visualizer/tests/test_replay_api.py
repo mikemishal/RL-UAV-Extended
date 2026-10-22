@@ -427,3 +427,94 @@ def test_cors_is_restricted_to_configured_local_frontend(research_root):
         denied = client.get("/api/health", headers={"Origin": "https://example.invalid"})
     assert allowed.headers.get("access-control-allow-origin") == "http://localhost:5173"
     assert denied.headers.get("access-control-allow-origin") is None
+
+
+# ----------------------------------------------------- V1/V2 semantics selector
+V2_CONFIG = {"mission_contact_mode": "swept", "enemy_nominal_guidance_mode": "direct_obstacle_only"}
+
+
+def _v2_bundle(seed: int = 130000) -> ReplayBundle:
+    bundle = _bundle(seed)
+    episode = bundle.episodes[0]
+    environment = EnvironmentSpec(
+        clutter="C0",
+        awareness="map_local",
+        builder="experiments.journal_v2_protocol.build_v2_env_config",
+        semantics="V2",
+        config=V2_CONFIG,
+        config_sha256="d" * 64,
+        dt_s=0.5,
+    )
+    return bundle.model_copy(update={"episodes": [episode.model_copy(update={"environment": environment})]})
+
+
+def test_semantics_defaults_to_v1_and_is_validated_by_the_api(research_root):
+    assert _request().semantics == "V1"
+    with TestClient(create_app(_settings(research_root), catalog_provider=FakeCatalog())) as client:
+        invalid = client.post("/api/replay-jobs", json={
+            "defender_policy_id": "greedy", "attacker_condition": "A0", "clutter_level": "C0",
+            "episode_count": 1, "semantics": "V3",
+        })
+    assert invalid.status_code == 422
+    assert invalid.json()["error"]["code"] == "INVALID_REQUEST"
+
+
+def test_worker_subprocess_receives_the_selected_semantics(research_root, tmp_path, monkeypatch):
+    import visualizer.backend.replay_jobs as jobs_module
+
+    output = tmp_path / "local"
+    output.mkdir()
+    monkeypatch.setattr(jobs_module, "local_output_root", lambda: output)
+    commands: list[list[str]] = []
+
+    def blocked_popen(command, **_kwargs):
+        commands.append([str(part) for part in command])
+        raise OSError("worker launch intentionally blocked in this unit test")
+
+    monkeypatch.setattr(jobs_module.subprocess, "Popen", blocked_popen)
+    manager = ReplayJobManager(_settings(research_root), FakeCatalog())
+    try:
+        for semantics in ("V1", "V2"):
+            job = manager.start(_request(episode_count=1, seed_start=130000, semantics=semantics))
+            deadline = time.monotonic() + 10
+            while manager.get(job.job_id).state in {"queued", "running"} and time.monotonic() < deadline:
+                time.sleep(0.02)
+            assert manager.get(job.job_id).state == "failed"
+        assert len(commands) == 2
+        for command, expected in zip(commands, ("V1", "V2")):
+            assert command[command.index("--semantics") + 1] == expected
+            assert command[command.index("--clutter") + 1] == "C0"
+            assert command[command.index("--evaluation-seed") + 1] == "130000"
+            assert command[command.index("--defender") + 1] == "greedy"
+    finally:
+        manager.shutdown()
+
+
+def test_replay_listing_exposes_semantics_and_legacy_replays_are_v1(research_root, tmp_path, monkeypatch):
+    import visualizer.backend.replay_jobs as jobs_module
+
+    output = tmp_path / "local"
+    output.mkdir()
+    monkeypatch.setattr(jobs_module, "local_output_root", lambda: output)
+    for name, bundle in (("6" * 32, _bundle()), ("7" * 32, _v2_bundle())):
+        with gzip.open(output / f"{name}.json.gz", "wb") as target:
+            target.write(bundle.model_dump_json().encode("utf-8"))
+    manager = ReplayJobManager(_settings(research_root), FakeCatalog())
+    try:
+        listing = manager.list_replays()
+        assert sorted(item.semantics for item in listing.replays) == ["V1", "V2"]
+        assert not listing.warnings
+        by_id = {item.replay_id: item for item in listing.replays}
+        v2 = manager.get_replay(_replay_id_for_path(output / f"{'7' * 32}.json.gz"))
+        assert v2.episodes[0].environment.semantics == "V2"
+        assert by_id[_replay_id_for_path(output / f"{'6' * 32}.json.gz")].semantics == "V1"
+    finally:
+        manager.shutdown()
+
+
+def test_persisted_job_without_semantics_field_loads_as_v1():
+    """Job metadata written before the selector existed must still validate."""
+    request = ReplayBatchRequest.model_validate({
+        "defender_policy_id": "greedy", "attacker_condition": "A0", "clutter_level": "C0", "episode_count": 1,
+    })
+    assert request.semantics == "V1"

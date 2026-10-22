@@ -26,6 +26,13 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--attacker", choices=("A0", "A1-201", "A1-202", "A1-203"), default="A0")
     parser.add_argument("--clutter", required=True, choices=("C0", "C1", "C2", "C3"))
     parser.add_argument("--perception", choices=("local", "map_local"), default="map_local")
+    parser.add_argument(
+        "--semantics",
+        choices=("V1", "V2"),
+        default="V1",
+        help="V1: original endpoint-contact/legacy-A0 environment (default). "
+        "V2: corrected swept-contact environment with direct obstacle-only A0.",
+    )
     parser.add_argument("--evaluation-seed", required=True, type=int)
     parser.add_argument(
         "--output-name",
@@ -45,6 +52,7 @@ def main(argv: list[str] | None = None) -> int:
             attacker_model_seed=ATTACKER_SEEDS.get(args.attacker),
             clutter_level=args.clutter,
             perception_mode=args.perception,
+            semantics=args.semantics,
             evaluation_seed=args.evaluation_seed,
             deterministic_inference=True,
         )
@@ -81,6 +89,7 @@ def main(argv: list[str] | None = None) -> int:
         "scenario": {
             "clutter": episode.environment.clutter,
             "perception": episode.environment.awareness,
+            "semantics": episode.environment.semantics,
             "config_sha256": episode.environment.config_sha256,
         },
         "evaluation_seed": episode.simulation_seed,

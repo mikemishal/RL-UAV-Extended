@@ -169,8 +169,20 @@
           "type": "string"
         },
         "builder": {
-          "const": "experiments.journal_clutter_protocol.build_canonical_env_config",
+          "enum": [
+            "experiments.journal_clutter_protocol.build_canonical_env_config",
+            "experiments.journal_v2_protocol.build_v2_env_config"
+          ],
           "title": "Builder",
+          "type": "string"
+        },
+        "semantics": {
+          "default": "V1",
+          "enum": [
+            "V1",
+            "V2"
+          ],
+          "title": "Semantics",
           "type": "string"
         },
         "config": {

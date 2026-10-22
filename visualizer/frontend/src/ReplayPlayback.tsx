@@ -53,6 +53,41 @@ function clockLabel(seconds: number): string {
   return `${minutes.toString().padStart(2, '0')}:${remainder.toFixed(1).padStart(4, '0')}`;
 }
 
+// Native simulator behavior-mode names mapped to the labels used in the V2 validation.
+const BEHAVIOR_LABELS: Record<string, string> = {
+  MISSION: 'DIRECT',
+  COLLISION_AVOID: 'OBSTACLE_AVOID',
+  ROUTE: 'ROUTE_BYPASS',
+  EVADE: 'EVADE',
+};
+
+// Read-only view of recorded attacker state; never feeds back into the simulation.
+function attackerBehaviorLabel(frame: ReplayFrame): string | null {
+  const state = frame.environmental_state;
+  const mode = state.enemy_behavior_mode;
+  if (typeof mode !== 'string') return null;
+  const label = BEHAVIOR_LABELS[mode] ?? mode;
+  if (mode !== 'COLLISION_AVOID') return label;
+  const candidate = state.enemy_obstacle_avoidance_mode;
+  const obstacleId = state.enemy_avoidance_obstacle_id;
+  const obstacleType = state.enemy_avoidance_obstacle_type;
+  const detail = [
+    typeof candidate === 'string' ? candidate : null,
+    obstacleId !== null && obstacleId !== undefined ? `${typeof obstacleType === 'string' ? obstacleType : 'obstacle'} #${String(obstacleId)}` : null,
+  ].filter(Boolean).join(', ');
+  return detail ? `${label} (${detail})` : label;
+}
+
+function sweptContactLabel(frame: ReplayFrame): string | null {
+  const info = frame.privileged_diagnostics.simulator_info;
+  if (info.mission_contact_mode !== 'swept') return null;
+  const event = info.terminal_event;
+  const fraction = info.terminal_event_fraction;
+  return typeof event === 'string' && typeof fraction === 'number'
+    ? `Swept contact: ${event.replace('_', ' ')} at τ = ${fraction.toFixed(2)} of the step`
+    : null;
+}
+
 export function ReplayPlayback({
   replayId,
   episode,
@@ -249,11 +284,15 @@ export function ReplayPlayback({
       {episode && sample && (
         <section className="episode-status panel" aria-label="Current episode status">
           <strong>{episode.defender.policy_id}{episode.defender.generation ? ` ${episode.defender.generation.toUpperCase()}` : ''}{informationMode === 'ground-truth' ? ` vs ${episode.attacker.policy_id}` : ''}</strong>
+          <span className={`semantics-badge semantics-${episode.environment.semantics ?? 'V1'}`} data-testid="semantics-badge">Semantics: {episode.environment.semantics ?? 'V1'}</span>
           <span>Time {clockLabel(timeS)} · step {episode.frames[sample.lowerIndex].step}</span>
           <span>Detection {episode.frames[sample.lowerIndex].policy_visible.enemy_detected ? 'acquired' : 'not acquired'}</span>
           {informationMode === 'ground-truth'
             ? <span>Defender–attacker range {episode.frames[sample.lowerIndex].privileged_diagnostics.defender_attacker_range_m.toFixed(1)} m</span>
             : <span>Privileged entity range hidden in Policy-Visible mode</span>}
+          {informationMode === 'ground-truth' && <span>Attacker–asset range {episode.frames[sample.lowerIndex].privileged_diagnostics.attacker_asset_range_m.toFixed(1)} m</span>}
+          {informationMode === 'ground-truth' && attackerBehaviorLabel(episode.frames[sample.lowerIndex]) && <span data-testid="attacker-mode">Attacker mode: {attackerBehaviorLabel(episode.frames[sample.lowerIndex])}</span>}
+          {informationMode === 'ground-truth' && terminalReached && sweptContactLabel(episode.frames[sample.lowerIndex]) && <span data-testid="swept-contact">{sweptContactLabel(episode.frames[sample.lowerIndex])}</span>}
           {informationMode === 'ground-truth' && <span>{terminalReached ? `Terminal outcome: ${episode.summary.outcome}` : `Recorded outcome: ${episode.summary.outcome} (pending)`}</span>}
         </section>
       )}

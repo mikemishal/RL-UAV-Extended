@@ -18,6 +18,12 @@ ATTACKER_SEEDS = {"A1-201": 201, "A1-202": 202, "A1-203": 203}
 POLICY_IDS = ("greedy", "kalman_greedy", "pn", "lead", "rmpc", "ppo", "ppo_kalman", "lr_ppo")
 CLUTTER_LEVELS = ("C0", "C1", "C2", "C3")
 PERCEPTION_MODES = ("local", "map_local")
+# Simulation semantics selector. The visualizer only forwards this choice to the
+# research repository's own config builders; it never implements the semantics.
+#   V1: the original environment (endpoint mission contact, legacy weaving A0).
+#   V2: corrected semantics (swept mission contact, direct obstacle-only A0).
+SEMANTICS = ("V1", "V2")
+DEFAULT_SEMANTICS = "V1"
 MAX_EVALUATION_SEED = 2**32 - 1
 
 
@@ -35,6 +41,7 @@ class ReplayRequest(BaseModel):
     attacker_model_seed: Annotated[int, Field(ge=0, strict=True)] | None = None
     clutter_level: Literal["C0", "C1", "C2", "C3"]
     perception_mode: Literal["local", "map_local"] = "map_local"
+    semantics: Literal["V1", "V2"] = DEFAULT_SEMANTICS
     evaluation_seed: Annotated[int, Field(ge=0, le=MAX_EVALUATION_SEED, strict=True)]
     deterministic_inference: Literal[True] = True
 
@@ -96,6 +103,7 @@ class ReplayBatchRequest(BaseModel):
     attacker_condition: Literal["A0", "A1-201", "A1-202", "A1-203"]
     clutter_level: Literal["C0", "C1", "C2", "C3"]
     perception_mode: Literal["local", "map_local"] = "map_local"
+    semantics: Literal["V1", "V2"] = DEFAULT_SEMANTICS
     seed_start: Annotated[int, Field(ge=0, le=MAX_EVALUATION_SEED, strict=True)] = 0
     episode_count: Literal[1, 3, 5, 10] = 5
     deterministic_inference: Literal[True] = True
@@ -114,6 +122,7 @@ class ReplayBatchRequest(BaseModel):
                 attacker_model_seed=ATTACKER_SEEDS.get(self.attacker_condition),
                 clutter_level=self.clutter_level,
                 perception_mode=self.perception_mode,
+                semantics=self.semantics,
                 evaluation_seed=seed,
                 deterministic_inference=self.deterministic_inference,
             )
@@ -128,6 +137,7 @@ class ReplayBatchRequest(BaseModel):
             attacker_model_seed=ATTACKER_SEEDS.get(self.attacker_condition),
             clutter_level=self.clutter_level,
             perception_mode=self.perception_mode,
+            semantics=self.semantics,
             evaluation_seed=evaluation_seed,
             deterministic_inference=self.deterministic_inference,
         )

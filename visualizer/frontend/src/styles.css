@@ -256,6 +256,9 @@ button.paired-seed-row { cursor: pointer; }
 .job-compact-status.failed, .job-compact-status.interrupted { border-color: #814747; }
 .episode-status { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 18px; padding: 9px 12px; font-size: 11px; }
 .episode-status strong { color: #dff3ff; }
+.semantics-badge { padding: 2px 9px; border-radius: 10px; font-weight: 700; letter-spacing: .03em; border: 1px solid transparent; }
+.semantics-badge.semantics-V1 { background: #3a3320; color: #ffd98a; border-color: #8a7330; }
+.semantics-badge.semantics-V2 { background: #17372a; color: #8ff0b8; border-color: #2f8f5f; }
 .replay-stage:fullscreen { overflow: auto; padding: 12px; background: #09121a; color: #d8e7ef; }
 .replay-stage:fullscreen .viewport { height: min(62vh, 760px); min-height: 320px; }
 .replay-stage:fullscreen .episode-status, .replay-stage:fullscreen .playback { margin-top: 8px; }

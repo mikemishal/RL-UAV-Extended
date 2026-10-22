@@ -35,7 +35,12 @@ a checkpoint hash for them. Paths here are provenance, not a future file API.
 `EnvironmentSpec.config` is the full JSON-serialized `EnvConfig` dataclass,
 with a stable sorted JSON hash; it includes dt,
 dimensions, thresholds, sensing, avoidance, collision/reward defaults and
-every builder override. `builder` identifies the canonical journal function.
+every builder override. `builder` identifies the research config function:
+`build_canonical_env_config` (V1) or `build_v2_env_config` (V2). `semantics`
+(`V1` default, `V2`) is validated against the resolved config
+(`mission_contact_mode`, `enemy_nominal_guidance_mode`) and the builder, so the
+label cannot disagree with the simulator that ran. Event `contact_fraction` is
+populated only for V2 mission/collision events, from the simulator's own report.
 The engine records the frozen selected RMPC parameters and residual limit 30.
 
 ## Frame timing and units

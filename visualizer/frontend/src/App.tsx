@@ -28,12 +28,32 @@ import type {
   ScenarioCatalog,
   ResearchBookmark,
   ResearchCase,
+  Semantics,
 } from './api';
 import { ResearchCases } from './ResearchCases';
 
 type BackendStatus = { kind: 'checking' | 'ok' | 'degraded' | 'error'; message: string };
 type EpisodeCount = 1 | 3 | 5 | 10;
 const MAX_SEED = 2 ** 32 - 1;
+const SEMANTICS_OPTIONS: { value: Semantics; label: string }[] = [
+  { value: 'V1', label: 'V1 — original (endpoint contact, legacy weaving A0)' },
+  { value: 'V2', label: 'V2 — corrected (swept contact, direct obstacle-only A0)' },
+];
+
+// Optional presets so a specific scenario can be opened by link, e.g.
+// ?semantics=V2&clutter=C2&seed=130065. Absent or invalid values fall back to the
+// existing defaults (semantics V1, clutter C0, seed 0). Display-only convenience.
+function queryPreset() {
+  const params = new URLSearchParams(window.location.search);
+  const semantics = params.get('semantics');
+  const clutter = params.get('clutter');
+  const seed = params.get('seed');
+  return {
+    semantics: (semantics === 'V1' || semantics === 'V2' ? semantics : 'V1') as Semantics,
+    clutter: clutter && ['C0', 'C1', 'C2', 'C3'].includes(clutter) ? clutter : 'C0',
+    seed: seed && /^\d+$/.test(seed) ? seed : '0',
+  };
+}
 const ComparisonExplorer = lazy(() => import('./ComparisonExplorer').then(module => ({ default: module.ComparisonExplorer })));
 const defaultDiagnosticVisibility: DiagnosticVisibility = {
   lead: true,
@@ -281,10 +301,11 @@ export function App() {
   const [generation, setGeneration] = useState('d0');
   const [trainingSeed, setTrainingSeed] = useState(71);
   const [attackerId, setAttackerId] = useState('A0');
-  const [clutter, setClutter] = useState('C0');
+  const [clutter, setClutter] = useState(() => queryPreset().clutter);
+  const [semantics, setSemantics] = useState<Semantics>(() => queryPreset().semantics);
   const [perception, setPerception] = useState<'local' | 'map_local'>('map_local');
   const [episodeCount, setEpisodeCount] = useState<EpisodeCount>(1);
-  const [seedStart, setSeedStart] = useState('0');
+  const [seedStart, setSeedStart] = useState(() => queryPreset().seed);
   const [job, setJob] = useState<ReplayJob | null>(null);
   const [jobError, setJobError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
@@ -631,6 +652,7 @@ export function App() {
       attacker_condition: attacker.attacker_id,
       clutter_level: clutter,
       perception_mode: perception,
+      semantics,
       seed_start: parsedSeed,
       episode_count: episodeCount,
       deterministic_inference: true,
@@ -797,6 +819,12 @@ export function App() {
               </select>
             </label>
             <label>
+              Simulation semantics
+              <select aria-label="Simulation semantics" value={semantics} onChange={event => setSemantics(event.target.value as Semantics)}>
+                {SEMANTICS_OPTIONS.map(item => <option key={item.value} value={item.value}>{item.label}</option>)}
+              </select>
+            </label>
+            <label>
               Clutter level
               <select aria-label="Clutter level" value={clutter} onChange={event => setClutter(event.target.value)}>
                 {scenarios?.scenarios.map(item => <option key={item.clutter} value={item.clutter}>{item.clutter} — {item.display_name}</option>)}
@@ -812,10 +840,13 @@ export function App() {
             <div className="resolved-parameters" aria-label="Resolved simulation parameters">
               <strong>Resolved canonical parameters / read-only</strong>
               <span>Estimator track: {estimator ?? 'not resolved'}</span>
+              <span>Semantics: {semantics}{semantics === 'V2' ? ' (swept mission contact, direct obstacle-only A0)' : ' (endpoint mission contact, legacy A0)'}</span>
               {physicalKeys.map(key => (
                 <span key={key}>{parameterLabels[key]}: {formatParameter(scenarioValues[key], key)}</span>
               ))}
-              {resolvedConfiguration && <small>Scenario config SHA-256: {resolvedConfiguration.config_sha256}</small>}
+              {resolvedConfiguration && <small>{semantics === 'V1'
+                ? `Scenario config SHA-256: ${resolvedConfiguration.config_sha256}`
+                : 'V2 config SHA-256 is computed from the research V2 builder at replay time and shown in the recorded summary.'}</small>}
             </div>
             <label>
               Episode count
@@ -851,7 +882,7 @@ export function App() {
               <select aria-label="Recorded episode" value={recordedReplayId ?? ''} onChange={event => setRecordedReplayId(event.target.value || null)} disabled={activeJob || replays.length === 0}>
                 {replays.map(item => (
                   <option key={item.replay_id} value={item.replay_id}>
-                    {item.defender.policy_id}{item.defender.generation ? ` ${item.defender.generation.toUpperCase()}` : ''}{item.defender.training_seed === null ? '' : ` seed ${item.defender.training_seed}`} vs {item.attacker.policy_id} / {item.clutter} / eval ${item.simulation_seed} / {item.outcome}
+                    [{item.semantics ?? 'V1'}] {item.defender.policy_id}{item.defender.generation ? ` ${item.defender.generation.toUpperCase()}` : ''}{item.defender.training_seed === null ? '' : ` seed ${item.defender.training_seed}`} vs {item.attacker.policy_id} / {item.clutter} / eval ${item.simulation_seed} / {item.outcome}
                   </option>
                 ))}
               </select>
@@ -955,6 +986,7 @@ export function App() {
               <p>Defender generation: {selectedEpisode.defender.generation ?? 'Not applicable'}</p>
               <p>Defender training seed: {selectedEpisode.defender.training_seed ?? 'Unavailable'} / checkpoint role: {selectedEpisode.defender.checkpoint?.role ?? 'none / analytical'}</p>
               {informationMode === 'ground-truth' && <p>Attacker: {selectedEpisode.attacker.policy_id}{selectedEpisode.attacker.training_seed === null ? '' : ` / training seed ${selectedEpisode.attacker.training_seed}`}</p>}
+              <p>Semantics: {selectedEpisode.environment.semantics ?? 'V1'}</p>
               <p>Clutter: {selectedEpisode.environment.clutter} / perception: {selectedEpisode.environment.awareness}</p>
               <p>Evaluation seed: {selectedEpisode.simulation_seed} / time step: {selectedEpisode.environment.dt_s.toFixed(3)} s</p>
               {currentPlaybackReadout && (
@@ -990,6 +1022,7 @@ export function App() {
                 <h3>{readableOutcome(selectedSummary.summary.outcome)}</h3>
                 <p>Seed {selectedSummary.simulation_seed} / {selectedSummary.defender.policy_id} {selectedSummary.defender.generation ?? ''} vs {selectedSummary.attacker.policy_id}</p>
                 <p>{selectedSummary.environment.clutter} / {selectedSummary.environment.awareness} / {selectedSummary.summary.steps} steps</p>
+                <p>Semantics: {selectedSummary.environment.semantics ?? 'V1'}</p>
                 <p>Duration {selectedSummary.summary.duration_s.toFixed(1)} s / total reward {selectedSummary.summary.total_reward.toFixed(3)}</p>
                 <p>Detection {selectedSummary.summary.detection_time_s === null ? 'not acquired' : `${selectedSummary.summary.detection_time_s.toFixed(1)} s`}</p>
                 <p>{selectedSummary.summary.collision_type ?? (selectedSummary.summary.interception_time_s === null ? 'No collision/interception event' : `Interception at ${selectedSummary.summary.interception_time_s.toFixed(1)} s`)}</p>

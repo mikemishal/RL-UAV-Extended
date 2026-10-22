@@ -45,6 +45,7 @@ SAFE_WORKER_ERRORS = {
     "INCOMPATIBLE_POLICY": "The selected policy configuration is incompatible with its registered model.",
     "INCOMPATIBLE_CHECKPOINT": "The registered checkpoint does not match its required observation/action contract.",
     "INVALID_REQUEST": "The selected simulation configuration is invalid.",
+    "SEMANTICS_CONFIG_MISMATCH": "The research config did not resolve to the requested V1/V2 semantics.",
 }
 
 
@@ -77,6 +78,7 @@ class ReplayListItem(BaseModel):
     attacker: dict
     clutter: str
     perception: str
+    semantics: str = "V1"
     outcome: str
     steps: int
     duration_s: float
@@ -355,6 +357,8 @@ class ReplayJobManager:
             request.clutter_level,
             "--perception",
             request.perception_mode,
+            "--semantics",
+            request.semantics,
             "--evaluation-seed",
             str(seed),
             "--output-name",
@@ -431,6 +435,7 @@ class ReplayJobManager:
             or episode.attacker.policy_id != request.attacker_condition
             or episode.environment.clutter != request.clutter_level
             or episode.environment.awareness != request.perception_mode
+            or episode.environment.semantics != request.semantics
         ):
             raise ApplicationError("INVALID_WORKER_RESPONSE", "The generated replay metadata differs from the validated request.", 500)
         return _replay_id_for_path(expected_path)
@@ -513,6 +518,7 @@ class ReplayJobManager:
                 attacker=episode.attacker.model_dump(mode="json"),
                 clutter=episode.environment.clutter,
                 perception=episode.environment.awareness,
+                semantics=episode.environment.semantics,
                 outcome=summary.outcome,
                 steps=summary.steps,
                 duration_s=summary.duration_s,

@@ -43,10 +43,32 @@ class EnvironmentSpec(ContractModel):
     clutter: Literal["C0", "C1", "C2", "C3"]
     awareness: Literal["local", "map_local"]
     scenario_kind: Literal["canonical"] = "canonical"
-    builder: Literal["experiments.journal_clutter_protocol.build_canonical_env_config"]
+    builder: Literal[
+        "experiments.journal_clutter_protocol.build_canonical_env_config",
+        "experiments.journal_v2_protocol.build_v2_env_config",
+    ]
+    # Replays written before the semantics selector existed contain neither the
+    # field nor the V2 config switches; they are V1 by construction.
+    semantics: Literal["V1", "V2"] = "V1"
     config: dict[str, JsonValue]
     config_sha256: Sha256
     dt_s: Annotated[FiniteFloat, Field(gt=0)]
+
+    @model_validator(mode="after")
+    def semantics_label_matches_resolved_config(self):
+        """The displayed semantics label can never disagree with the resolved
+        simulator configuration that actually produced the trace."""
+        expected = {"V1": ("endpoint", "legacy"), "V2": ("swept", "direct_obstacle_only")}[self.semantics]
+        resolved = (
+            self.config.get("mission_contact_mode", "endpoint"),
+            self.config.get("enemy_nominal_guidance_mode", "legacy"),
+        )
+        if resolved != expected:
+            raise ValueError(f"Semantics {self.semantics} requires {expected}, but the resolved config has {resolved}.")
+        v2_builder = self.builder == "experiments.journal_v2_protocol.build_v2_env_config"
+        if v2_builder != (self.semantics == "V2"):
+            raise ValueError("The environment builder does not match the declared semantics.")
+        return self
 
 
 class EntityState(ContractModel):

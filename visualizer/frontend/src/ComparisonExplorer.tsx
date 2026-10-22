@@ -130,6 +130,7 @@ function listMatches(
     && (item.attacker.checkpoint?.sha256 ?? null) === attackerCheckpointHash
     && item.clutter === clutter
     && item.perception === perception
+    && (item.semantics ?? 'V1') === 'V1' // this view generates and compares V1 replays only
     && item.simulation_seed === seed);
 }
 
@@ -154,6 +155,7 @@ function selectionMatches(
     && (episode.attacker.checkpoint?.sha256 ?? null) === attackerCheckpointHash
     && episode.environment.clutter === clutter
     && episode.environment.awareness === perception
+    && (episode.environment.semantics ?? 'V1') === 'V1'
     && episode.simulation_seed === seed;
 }
 

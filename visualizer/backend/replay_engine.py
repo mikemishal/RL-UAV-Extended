@@ -49,7 +49,7 @@ from .replay_contract import (
 from .replay_validation import validate_trace as _validate_trace
 
 logger = logging.getLogger(__name__)
-EXPECTED_RESEARCH_COMMIT = "a3bc6c4acf1d0b601945159d682f9f14bc702860"
+EXPECTED_RESEARCH_COMMIT = "181f466339133095bd0710af332bace5cf59128c"
 REGISTRY_RELATIVE_PATH = "results/defender_adaptation_model_registry.json"
 SECTOR_FEATURE_DIM = 20
 LRPPO_MAX_ANGLE_DEG = 30.0
@@ -115,6 +115,7 @@ def _research_modules(root: Path) -> dict[str, object]:
         "uav_defend.obstacles.sector_features",
         "uav_defend.policies.mpc.rmpc_policy",
         "experiments.journal_clutter_protocol",
+        "experiments.journal_v2_protocol",
         "experiments.defender_adaptation_evaluation",
         "experiments.adaptive_attacker_env",
         "experiments.post_detection_diagnostic_protocol",
@@ -654,6 +655,7 @@ def _event(
     entity: str | None = None,
     obstacle_id: str | None = None,
     position: object | None = None,
+    contact_fraction: float | None = None,
 ) -> ReplayEvent:
     return ReplayEvent(
         kind=kind,
@@ -663,20 +665,31 @@ def _event(
         entity=entity,
         obstacle_id=obstacle_id,
         position_m=_vector(position),
-        contact_fraction=None,
-        unavailable_fields={
-            "contact_fraction": "SoldierEnv reports the event state but does not expose substep contact timing."
-        },
+        contact_fraction=contact_fraction,
+        unavailable_fields=(
+            {}
+            if contact_fraction is not None
+            else {"contact_fraction": "SoldierEnv reports the event state but does not expose substep contact timing."}
+        ),
     )
+
+
+def _swept_fraction(info: dict, *terminal_events: str) -> float | None:
+    """Contact fraction of the step's terminal event, only when the simulator
+    itself reported it (swept mission-contact semantics). Read-only."""
+    if info.get("mission_contact_mode") != "swept" or info.get("terminal_event") not in terminal_events:
+        return None
+    fraction = info.get("terminal_event_fraction")
+    return float(fraction) if fraction is not None else None
 
 
 def _events_for_step(step: int, info: dict, outcome: str, dt: float) -> list[ReplayEvent]:
     events = []
     if bool(info.get("just_detected")):
         events.append(_event("detection", step, dt, "info.just_detected", entity="attacker", position=info.get("enemy_pos")))
-    for entity, contact_key, id_key, event_key in (
-        ("defender", "defender_collision_event_point", "defender_collision_obstacle_id", "defender_collision_event_type"),
-        ("attacker", "enemy_collision_event_point", "enemy_collision_obstacle_id", "enemy_collision_event_type"),
+    for entity, contact_key, id_key, event_key, swept_name in (
+        ("defender", "defender_collision_event_point", "defender_collision_obstacle_id", "defender_collision_event_type", "defender_collision"),
+        ("attacker", "enemy_collision_event_point", "enemy_collision_obstacle_id", "enemy_collision_event_type", "enemy_collision"),
     ):
         if info.get(event_key) is not None:
             events.append(_event(
@@ -684,13 +697,17 @@ def _events_for_step(step: int, info: dict, outcome: str, dt: float) -> list[Rep
                 entity=entity,
                 obstacle_id=str(info[id_key]) if info.get(id_key) is not None else None,
                 position=info.get(contact_key),
+                contact_fraction=_swept_fraction(info, swept_name),
             ))
     if outcome == "intercepted":
-        events.append(_event("interception", step, dt, "info.outcome", entity="attacker", position=info.get("enemy_pos")))
+        events.append(_event("interception", step, dt, "info.outcome", entity="attacker", position=info.get("enemy_pos"),
+                             contact_fraction=_swept_fraction(info, "interception")))
     elif outcome == "unsafe_intercept":
-        events.append(_event("unsafe_interception", step, dt, "info.outcome", entity="attacker", position=info.get("enemy_pos")))
+        events.append(_event("unsafe_interception", step, dt, "info.outcome", entity="attacker", position=info.get("enemy_pos"),
+                             contact_fraction=_swept_fraction(info, "interception")))
     elif outcome == "soldier_caught":
-        events.append(_event("asset_reached", step, dt, "info.outcome", entity="attacker", position=info.get("soldier_pos")))
+        events.append(_event("asset_reached", step, dt, "info.outcome", entity="attacker", position=info.get("soldier_pos"),
+                             contact_fraction=_swept_fraction(info, "capture")))
     elif outcome == "timeout":
         events.append(_event("timeout", step, dt, "info.outcome"))
     return events
@@ -989,6 +1006,47 @@ def _package_versions() -> dict[str, str]:
     return versions
 
 
+def build_replay_config(
+    modules: dict[str, object],
+    semantics: str,
+    clutter_level: str,
+    estimator: str,
+    perception_mode: str,
+) -> tuple[object, str]:
+    """Resolve the research EnvConfig for the requested simulation semantics.
+
+    The visualizer implements no simulation semantics itself: both branches call
+    the research repository's own config builders.
+
+    V1 keeps the exact call the visualizer always made (`build_canonical_env_config`),
+    so V1 replays are unchanged. V2 uses the research repo's explicit V2 builder
+    (swept mission contact + direct obstacle-only A0). After building, the
+    resolved switches are asserted so the result never depends on a default.
+    """
+    expected = {
+        "V1": ("endpoint", "legacy"),
+        "V2": ("swept", "direct_obstacle_only"),
+    }[semantics]
+    if semantics == "V2":
+        builder_name = "experiments.journal_v2_protocol.build_v2_env_config"
+        config = modules["experiments.journal_v2_protocol"].build_v2_env_config(
+            clutter_level, estimator, awareness_mode=perception_mode,
+        )
+    else:
+        builder_name = "experiments.journal_clutter_protocol.build_canonical_env_config"
+        config = modules["experiments.journal_clutter_protocol"].build_canonical_env_config(
+            clutter_level, estimator, awareness_mode=perception_mode,
+        )
+    resolved = (config.mission_contact_mode, config.enemy_nominal_guidance_mode)
+    if resolved != expected:
+        raise _fail(
+            "SEMANTICS_CONFIG_MISMATCH",
+            f"Semantics {semantics} must resolve to {expected}, but the research config resolved to {resolved}.",
+            500,
+        )
+    return config, builder_name
+
+
 def run_replay_episode(request: ReplayRequest, settings: Settings | None = None) -> ReplayBundle:
     """Run one real, deterministic SoldierEnv episode and return its validated trace."""
     if request.deterministic_inference is not True:
@@ -1018,10 +1076,8 @@ def run_replay_episode(request: ReplayRequest, settings: Settings | None = None)
         if request.defender_policy_id in CONFERENCE_ARCHITECTURES
         else "kalman" if request.defender_policy_id == "kalman_greedy" else "measurement"
     )
-    config = modules["experiments.journal_clutter_protocol"].build_canonical_env_config(
-        request.clutter_level,
-        estimator,
-        awareness_mode=request.perception_mode,
+    config, builder_name = build_replay_config(
+        modules, request.semantics, request.clutter_level, estimator, request.perception_mode,
     )
     adapter = _load_defender(request, config, store, registry, modules)
     attacker_checkpoint = _resolve_attacker_checkpoint(request.attacker_condition, registry, store)
@@ -1303,7 +1359,8 @@ def run_replay_episode(request: ReplayRequest, settings: Settings | None = None)
         env_spec = EnvironmentSpec(
             clutter=request.clutter_level,
             awareness=request.perception_mode,
-            builder="experiments.journal_clutter_protocol.build_canonical_env_config",
+            builder=builder_name,
+            semantics=request.semantics,
             config=config_dict,
             config_sha256=hashlib.sha256(config_json.encode("utf-8")).hexdigest(),
             dt_s=float(config.dt),

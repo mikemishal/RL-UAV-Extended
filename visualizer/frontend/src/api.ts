@@ -55,6 +55,9 @@ export interface PolicyCatalog {
 
 export type ScenarioParameters = Record<string, unknown>;
 
+/** V1: original environment. V2: corrected swept-contact semantics with direct obstacle-only A0. */
+export type Semantics = 'V1' | 'V2';
+
 export interface ScenarioConfiguration {
   config_sha256: string;
   parameters: ScenarioParameters;
@@ -86,6 +89,7 @@ export interface ReplayJobRequest {
   attacker_condition: string;
   clutter_level: string;
   perception_mode: string;
+  semantics?: Semantics;
   seed_start: number;
   episode_count: 1 | 3 | 5 | 10;
   deterministic_inference: true;
@@ -114,6 +118,7 @@ export interface ReplayListItem {
   attacker: { policy_id: string; checkpoint: { sha256: string; role: string } | null };
   clutter: string;
   perception: string;
+  semantics?: Semantics;
   outcome: string;
   steps: number;
   duration_s: number;
@@ -215,7 +220,7 @@ export interface ReplaySummary {
     checkpoint: { sha256: string; role: string } | null;
   };
   attacker: { policy_id: string; training_seed: number | null; checkpoint: { sha256: string; role: string } | null };
-  environment: { clutter: string; awareness: string; config_sha256: string; dt_s: number };
+  environment: { clutter: string; awareness: string; semantics?: Semantics; config_sha256: string; dt_s: number };
   summary: {
     outcome: string;
     steps: number;
@@ -434,7 +439,9 @@ export interface ReplayEpisode {
     clutter: string;
     awareness: string;
     scenario_kind: 'canonical';
-    builder: 'experiments.journal_clutter_protocol.build_canonical_env_config';
+    builder: 'experiments.journal_clutter_protocol.build_canonical_env_config'
+      | 'experiments.journal_v2_protocol.build_v2_env_config';
+    semantics?: Semantics;
     config: Record<string, unknown>;
     config_sha256: string;
     dt_s: number;
