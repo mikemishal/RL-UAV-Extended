@@ -360,6 +360,7 @@ class SoldierEnv(gym.Env):
             mission_stop_radius=(
                 self.config.threat_radius if self.config.enemy_nominal_guidance_mode == "direct_obstacle_only" else None
             ),
+            executed_prediction=self.config.enemy_nominal_guidance_mode == "direct_obstacle_only",
         )
         # Environmental-awareness/perception layer (journal extension): the
         # planner above is fed ONLY this object's output (see _move_enemy()),

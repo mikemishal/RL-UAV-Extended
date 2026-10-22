@@ -155,6 +155,140 @@ def predict_constrained_trajectory(
     return positions, velocities
 
 
+def predict_waypoint_following_trajectory(
+    position: np.ndarray,
+    velocity: np.ndarray,
+    waypoint: np.ndarray,
+    fallback_direction: np.ndarray,
+    limits: DynamicsLimits,
+    horizon_steps: int,
+) -> tuple[list[np.ndarray], list[np.ndarray]]:
+    """Predict the motion the hostile UAV will ACTUALLY fly while it persists on
+    `waypoint` (see `ObstacleAvoidancePlanner.plan`): every step the command is
+    re-derived from the current (predicted) position toward the SAME world-frame
+    waypoint -- `_direction_to(position, waypoint, fallback_direction, eps)` --
+    and passed through the same constrained dynamics. Unlike
+    `predict_constrained_trajectory` it does not hold the initial direction.
+
+    The per-step update replays `SoldierEnv._move_enemy` exactly, including its
+    float32 state storage: position/velocity are float32 after every step, and
+    the position increment is evaluated in float32. This is required, not
+    cosmetic -- when the desired horizontal heading is (nearly) opposite the
+    current heading the direction of the turn-rate-limited rotation is decided
+    by sub-micrometre rounding, so a float64 replica can fly the opposite way.
+
+    Pure: no mutation, no randomness. Returns float64 copies of the float32
+    states (index 0 is the starting state).
+    """
+    if horizon_steps < 1:
+        raise ValueError(f"horizon_steps must be >= 1, got {horizon_steps}")
+
+    waypoint = np.asarray(waypoint, dtype=np.float64)
+    p = np.asarray(position, dtype=np.float32)
+    v = np.asarray(velocity, dtype=np.float32)
+    positions = [p.astype(np.float64)]
+    velocities = [v.astype(np.float64)]
+    for _ in range(horizon_steps):
+        direction = _direction_to(p, waypoint, fallback=fallback_direction, eps=limits.eps)
+        p, v = _executed_step(p, v, direction, limits)
+        positions.append(p.astype(np.float64))
+        velocities.append(v.astype(np.float64))
+    return positions, velocities
+
+
+def _executed_step(
+    position32: np.ndarray, velocity32: np.ndarray, direction: np.ndarray, limits: DynamicsLimits,
+) -> tuple[np.ndarray, np.ndarray]:
+    """One hostile motion update exactly as `SoldierEnv._move_enemy` performs it
+    (shared constrained dynamics, float32 position increment, boundary clip,
+    float32 state storage)."""
+    next_v, _diag = advance_velocity(
+        current_velocity=velocity32,
+        desired_velocity=limits.max_speed * direction,
+        max_speed=limits.max_speed,
+        max_accel=limits.max_accel,
+        max_turn_rate_rad=limits.max_turn_rate_rad,
+        max_climb_rate=limits.max_climb_rate,
+        max_descent_rate=limits.max_descent_rate,
+        dt=limits.dt,
+        eps=limits.eps,
+    )
+    new_p, new_v = apply_boundary(position32 + next_v * limits.dt, next_v, L=limits.L, max_altitude=limits.max_altitude)
+    return new_p.astype(np.float32), new_v.astype(np.float32)
+
+
+def _mission_direction(position32: np.ndarray, target_position: np.ndarray, fallback: np.ndarray, eps: float) -> np.ndarray:
+    """The corrected-A0 mission command exactly as `SoldierEnv._move_enemy`
+    forms it (`r_hat = r / |r|`, then `u_base = r_hat / |r_hat|`, in the dtype of
+    the stored states)."""
+    r = np.asarray(target_position) - position32
+    norm = np.linalg.norm(r)
+    if norm <= eps:
+        return np.asarray(fallback, dtype=np.float64)
+    r_hat = r / norm
+    return np.asarray(r_hat / np.linalg.norm(r_hat), dtype=np.float64)
+
+
+def predict_executed_trajectory(
+    position: np.ndarray,
+    velocity: np.ndarray,
+    waypoint: np.ndarray,
+    fallback_direction: np.ndarray,
+    target_position: np.ndarray,
+    layout: ObstacleLayout,
+    limits: DynamicsLimits,
+    horizon_steps: int,
+    stop_radius: float | None = None,
+) -> tuple[list[np.ndarray], list[np.ndarray], int | None]:
+    """Predict what the V2 attacker will actually fly after selecting a bypass
+    candidate: persist on `waypoint` (re-deriving the direction toward it every
+    step) until the planner's own `immediate_release` rule fires, then fly the
+    direct mission command.
+
+    The release rule is the one in `ObstacleAvoidancePlanner.plan`, evaluated at
+    every predicted state after the first step: the fixed-direction mission
+    prediction (`predict_constrained_trajectory`, truncated at the target
+    sphere) is collision-free AND the straight position->target segment touches
+    no obstacle. Reactivation of avoidance later in the horizon is not modeled
+    (a new selection would be made at that time); the target and layout are
+    treated as static, which is the planner's own assumption.
+
+    Returns (positions, velocities, release_step) where `release_step` is the
+    1-based predicted step at which the direct command first applies (None if
+    it never releases within the horizon). Float32-exact like
+    `predict_waypoint_following_trajectory`, so the planner's prediction is
+    bit-identical to execution whenever the target is stationary.
+    """
+    if horizon_steps < 1:
+        raise ValueError(f"horizon_steps must be >= 1, got {horizon_steps}")
+
+    waypoint = np.asarray(waypoint, dtype=np.float64)
+    p = np.asarray(position, dtype=np.float32)
+    v = np.asarray(velocity, dtype=np.float32)
+    positions = [p.astype(np.float64)]
+    velocities = [v.astype(np.float64)]
+    release_step = None
+    for step in range(horizon_steps):
+        if release_step is None and step > 0:
+            mission = _mission_direction(p, target_position, fallback_direction, limits.eps)
+            base_positions, _ = predict_constrained_trajectory(p, v, mission, limits, horizon_steps)
+            if stop_radius is not None:
+                base_positions = truncate_prediction_at_target(base_positions, target_position, stop_radius)
+            if (
+                not predict_collision(base_positions, layout).collision
+                and not layout.segment_intersects(p.astype(np.float64), np.asarray(target_position, dtype=np.float64))
+            ):
+                release_step = step + 1
+        if release_step is None:
+            direction = _direction_to(p, waypoint, fallback=fallback_direction, eps=limits.eps)
+        else:
+            direction = _mission_direction(p, target_position, fallback_direction, limits.eps)
+        p, v = _executed_step(p, v, direction, limits)
+        positions.append(p.astype(np.float64))
+        velocities.append(v.astype(np.float64))
+    return positions, velocities, release_step
+
+
 def truncate_prediction_at_target(
     positions: list[np.ndarray], target_position: np.ndarray, stop_radius: float,
 ) -> list[np.ndarray]:
@@ -398,6 +532,7 @@ def evaluate_and_select_candidate(
     horizon_steps: int,
     required_clearance: float,
     stop_radius: float | None = None,
+    executed_prediction: bool = False,
 ) -> tuple[CandidateEvaluation, bool]:
     """Simulate every candidate with the real constrained dynamics and pick
     one via a LEXICOGRAPHIC rule (no tuned weights, no scoring function).
@@ -440,7 +575,13 @@ def evaluate_and_select_candidate(
     start_dist = float(np.linalg.norm(np.asarray(position, dtype=np.float64) - np.asarray(target_position, dtype=np.float64)))
     evaluations: list[CandidateEvaluation] = []
     for order_index, candidate in enumerate(candidates):
-        positions, _velocities = predict_constrained_trajectory(position, velocity, candidate.direction, limits, horizon_steps)
+        if executed_prediction:
+            positions, _velocities, _release = predict_executed_trajectory(
+                position, velocity, candidate.waypoint, u_base, target_position, layout, limits, horizon_steps,
+                stop_radius,
+            )
+        else:
+            positions, _velocities = predict_constrained_trajectory(position, velocity, candidate.direction, limits, horizon_steps)
         if stop_radius is not None:
             positions = truncate_prediction_at_target(positions, target_position, stop_radius)
         prediction = predict_collision(positions, layout)
@@ -501,6 +642,14 @@ class ObstacleAvoidancePlanner:
     # contact ends the episode -- obstacles beyond the target are not
     # conflicts. Default None => V1 behavior.
     mission_stop_radius: float | None = None
+    # V2 corrected A0 (requires immediate_release): candidate evaluation and the
+    # persisted-waypoint feasibility check predict the motion that is actually
+    # executed -- persist on the waypoint (direction re-derived toward the SAME
+    # waypoint every step, float32-exact replay of the environment update) until
+    # the immediate-release rule fires, then fly the direct mission command --
+    # instead of holding one fixed direction for the whole horizon.
+    # Default False => the original fixed-direction predictor (V1, defender).
+    executed_prediction: bool = False
 
     active: bool = field(default=False, init=False)
     obstacle_index: int | None = field(default=None, init=False)
@@ -582,7 +731,13 @@ class ObstacleAvoidancePlanner:
         # an obstacle, so a momentarily obstacle-free base prediction can
         # never leave obstacle_index/waypoint undefined here.
         current_direction = _direction_to(position, self.waypoint, fallback=u_base, eps=self.eps)
-        positions, _ = predict_constrained_trajectory(position, velocity, current_direction, limits, self.horizon_steps)
+        if self.executed_prediction:
+            positions, _, _ = predict_executed_trajectory(
+                position, velocity, self.waypoint, u_base, target_position, layout, limits, self.horizon_steps,
+                self.mission_stop_radius,
+            )
+        else:
+            positions, _ = predict_constrained_trajectory(position, velocity, current_direction, limits, self.horizon_steps)
         if self.mission_stop_radius is not None:
             positions = truncate_prediction_at_target(positions, target_position, self.mission_stop_radius)
         current_feasible = not predict_collision(positions, layout).collision
@@ -596,7 +751,7 @@ class ObstacleAvoidancePlanner:
         candidates = generate_bypass_candidates(position, obstacle, u_base, self.clearance, self.max_altitude, self.eps)
         best, fallback_used = evaluate_and_select_candidate(
             position, velocity, u_base, candidates, layout, target_position, limits, self.horizon_steps, self.clearance,
-            stop_radius=self.mission_stop_radius,
+            stop_radius=self.mission_stop_radius, executed_prediction=self.executed_prediction,
         )
         self.mode = best.mode
         self.waypoint = best.waypoint
@@ -620,7 +775,7 @@ class ObstacleAvoidancePlanner:
         candidates = generate_bypass_candidates(position, obstacle, u_base, self.clearance, self.max_altitude, self.eps)
         best, fallback_used = evaluate_and_select_candidate(
             position, velocity, u_base, candidates, layout, target_position, limits, self.horizon_steps, self.clearance,
-            stop_radius=self.mission_stop_radius,
+            stop_radius=self.mission_stop_radius, executed_prediction=self.executed_prediction,
         )
         self.active = True
         self.obstacle_index = base_prediction.obstacle_index

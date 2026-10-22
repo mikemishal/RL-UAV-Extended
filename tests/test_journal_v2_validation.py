@@ -176,19 +176,43 @@ def test_v1_endpoint_audit_reports_the_known_missed_crossings():
 
 
 # ------------------------------------------------ constructed obstacle scenarios
-def _scenario(spec):
+def _scenario(spec, start=(-20.0, 0.0, 3.0), asset=(45.0, 0.0, 0.0), asset_step=None):
+    """Hand-placed obstacles, attacker at rest at `start`, stationary asset unless `asset_step` is given."""
     import dataclasses
+    import types
 
     def transform(cfg):
         return dataclasses.replace(cfg, obstacle_layout_mode="fixed", obstacle_fixed_spec=spec, dynamic_obstacles_enabled=False)
 
     def setup(env):
-        env._enemy_pos = np.array([-20.0, 0.0, 3.0], dtype=np.float32)
+        env._enemy_pos = np.array(start, dtype=np.float32)
         env._enemy_vel = np.zeros(3, dtype=np.float32)
-        env._soldier_pos = np.array([45.0, 0.0, 0.0], dtype=np.float32)
-        env._move_soldier = lambda: None
+        env._soldier_pos = np.array(asset, dtype=np.float32)
+        if asset_step is None:
+            env._move_soldier = lambda: None
+        else:
+            # Bound to the env so the counterfactual deep copies move their own asset.
+            delta = np.array(asset_step, dtype=np.float32)
+            env._move_soldier = types.MethodType(
+                lambda self: setattr(self, "_soldier_pos", (self._soldier_pos + delta).astype(np.float32)), env)
 
     return record_episode("C2", "V2", "passive", 0, detour_cf=True, cfg_transform=transform, setup=setup)
+
+
+def _min_obstacle_clearance(rec) -> float:
+    return min(r["nearest_obstacle_clearance"] for r in rec["rows"] if r["nearest_obstacle_clearance"] is not None)
+
+
+def _assert_valid_avoidance_run(rec):
+    """Invariants shared by the obstacle-negotiation scenarios (no clearance-margin claim)."""
+    s = summarize(rec)
+    assert s["captured"] and s["outcome"] == "soldier_caught"  # mission completed, no obstacle collision
+    assert "collision" not in s["outcome"] and _min_obstacle_clearance(rec) > 0.0  # physical non-penetration only
+    assert s["segments_unassociated"] == 0
+    assert s["segments_not_returned"] == 0 and not any(g["terminated_while_avoiding"] for g in deviation_segments(rec))
+    assert not s["orbit_event"] and s["orbit_revolutions_max"] < 0.5  # no orbiting
+    assert s["n_avoidance_segments"] >= 1
+    return s
 
 
 def test_blocking_obstacle_detour_is_counterfactually_necessary_and_returns_to_direct():
@@ -207,11 +231,71 @@ def test_nearby_nonblocking_obstacle_causes_no_deviation():
     assert s["max_lateral_deviation_m"] < 1e-3
 
 
-def test_two_staggered_obstacles_give_two_returned_excursions():
-    rec = _scenario(((5.0, 2.0, 5.0, 3.0, 3.0, 5.0), (35.0, -2.0, 5.0, 3.0, 3.0, 5.0)))
+def test_staggered_obstacles_are_negotiated_and_return_to_direct(record_property):
+    """Two obstacles on the straight line to the asset, 30 m apart.
+
+    The planner may negotiate them as two excursions or as one continuous maneuver
+    (the faithful predictor currently climbs over both); the scientific content is
+    that the obstacles are really in the way, are negotiated without a collision,
+    and the attacker ends up back in DIRECT and completes the mission. The number
+    of excursions is deliberately NOT asserted.
+
+    KNOWN LIMITATION, recorded rather than hidden: the minimum obstacle clearance is
+    reported as a diagnostic only. It is about 0.02 m in the current maneuver (the
+    final DIRECT approach skirts the second obstacle's corner) because the trigger
+    and release rules use physical geometry only. That is NOT a validated operational
+    safety margin; robust clearance semantics are unresolved and are to be addressed
+    together with the waypoint-geometry redesign.
+    """
+    from uav_defend.obstacles.geometry import AABBObstacle
+
+    spec = ((5.0, 2.0, 5.0, 3.0, 3.0, 5.0), (35.0, -2.0, 5.0, 3.0, 3.0, 5.0))
+    start, asset = (-20.0, 0.0, 3.0), (45.0, 0.0, 0.0)
+    rec = _scenario(spec, start, asset)
+    s = _assert_valid_avoidance_run(rec)
+    # Both obstacles genuinely lie on the straight attacker->asset line ...
+    for obstacle in spec:
+        box = AABBObstacle.from_center_half_extents(obstacle[:3], obstacle[3:])
+        assert box.segment_intersects(np.array(start), np.array(asset))
+    # ... and both were perceived by the attacker during the flight.
+    perceived = {i for row in rec["rows"] for i in row["perceived_static_ids"]}
+    assert perceived >= {0, 1}
+    assert deviation_segments(rec)[0]["necessity"] == "necessary_collision"
+    assert rec["rows"][-1]["behavior_mode"] == "DIRECT" or rec["rows"][-1]["outcome"] == "soldier_caught"
+    record_property("min_obstacle_clearance_m", _min_obstacle_clearance(rec))
+    record_property("avoidance_excursions", s["n_avoidance_segments"])
+
+
+def test_separated_obstacles_require_two_distinct_returned_excursions(record_property):
+    """AVOID -> DIRECT -> AVOID -> DIRECT.
+
+    Geometry: a full-height pillar 10 m ahead of the attacker blocks the initial line,
+    and a second full-height pillar sits off that line. The asset drifts steadily
+    sideways (a deterministic stand-in for its random walk), so the straight line to
+    it only swings into the second pillar after the first has been cleared and the
+    attacker is flying DIRECT. Full-height pillars (top at the 30 m ceiling) exclude
+    a climb, so each encounter is a lateral bypass. Chosen so the second encounter is
+    genuinely required, not forced by production code.
+    """
+    spec = ((-38.0, 0.0, 15.0, 3.0, 3.0, 15.0), (38.0, -10.0, 15.0, 3.0, 3.0, 15.0))
+    rec = _scenario(spec, start=(-48.0, 0.0, 3.0), asset=(48.0, 0.0, 0.0), asset_step=(0.0, -0.5, 0.0))
+    s = _assert_valid_avoidance_run(rec)
     segs = deviation_segments(rec)
-    assert len(segs) >= 2 and all(s["return_to_direct_step"] is not None for s in segs)
-    assert summarize(rec)["captured"]
+    assert len(segs) >= 2
+    first, second = segs[0], segs[1]
+    # each is a real obstacle conflict (direct flight would have collided) with a distinct obstacle
+    assert first["necessity"] == second["necessity"] == "necessary_collision"
+    assert first["obstacle_id"] != second["obstacle_id"] and {first["obstacle_id"], second["obstacle_id"]} <= {0, 1}
+    # it returned to DIRECT after the first, and stayed there for a meaningful interval
+    assert first["return_to_direct_step"] is not None
+    assert second["activation_step"] - first["return_to_direct_step"] >= 5
+    modes = [r["behavior_mode"] for r in rec["rows"][1:]]
+    gap = modes[first["return_to_direct_step"] - 1 : second["activation_step"] - 1]
+    assert gap and all(m == "DIRECT" for m in gap)
+    assert second["return_to_direct_step"] is not None
+    assert modes[-1] == "DIRECT"
+    record_property("min_obstacle_clearance_m", _min_obstacle_clearance(rec))
+    record_property("avoidance_excursions", s["n_avoidance_segments"])
 
 
 def test_detour_counterfactual_does_not_perturb_the_recorded_episode():
