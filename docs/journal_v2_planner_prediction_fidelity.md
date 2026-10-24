@@ -175,3 +175,36 @@ encoded a historical lateral maneuver rather than an invariant. It is replaced b
   `cases`, `seeds`, `analyze`, `compare`, `controlled`. Results go to the gitignored
   `results/journal_v2_planner_fidelity/<label>/` and existing labels are never overwritten.
 * `tests/test_obstacle_prediction_fidelity.py` -- the exactness tests against the real environment.
+
+## Rejected: forward far-side climb waypoint
+
+Tried on top of the committed predictor (release rule unchanged). Original climb waypoint:
+`(x_att, y_att, obstacle_top + clearance)` -- straight above the mover's position at activation, omitted
+only if that height exceeds the ceiling. Replacement (V2 attacker only): horizontal point on the nominal
+mission ray (horizontal part of `u_base`, from the current position) at the exit of the clearance-inflated
+footprint plus one more `clearance` (the footprint's far support distance if the ray misses it); altitude
+`z0 + (top + clearance - z0) * t_waypoint / t_enter` so the straight climb already clears the obstacle at
+footprint entry (a mover already above `top + clearance` keeps that altitude), either omitted (variant 1) or
+clamped to the ceiling (variant 2) when that is not reachable. Scoring and the faithful predictor unchanged.
+
+It removed the large circling arcs: C3 seed 130006 went from 12.98x to 1.00x and C2/130065 and C3/130063
+stayed clean. It failed the population gates (300 paired passive-A0 seeds against the committed predictor):
+
+| | foundation | variant 1 | variant 2 |
+|---|---:|---:|---:|
+| Collisions gained (C3) | - | 4 (130017, 130030, 130048, 130096) | 1 (130030) |
+| Episodes above 5x (C2+C3) | 1 | 8 | 10 |
+| C2 mean / max path-excess | 0.98 / 1.19 | 1.34 / 27.9 | 1.34 / 27.9 |
+| C3 mean / max path-excess | 1.21 / 12.98 | 2.00 / 28.4 | 2.37 / 31.5 |
+| Avoidance activations C2 / C3 | 10 / 64 | 94 / 236 | 94 / 309 |
+| Overshoots C2 / C3 | 0 / 14 | 24 / 64 | 24 / 93 |
+| Orbit events / non-returning (C3) | 0 / 0 | 1 / 4 | 2 / 1 |
+
+C3 seeds 130081 (0.98x -> 18.8x) and 130064 (1.20x -> 11.8x) show the new failure: the attacker circles
+the asset at about 20 m radius, interrupted again and again by short avoidance segments from an obstacle
+cluster around the asset (C2 130054: 11 steps -> 346 steps of repeating climb/lateral segments). The new
+collisions are all-candidates-collide emergencies at a high descent rate, where the original vertical climb
+candidate had been the escape. The root cause therefore also includes the avoid/release/re-activate cycle
+of a turn-limited vehicle near obstacle clusters, not only the climb waypoint. Rejected; production code
+reverted. Evidence is in the gitignored `results/journal_v2_planner_fidelity/{foundation,forward,forward2}_*`
+(figure: `forward_waypoint_before_after.png`).

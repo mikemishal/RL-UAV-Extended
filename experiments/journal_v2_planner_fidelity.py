@@ -43,7 +43,7 @@ from experiments.journal_v2_avoidance_recorder import CASES, SEEDS, aggregate, p
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "results" / "journal_v2_planner_fidelity"
-CRITICAL_CASES = CASES + (("C3", 130064),)
+CRITICAL_CASES = CASES + (("C3", 130006), ("C3", 130064), ("C2", 130054))
 HORIZON_STEPS = 12
 
 
@@ -274,20 +274,61 @@ def _load(label):
     return {p.name: json.loads(p.read_text()) for p in sorted((OUT / label).glob("C?_*.json"))}
 
 
+def population_metrics(records):
+    """Per-level population metrics for the acceptance gates (tail counts, clearance distribution)."""
+    result = {}
+    for level in sorted({r["meta"]["level"] for r in records}):
+        subset = [r for r in records if r["meta"]["level"] == level]
+        summaries = [r["summary"] for r in subset]
+        segments = [s for r in subset for s in r["segments"]]
+        paths = np.array([s["path_length_m"] for s in summaries])
+        ratios = np.array([s["path_excess_ratio"] for s in summaries])
+        minimum = np.array([
+            min(box_clearance(np.array(row["attacker_pos"]), r["static_obstacles"]) for row in r["rows"])
+            if r["static_obstacles"] else np.inf for r in subset])
+        selections = [d for r in subset for d in r["decisions"] if d["selection"] is not None]
+        result[level] = {
+            "episodes": len(subset),
+            "capture_rate": float(np.mean([s["captured"] for s in summaries])),
+            "collisions": int(sum("collision" in s["outcome"] for s in summaries)),
+            "path_mean_m": float(paths.mean()), "path_median_m": float(np.median(paths)), "path_max_m": float(paths.max()),
+            "excess_mean": float(ratios.mean()), "excess_max": float(ratios.max()),
+            "excess_gt_1.3": int((ratios > 1.3).sum()), "excess_gt_2": int((ratios > 2).sum()), "excess_gt_5": int((ratios > 5).sum()),
+            "activations": len(segments),
+            "avoid_mean_steps": float(np.mean([g["duration_steps"] for g in segments])) if segments else 0.0,
+            "avoid_max_steps": max((g["duration_steps"] for g in segments), default=0),
+            "linger_cases": int(sum(s["max_linger_run_steps"] > 4 for s in summaries)),
+            "overshoots": int(sum(s["overshoots"] for s in summaries)),
+            "orbit_events": int(sum(s["orbit_event"] for s in summaries)),
+            "nonreturning_segments": int(sum(g["return_to_direct_step"] is None for g in segments)),
+            "unassociated_segments": int(sum(not g["associated_with_perceived_obstacle"] for g in segments)),
+            "all_candidates_collide_selections": int(sum(bool(d["fallback"]) for d in selections)),
+            "selections": len(selections),
+            "evasion_episodes": int(sum(s["any_evasion_active"] for s in summaries)),
+            "min_clearance_m": {
+                "min": float(minimum.min()), "p1": float(np.percentile(minimum, 1)), "p5": float(np.percentile(minimum, 5)),
+                "median": float(np.median(minimum)),
+                **{f"lt_{t}": int((minimum < t).sum()) for t in (0.05, 0.10, 0.25, 0.50, 1.0)},
+            },
+        }
+    return result
+
+
 def compare(base_label, candidate_label):
-    """Paired comparison of two recorded sets: collisions gained/lost and per-level aggregates."""
+    """Paired comparison of two recorded sets: collisions gained/lost, tails and clearance."""
     base, candidate = _load(base_label), _load(candidate_label)
     shared = sorted(set(base) & set(candidate))
     collided = lambda rec: "collision" in rec["summary"]["outcome"]
-    result = {
+    return {
         "episodes": len(shared),
         "changed_trajectories": [k for k in shared if base[k]["rows"] != candidate[k]["rows"]],
         "collisions_gained": [k for k in shared if collided(candidate[k]) and not collided(base[k])],
         "collisions_lost": [k for k in shared if collided(base[k]) and not collided(candidate[k])],
-        "base": aggregate([base[k] for k in shared]),
-        "candidate": aggregate([candidate[k] for k in shared]),
+        "tail_over_5x": {"base": sorted(k for k in shared if base[k]["summary"]["path_excess_ratio"] > 5),
+                         "candidate": sorted(k for k in shared if candidate[k]["summary"]["path_excess_ratio"] > 5)},
+        "base": population_metrics([base[k] for k in shared]),
+        "candidate": population_metrics([candidate[k] for k in shared]),
     }
-    return result
 
 
 def controlled(label="controlled", seeds=range(130000, 130200)):
