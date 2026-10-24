@@ -219,7 +219,13 @@ def test_blocking_obstacle_detour_is_counterfactually_necessary_and_returns_to_d
     rec = _scenario(((15.0, 0.0, 5.0, 4.0, 4.0, 5.0),))
     segs = deviation_segments(rec)
     assert len(segs) == 1 and segs[0]["necessity"] == "necessary_collision"
-    assert segs[0]["return_to_direct_step"] is not None and segs[0]["line_clear_at_return"] is True
+    # DIRECT is rejoined when the actual turn-limited DIRECT rollout is collision-free (not when an
+    # uninflated straight line is): the line may still clip the box top while descent-rate limits keep
+    # the vehicle above it. The invariant is that the rest of the flight is DIRECT and never touches it.
+    assert segs[0]["return_to_direct_step"] is not None
+    after = rec["rows"][segs[0]["return_to_direct_step"]:]
+    assert after and all(r["behavior_mode"] == "DIRECT" for r in after[:-1])
+    assert all(r["nearest_obstacle_clearance"] is None or r["nearest_obstacle_clearance"] > 0.0 for r in after)
     s = summarize(rec)
     assert s["captured"] and s["max_lateral_deviation_m"] > 3.0 and s["detours_unnecessary"] == 0
 

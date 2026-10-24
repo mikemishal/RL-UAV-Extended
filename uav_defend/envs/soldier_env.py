@@ -27,6 +27,7 @@ from uav_defend.tracking import EnemyKalmanFilter
 from uav_defend.dynamics.constrained_point_mass import advance_velocity, apply_boundary
 from uav_defend.obstacles.swept_contact import first_contact
 from uav_defend.obstacles import DynamicsLimits, ObstacleAvoidancePlanner, ObstacleLayout, generate_layout
+from uav_defend.obstacles.stateful_avoidance import StatefulAvoidanceController
 from uav_defend.obstacles.dynamic import (
     DynamicObstacle,
     dynamic_obstacle_swept_aabb,
@@ -190,6 +191,9 @@ class SoldierEnv(gym.Env):
     """
     
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 30}
+    # V2 attacker obstacle avoidance: stateful receding-horizon controller (True) or the legacy
+    # persisted-waypoint planner (False, kept to reproduce the 3c61845 foundation). Read at construction.
+    STATEFUL_ENEMY_AVOIDANCE: bool = True
     
     def __init__(
         self,
@@ -350,18 +354,28 @@ class SoldierEnv(gym.Env):
         # RNG-free, short-horizon local avoidance layer (see
         # uav_defend/obstacles/avoidance.py). Persistence/hysteresis state
         # lives inside the planner instance and is cleared every reset().
-        self._enemy_obstacle_planner = ObstacleAvoidancePlanner(
-            clearance=self.config.enemy_obstacle_clearance,
-            horizon_steps=self.config.enemy_obstacle_prediction_horizon_steps,
-            release_steps=self.config.enemy_obstacle_release_steps,
-            max_altitude=self.config.max_altitude,
-            eps=self.config.eps,
-            immediate_release=self.config.enemy_nominal_guidance_mode == "direct_obstacle_only",
-            mission_stop_radius=(
-                self.config.threat_radius if self.config.enemy_nominal_guidance_mode == "direct_obstacle_only" else None
-            ),
-            executed_prediction=self.config.enemy_nominal_guidance_mode == "direct_obstacle_only",
-        )
+        if self.STATEFUL_ENEMY_AVOIDANCE and self.config.enemy_nominal_guidance_mode == "direct_obstacle_only":
+            # Corrected (V2) A0 only: stateful receding-horizon guidance instead of a persisted waypoint.
+            self._enemy_obstacle_planner = StatefulAvoidanceController(
+                clearance=self.config.enemy_obstacle_clearance,
+                horizon_steps=self.config.enemy_obstacle_prediction_horizon_steps,
+                max_altitude=self.config.max_altitude,
+                eps=self.config.eps,
+                mission_stop_radius=self.config.threat_radius,
+            )
+        else:
+            self._enemy_obstacle_planner = ObstacleAvoidancePlanner(
+                clearance=self.config.enemy_obstacle_clearance,
+                horizon_steps=self.config.enemy_obstacle_prediction_horizon_steps,
+                release_steps=self.config.enemy_obstacle_release_steps,
+                max_altitude=self.config.max_altitude,
+                eps=self.config.eps,
+                immediate_release=self.config.enemy_nominal_guidance_mode == "direct_obstacle_only",
+                mission_stop_radius=(
+                    self.config.threat_radius if self.config.enemy_nominal_guidance_mode == "direct_obstacle_only" else None
+                ),
+                executed_prediction=self.config.enemy_nominal_guidance_mode == "direct_obstacle_only",
+            )
         # Environmental-awareness/perception layer (journal extension): the
         # planner above is fed ONLY this object's output (see _move_enemy()),
         # never the ground-truth world directly -- see

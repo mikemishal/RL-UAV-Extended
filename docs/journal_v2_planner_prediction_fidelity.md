@@ -170,11 +170,126 @@ encoded a historical lateral maneuver rather than an invariant. It is replaced b
 ## Tooling
 
 * `experiments/journal_v2_avoidance_recorder.py` -- observational recorder of planner inputs, outputs and
-  selected-candidate evaluations for passive-A0 V2 episodes, plus per-level aggregation.
+  selected-candidate evaluations for passive-A0 V2 episodes, plus per-level aggregation. It also records the
+  stateful controller's per-decision record and diagnostics counters.
 * `experiments/journal_v2_planner_fidelity.py` -- command-line driver (usage in its docstring):
   `cases`, `seeds`, `analyze`, `compare`, `controlled`. Results go to the gitignored
-  `results/journal_v2_planner_fidelity/<label>/` and existing labels are never overwritten.
-* `tests/test_obstacle_prediction_fidelity.py` -- the exactness tests against the real environment.
+  `results/journal_v2_planner_fidelity/<label>/` and existing labels are never overwritten. Setting
+  `JOURNAL_V2_LEGACY_AVOIDANCE=1` records with the legacy waypoint planner (reproduces `3c61845` exactly:
+  0 changed trajectories over the 300 seeds).
+* `tests/test_obstacle_prediction_fidelity.py` -- the exactness tests against the real environment (these run
+  the legacy waypoint planner, `SoldierEnv.STATEFUL_ENEMY_AVOIDANCE = False`, which V1 and the defender
+  planners still use).
+* `tests/test_stateful_avoidance.py` -- the controlled scenarios for the stateful controller (below).
+
+## Stateful receding-horizon avoidance (V2 attacker only)
+
+`uav_defend/obstacles/stateful_avoidance.py`, selected by `SoldierEnv.STATEFUL_ENEMY_AVOIDANCE` (default
+`True`; read at construction) and only for `enemy_nominal_guidance_mode == "direct_obstacle_only"`. V1, the
+defender planners, swept contact, mission-event ordering, collision radii, perception, A1 and the asset are
+untouched. A0 still has no defender evasion, no weave and no tactical intelligence.
+
+### Old state machine (3c61845, still used by V1 and the defender planners)
+
+```
+DIRECT: u = u_base
+  fixed-direction prediction along u_base (12 steps, cut at capture) collides?  -> ACTIVATE
+ACTIVATE: candidates = {left tangent corner, right tangent corner, point above the activation position}
+  select (SAFE = collision-free & clearance>=2 m  <  margin-deficient  <  colliding;
+          then -progress, angular deviation, -clearance, order)
+  planner.waypoint, planner.mode, planner.obstacle_index  <- selection        (persisted)
+AVOID each step:
+  release if fixed-direction prediction is collision-free AND straight position->target line is physically clear
+        -> DIRECT                          (uninflated geometry, no turn dynamics)
+  else u = unit(waypoint - position)       (re-aimed at the HISTORICAL point every step)
+        if the executed rollout toward the waypoint collides -> reselect for the same obstacle
+```
+`AVOID -> DIRECT -> AVOID` arises because trigger and release use a fixed-direction prediction while real
+DIRECT flight re-aims every step, the release line ignores the turn-rate limit, and the persisted waypoint
+sits where the vehicle already was.
+
+### New state machine
+
+```
+every step, from the CURRENT float32 state:
+  R_d = DIRECT rollout        (mission command re-derived each step through the executed dynamics,
+                               cut at the capture sphere or, if the asset is not reached, at the closest approach)
+  if R_d is collision-free:   DIRECT  (release any avoidance; same test as the trigger)
+  else:
+    B = obstacles R_d hits or passes within `clearance` of           (active blocker set)
+    for law in {LEFT, RIGHT, CLIMB}:
+        rollout = fly guidance(law, state, B) until DIRECT's rollout is collision-free, then fly DIRECT
+    B <- B U obstacles threatened by the chosen rollout; re-evaluate once
+    choose lexicographically (below); command = guidance(chosen law, state, B)
+```
+There is no stored x/y/z target. The only state is `{active, mode, obstacle_index (primary blocker),
+blockers, entry_step}` plus diagnostics counters; the mode is the hysteresis input.
+
+* **CLIMB** (`climb_guidance`): horizontal direction = the current direct-to-asset horizontal direction
+  (never toward the activation point). Vertical: climb at the vehicle's climb rate while below
+  `z_req = min(max(top of B) + clearance, ceiling)`, then hold level.
+* **LEFT / RIGHT** (`lateral_guidance`): head horizontally for the visible clearance-inflated corner of the
+  nearest blocker on that side, recomputed from the current position every step (the existing
+  tangent-corner rule, no historical point); if that points behind the mission direction, sidestep
+  perpendicular to it instead. **Changed from the old law:** the vertical component stays the mission's own,
+  so a diving attacker is not made to hold altitude and fly over the asset. Untouched: the corner geometry
+  and the inflated footprint (`_horizontal_bypass_candidate`, `_visible_corner_waypoint`).
+* **DIRECT rejoin**: eligible iff the actual turn-limited DIRECT rollout from the current float32 state is
+  collision-free under the existing physical geometry. No clearance buffer is added. Straight-line
+  clearance is neither required nor sufficient (`test_a_clear_straight_line_does_not_release_...`).
+* **Why the closest-approach cut**: a turn-limited pursuer that misses the asset flies a wide loop; scoring
+  the loop's far side against obstacles triggered avoidance for events many steps away that the attacker
+  would not reach before re-planning. The cut keeps the engagement to the approach, and the immediate next
+  step is always kept. A candidate that is collision-free but predicted to pass the asset outside the capture
+  sphere and move away (`flyby`) ranks below one that captures.
+* **Candidate order** (`select_candidate`, no weights): (1) collision-free beats colliding; (2) not predicted
+  to fly past the asset; (3) meets the required clearance over the avoided part (a margin-deficient
+  candidate then ranks by clearance first, as before); (4) positive progress; (5) lower predicted
+  mission-path cost (path minus progress, bucketed by one step's travel `v*dt`); (6) less steering
+  (cumulative heading change); (7) larger clearance; (8) order left, right, climb.
+* **Anti-chatter**: no minimum-duration timer. The current mode is kept when it is collision-free, in the
+  same feasibility class as the best candidate, still makes progress (or the best does not), and its path
+  cost is within one step's travel of the best (effectively equivalent). A clearly better candidate still
+  replaces it.
+* **Emergency (all candidates collide)**: the previous rule picked the roomiest candidate, which ties at
+  zero when the vehicle is already inside a dynamic swept box and degenerated to the fixed order. It is now:
+  latest first contact, then fewest conflicted rollout segments (leave the conflict region soonest), then
+  roomiest, then order. No hysteresis inside an emergency. Adding this rule changed exactly one of the 300
+  recorded trajectories (C3 130047: 11 -> 10 steps, same outcome) and no tail or collision; it is covered by
+  unit tests.
+
+### Results (passive A0, seeds 130000-130099, paired with the legacy planner)
+
+| | C1 | C2 | C3 |
+|---|---|---|---|
+| Collisions gained / lost | 0 / 0 | 0 / 0 | 0 / 0 |
+| Capture rate | 1.00 / 1.00 | 1.00 / 1.00 | 1.00 / 1.00 |
+| Path-excess mean (old -> new) | 0.970 -> 0.970 | 0.977 -> 0.971 | 1.209 -> 1.235 |
+| Path-excess max | 1.02 -> 1.02 | 1.19 -> 1.02 | 12.98 -> 27.06 |
+| > 1.3x / > 2x / > 5x | 0/0/0 -> 0/0/0 | 0/0/0 -> 0/0/0 | 7/5/1 -> 1/1/1 |
+| Avoidance activations | 1 -> 1 | 10 -> 11 | 64 -> 25 |
+| Short AVOID-DIRECT-AVOID cycles (<= 2 DIRECT steps) | 0 -> 0 | 3 -> 4 | 15 -> 2 |
+| Mode switches | 0 -> 0 | 1 -> 1 | 7 -> 1 |
+| All-candidates-collide selections | 1 -> 1 | 1 -> 1 | 14 -> 4 |
+| Overshoots / orbit events | 0/0 -> 0/0 | 0/0 -> 0/0 | 14/0 -> 18/0 |
+| Min clearance min / p1 / p5 / median (m) | 0.30/1.10/2.43/16.2 -> 0.30/1.10/2.39/16.2 | 0.51/0.55/1.77/7.27 -> 0.23/0.50/1.03/6.90 | 0.27/0.66/1.14/4.13 -> 0.38/0.41/0.67/3.39 |
+| Episodes with min clearance < 0.25 / 0.5 / 1.0 m | 0/1/1 -> 0/1/1 | 0/0/4 -> 1/1/5 | 0/1/3 -> 0/2/7 |
+
+Selections (new): C2 left 25 / right 8 / climb 2; C3 left 37 / right 12 / climb 25. DIRECT rejoin accepted /
+rejected: C2 11 / 23, C3 22 / 47. Unassociated and non-returning avoidance: 0. Tactical evasion: none.
+Only C2 and C3 trajectories changed (7 and 26 of 100 each); C0, C1 and all V1 trajectories are bit-identical.
+
+**Residual: pure-pursuit orbit trap (C3 130017, 27x).** The single remaining C3 tail has 2 avoidance steps in
+347. After a brief avoidance the attacker passes the asset by ~3-5 m, inside its turning circle, and the
+unchanged DIRECT mission command then circles it on a near-closed orbit that never enters the 2 m capture
+sphere. That is the mission guidance, not obstacle avoidance (the foundation's 130006 tail had 69 avoidance
+steps in 167). Excluding this episode from both sets the C3 mean is 0.974 (foundation 1.212). It is the same mechanism that
+made earlier rejected designs fail near the asset, and it needs a separate decision on the mission command's
+speed profile near the asset; it is deliberately not changed here.
+
+The staggered-obstacle diagnostic improves from 0.0241 m to 0.905 m minimum clearance (14 steps instead of
+39) without any clearance buffer; the separated-obstacle case is unchanged (1.47 -> 1.48 m, two excursions).
+The 0.9 m is a by-product, not a validated operational margin.
 
 ## Rejected: forward far-side climb waypoint
 

@@ -239,6 +239,9 @@ def record_run(kind, label):
     if (directory / "provenance.json").exists():
         raise FileExistsError(f"Completed evidence already exists: {directory}")
     directory.mkdir(parents=True, exist_ok=True)
+    if os.environ.get("JOURNAL_V2_LEGACY_AVOIDANCE") == "1":  # reproduce the 3c61845 waypoint planner
+        from uav_defend.envs.soldier_env import SoldierEnv
+        SoldierEnv.STATEFUL_ENEMY_AVOIDANCE = False
     jobs = list(CRITICAL_CASES) if kind == "cases" else [(lv, s) for lv in ("C1", "C2", "C3") for s in SEEDS]
     for level, seed in jobs:
         rec = record(level, seed)
@@ -274,6 +277,29 @@ def _load(label):
     return {p.name: json.loads(p.read_text()) for p in sorted((OUT / label).glob("C?_*.json"))}
 
 
+def short_cycles(rec, gap=2):
+    """AVOID -> DIRECT -> AVOID with at most `gap` DIRECT steps in between (mode chatter)."""
+    active = [bool(d["active"]) for d in rec["decisions"]]
+    count, index = 0, 0
+    while index < len(active):
+        if not active[index] and index > 0 and active[index - 1]:
+            end = index
+            while end < len(active) and not active[end]:
+                end += 1
+            if end < len(active) and end - index <= gap:
+                count += 1
+            index = end
+        else:
+            index += 1
+    return count
+
+
+def mode_switches(rec):
+    """Changes of the avoidance mode between consecutive avoiding steps."""
+    modes = [d["mode"] if d["active"] else None for d in rec["decisions"]]
+    return sum(1 for a, b in zip(modes, modes[1:]) if a and b and a != b)
+
+
 def population_metrics(records):
     """Per-level population metrics for the acceptance gates (tail counts, clearance distribution)."""
     result = {}
@@ -287,8 +313,16 @@ def population_metrics(records):
             min(box_clearance(np.array(row["attacker_pos"]), r["static_obstacles"]) for row in r["rows"])
             if r["static_obstacles"] else np.inf for r in subset])
         selections = [d for r in subset for d in r["decisions"] if d["selection"] is not None]
+        diagnostics = [r["planner_diagnostics"] for r in subset if r.get("planner_diagnostics")]
         result[level] = {
             "episodes": len(subset),
+            "short_cycles": int(sum(short_cycles(r) for r in subset)),
+            "mode_switches": int(sum(mode_switches(r) for r in subset)),
+            "selections_by_mode": {
+                m: int(sum(d["selections"][m] for d in diagnostics)) for m in ("left", "right", "climb")
+            } if diagnostics else None,
+            "direct_rejoin_accepted": int(sum(d["release_accepted"] for d in diagnostics)) if diagnostics else None,
+            "direct_rejoin_rejected": int(sum(d["release_rejected"] for d in diagnostics)) if diagnostics else None,
             "capture_rate": float(np.mean([s["captured"] for s in summaries])),
             "collisions": int(sum("collision" in s["outcome"] for s in summaries)),
             "path_mean_m": float(paths.mean()), "path_median_m": float(np.median(paths)), "path_max_m": float(paths.max()),
@@ -321,7 +355,9 @@ def compare(base_label, candidate_label):
     collided = lambda rec: "collision" in rec["summary"]["outcome"]
     return {
         "episodes": len(shared),
-        "changed_trajectories": [k for k in shared if base[k]["rows"] != candidate[k]["rows"]],
+        "changed_trajectories": [
+            k for k in shared
+            if [r["attacker_pos"] for r in base[k]["rows"]] != [r["attacker_pos"] for r in candidate[k]["rows"]]],
         "collisions_gained": [k for k in shared if collided(candidate[k]) and not collided(base[k])],
         "collisions_lost": [k for k in shared if collided(base[k]) and not collided(candidate[k])],
         "tail_over_5x": {"base": sorted(k for k in shared if base[k]["summary"]["path_excess_ratio"] > 5),

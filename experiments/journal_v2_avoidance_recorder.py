@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import dataclasses
 import math
-
+import types
 import numpy as np
 
 from experiments.journal_v2_validation_core import deviation_segments, record_episode, summarize
@@ -42,6 +42,7 @@ def record(level, seed, controller="passive", cfg_transform=None, freeze_asset=F
 
     decisions = []
     captured = []
+    holder = {}
     original_evaluate = avoidance.evaluate_and_select_candidate
 
     def capturing_evaluate(*args, **kwargs):
@@ -53,6 +54,7 @@ def record(level, seed, controller="passive", cfg_transform=None, freeze_asset=F
         if freeze_asset:
             env._move_soldier = lambda: None
         planner = env._enemy_obstacle_planner
+        holder["planner"] = planner
         original = planner.plan
 
         def observed(position, velocity, u_base, layout, target_position, limits):
@@ -60,6 +62,12 @@ def record(level, seed, controller="passive", cfg_transform=None, freeze_asset=F
             captured.clear()
             result = original(position, velocity, u_base, layout, target_position, limits)
             selected = captured[-1] if captured else None
+            stateful = getattr(planner, "last", None) if hasattr(planner, "blockers") else None
+            if stateful and stateful.get("selected"):
+                chosen = stateful["candidates"][stateful["selected"]]
+                selected = types.SimpleNamespace(
+                    mode=stateful["selected"], collision=chosen["collision"], min_clearance=chosen["min_clearance"],
+                    progress=chosen["progress"], meets_clearance=chosen["meets_clearance"])
             index = result["obstacle_index"]
             obstacle = layout[index] if index is not None else None
             decisions.append({
@@ -67,7 +75,10 @@ def record(level, seed, controller="passive", cfg_transform=None, freeze_asset=F
                 "target": np.array(target_position).tolist(), "direct": np.array(u_base).tolist(),
                 "limits": dataclasses.asdict(limits), "active": result["active"],
                 "activation": result["active"] and not before, "mode": result["mode"],
-                "waypoint": None if planner.waypoint is None else planner.waypoint.tolist(),
+                "waypoint": None if getattr(planner, "waypoint", None) is None else planner.waypoint.tolist(),
+                "stateful": None if stateful is None else {
+                    "direct_collides": stateful["direct_collides"], "blockers": stateful.get("blockers"),
+                    "candidates": stateful.get("candidates"), "fallback": stateful.get("fallback")},
                 "obstacle_min": None if obstacle is None else obstacle.min_corner.tolist(),
                 "obstacle_max": None if obstacle is None else obstacle.max_corner.tolist(),
                 "fallback": result["fallback_used"],
@@ -90,6 +101,7 @@ def record(level, seed, controller="passive", cfg_transform=None, freeze_asset=F
     finally:
         avoidance.evaluate_and_select_candidate = original_evaluate
     rec["decisions"] = decisions
+    rec["planner_diagnostics"] = getattr(holder.get("planner"), "diagnostics", None)
     rec["summary"] = summarize(rec)
     rec["segments"] = segment_details(rec)
     return rec

@@ -41,6 +41,14 @@ FAR_DEFENDER = np.array([1000.0, 1000.0, 0.0], dtype=np.float32)
 TOLERANCE_M = 1e-5  # state is float32 end to end; the replay is bit-exact, this only guards platform noise
 
 
+@pytest.fixture(autouse=True)
+def legacy_waypoint_planner(monkeypatch):
+    """These tests cover the persisted-waypoint planner's float32-exact predictor, which the V2 attacker
+    used at 3c61845 and which V1 / the defenders still use. The stateful controller that replaced it for
+    the V2 attacker is covered by test_stateful_avoidance.py."""
+    monkeypatch.setattr(SoldierEnv, "STATEFUL_ENEMY_AVOIDANCE", False)
+
+
 def _config(spec, **overrides) -> EnvConfig:
     params = dict(
         V2_SEMANTIC_FIELDS, obstacles_enabled=True, obstacle_layout_mode="fixed", obstacle_fixed_spec=spec,
@@ -350,7 +358,7 @@ def test_executed_step_is_the_environment_update(monkeypatch):
     assert np.array_equal(env._enemy_pos, expected_p) and np.array_equal(env._enemy_vel, expected_v)
 
 
-def test_only_the_v2_attacker_planner_uses_executed_prediction():
+def test_only_the_v2_attacker_planner_uses_executed_prediction(monkeypatch):
     v2 = SoldierEnv(build_v2_env_config("C2", "measurement"))
     v1 = SoldierEnv(build_v1_env_config("C2", "measurement"))
     assert v2._enemy_obstacle_planner.executed_prediction is True
@@ -358,6 +366,20 @@ def test_only_the_v2_attacker_planner_uses_executed_prediction():
     assert v2._defender_obstacle_planner.executed_prediction is False
     assert v1._defender_obstacle_planner.executed_prediction is False
     assert ObstacleAvoidancePlanner(clearance=2.0, horizon_steps=12, release_steps=4, max_altitude=30.0).executed_prediction is False
+
+
+def test_the_stateful_controller_replaces_the_waypoint_planner_for_the_v2_attacker_only(monkeypatch):
+    from uav_defend.obstacles.stateful_avoidance import StatefulAvoidanceController
+
+    monkeypatch.setattr(SoldierEnv, "STATEFUL_ENEMY_AVOIDANCE", True)
+    v2 = SoldierEnv(build_v2_env_config("C2", "measurement"))
+    v1 = SoldierEnv(build_v1_env_config("C2", "measurement"))
+    assert isinstance(v2._enemy_obstacle_planner, StatefulAvoidanceController)
+    assert type(v1._enemy_obstacle_planner) is ObstacleAvoidancePlanner
+    assert type(v2._defender_obstacle_planner) is ObstacleAvoidancePlanner
+    assert type(v1._defender_obstacle_planner) is ObstacleAvoidancePlanner
+    monkeypatch.setattr(SoldierEnv, "STATEFUL_ENEMY_AVOIDANCE", False)
+    assert type(SoldierEnv(build_v2_env_config("C2", "measurement"))._enemy_obstacle_planner) is ObstacleAvoidancePlanner
 
 
 def _digest(builder, level, seed, steps=140):
