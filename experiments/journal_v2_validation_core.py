@@ -207,6 +207,68 @@ def deviation_segments(rec: dict) -> list[dict]:
     return segments
 
 
+# Thresholds for `terminal_flyby_metrics`'s diagnostic-only orbit/fly-by detector (see its
+# docstring for why these are needed in addition to `orbit_revolutions`/`ORBIT_REVOLUTION_THRESHOLD`).
+TERMINAL_ORBIT_FLYBY_THRESHOLD = 3
+TERMINAL_ORBIT_REVOLUTION_THRESHOLD = 1.5
+
+
+def terminal_flyby_metrics(rec: dict) -> dict:
+    """Diagnostic-only (never used to steer the vehicle): detects a sustained post-avoidance
+    fly-by/orbit around the asset that `orbit_revolutions` can miss because it resets its
+    cumulative-bearing accumulator every time the attacker leaves a FIXED `ORBIT_RANGE_M` (20 m)
+    radius -- C3 seed 130017 repeatedly swings out well past 20 m between near misses, so no
+    single continuous within-20m excursion ever reaches the 1-revolution threshold even though
+    the attacker visibly loiters around the asset for hundreds of steps.
+
+    Computed over the TERMINAL WINDOW: from the end of the last avoidance segment (or episode
+    start, if none) to the end of the episode -- independent of any fixed radius. A normal
+    capture's terminal window is short and close to a straight final approach, so none of the
+    three signals below grows large; a sustained fly-by/orbit keeps returning to a small range
+    without ever being captured, and the accumulated bearing swings keep growing regardless of
+    how far out each loop goes.
+
+    Returns:
+      - fly_by_count: local-minima-of-range events (closest approaches) in the terminal window
+        that do not reach the capture sphere;
+      - angular_travel_revolutions: cumulative |bearing change| about the asset over the terminal
+        window, in revolutions (never reset by a fixed radius, unlike `orbit_revolutions`);
+      - closing_sign_changes: sign changes of the range rate (closing <-> opening) in the window
+        (supporting evidence only, not gated on);
+      - detected: fly_by_count >= TERMINAL_ORBIT_FLYBY_THRESHOLD AND angular_travel_revolutions >=
+        TERMINAL_ORBIT_REVOLUTION_THRESHOLD -- both signals, chosen well above what a single
+        normal curved intercept produces (see docs/journal_v2_terminal_speed_governor.md for the
+        calibration evidence across the recorded population).
+    """
+    rows = rec["rows"]
+    segments = deviation_segments(rec)
+    start = max(1, max((s["return_to_direct_step"] or (s["last_avoid_step"] + 1)) for s in segments)) if segments else 1
+    att = np.array([r["attacker_pos"] for r in rows[start - 1:]])
+    ast = np.array([r["asset_pos"] for r in rows[start - 1:]])
+    if len(att) < 3:
+        return {"fly_by_count": 0, "angular_travel_revolutions": 0.0, "closing_sign_changes": 0, "detected": False}
+    ranges = np.linalg.norm(att - ast, axis=1)
+    rel = att[:, :2] - ast[:, :2]
+    bearings = np.arctan2(rel[:, 1], rel[:, 0])
+    deltas = (np.diff(bearings) + math.pi) % (2 * math.pi) - math.pi
+    angular_travel = float(np.sum(np.abs(deltas))) / (2 * math.pi)
+    dt = rec["config"]["dt"]
+    rates = np.diff(ranges) / dt
+    signs = np.sign(np.where(np.abs(rates) > 1e-6, rates, 0.0))
+    nonzero = signs[signs != 0]
+    closing_sign_changes = int(np.sum(np.diff(nonzero) != 0)) if len(nonzero) > 1 else 0
+    threat_radius = rec["config"]["threat_radius"]
+    fly_by_count = sum(
+        1 for i in range(1, len(ranges) - 1)
+        if ranges[i] < ranges[i - 1] and ranges[i] <= ranges[i + 1] and ranges[i] > threat_radius
+    )
+    return {
+        "fly_by_count": fly_by_count, "angular_travel_revolutions": angular_travel,
+        "closing_sign_changes": closing_sign_changes,
+        "detected": fly_by_count >= TERMINAL_ORBIT_FLYBY_THRESHOLD and angular_travel >= TERMINAL_ORBIT_REVOLUTION_THRESHOLD,
+    }
+
+
 # ------------------------------------------------------------- recording
 def make_policy(controller: str, cfg):
     if controller == "passive":

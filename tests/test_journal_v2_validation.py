@@ -8,12 +8,15 @@ import numpy as np
 import pytest
 
 from experiments.journal_v2_validation_core import (
+    TERMINAL_ORBIT_FLYBY_THRESHOLD,
+    TERMINAL_ORBIT_REVOLUTION_THRESHOLD,
     count_overshoots,
     dense_min_distance,
     deviation_segments,
     orbit_revolutions,
     record_episode,
     summarize,
+    terminal_flyby_metrics,
 )
 from uav_defend.obstacles.swept_contact import first_contact
 
@@ -59,6 +62,26 @@ def test_orbit_ignores_trajectories_outside_local_radius():
 def test_orbit_direction_is_irrelevant():
     asset = np.zeros((200, 3))
     assert orbit_revolutions(_circle(1.0)[::-1], asset)[0] == pytest.approx(orbit_revolutions(_circle(1.0), asset)[0], abs=1e-6)
+
+
+def test_terminal_flyby_detects_the_known_sustained_fly_by_case():
+    """C3 seed 130017 at the accepted foundation (873026ea): a 27x path-excess episode in which
+    the attacker repeatedly swings outside the fixed 20 m `orbit_revolutions` radius between near
+    misses, so that metric alone reports no orbit even though the attacker visibly loiters around
+    the asset for hundreds of steps (see docs/journal_v2_terminal_speed_governor.md)."""
+    rec = record_episode("C3", "V2", "passive", 130017, detour_cf=False)
+    metrics = terminal_flyby_metrics(rec)
+    assert metrics["fly_by_count"] >= TERMINAL_ORBIT_FLYBY_THRESHOLD
+    assert metrics["angular_travel_revolutions"] >= TERMINAL_ORBIT_REVOLUTION_THRESHOLD
+    assert metrics["detected"] is True
+    # the existing fixed-radius metric misses it (motivating this diagnostic in the first place)
+    assert summarize(rec)["orbit_event"] is False
+
+
+@pytest.mark.parametrize("level,seed", [("C2", 130065), ("C3", 130063), ("C3", 130081), ("C3", 130064), ("C2", 130054), ("C0", 130000)])
+def test_terminal_flyby_does_not_flag_normal_captures(level, seed):
+    rec = record_episode(level, "V2", "passive", seed, detour_cf=False)
+    assert terminal_flyby_metrics(rec)["detected"] is False
 
 
 def test_dense_audit_agrees_with_analytic_solver():
