@@ -290,6 +290,8 @@ class SoldierEnv(gym.Env):
         
         # Internal state
         self._soldier_pos: np.ndarray | None = None
+        self._soldier_vel: np.ndarray = np.zeros(3, dtype=np.float32)
+        self._soldier_gauss_markov_initialized: bool = False
         self._defender_pos: np.ndarray | None = None
         self._enemy_pos: np.ndarray | None = None
         self._defender_vel: np.ndarray | None = None  # Persistent 3D velocity [vx,vy,vz], m/s
@@ -589,6 +591,11 @@ class SoldierEnv(gym.Env):
         
         # Initialize soldier at the origin, on the ground (z = 0)
         self._soldier_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
+        # Soldier velocity state (journal model-study extension, asset_motion_model ==
+        # "gauss_markov_velocity" only; unused/not maintained under the legacy model so legacy
+        # behavior and its RNG draw sequence are completely untouched).
+        self._soldier_vel = np.zeros(3, dtype=np.float32)
+        self._soldier_gauss_markov_initialized = False
         
         # Initialize defender co-located with soldier: d0 = s0 = [x, y, 0]
         self._defender_pos = self._soldier_pos.copy()
@@ -1784,6 +1791,23 @@ class SoldierEnv(gym.Env):
     
     def _move_soldier(self) -> None:
         """
+        Move the soldier using `self.config.asset_motion_model`.
+
+        "legacy_gaussian_random_walk" (default; the ONLY model V1 and the canonical V2 benchmark
+        use) is UNCHANGED from before this journal model-study extension existed -- see
+        `_move_soldier_legacy` below, bit-identical including its RNG draw sequence.
+
+        "gauss_markov_velocity" is an optional, config-gated alternative studied for whether a
+        temporally correlated asset-motion process changes benchmark behavior -- see
+        `_move_soldier_gauss_markov` below. It is never selected by any canonical config builder.
+        """
+        if self.config.asset_motion_model == "gauss_markov_velocity":
+            self._move_soldier_gauss_markov()
+        else:
+            self._move_soldier_legacy()
+
+    def _move_soldier_legacy(self) -> None:
+        """
         Move the soldier with a true Gaussian random walk.
         
         The soldier remains a ground entity: only x, y are perturbed and
@@ -1831,6 +1855,90 @@ class SoldierEnv(gym.Env):
 
         self._soldier_obstacle_blocked = False
         self._soldier_pos = new_pos.astype(np.float32)
+
+    def _move_soldier_gauss_markov(self) -> None:
+        """
+        Journal model-study extension (asset_motion_model == "gauss_markov_velocity"): an
+        optional, config-gated alternative to the legacy IID Gaussian random walk. Not selected
+        by any canonical config builder; see docs/journal_v2_asset_motion_model_study.md.
+
+        Replaces the per-step IID position displacement with a temporally correlated (Gauss-
+        Markov / AR(1)) horizontal velocity process:
+
+            v_{t+1} = rho * v_t + sqrt(1 - rho^2) * v_s * xi_t,   xi_t ~ N(0, I)
+            p_{t+1} = p_t + v_{t+1} * dt
+
+        with rho = exp(-dt / tau) (`asset_motion_tau_s`), so that at stationarity each velocity
+        component retains standard deviation v_s -- the same per-component scale implied by the
+        legacy model's displacement (std = v_s * dt over one step) -- while the PROCESS itself is
+        correlated across steps instead of independent. This changes temporal persistence, not
+        magnitude.
+
+        Initialization (Phase 3): on the first call this episode there is no previous velocity to
+        decay from, so v_0 = v_s * xi_0 (the stationary-scale case of the recurrence with the
+        "rho * v_t" term dropped) is used instead, consuming the SAME one draw of size (2,) the
+        recurrence would have consumed on every other step -- the number and shape of per-step RNG
+        draws from `_rng_soldier` is identical to the legacy model's `size=(2,)` draw on every
+        step, so swapping models does not change how many random numbers are consumed per step
+        (only their application differs).
+
+        Horizontal-only, ground entity (z held at 0), reflecting boundary with the corresponding
+        velocity component ALSO reflected (not left pointing outward) on any axis that reflects.
+
+        Obstacle-blocked motion: the candidate segment is tested exactly as the legacy model's is
+        (reject-in-place, never resampled); the velocity update itself is NOT rejected (it is the
+        stochastic process state, evolved unconditionally, mirroring the legacy model's rule that
+        the proposed draw is computed "regardless of obstacles").
+        """
+        dt = self.config.dt
+        v_s = self.config.v_s
+        rho = float(np.exp(-dt / self.config.asset_motion_tau_s))
+
+        xi = self._rng_soldier.normal(loc=0.0, scale=1.0, size=(2,))
+        if not self._soldier_gauss_markov_initialized:
+            new_vel_xy = v_s * xi
+            self._soldier_gauss_markov_initialized = True
+        else:
+            prev_vel_xy = self._soldier_vel[:2].astype(np.float64)
+            new_vel_xy = rho * prev_vel_xy + np.sqrt(max(1.0 - rho * rho, 0.0)) * v_s * xi
+
+        displacement_xy = new_vel_xy * dt
+        candidate_pos = self._soldier_pos.astype(np.float64)
+        candidate_pos[:2] += displacement_xy
+        candidate_pos[2] = 0.0
+
+        reflected_xy, reflected_vel_xy = self._reflect_horizontal_boundary_with_velocity(
+            candidate_pos[:2], new_vel_xy
+        )
+        new_pos = np.array([reflected_xy[0], reflected_xy[1], 0.0], dtype=np.float32)
+        self._soldier_vel = np.array([reflected_vel_xy[0], reflected_vel_xy[1], 0.0], dtype=np.float32)
+
+        if self._obstacle_layout.segment_intersects(self._soldier_pos, new_pos):
+            self._soldier_obstacle_blocked = True
+            self._soldier_obstacle_block_count += 1
+            return
+
+        self._soldier_obstacle_blocked = False
+        self._soldier_pos = new_pos
+
+    def _reflect_horizontal_boundary_with_velocity(
+        self, pos_xy: np.ndarray, vel_xy: np.ndarray,
+    ) -> tuple[np.ndarray, np.ndarray]:
+        """Like `_reflect_boundary`, but horizontal-only (the soldier never moves vertically) and
+        also reflects the velocity component on every axis that undergoes a position reflection --
+        `_reflect_boundary` itself, used everywhere else (enemy, defender), is untouched."""
+        L = self.config.L
+        pos_xy = np.array(pos_xy, dtype=np.float64, copy=True)
+        vel_xy = np.array(vel_xy, dtype=np.float64, copy=True)
+        for i in range(2):
+            while pos_xy[i] < -L or pos_xy[i] > L:
+                if pos_xy[i] < -L:
+                    pos_xy[i] = 2 * (-L) - pos_xy[i]
+                    vel_xy[i] = -vel_xy[i]
+                if pos_xy[i] > L:
+                    pos_xy[i] = 2 * L - pos_xy[i]
+                    vel_xy[i] = -vel_xy[i]
+        return pos_xy, vel_xy
     
     def _compute_enemy_evasion(
         self,

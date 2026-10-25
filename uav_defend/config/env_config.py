@@ -33,6 +33,18 @@ class EnvConfig:
     
     # Soldier movement parameters
     v_s: float = 1.5  # Soldier speed (slow human movement, much slower than drones)
+    # Protected-asset (soldier) stochastic motion model (journal model-study extension):
+    #   "legacy_gaussian_random_walk" (default): per-step IID Gaussian displacement, scale
+    #     v_s*dt -- the ORIGINAL, zero-velocity-persistence model. Bit-identical to all prior
+    #     behavior; this is the only model V1 and the canonical V2 benchmark use.
+    #   "gauss_markov_velocity": an optional, config-gated alternative with a temporally
+    #     correlated (AR(1)/Gauss-Markov) velocity process instead of an IID position walk --
+    #     see uav_defend/envs/soldier_env.py:_move_soldier for the exact recurrence. Not
+    #     selected by any canonical builder; a model-study artifact only.
+    asset_motion_model: str = "legacy_gaussian_random_walk"
+    # Velocity persistence time constant (s) for "gauss_markov_velocity"; rho = exp(-dt/tau).
+    # Unused (and not validated) under the legacy model.
+    asset_motion_tau_s: float = 1.0
     
     # Enemy drone parameters (weaving pursuit)
     v_e: float = 12.0  # Enemy drone speed (realistic and threatening)
@@ -391,6 +403,13 @@ class EnvConfig:
             raise ValueError(f"v_d must be > 0, got {self.v_d}")
         if self.v_e <= 0:
             raise ValueError(f"v_e must be > 0, got {self.v_e}")
+        if self.asset_motion_model not in ("legacy_gaussian_random_walk", "gauss_markov_velocity"):
+            raise ValueError(
+                "asset_motion_model must be 'legacy_gaussian_random_walk' or 'gauss_markov_velocity', got "
+                f"{self.asset_motion_model!r}"
+            )
+        if self.asset_motion_tau_s <= 0:
+            raise ValueError(f"asset_motion_tau_s must be > 0, got {self.asset_motion_tau_s}")
 
         if self.defender_max_accel <= 0:
             raise ValueError(
