@@ -60,6 +60,8 @@ FINAL_INFO_KEYS = (
     "attacker_path_length", "attacker_flight_time_s", "attacker_heading_change_total_deg",
     "attacker_overshoot_count", "attacker_path_efficiency", "enemy_soldier_dist", "defender_enemy_dist",
     "step_count", "mission_contact_mode", "enemy_nominal_guidance_mode",
+    "enemy_endurance_enabled", "enemy_endurance_budget_m", "enemy_endurance_traveled_m",
+    "enemy_endurance_remaining_m",
 )
 
 
@@ -415,7 +417,11 @@ def record_episode(level: str, semantics: str, controller: str, seed: int, *, co
             pre_terminal = {k: v.copy() for k, v in prev.items()}
             pre_terminal["defender_start"] = dfn.copy() if info.get("defender_standby") else prev["dfn"].copy()
             if snapshot is not None and info.get("terminal_event") in ("capture", "interception"):
-                snapshot.config = dataclasses.replace(snapshot.config, mission_contact_mode="endpoint")
+                # Finite mission endurance (journal extension) requires swept contact mode, so it
+                # is explicitly disabled for this endpoint-semantics counterfactual branch (the
+                # budget mechanism has no meaning under V1's endpoint contact model).
+                snapshot.config = dataclasses.replace(
+                    snapshot.config, mission_contact_mode="endpoint", enemy_endurance_enabled=False)
                 _, _, _, _, cf = snapshot.step(action)
                 counterfactual_record = {
                     "outcome": cf["outcome"], "terminal": bool(cf["outcome"] != "ongoing"),

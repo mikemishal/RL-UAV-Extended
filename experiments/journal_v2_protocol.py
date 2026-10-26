@@ -52,6 +52,18 @@ CANONICAL_C0_OVERRIDES: dict = {
     "defender_obstacle_awareness_mode": "disabled",
 }
 
+# Finite mission endurance (journal extension; see docs/journal_v2_mission_endurance.md): the
+# canonical corrected-V2 attacker now flies under a finite path budget (k=5, the largest of the
+# tested k in {3, 4, 5} -- a 400-episode-per-factor C0-C3 sweep found every factor changes only
+# the single known pathological episode (C3 seed 130017) and zero others, so the LEAST
+# restrictive factor is preferred). V1 defaults are untouched: `build_v1_env_config` never
+# applies this override, and `EnvConfig`'s own default (`enemy_endurance_enabled=False`) is
+# unaffected for any caller that builds an `EnvConfig` directly.
+V2_ENDURANCE_OVERRIDES: dict = {
+    "enemy_endurance_enabled": True,
+    "enemy_endurance_path_factor": 5.0,
+}
+
 
 def _build(
     level: str,
@@ -85,12 +97,18 @@ def build_v2_env_config(
     enemy_route_planning_enabled: bool = CANONICAL_ENEMY_ROUTE_PLANNING_ENABLED,
     extra_overrides: dict | None = None,
 ) -> EnvConfig:
-    """Canonical V2 EnvConfig: swept mission contact + direct/obstacle-only A0."""
+    """Canonical V2 EnvConfig: swept mission contact + direct/obstacle-only A0, finite mission
+    endurance (k=5; see V2_ENDURANCE_OVERRIDES). Pass
+    `extra_overrides={"enemy_endurance_enabled": False}` to reproduce the pre-endurance V2
+    config exactly (e.g. for endurance-vs-disabled comparisons)."""
+    merged_overrides = dict(V2_ENDURANCE_OVERRIDES)
+    if extra_overrides:
+        merged_overrides.update(extra_overrides)
     cfg = _build(
         level, estimator, V2_SEMANTIC_FIELDS,
         awareness_mode=awareness_mode,
         enemy_route_planning_enabled=enemy_route_planning_enabled,
-        extra_overrides=extra_overrides,
+        extra_overrides=merged_overrides,
     )
     assert_v2_semantics(cfg)
     return cfg

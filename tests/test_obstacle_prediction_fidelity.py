@@ -269,7 +269,13 @@ def test_g_dynamic_obstacle_swept_box_matches_execution_while_the_layout_is_unch
 
 # ------------------------------------------------------------------ real episode
 def _real_episode_flight(level, seed, steps):
-    cfg = dataclasses.replace(build_v2_env_config(level, "measurement"), defender_standby_until_detection=False)
+    # Finite mission endurance (journal extension) is canonical for V2 but orthogonal to this
+    # file's scope (legacy waypoint-planner prediction fidelity, forced via the module's
+    # autouse `legacy_waypoint_planner` fixture); disabled here so a long legacy-planner replay
+    # is never truncated by the budget before this file's float32-replay assertions run.
+    cfg = dataclasses.replace(
+        build_v2_env_config(level, "measurement", extra_overrides={"enemy_endurance_enabled": False}),
+        defender_standby_until_detection=False)
     env = SoldierEnv(cfg)
     env.enemy_tactical_override = None
     env.reset(seed=seed)

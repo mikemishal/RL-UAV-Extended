@@ -68,8 +68,17 @@ def test_terminal_flyby_detects_the_known_sustained_fly_by_case():
     """C3 seed 130017 at the accepted foundation (873026ea): a 27x path-excess episode in which
     the attacker repeatedly swings outside the fixed 20 m `orbit_revolutions` radius between near
     misses, so that metric alone reports no orbit even though the attacker visibly loiters around
-    the asset for hundreds of steps (see docs/journal_v2_terminal_speed_governor.md)."""
-    rec = record_episode("C3", "V2", "passive", 130017, detour_cf=False)
+    the asset for hundreds of steps (see docs/journal_v2_terminal_speed_governor.md).
+
+    Finite mission endurance (journal extension; see docs/journal_v2_mission_endurance.md) is now
+    canonical for V2 and deliberately truncates this exact episode before the fly-by pattern can
+    run its full course -- that is the fix. This test validates the underlying
+    `terminal_flyby_metrics` diagnostic against the full (pre-truncation) pathological
+    trajectory, so it explicitly disables endurance to reproduce the historical episode."""
+    import dataclasses
+
+    rec = record_episode("C3", "V2", "passive", 130017, detour_cf=False,
+                          cfg_transform=lambda cfg: dataclasses.replace(cfg, enemy_endurance_enabled=False))
     metrics = terminal_flyby_metrics(rec)
     assert metrics["fly_by_count"] >= TERMINAL_ORBIT_FLYBY_THRESHOLD
     assert metrics["angular_travel_revolutions"] >= TERMINAL_ORBIT_REVOLUTION_THRESHOLD

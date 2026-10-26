@@ -294,6 +294,10 @@ class SoldierEnv(gym.Env):
         self._soldier_gauss_markov_initialized: bool = False
         self._defender_pos: np.ndarray | None = None
         self._enemy_pos: np.ndarray | None = None
+        # Finite mission endurance (journal extension; see
+        # docs/journal_v2_mission_endurance.md). None when disabled.
+        self._enemy_endurance_budget: float | None = None
+        self._enemy_endurance_traveled: float = 0.0
         self._defender_vel: np.ndarray | None = None  # Persistent 3D velocity [vx,vy,vz], m/s
         self._enemy_vel: np.ndarray | None = None      # Persistent 3D velocity [vx,vy,vz], m/s
         self._defender_dynamics_info: dict = {}  # Per-step dynamics diagnostics (see _advance_velocity)
@@ -613,6 +617,14 @@ class SoldierEnv(gym.Env):
         # an artificial launch-from-rest transient.
         pursuit_dir = self._soldier_pos - self._enemy_pos
         pursuit_norm = np.linalg.norm(pursuit_dir)
+        # Finite mission endurance (journal extension): the traveled-distance budget is fixed at
+        # reset, from the initial 3D attacker-to-asset distance d0 -- never recomputed later, so
+        # neither the asset's own motion nor the attacker's path shape can change the budget itself.
+        if self.config.enemy_endurance_enabled:
+            self._enemy_endurance_budget = self.config.enemy_endurance_path_factor * float(pursuit_norm)
+        else:
+            self._enemy_endurance_budget = None
+        self._enemy_endurance_traveled = 0.0
         if pursuit_norm > self.config.eps:
             pursuit_dir = pursuit_dir / pursuit_norm
         else:
@@ -1060,6 +1072,12 @@ class SoldierEnv(gym.Env):
         # C. Move enemy with weaving pursuit + reactive evasion toward soldier (uncontrolled)
         self._move_enemy()
 
+        # Finite mission endurance (journal extension; Phase 5): the FULL (not yet clamped by any
+        # swept event) distance the attacker actually flew this step -- computed here, immediately
+        # after its own guidance/dynamics ran and before any event arbitration, so this can never
+        # be influenced by (or influence) which event ends up winning the step.
+        enemy_full_step_distance = float(np.linalg.norm(self._enemy_pos - enemy_prev_pos))
+
         # D. Update enemy detection state and Kalman tracking estimates.
         # Called here, in step(), so that it is a first-class environment
         # behavior available to ANY controller — not tied to RL logic.
@@ -1273,6 +1291,20 @@ class SoldierEnv(gym.Env):
                 candidates.append((capture_hit.fraction, 2, "capture"))
             if interception_hit is not None:
                 candidates.append((interception_hit.fraction, 3, "interception"))
+            # Finite mission endurance (journal extension; Phase 5-6): integrated into the SAME
+            # first-event resolver, lowest priority (4) among the swept candidates -- an
+            # administrative "ran out of budget" bookkeeping event never preempts a genuine
+            # physical event (collision/capture/interception) at an earlier or tied fraction this
+            # step. tau_E = remaining budget / the full (unclamped) distance just flown this step;
+            # a candidate only when that is < 1 (the budget would be exhausted strictly within
+            # this step).
+            endurance_tau = None
+            if self._enemy_endurance_budget is not None:
+                remaining = self._enemy_endurance_budget - self._enemy_endurance_traveled
+                if enemy_full_step_distance > self.config.eps:
+                    endurance_tau = float(np.clip(remaining / enemy_full_step_distance, 0.0, 1.0))
+                    if endurance_tau < 1.0:
+                        candidates.append((endurance_tau, 4, "endurance"))
             if candidates:
                 earliest = min(c[0] for c in candidates)
                 terminal_fraction, _, terminal_event = min(
@@ -1287,8 +1319,8 @@ class SoldierEnv(gym.Env):
                 self._restore_collision_state(collision_snapshot, "enemy")
                 self._enemy_collision_event_type = None
                 self._enemy_collision_event_point = None
-            if terminal_event in ("capture", "interception"):
-                # State at the contact instant; distances/classification
+            if terminal_event in ("capture", "interception", "endurance"):
+                # State at the contact/exhaustion instant; distances/classification
                 # below are evaluated on these interpolated positions.
                 tau = terminal_fraction
                 self._enemy_pos = (enemy_prev_pos + tau * (self._enemy_pos - enemy_prev_pos)).astype(np.float32)
@@ -1296,6 +1328,12 @@ class SoldierEnv(gym.Env):
                     defender_collision_segment_start + tau * (self._defender_pos - defender_collision_segment_start)
                 ).astype(np.float32)
                 self._soldier_pos = (soldier_prev_pos + tau * (self._soldier_pos - soldier_prev_pos)).astype(np.float32)
+            # Endurance bookkeeping: the traveled-distance budget only ever advances by what the
+            # attacker ACTUALLY flew before the winning event this step (the full step if nothing
+            # else won sooner, or the fraction up to an earlier-winning event otherwise) -- never
+            # by commanded/nominal speed.
+            if self._enemy_endurance_budget is not None:
+                self._enemy_endurance_traveled += terminal_fraction * enemy_full_step_distance
             self._contact_info.update(
                 capture_contact_fraction=None if capture_hit is None else capture_hit.fraction,
                 capture_contact_position=None if capture_hit is None else capture_hit.position_a.copy(),
@@ -1386,7 +1424,10 @@ class SoldierEnv(gym.Env):
             terminated = True
         else:
             # Episode terminates on any terminal condition or timeout
-            terminated = intercepted or soldier_caught or unsafe_intercept or (self._step_count >= self.config.max_steps)
+            terminated = (
+                intercepted or soldier_caught or unsafe_intercept or (terminal_event == "endurance")
+                or (self._step_count >= self.config.max_steps)
+            )
 
             # Determine outcome and reward
             if soldier_caught:
@@ -1401,6 +1442,13 @@ class SoldierEnv(gym.Env):
                 # Safe intercept (WIN)
                 outcome = "intercepted"
                 reward = self.config.reward_intercept  # WIN
+            elif terminal_event == "endurance":
+                # Finite mission endurance (journal extension): the attacker exhausted its
+                # traveled-distance budget before reaching the asset -- distinct from both
+                # "soldier_caught" (never reached the threat radius) and "timeout" (not a
+                # step-count expiry; can happen arbitrarily early in the episode).
+                outcome = "enemy_endurance_exhausted"
+                reward = self.config.reward_enemy_endurance_exhausted
             elif self._step_count >= self.config.max_steps:
                 outcome = "timeout"
                 reward = self.config.reward_timeout  # LOSS (failed to intercept)
@@ -2644,6 +2692,16 @@ class SoldierEnv(gym.Env):
             "enemy_detected": self._enemy_detected,  # Use stored tracking state
             "unsafe_intercept": unsafe_zone,  # True if enemy is in unsafe zone around soldier
             "outcome": outcome,
+            # Finite mission endurance (journal extension; see
+            # docs/journal_v2_mission_endurance.md). None/False when disabled -- the budget is
+            # only ever tracked/exposed when enemy_endurance_enabled is True.
+            "enemy_endurance_enabled": self.config.enemy_endurance_enabled,
+            "enemy_endurance_budget_m": self._enemy_endurance_budget,
+            "enemy_endurance_traveled_m": self._enemy_endurance_traveled if self._enemy_endurance_budget is not None else None,
+            "enemy_endurance_remaining_m": (
+                None if self._enemy_endurance_budget is None
+                else max(self._enemy_endurance_budget - self._enemy_endurance_traveled, 0.0)
+            ),
             # Kalman filter tracking info
             "detected": self._enemy_detected,
             "enemy_measurement": (

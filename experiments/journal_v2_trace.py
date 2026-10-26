@@ -66,6 +66,12 @@ def trace_row(step: int, dt: float, info: dict) -> dict:
         "interception_contact_fraction": info.get("interception_contact_fraction"),
         "terminal_event": info.get("terminal_event"),
         "outcome": info.get("outcome"),
+        # Finite mission endurance (journal extension; see docs/journal_v2_mission_endurance.md).
+        # None/False when disabled.
+        "endurance_enabled": bool(info.get("enemy_endurance_enabled", False)),
+        "endurance_budget_m": _finite_or_none(info.get("enemy_endurance_budget_m")),
+        "endurance_traveled_m": _finite_or_none(info.get("enemy_endurance_traveled_m")),
+        "endurance_remaining_m": _finite_or_none(info.get("enemy_endurance_remaining_m")),
     }
 
 

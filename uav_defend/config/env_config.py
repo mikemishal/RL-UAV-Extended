@@ -122,6 +122,10 @@ class EnvConfig:
     reward_soldier_caught: float = -100.0  # Penalty for enemy catching soldier (LOSS)
     reward_unsafe_intercept: float = -150.0  # Severe penalty for unsafe intercept (discourage risky behavior)
     reward_timeout: float = -100.0  # Penalty for timeout (failed to intercept)
+    # Minimal terminal bookkeeping only (journal extension, finite mission-endurance study): reuses
+    # reward_timeout's value as a neutral default -- this is NOT a considered reward-shaping choice
+    # for A0/A1 training, which is deferred to a later task; see docs/journal_v2_mission_endurance.md.
+    reward_enemy_endurance_exhausted: float = -100.0
     reward_progress_scale: float = 5.0  # Scale for distance progress reward (closing on enemy)
     reward_time_penalty: float = -0.05  # Small time penalty per step
     reward_proximity_warning: float = -0.5  # Per-step penalty when enemy is close to soldier (increased)
@@ -373,6 +377,29 @@ class EnvConfig:
     mission_contact_mode: str = "endpoint"
     enemy_nominal_guidance_mode: str = "legacy"
 
+    # =========================================================================
+    # Finite mission endurance (journal extension; see
+    # docs/journal_v2_mission_endurance.md). Represents the operational fact
+    # that a hostile UAV cannot pursue indefinitely after repeatedly failing
+    # to reach the asset -- NOT a calibrated battery/energy model (no such
+    # empirical data exists in this repository). Requires
+    # mission_contact_mode == "swept" (the within-step first-event resolver
+    # this integrates with only exists in that mode).
+    #
+    # enemy_endurance_enabled: False (default; reproduces all prior V1/V2
+    #   behavior exactly -- no budget is tracked, no new terminal event can
+    #   occur). V1 generic defaults are never changed.
+    # enemy_endurance_path_factor (k): the attacker's traveled-distance
+    #   budget is B = k * d0, where d0 is the initial 3D attacker-to-asset
+    #   distance recorded at reset(). k=1 is roughly one initial-range
+    #   equivalent of travel; larger k allows more room for target motion,
+    #   obstacle detours and imperfect pursuit. This is a NORMALIZED
+    #   (scenario-scale-independent) parameter, not a claim about real
+    #   flight-time/battery duration.
+    # =========================================================================
+    enemy_endurance_enabled: bool = False
+    enemy_endurance_path_factor: float = 5.0
+
     def __post_init__(self) -> None:
         """Validate altitude and dynamics configuration."""
         if self.mission_contact_mode not in ("endpoint", "swept"):
@@ -383,6 +410,15 @@ class EnvConfig:
             raise ValueError(
                 "enemy_nominal_guidance_mode must be 'legacy' or 'direct_obstacle_only', got "
                 f"{self.enemy_nominal_guidance_mode!r}"
+            )
+        if self.enemy_endurance_enabled and self.mission_contact_mode != "swept":
+            raise ValueError(
+                "enemy_endurance_enabled requires mission_contact_mode == 'swept' (the within-step "
+                "first-event resolver it integrates with only exists in that mode)"
+            )
+        if self.enemy_endurance_path_factor <= 0:
+            raise ValueError(
+                f"enemy_endurance_path_factor must be > 0, got {self.enemy_endurance_path_factor}"
             )
         if self.enemy_spawn_altitude_min < 0:
             raise ValueError(
