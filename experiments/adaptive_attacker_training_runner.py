@@ -121,6 +121,7 @@ def run_adaptive_attacker_training(
     progress_bar: bool = False,
     num_envs: int = 1,
     vec_env_cls: str = "auto",
+    require_canonical_v2: bool = False,
 ) -> dict:
     """Trains ONE Adaptive Attacker v1 PPO model. Mirrors
     `clutter_training_runner.run_clutter_training`'s vectorization
@@ -128,8 +129,17 @@ def run_adaptive_attacker_training(
     SubprocVecEnv with worker_seed = seed + i*SEED_STRIDE), but is a
     SEPARATE function/module per Phase 4's explicit "separate attacker
     training pipeline" instruction, with an attacker-appropriate
-    (soldier_caught-based) success metric."""
+    (soldier_caught-based) success metric.
+
+    `require_canonical_v2=True` (journal V2 campaigns): before anything is created or trained,
+    one environment from `env_fn` is reset and its resolved config asserted to be the frozen
+    canonical V2 A0 benchmark (see experiments.journal_v2_protocol)."""
     from experiments.adaptive_attacker_env import ATTACKER_VALIDATION_SEED_START
+
+    if require_canonical_v2:
+        from experiments.journal_v2_protocol import assert_canonical_v2_env_fn
+
+        assert_canonical_v2_env_fn(env_fn, seed)
 
     output_dir = Path(output_dir)
     checkpoints_dir = output_dir / "checkpoints"

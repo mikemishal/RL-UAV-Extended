@@ -153,13 +153,22 @@ def run_defender_adaptation_training(
     verbose: int = 0,
     num_envs: int = 16,
     vec_env_cls: str = "auto",
+    require_canonical_v2: bool = False,
 ) -> dict:
     """Continue training ONE defender checkpoint for exactly
     `total_additional_timesteps` MORE environment transitions (Phase 8/13),
     restart-safely. `generation` must be "d0_plus" or "d1". `env_fn` is the
-    ONLY thing that may differ between a matched D0+/D1 pair (Phase 18)."""
+    ONLY thing that may differ between a matched D0+/D1 pair (Phase 18).
+
+    `require_canonical_v2=True` (journal V2 campaigns): before anything is created or trained,
+    one environment from `env_fn` is reset and its resolved config asserted to be the frozen
+    canonical V2 A0 benchmark (see experiments.journal_v2_protocol)."""
     if generation not in ("d0_plus", "d1"):
         raise ValueError(f"generation must be 'd0_plus' or 'd1', got {generation!r}")
+    if require_canonical_v2:
+        from experiments.journal_v2_protocol import assert_canonical_v2_env_fn
+
+        assert_canonical_v2_env_fn(env_fn, seed)
 
     output_dir = Path(output_dir)
     checkpoints_dir = output_dir / "checkpoints"

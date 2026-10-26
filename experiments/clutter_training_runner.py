@@ -134,6 +134,7 @@ def run_clutter_training(
     progress_bar: bool = False,
     num_envs: int = 1,
     vec_env_cls: str = "auto",
+    require_canonical_v2: bool = False,
 ) -> dict:
     """Train ONE clutter-aware PPO model (architecture in
     {"ppo_clutter_v1","ppo_kalman_clutter_v1","lrppo_clutter_v1"}) using
@@ -158,7 +159,15 @@ def run_clutter_training(
     and the first worker of any `num_envs>1` run start from the SAME
     per-worker seed (though overall training dynamics still differ once
     >1 worker contributes transitions to the same rollout buffer).
+
+    `require_canonical_v2=True` (journal V2 campaigns): before anything is created or trained,
+    one environment from `env_fn` is reset and its resolved config asserted to be the frozen
+    canonical V2 A0 benchmark (see experiments.journal_v2_protocol).
     """
+    if require_canonical_v2:
+        from experiments.journal_v2_protocol import assert_canonical_v2_env_fn
+
+        assert_canonical_v2_env_fn(env_fn, seed)
     output_dir = Path(output_dir)
     checkpoints_dir = output_dir / "checkpoints"
     output_dir.mkdir(parents=True, exist_ok=True)

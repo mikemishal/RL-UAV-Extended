@@ -1,0 +1,81 @@
+{
+  "schema": "journal_v2_training_handoff/1",
+  "created": "2026-10-25",
+  "purpose": "Starting point for designing V2 A1 / defender training on the frozen canonical V2 A0 benchmark. No training has been run against this benchmark.",
+  "statement": "Existing A1 checkpoints are V1-trained and MUST NOT be used as canonical V2 results.",
+  "research": {
+    "repository": "mikemishal/RL-UAV-Extended",
+    "branch": "research/journal-corrected-attacker-v2",
+    "canonical_tag": "journal-v2-a0-canonical-v1",
+    "canonical_tag_resolution": "annotated tag -> the commit containing this file; its full SHA is printed in the freeze report and by `git rev-parse journal-v2-a0-canonical-v1^{commit}`",
+    "a0_environment_commit": "8e2d59115423d329156d5bc468bf594019f4dc03",
+    "a0_environment_commit_note": "last commit that changed simulation code; `git diff 8e2d591 journal-v2-a0-canonical-v1 -- uav_defend` is empty",
+    "superseded_tag_unmoved": {"journal-corrected-attacker-semantics-v2": "db8c2995fb08279fff3d98e5fe1fef9a7a72e2ce"},
+    "benchmark_document": "docs/journal_v2_canonical_benchmark.md"
+  },
+  "visualizer": {
+    "repository": "mikemishal/RL-UAV-Extended (worktree RL-UAV-Extended-visualizer)",
+    "branch": "tooling/journal-visualizer",
+    "inspected_and_approved_commit": "65bb1206b9a7ab44b1533447477534e43d682666",
+    "tag": "journal-v2-a0-visualizer-v1",
+    "tag_note": "points at the inspected commit plus one pin-only commit that moves EXPECTED_RESEARCH_COMMIT to the frozen research tag target; no visualizer behavior changed",
+    "supports": ["V1/V2", "A0/A1", "passive", "greedy", "kalman_greedy", "pn", "lead", "rmpc", "endurance status", "enemy_endurance_exhausted", "research-SHA verification"]
+  },
+  "canonical_config": {
+    "builder": "experiments.journal_v2_protocol.build_v2_env_config(level, estimator, awareness_mode)",
+    "randomized_training_builder": "experiments.journal_v2_protocol.build_randomized_v2_training_config(rng, estimator)",
+    "guard": "experiments.journal_v2_protocol.assert_canonical_v2_training_config; pass require_canonical_v2=True to the journal training runners",
+    "mission_contact_mode": "swept",
+    "enemy_nominal_guidance_mode": "direct_obstacle_only",
+    "stateful_enemy_avoidance": true,
+    "asset_motion_model": "legacy_gaussian_random_walk",
+    "enemy_endurance_enabled": true,
+    "enemy_endurance_path_factor": 5.0,
+    "endurance_terminal_outcome": "enemy_endurance_exhausted",
+    "attacker_dynamics": {"v_e": 12.0, "enemy_max_accel": 6.0, "enemy_max_turn_rate_deg": 75.0, "enemy_max_climb_rate": 5.0, "enemy_max_descent_rate": 5.0},
+    "dt": 0.5,
+    "radii_m": {"threat_radius": 2.0, "intercept_radius": 2.5, "unsafe_intercept_radius": 3.5, "detection_radius": 15.0},
+    "config_sha256_map_local": {
+      "C0/measurement": "858758ea1fc1f2749affd8f836713318981f77df6b99b0b8ad13fb16d1df5cd6",
+      "C0/kalman": "5d1ff5c1ac0593a07129ca3a0718eb5fcf1df5eaf533680b2179e5c4c00b9eaf",
+      "C1/measurement": "ca28f37f2e314bf16a26dc28a5cc11bc738935765f9d0ef413d995054d01c276",
+      "C1/kalman": "2bbbb254b3f5caa59dfa0d4c6bb0f6e5306a6cb7f6fc954db88969e7a321c324",
+      "C2/measurement": "7f922d0569e4dc5327aecaec6603975a620ccfad42ada33c73457bcc4ace8a23",
+      "C2/kalman": "999159d67f7030ec43027e7a320043d17481937a57297b0704724881d5f88a60",
+      "C3/measurement": "734d50cc2496601fd754f79aebbabd5d78bbf4733f585ede8e8a106eb88bd186",
+      "C3/kalman": "360c56680b3ce3ee1745bb47aea965e1c53e36df8c3a5f571ea89ec5717d78d7"
+    },
+    "evaluation_seed_range_used_for_validation": "130000-130099 (C0-C3)"
+  },
+  "known_rare_failure": {"level": "C3", "seed": 130017, "without_endurance": "346 steps, 1828.5 m, 27.06x path-excess, then capture", "canonical_k5": "enemy_endurance_exhausted at step 54, 285.65 m, no collision", "population_effect": "1/400 passive A0 episodes changed per k in {3,4,5}; 0 collisions"},
+  "a1_interface_as_currently_implemented": {
+    "note": "From the V1 adaptive-attacker implementation (experiments/adaptive_attacker_env.py); rewards and training environment are NOT yet redesigned for V2.",
+    "observation_dim": 36,
+    "action_dim": 3,
+    "policy": "PPO MlpPolicy",
+    "hyperparameters": {"learning_rate": 0.0003, "gamma": 0.99, "batch_size": 64, "n_steps": 2048, "n_epochs": 10, "clip_range": 0.2, "ent_coef": 0.01, "vf_coef": 0.5, "max_grad_norm": 0.5, "gae_lambda": 0.95},
+    "current_v1_reward_constants": {"progress_scale": 5.0, "time_penalty": -0.05, "success": 100.0, "intercepted": -100.0, "unsafe_intercept": -50.0, "endurance_exhausted": "not yet defined for A1 (SoldierEnv terminal reward placeholder -100.0 equals reward_timeout)"},
+    "validation_seed_start": 180000,
+    "attacker_seeds_known": [201, 202, 203],
+    "defender_observation_dims": {"ppo_and_ppo_kalman_clutter": "36 (16 base + 20 sector features)", "lr_ppo_clutter_model_input": "39 (19 residual + 20 sector features)", "action": 3}
+  },
+  "v1_checkpoints_provenance_only": {
+    "warning": "Existing A1 checkpoints are V1-trained and MUST NOT be used as canonical V2 results.",
+    "registry_file": "results/defender_adaptation_model_registry.json",
+    "registry_sha256": "6ee0c930c0691e38abe626351ad9e255dc150d46610f507070eaf95f1a8b6ac4",
+    "registry_training_code_commit": "69596d8af8dc27bb080fa1eee37a38ea5090b6ef",
+    "registered_checkpoints_total": 30,
+    "defender_checkpoints": "27 (ppo_clutter_v1, ppo_kalman_clutter_v1, lrppo_clutter_v1 x d0 / d0_plus / d1 x 3 seeds), all V1-trained",
+    "a1_attackers": {
+      "A1-201": {"path": "results/adaptive_attacker_400k/seed_201/best_model.zip", "sha256": "346cc3fe64758d495bc622021a9384dd85df97ee9d81d0ece32f45ee63de40cb"},
+      "A1-202": {"path": "results/adaptive_attacker_400k/seed_202/best_model.zip", "sha256": "b90863ca1b63be9d52b5ef31c5ec2ce5b10b0789c4d38bdb29f88e9864721c11"},
+      "A1-203": {"path": "results/adaptive_attacker_400k/seed_203/best_model.zip", "sha256": "27f083a1f10c9cfc0a2cb379371845fd4b3a310d2ec88c98165b247d9c97bcf8", "role": "held out from defender adaptation"}
+    }
+  },
+  "training_contract": [
+    "Use experiments.journal_v2_protocol.build_v2_env_config / build_randomized_v2_training_config; never build_canonical_env_config / build_randomized_training_config (V1).",
+    "Pass require_canonical_v2=True to run_adaptive_attacker_training, run_clutter_training and run_defender_adaptation_training.",
+    "AdaptiveAttackerTrainingEnv must be given clutter_config_fn=build_randomized_v2_training_config; RandomizedClutterWrapper currently re-samples a V1 config on every reset and must not be used unchanged for V2 defender training.",
+    "Do not change any frozen A0 component; a change requires a new benchmark version."
+  ]
+}
