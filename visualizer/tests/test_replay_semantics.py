@@ -145,7 +145,7 @@ def test_a_config_that_does_not_resolve_to_the_requested_semantics_is_rejected(s
 
 
 def test_the_simulator_commit_pin_is_the_audited_v2_research_head():
-    assert engine.EXPECTED_RESEARCH_COMMIT == "873026ea15d0794bc45bf767af2df3aaa45e49fa"
+    assert engine.EXPECTED_RESEARCH_COMMIT == "8e2d59115423d329156d5bc468bf594019f4dc03"
 
 
 # ----------------------------------------------------------------- events
