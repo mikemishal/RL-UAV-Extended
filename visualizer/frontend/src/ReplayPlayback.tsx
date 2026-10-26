@@ -82,10 +82,25 @@ function sweptContactLabel(frame: ReplayFrame): string | null {
   const info = frame.privileged_diagnostics.simulator_info;
   if (info.mission_contact_mode !== 'swept') return null;
   const event = info.terminal_event;
+  // Endurance exhaustion is not a contact; it is reported by the endurance status line instead.
+  if (event === 'endurance') return null;
   const fraction = info.terminal_event_fraction;
   return typeof event === 'string' && typeof fraction === 'number'
     ? `Swept contact: ${event.replace('_', ' ')} at τ = ${fraction.toFixed(2)} of the step`
     : null;
+}
+
+// Read-only view of the simulator-reported finite mission endurance (path budget). Endurance is a
+// resource, never a guidance mode; nothing here is recomputed in the browser.
+function enduranceLabel(frame: ReplayFrame): string | null {
+  const info = frame.privileged_diagnostics.simulator_info;
+  if (info.enemy_endurance_enabled !== true) return null;
+  const traveled = info.enemy_endurance_traveled_m;
+  const budget = info.enemy_endurance_budget_m;
+  const remaining = info.enemy_endurance_remaining_m;
+  if (typeof traveled !== 'number' || typeof budget !== 'number') return null;
+  const remainingText = typeof remaining === 'number' ? ` · remaining ${remaining.toFixed(1)} m` : '';
+  return `Endurance: ${traveled.toFixed(1)} / ${budget.toFixed(1)} m${remainingText}`;
 }
 
 export function ReplayPlayback({
@@ -292,8 +307,9 @@ export function ReplayPlayback({
             : <span>Privileged entity range hidden in Policy-Visible mode</span>}
           {informationMode === 'ground-truth' && <span>Attacker–asset range {episode.frames[sample.lowerIndex].privileged_diagnostics.attacker_asset_range_m.toFixed(1)} m</span>}
           {informationMode === 'ground-truth' && attackerBehaviorLabel(episode.frames[sample.lowerIndex]) && <span data-testid="attacker-mode">Attacker mode: {attackerBehaviorLabel(episode.frames[sample.lowerIndex])}</span>}
+          {informationMode === 'ground-truth' && enduranceLabel(episode.frames[sample.lowerIndex]) && <span data-testid="endurance-status">{enduranceLabel(episode.frames[sample.lowerIndex])}</span>}
           {informationMode === 'ground-truth' && terminalReached && sweptContactLabel(episode.frames[sample.lowerIndex]) && <span data-testid="swept-contact">{sweptContactLabel(episode.frames[sample.lowerIndex])}</span>}
-          {informationMode === 'ground-truth' && <span>{terminalReached ? `Terminal outcome: ${episode.summary.outcome}` : `Recorded outcome: ${episode.summary.outcome} (pending)`}</span>}
+          {informationMode === 'ground-truth' && <span data-testid="terminal-outcome">{terminalReached ? `Terminal outcome: ${episode.summary.outcome}${episode.summary.outcome === 'enemy_endurance_exhausted' ? ' (mission endurance exhausted; not a guidance mode)' : ''}` : `Recorded outcome: ${episode.summary.outcome} (pending)`}</span>}
         </section>
       )}
       <section className="playback panel" aria-label="Playback controls">

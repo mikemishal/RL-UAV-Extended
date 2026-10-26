@@ -1059,6 +1059,54 @@ test('URL presets open the requested semantics, clutter and seed without changin
   await expect(page.getByLabel('Clutter level')).toHaveValue('C0');
   await expect(page.getByLabel('Starting evaluation seed')).toHaveValue('0');
 });
+
+// Finite mission endurance: a V2 passive-defender replay ending by endurance exhaustion. Every
+// value shown comes from the recorded simulator_info; the frontend recomputes nothing.
+const enduranceEpisode: ReplayEpisode = {
+  ...v2Episode,
+  defender: { ...v2Episode.defender, policy_id: 'passive', architecture: 'passive', generation: null, training_seed: null, checkpoint: null },
+  summary: { ...v2Episode.summary, outcome: 'enemy_endurance_exhausted' },
+  frames: v2Episode.frames.map((frame, index, all) => ({
+    ...frame,
+    outcome: index === all.length - 1 ? 'enemy_endurance_exhausted' : 'ongoing',
+    privileged_diagnostics: {
+      ...frame.privileged_diagnostics,
+      simulator_info: {
+        mission_contact_mode: 'swept',
+        enemy_endurance_enabled: true,
+        enemy_endurance_budget_m: 285.6,
+        enemy_endurance_traveled_m: index === all.length - 1 ? 285.6 : 100 * index,
+        enemy_endurance_remaining_m: index === all.length - 1 ? 0 : 285.6 - 100 * index,
+        ...(index === all.length - 1 ? { terminal_event: 'endurance', terminal_event_fraction: 0.63 } : {}),
+      },
+    },
+  })),
+};
+
+test('passive preset selects the passive defender and the endurance status is shown, ending as exhausted (not a mode or contact)', async ({ page }) => {
+  await mockCatalog(page);
+  const passiveDefender = {
+    ...policies.defenders[0], policy_id: 'passive', display_name: 'Passive (parked, no action)', architecture: 'passive',
+  };
+  await page.route('**/api/policies', route => route.fulfill({
+    json: { ...policies, defenders: [...policies.defenders, passiveDefender] },
+  }));
+  await mockFixtureEpisodes(page, [replayId], enduranceEpisode);
+  await page.goto('/?semantics=V2&clutter=C3&seed=130017&defender=passive');
+  await expect(page.getByLabel('Defender architecture')).toHaveValue('passive');
+  await expect(page.getByLabel('Simulation semantics')).toHaveValue('V2');
+  await expect(page.getByLabel('Starting evaluation seed')).toHaveValue('130017');
+  await openAnalysis(page);
+  await page.getByRole('button', { name: 'Watch Recorded Episode' }).click();
+  await scrubTimeline(page, 0);
+  await expect(page.getByTestId('endurance-status')).toHaveText('Endurance: 0.0 / 285.6 m · remaining 285.6 m');
+  await expect(page.getByTestId('attacker-mode')).toHaveText('Attacker mode: DIRECT');
+  const last = enduranceEpisode.frames[enduranceEpisode.frames.length - 1].time_s;
+  await scrubTimeline(page, last);
+  await expect(page.getByTestId('endurance-status')).toHaveText('Endurance: 285.6 / 285.6 m · remaining 0.0 m');
+  await expect(page.getByTestId('terminal-outcome')).toContainText('enemy_endurance_exhausted');
+  await expect(page.getByTestId('swept-contact')).toHaveCount(0);
+});
 test('shows actionable submission and service errors without invented results', async ({ page }) => {
   await mockCatalog(page);
   await page.route('**/api/replay-jobs', route => route.fulfill({

@@ -67,6 +67,7 @@ function readablePolicy(policyId: string): string {
     ppo: 'PPO',
     ppo_kalman: 'PPO-Kalman',
     lr_ppo: 'LR-PPO',
+    passive: 'Passive (parked, zero action)',
   };
   return labels[policyId] ?? policyId;
 }

@@ -48,10 +48,13 @@ function queryPreset() {
   const semantics = params.get('semantics');
   const clutter = params.get('clutter');
   const seed = params.get('seed');
+  const defender = params.get('defender');
   return {
     semantics: (semantics === 'V1' || semantics === 'V2' ? semantics : 'V1') as Semantics,
     clutter: clutter && ['C0', 'C1', 'C2', 'C3'].includes(clutter) ? clutter : 'C0',
     seed: seed && /^\d+$/.test(seed) ? seed : '0',
+    // Only analytical ids are accepted here; the catalog still decides whether it is available.
+    defender: defender && ['greedy', 'kalman_greedy', 'pn', 'lead', 'rmpc', 'passive'].includes(defender) ? defender : 'greedy',
   };
 }
 const ComparisonExplorer = lazy(() => import('./ComparisonExplorer').then(module => ({ default: module.ComparisonExplorer })));
@@ -123,6 +126,7 @@ const outcomeLabels: Record<string, string> = {
   defender_dynamic_obstacle_collision: 'Defender / moving obstacle collision',
   enemy_static_obstacle_collision: 'Attacker / static obstacle collision',
   enemy_dynamic_obstacle_collision: 'Attacker / moving obstacle collision',
+  enemy_endurance_exhausted: 'Attacker mission endurance exhausted (not a collision, capture or timeout)',
 };
 
 function readableOutcome(outcome: string): string {
@@ -297,7 +301,7 @@ export function App() {
   const [catalog, setCatalog] = useState<PolicyCatalog | null>(null);
   const [scenarios, setScenarios] = useState<ScenarioCatalog | null>(null);
   const [catalogError, setCatalogError] = useState<string | null>(null);
-  const [defenderId, setDefenderId] = useState('greedy');
+  const [defenderId, setDefenderId] = useState(() => queryPreset().defender);
   const [generation, setGeneration] = useState('d0');
   const [trainingSeed, setTrainingSeed] = useState(71);
   const [attackerId, setAttackerId] = useState('A0');
@@ -416,7 +420,9 @@ export function App() {
         if (!active) return;
         setCatalog(policyData);
         setScenarios(scenarioData);
-        const defaultPolicy = policyData.defenders.find(item => item.policy_id === 'greedy' && item.available)
+        const preferredDefender = queryPreset().defender;
+        const defaultPolicy = policyData.defenders.find(item => item.policy_id === preferredDefender && item.available)
+          ?? policyData.defenders.find(item => item.policy_id === 'greedy' && item.available)
           ?? policyData.defenders.find(item => item.available);
         if (defaultPolicy) {
           setDefenderId(defaultPolicy.policy_id);

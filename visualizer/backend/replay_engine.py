@@ -88,6 +88,20 @@ class _PolicyAdapter:
     is_lr_ppo: bool
 
 
+class _PassivePolicy:
+    """The research harness's passive defender: no policy object, a zero action every step.
+
+    Mirrors `experiments.journal_v2_validation_core.record_episode` (`make_policy("passive")`
+    returns None and the loop supplies `np.zeros(3)`); it contains no control equations.
+    """
+
+    def reset(self) -> None:
+        return None
+
+    def act(self, *_args: object, **_kwargs: object) -> np.ndarray:
+        return np.zeros(3, dtype=np.float32)
+
+
 def _fail(code: str, message: str, status_code: int = 400) -> ApplicationError:
     return ApplicationError(code, message, status_code)
 
@@ -116,7 +130,7 @@ def _research_modules(root: Path) -> dict[str, object]:
         "uav_defend.policies.mpc.rmpc_policy",
         "experiments.journal_clutter_protocol",
         "experiments.journal_v2_protocol",
-        "experiments.defender_adaptation_evaluation",
+        "experiments.journal_v2_validation_core",
         "experiments.adaptive_attacker_env",
         "experiments.post_detection_diagnostic_protocol",
         "experiments.lead_residual_diagnostic_protocol",
@@ -373,6 +387,10 @@ def _load_defender(
         )
 
     estimator = "kalman" if policy_id == "kalman_greedy" else "measurement"
+    if policy_id == "passive":
+        return _PolicyAdapter(
+            policy_id, "passive", None, None, estimator, _PassivePolicy(), None, (16,), False, False
+        )
     if policy_id == "rmpc":
         frozen_config = modules["experiments.clutter_benchmark_protocol"]._frozen_rmpc_config()
         policy = modules["uav_defend.policies.mpc.rmpc_policy"].RMPCPolicy(
@@ -710,6 +728,9 @@ def _events_for_step(step: int, info: dict, outcome: str, dt: float) -> list[Rep
                              contact_fraction=_swept_fraction(info, "capture")))
     elif outcome == "timeout":
         events.append(_event("timeout", step, dt, "info.outcome"))
+    elif outcome == "enemy_endurance_exhausted":
+        events.append(_event("endurance_exhausted", step, dt, "info.outcome", entity="attacker", position=info.get("enemy_pos"),
+                             contact_fraction=_swept_fraction(info, "endurance")))
     return events
 
 
@@ -1079,6 +1100,10 @@ def run_replay_episode(request: ReplayRequest, settings: Settings | None = None)
     config, builder_name = build_replay_config(
         modules, request.semantics, request.clutter_level, estimator, request.perception_mode,
     )
+    if request.defender_policy_id == "passive":
+        # Same override as experiments.journal_v2_validation_core.build_config("passive"): the
+        # parked defender is not synchronised onto the asset, so it can never pre-empt capture.
+        config = dataclasses.replace(config, defender_standby_until_detection=False)
     adapter = _load_defender(request, config, store, registry, modules)
     attacker_checkpoint = _resolve_attacker_checkpoint(request.attacker_condition, registry, store)
     attacker_model = _load_attacker(request.attacker_condition, attacker_checkpoint, store, modules)
@@ -1115,6 +1140,12 @@ def run_replay_episode(request: ReplayRequest, settings: Settings | None = None)
             env.enemy_tactical_override = lambda: pending["action"]
 
         observation, info = env.reset(seed=request.evaluation_seed)
+        if request.defender_policy_id == "passive":
+            # Same placement as record_episode(controller="passive"): parked far away, at rest.
+            env._defender_pos = np.asarray(modules["experiments.journal_v2_validation_core"].PARKED_DEFENDER, dtype=np.float32)
+            env._defender_vel = np.zeros(3, dtype=np.float32)
+            observation = env._get_obs()
+            info = env._get_info()
         if bool(info.get("enemy_detected")):
             detection_step = 0
         adapter.policy.reset()
@@ -1285,6 +1316,7 @@ def run_replay_episode(request: ReplayRequest, settings: Settings | None = None)
             "intercepted", "soldier_caught", "unsafe_intercept", "timeout",
             "defender_static_obstacle_collision", "defender_dynamic_obstacle_collision",
             "enemy_static_obstacle_collision", "enemy_dynamic_obstacle_collision",
+            "enemy_endurance_exhausted",
         }:
             raise _fail("INVALID_SIMULATION_OUTCOME", f"Unknown native simulator outcome: {outcome!r}.", 500)
         collision_step = None
@@ -1388,6 +1420,10 @@ def run_replay_episode(request: ReplayRequest, settings: Settings | None = None)
                 "minimum_attacker_asset_distance_m": min_attacker_asset_distance,
                 "defender_path_length_m": defender_path_length,
                 "attacker_path_length_m": attacker_path_length,
+                "attacker_endurance_enabled": bool(latest_info.get("enemy_endurance_enabled", False)),
+                "attacker_endurance_budget_m": latest_info.get("enemy_endurance_budget_m"),
+                "attacker_endurance_traveled_m": latest_info.get("enemy_endurance_traveled_m"),
+                "attacker_endurance_remaining_m": latest_info.get("enemy_endurance_remaining_m"),
                 "defender_collision_count": int(latest_info.get("defender_collision_count", 0)),
                 "attacker_collision_count": int(latest_info.get("enemy_collision_count", 0)),
                 "defender_dynamic_collision_count": int(latest_info.get("defender_dynamic_collision_count", 0)),

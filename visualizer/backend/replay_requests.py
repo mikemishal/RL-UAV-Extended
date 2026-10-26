@@ -15,7 +15,10 @@ CONFERENCE_ARCHITECTURES = {
     "lr_ppo": ("lr_ppo", (55, 56, 57), "measurement", 19),
 }
 ATTACKER_SEEDS = {"A1-201": 201, "A1-202": 202, "A1-203": 203}
-POLICY_IDS = ("greedy", "kalman_greedy", "pn", "lead", "rmpc", "ppo", "ppo_kalman", "lr_ppo")
+# "passive" is the research validation harness's parked defender (see
+# experiments.journal_v2_validation_core: policy None, zero action every step); it is analytical
+# in the sense that it has no architecture, generation, seed or checkpoint.
+POLICY_IDS = ("greedy", "kalman_greedy", "pn", "lead", "rmpc", "ppo", "ppo_kalman", "lr_ppo", "passive")
 CLUTTER_LEVELS = ("C0", "C1", "C2", "C3")
 PERCEPTION_MODES = ("local", "map_local")
 # Simulation semantics selector. The visualizer only forwards this choice to the
@@ -32,7 +35,7 @@ class ReplayRequest(BaseModel):
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    defender_policy_id: Literal["greedy", "kalman_greedy", "pn", "lead", "rmpc", "ppo", "ppo_kalman", "lr_ppo"]
+    defender_policy_id: Literal["greedy", "kalman_greedy", "pn", "lead", "rmpc", "ppo", "ppo_kalman", "lr_ppo", "passive"]
     defender_architecture: str | None = None
     defender_generation: Literal["conference", "d0", "d0_plus", "d1"] | None = None
     defender_training_seed: Annotated[int, Field(ge=0, strict=True)] | None = None
@@ -97,7 +100,7 @@ class ReplayBatchRequest(BaseModel):
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    defender_policy_id: Literal["greedy", "kalman_greedy", "pn", "lead", "rmpc", "ppo", "ppo_kalman", "lr_ppo"]
+    defender_policy_id: Literal["greedy", "kalman_greedy", "pn", "lead", "rmpc", "ppo", "ppo_kalman", "lr_ppo", "passive"]
     defender_generation: Literal["conference", "d0", "d0_plus", "d1"] | None = None
     defender_training_seed: Annotated[int, Field(ge=0, strict=True)] | None = None
     attacker_condition: Literal["A0", "A1-201", "A1-202", "A1-203"]

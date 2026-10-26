@@ -12,6 +12,7 @@ Outcome = Literal[
     "intercepted", "soldier_caught", "unsafe_intercept", "timeout",
     "defender_static_obstacle_collision", "defender_dynamic_obstacle_collision",
     "enemy_static_obstacle_collision", "enemy_dynamic_obstacle_collision",
+    "enemy_endurance_exhausted",
 ]
 
 
@@ -236,7 +237,10 @@ class ReplayFrame(ContractModel):
 
 
 class ReplayEvent(ContractModel):
-    kind: Literal["detection", "interception", "unsafe_interception", "asset_reached", "collision", "timeout"]
+    kind: Literal[
+        "detection", "interception", "unsafe_interception", "asset_reached", "collision", "timeout",
+        "endurance_exhausted",
+    ]
     step: Annotated[int, Field(ge=0)]
     time_s: NonNegative
     source: str

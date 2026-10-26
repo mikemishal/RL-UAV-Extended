@@ -226,7 +226,8 @@
             "defender_static_obstacle_collision",
             "defender_dynamic_obstacle_collision",
             "enemy_static_obstacle_collision",
-            "enemy_dynamic_obstacle_collision"
+            "enemy_dynamic_obstacle_collision",
+            "enemy_endurance_exhausted"
           ],
           "title": "Outcome",
           "type": "string"
@@ -1991,7 +1992,8 @@
             "unsafe_interception",
             "asset_reached",
             "collision",
-            "timeout"
+            "timeout",
+            "endurance_exhausted"
           ],
           "title": "Kind",
           "type": "string"
@@ -2232,7 +2234,8 @@
                 "defender_static_obstacle_collision",
                 "defender_dynamic_obstacle_collision",
                 "enemy_static_obstacle_collision",
-                "enemy_dynamic_obstacle_collision"
+                "enemy_dynamic_obstacle_collision",
+                "enemy_endurance_exhausted"
               ],
               "type": "string"
             }

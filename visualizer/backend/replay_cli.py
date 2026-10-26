@@ -19,7 +19,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--defender",
         required=True,
-        choices=("greedy", "kalman_greedy", "pn", "lead", "rmpc", "ppo", "ppo_kalman", "lr_ppo"),
+        choices=("greedy", "kalman_greedy", "pn", "lead", "rmpc", "ppo", "ppo_kalman", "lr_ppo", "passive"),
     )
     parser.add_argument("--generation", choices=("conference", "d0", "d0_plus", "d1"))
     parser.add_argument("--training-seed", type=int)

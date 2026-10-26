@@ -289,9 +289,22 @@ single-run result, not a scientific estimate.
 The terminal outcome strings preserved from SoldierEnv are
 `intercepted`, `soldier_caught`, `unsafe_intercept`, `timeout`,
 `defender_static_obstacle_collision`, `defender_dynamic_obstacle_collision`,
-`enemy_static_obstacle_collision`, and `enemy_dynamic_obstacle_collision`.
+`enemy_static_obstacle_collision`, `enemy_dynamic_obstacle_collision`, and
+`enemy_endurance_exhausted` (V2 finite mission endurance: the attacker's integrated path reached its
+`k * d0` budget; a resource limit, not a guidance mode, timeout or collision). Its replays also carry
+`enemy_endurance_{enabled,budget_m,traveled_m,remaining_m}` in each frame's `simulator_info`, an
+`endurance_exhausted` event, and `attacker_endurance_*` summary safety metrics.
 `ongoing` is reserved for non-final frames; terminal labels are not collapsed
 into a generic failure class.
+
+### Passive defender
+
+`defender_policy_id: "passive"` reproduces the research validation harness's parked defender
+(`experiments.journal_v2_validation_core.record_episode(controller="passive")`): no policy object,
+a zero action every step, `defender_standby_until_detection=False`, and the defender parked at the
+research `PARKED_DEFENDER` position at rest. It has no architecture, generation, seed or checkpoint.
+It exists so the attacker-only trajectory (including endurance exhaustion) can be inspected without
+the defender pre-empting it.
 
 ## Errors
 

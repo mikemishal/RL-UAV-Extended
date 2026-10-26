@@ -44,6 +44,7 @@ ANALYTICAL_METADATA = {
     "pn": ("Proportional Navigation", "measurement", ["range_m", "closing_speed_mps", "los_unit", "los_rate_radps", "acceleration_mps2"]),
     "lead": ("Lead", "measurement", ["target_position_m", "target_velocity_mps", "intercept_time_s", "intercept_point_m"]),
     "rmpc": ("RMPC", "measurement", ["scenario_scores", "robust_score", "best_sequence", "objective_evaluations", "decision_time_s"]),
+    "passive": ("Passive (parked, no action)", "measurement", ["executed_velocity_mps"]),
 }
 LEARNED_METADATA = {
     "ppo": ("PPO", ["policy_visible.observation", "requested_action", "executed_velocity_mps"]),

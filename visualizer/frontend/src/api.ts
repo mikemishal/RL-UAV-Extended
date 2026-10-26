@@ -386,7 +386,7 @@ export interface ReplayPolicyTelemetry {
 }
 
 export interface ReplayEvent {
-  kind: 'detection' | 'interception' | 'unsafe_interception' | 'asset_reached' | 'collision' | 'timeout';
+  kind: 'detection' | 'interception' | 'unsafe_interception' | 'asset_reached' | 'collision' | 'timeout' | 'endurance_exhausted';
   step: number;
   time_s: number;
   source: string;
@@ -427,7 +427,7 @@ export interface ReplayFrame {
   truncated: boolean;
   outcome: 'ongoing' | 'intercepted' | 'soldier_caught' | 'unsafe_intercept' | 'timeout'
     | 'defender_static_obstacle_collision' | 'defender_dynamic_obstacle_collision'
-    | 'enemy_static_obstacle_collision' | 'enemy_dynamic_obstacle_collision';
+    | 'enemy_static_obstacle_collision' | 'enemy_dynamic_obstacle_collision' | 'enemy_endurance_exhausted';
 }
 
 export interface ReplayEpisode {

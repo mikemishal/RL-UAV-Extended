@@ -605,6 +605,7 @@ const eventLabels: Record<ReplayEvent['kind'], string> = {
   asset_reached: 'Attacker reached asset',
   collision: 'Recorded collision',
   timeout: 'Timeout',
+  endurance_exhausted: 'Attacker endurance exhausted',
 };
 
 const outcomeEventLabels: Record<ReplayEpisode['summary']['outcome'], string> = {
@@ -616,6 +617,7 @@ const outcomeEventLabels: Record<ReplayEpisode['summary']['outcome'], string> = 
   defender_dynamic_obstacle_collision: 'Defender / moving obstacle collision',
   enemy_static_obstacle_collision: 'Attacker / static obstacle collision',
   enemy_dynamic_obstacle_collision: 'Attacker / moving obstacle collision',
+  enemy_endurance_exhausted: 'Attacker endurance exhausted',
 };
 
 function EpisodeEventMarkers({ episode, timeS }: { episode: ReplayEpisode; timeS: number }) {
