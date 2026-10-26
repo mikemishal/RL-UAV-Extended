@@ -49,7 +49,7 @@ from .replay_contract import (
 from .replay_validation import validate_trace as _validate_trace
 
 logger = logging.getLogger(__name__)
-EXPECTED_RESEARCH_COMMIT = "8e2d59115423d329156d5bc468bf594019f4dc03"
+EXPECTED_RESEARCH_COMMIT = "bdbee45dc08a583a0da5ca882dc6b1269207a8cd"  # journal-v2-a0-canonical-v1
 REGISTRY_RELATIVE_PATH = "results/defender_adaptation_model_registry.json"
 SECTOR_FEATURE_DIM = 20
 LRPPO_MAX_ANGLE_DEG = 30.0

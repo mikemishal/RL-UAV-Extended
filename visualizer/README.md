@@ -11,7 +11,7 @@ performs policy inference, or changes recorded outcomes.
 
 ## Scientific integrity and coordinate decision
 
-Based on local research commit `8e2d59115423d329156d5bc468bf594019f4dc03`
+Based on local research commit `bdbee45dc08a583a0da5ca882dc6b1269207a8cd` (tag `journal-v2-a0-canonical-v1`)
 (branch `research/journal-corrected-attacker-v2`),
 not a remote branch. All additions are confined to this `visualizer` directory.
 Scientific Python, experiment configuration, results, weights and tags are unchanged.
