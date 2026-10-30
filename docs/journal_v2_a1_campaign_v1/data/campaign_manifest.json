@@ -1,0 +1,156 @@
+{
+  "action_dim": 3,
+  "actual_rollout_aligned_timesteps": 425984,
+  "campaign": "v2_a1_first_canonical_training",
+  "compute_environment": {
+    "cpu": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+    "cpu_count_logical": 20,
+    "cuda_available": false,
+    "num_vector_envs": 16,
+    "numpy": "2.4.2",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "ppo_device_requested": "auto",
+    "ppo_device_resolved": "cpu",
+    "python": "3.13.14",
+    "stable_baselines3": "2.7.1",
+    "torch": "2.11.0+cpu",
+    "torch_threads_main_process": 2,
+    "vector_env": "SubprocVecEnv"
+  },
+  "config_sha256": {
+    "C0/kalman": "5d1ff5c1ac0593a07129ca3a0718eb5fcf1df5eaf533680b2179e5c4c00b9eaf",
+    "C0/measurement": "858758ea1fc1f2749affd8f836713318981f77df6b99b0b8ad13fb16d1df5cd6",
+    "C1/kalman": "2bbbb254b3f5caa59dfa0d4c6bb0f6e5306a6cb7f6fc954db88969e7a321c324",
+    "C1/measurement": "ca28f37f2e314bf16a26dc28a5cc11bc738935765f9d0ef413d995054d01c276",
+    "C2/kalman": "999159d67f7030ec43027e7a320043d17481937a57297b0704724881d5f88a60",
+    "C2/measurement": "7f922d0569e4dc5327aecaec6603975a620ccfad42ada33c73457bcc4ace8a23",
+    "C3/kalman": "360c56680b3ce3ee1745bb47aea965e1c53e36df8c3a5f571ea89ec5717d78d7",
+    "C3/measurement": "734d50cc2496601fd754f79aebbabd5d78bbf4733f585ede8e8a106eb88bd186"
+  },
+  "frozen_state": {
+    "a0_tag_commit": "bdbee45dc08a583a0da5ca882dc6b1269207a8cd",
+    "branch": "research/journal-corrected-attacker-v2",
+    "frozen_files_identical_to_protocol_tag": true,
+    "head": "b881bddad2cb19f6f6ff0cb1bcc1bf05f31a0fd1",
+    "protocol_tag_commit": "b881bddad2cb19f6f6ff0cb1bcc1bf05f31a0fd1",
+    "tracked_changes": []
+  },
+  "historical_checkpoints": {
+    "mismatches": 0,
+    "verified": 30
+  },
+  "observation_dim": 37,
+  "ppo_hyperparameters": {
+    "batch_size": 64,
+    "clip_range": 0.2,
+    "ent_coef": 0.01,
+    "gae_lambda": 0.95,
+    "gamma": 0.99,
+    "learning_rate": 0.0003,
+    "max_grad_norm": 0.5,
+    "n_epochs": 10,
+    "n_steps": 2048,
+    "vf_coef": 0.5
+  },
+  "ppo_seeds": [
+    201,
+    202,
+    203
+  ],
+  "preflight_checks": {
+    "cells_checked": 40,
+    "episode_outcomes": {
+      "C0/greedy/asset_ward": "intercepted",
+      "C0/greedy/random": "intercepted",
+      "C0/kalman_greedy/asset_ward": "intercepted",
+      "C0/kalman_greedy/random": "enemy_endurance_exhausted",
+      "C0/lead/asset_ward": "intercepted",
+      "C0/lead/random": "enemy_endurance_exhausted",
+      "C0/pn/asset_ward": "intercepted",
+      "C0/pn/random": "enemy_endurance_exhausted",
+      "C0/rmpc/asset_ward": "intercepted",
+      "C0/rmpc/random": "enemy_endurance_exhausted",
+      "C1/greedy/asset_ward": "intercepted",
+      "C1/greedy/random": "intercepted",
+      "C1/kalman_greedy/asset_ward": "intercepted",
+      "C1/kalman_greedy/random": "enemy_endurance_exhausted",
+      "C1/lead/asset_ward": "intercepted",
+      "C1/lead/random": "enemy_endurance_exhausted",
+      "C1/pn/asset_ward": "intercepted",
+      "C1/pn/random": "enemy_endurance_exhausted",
+      "C1/rmpc/asset_ward": "intercepted",
+      "C1/rmpc/random": "enemy_static_obstacle_collision",
+      "C2/greedy/asset_ward": "intercepted",
+      "C2/greedy/random": "enemy_endurance_exhausted",
+      "C2/kalman_greedy/asset_ward": "intercepted",
+      "C2/kalman_greedy/random": "enemy_static_obstacle_collision",
+      "C2/lead/asset_ward": "intercepted",
+      "C2/lead/random": "enemy_endurance_exhausted",
+      "C2/pn/asset_ward": "unsafe_intercept",
+      "C2/pn/random": "enemy_endurance_exhausted",
+      "C2/rmpc/asset_ward": "intercepted",
+      "C2/rmpc/random": "intercepted",
+      "C3/greedy/asset_ward": "intercepted",
+      "C3/greedy/random": "enemy_endurance_exhausted",
+      "C3/kalman_greedy/asset_ward": "soldier_caught",
+      "C3/kalman_greedy/random": "enemy_static_obstacle_collision",
+      "C3/lead/asset_ward": "intercepted",
+      "C3/lead/random": "enemy_endurance_exhausted",
+      "C3/pn/asset_ward": "intercepted",
+      "C3/pn/random": "enemy_static_obstacle_collision",
+      "C3/rmpc/asset_ward": "soldier_caught",
+      "C3/rmpc/random": "enemy_endurance_exhausted"
+    },
+    "terminal_mapping_observed": {
+      "enemy_endurance_exhausted": -10.0,
+      "enemy_static_obstacle_collision": -10.0,
+      "intercepted": -10.0,
+      "soldier_caught": 10.0,
+      "unsafe_intercept": -10.0
+    }
+  },
+  "preflight_utc": "2026-10-27T17:06:32.104730+00:00",
+  "protocol": "a1_v2_training_v1",
+  "requested_total_timesteps": 400000,
+  "reward_version": "a1_v2_reward_v1",
+  "training": {
+    "201": {
+      "final_model_sha256": "24762607d6ffde3fe45802450246baf5c334ee045015d833988f234e05ceaa3b",
+      "finished_utc": "2026-10-27T17:49:06.326151+00:00",
+      "git_head": "b881bddad2cb19f6f6ff0cb1bcc1bf05f31a0fd1",
+      "num_timesteps": 425984,
+      "starts_utc": [
+        "2026-10-27T17:06:44.757923+00:00"
+      ],
+      "status": "complete",
+      "wall_time_s_this_invocation": 2541.5682265758514
+    },
+    "202": {
+      "final_model_sha256": "32e51d5e596dac0e714a7ad4c954a353e710497672f3949dbbb9bd4ad1394453",
+      "finished_utc": "2026-10-27T18:36:10.809603+00:00",
+      "git_head": "b881bddad2cb19f6f6ff0cb1bcc1bf05f31a0fd1",
+      "num_timesteps": 429376,
+      "starts_utc": [
+        "2026-10-27T17:49:06.332804+00:00",
+        "2026-10-27T18:13:22.607121+00:00"
+      ],
+      "status": "complete",
+      "wall_time_s_this_invocation": 1368.2024910449982
+    },
+    "203": {
+      "final_model_sha256": "bc8ede4f0290b6ef54851e5c1fe4a56f200665b41f4cd0e004dff006d7b47ced",
+      "finished_utc": "2026-10-27T19:16:22.595827+00:00",
+      "git_head": "b881bddad2cb19f6f6ff0cb1bcc1bf05f31a0fd1",
+      "num_timesteps": 425984,
+      "starts_utc": [
+        "2026-10-27T18:36:10.813228+00:00"
+      ],
+      "status": "complete",
+      "wall_time_s_this_invocation": 2411.7826018333435
+    }
+  },
+  "worker_spawn_check": {
+    "five_vector_steps_s": 0.20961213111877441,
+    "workers": 16
+  }
+}

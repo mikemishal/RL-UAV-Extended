@@ -1,0 +1,41 @@
+{
+  "attackers": {
+    "A1-201-V2": {
+      "action_dim": 3,
+      "held_out_from_defender_adaptation": false,
+      "num_timesteps": 425984,
+      "observation_dim": 37,
+      "path": "results/journal_v2_corrected_semantics/a1_training/a1_v2_training_v1/seed_201/checkpoints/final_model.zip",
+      "ppo_seed": 201,
+      "sha256": "24762607d6ffde3fe45802450246baf5c334ee045015d833988f234e05ceaa3b",
+      "training_research_commit": "b881bddad2cb19f6f6ff0cb1bcc1bf05f31a0fd1"
+    },
+    "A1-202-V2": {
+      "action_dim": 3,
+      "held_out_from_defender_adaptation": false,
+      "num_timesteps": 429376,
+      "observation_dim": 37,
+      "path": "results/journal_v2_corrected_semantics/a1_training/a1_v2_training_v1/seed_202/checkpoints/final_model.zip",
+      "ppo_seed": 202,
+      "sha256": "32e51d5e596dac0e714a7ad4c954a353e710497672f3949dbbb9bd4ad1394453",
+      "training_research_commit": "b881bddad2cb19f6f6ff0cb1bcc1bf05f31a0fd1"
+    },
+    "A1-203-V2": {
+      "action_dim": 3,
+      "held_out_from_defender_adaptation": true,
+      "num_timesteps": 425984,
+      "observation_dim": 37,
+      "path": "results/journal_v2_corrected_semantics/a1_training/a1_v2_training_v1/seed_203/checkpoints/final_model.zip",
+      "ppo_seed": 203,
+      "sha256": "bc8ede4f0290b6ef54851e5c1fe4a56f200665b41f4cd0e004dff006d7b47ced",
+      "training_research_commit": "b881bddad2cb19f6f6ff0cb1bcc1bf05f31a0fd1"
+    }
+  },
+  "canonical": false,
+  "canonical_a0_commit": "bdbee45dc08a583a0da5ca882dc6b1269207a8cd",
+  "note": "NOT yet canonical: pending quantitative gates and manual visual inspection",
+  "protocol": "a1_v2_training_v1",
+  "protocol_tag": "journal-v2-a1-training-protocol-v1",
+  "research_commit_at_registry": "b881bddad2cb19f6f6ff0cb1bcc1bf05f31a0fd1",
+  "reward_version": "a1_v2_reward_v1"
+}
