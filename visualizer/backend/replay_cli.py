@@ -9,7 +9,8 @@ from pydantic import ValidationError
 
 from .application_error import ApplicationError
 from .config import load_settings
-from .replay_engine import ATTACKER_SEEDS, ReplayRequest, run_replay_episode, save_replay_bundle
+from .replay_engine import ReplayRequest, run_replay_episode, save_replay_bundle
+from .replay_requests import ALL_ATTACKER_SEEDS, ATTACKER_CONDITIONS
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -23,7 +24,7 @@ def _parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--generation", choices=("conference", "d0", "d0_plus", "d1"))
     parser.add_argument("--training-seed", type=int)
-    parser.add_argument("--attacker", choices=("A0", "A1-201", "A1-202", "A1-203"), default="A0")
+    parser.add_argument("--attacker", choices=ATTACKER_CONDITIONS, default="A0")
     parser.add_argument("--clutter", required=True, choices=("C0", "C1", "C2", "C3"))
     parser.add_argument("--perception", choices=("local", "map_local"), default="map_local")
     parser.add_argument(
@@ -49,7 +50,7 @@ def main(argv: list[str] | None = None) -> int:
             defender_generation=args.generation,
             defender_training_seed=args.training_seed,
             attacker_condition=args.attacker,
-            attacker_model_seed=ATTACKER_SEEDS.get(args.attacker),
+            attacker_model_seed=ALL_ATTACKER_SEEDS.get(args.attacker),
             clutter_level=args.clutter,
             perception_mode=args.perception,
             semantics=args.semantics,

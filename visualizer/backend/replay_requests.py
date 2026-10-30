@@ -15,6 +15,11 @@ CONFERENCE_ARCHITECTURES = {
     "lr_ppo": ("lr_ppo", (55, 56, 57), "measurement", 19),
 }
 ATTACKER_SEEDS = {"A1-201": 201, "A1-202": 202, "A1-203": 203}
+# Canonical-V2 learned attackers (37-D observation, trained under a1_v2_training_v1). These identifiers are
+# never aliases of the legacy V1 checkpoints above and are only valid with V2 semantics.
+V2_ATTACKER_SEEDS = {"A1-201-V2": 201, "A1-202-V2": 202, "A1-203-V2": 203}
+ALL_ATTACKER_SEEDS = {**ATTACKER_SEEDS, **V2_ATTACKER_SEEDS}
+ATTACKER_CONDITIONS = ("A0", *ATTACKER_SEEDS, *V2_ATTACKER_SEEDS)
 # "passive" is the research validation harness's parked defender (see
 # experiments.journal_v2_validation_core: policy None, zero action every step); it is analytical
 # in the sense that it has no architecture, generation, seed or checkpoint.
@@ -40,7 +45,7 @@ class ReplayRequest(BaseModel):
     defender_generation: Literal["conference", "d0", "d0_plus", "d1"] | None = None
     defender_training_seed: Annotated[int, Field(ge=0, strict=True)] | None = None
     checkpoint_role: Literal["conference_best", "d0_start", "final", "secondary_best"] | None = None
-    attacker_condition: Literal["A0", "A1-201", "A1-202", "A1-203"]
+    attacker_condition: Literal["A0", "A1-201", "A1-202", "A1-203", "A1-201-V2", "A1-202-V2", "A1-203-V2"]
     attacker_model_seed: Annotated[int, Field(ge=0, strict=True)] | None = None
     clutter_level: Literal["C0", "C1", "C2", "C3"]
     perception_mode: Literal["local", "map_local"] = "map_local"
@@ -85,7 +90,9 @@ class ReplayRequest(BaseModel):
         )):
             raise ValueError("Analytical defenders do not have an architecture, generation, seed, or checkpoint role.")
 
-        expected_attacker_seed = ATTACKER_SEEDS.get(self.attacker_condition)
+        if self.attacker_condition in V2_ATTACKER_SEEDS and self.semantics != "V2":
+            raise ValueError(f"{self.attacker_condition} is a canonical-V2 attacker and requires semantics='V2'.")
+        expected_attacker_seed = ALL_ATTACKER_SEEDS.get(self.attacker_condition)
         if self.attacker_model_seed != expected_attacker_seed:
             if expected_attacker_seed is None and self.attacker_model_seed is None:
                 return self
@@ -103,7 +110,7 @@ class ReplayBatchRequest(BaseModel):
     defender_policy_id: Literal["greedy", "kalman_greedy", "pn", "lead", "rmpc", "ppo", "ppo_kalman", "lr_ppo", "passive"]
     defender_generation: Literal["conference", "d0", "d0_plus", "d1"] | None = None
     defender_training_seed: Annotated[int, Field(ge=0, strict=True)] | None = None
-    attacker_condition: Literal["A0", "A1-201", "A1-202", "A1-203"]
+    attacker_condition: Literal["A0", "A1-201", "A1-202", "A1-203", "A1-201-V2", "A1-202-V2", "A1-203-V2"]
     clutter_level: Literal["C0", "C1", "C2", "C3"]
     perception_mode: Literal["local", "map_local"] = "map_local"
     semantics: Literal["V1", "V2"] = DEFAULT_SEMANTICS
@@ -122,7 +129,7 @@ class ReplayBatchRequest(BaseModel):
                 defender_generation=self.defender_generation,
                 defender_training_seed=self.defender_training_seed,
                 attacker_condition=self.attacker_condition,
-                attacker_model_seed=ATTACKER_SEEDS.get(self.attacker_condition),
+                attacker_model_seed=ALL_ATTACKER_SEEDS.get(self.attacker_condition),
                 clutter_level=self.clutter_level,
                 perception_mode=self.perception_mode,
                 semantics=self.semantics,
@@ -137,7 +144,7 @@ class ReplayBatchRequest(BaseModel):
             defender_generation=self.defender_generation,
             defender_training_seed=self.defender_training_seed,
             attacker_condition=self.attacker_condition,
-            attacker_model_seed=ATTACKER_SEEDS.get(self.attacker_condition),
+            attacker_model_seed=ALL_ATTACKER_SEEDS.get(self.attacker_condition),
             clutter_level=self.clutter_level,
             perception_mode=self.perception_mode,
             semantics=self.semantics,

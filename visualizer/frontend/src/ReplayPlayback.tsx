@@ -62,6 +62,12 @@ const BEHAVIOR_LABELS: Record<string, string> = {
 };
 
 // Read-only view of recorded attacker state; never feeds back into the simulation.
+function attackerLabel(policyId: string, architecture: string | null | undefined): string {
+  if (policyId.endsWith('-V2')) return `Attacker: ${policyId.replace('-V2', ' V2')}`;
+  if (architecture === 'adaptive_attacker_v1') return `Attacker: ${policyId} (legacy V1-trained)`;
+  return `Attacker: ${policyId}`;
+}
+
 function attackerBehaviorLabel(frame: ReplayFrame): string | null {
   const state = frame.environmental_state;
   const mode = state.enemy_behavior_mode;
@@ -300,6 +306,7 @@ export function ReplayPlayback({
         <section className="episode-status panel" aria-label="Current episode status">
           <strong>{episode.defender.policy_id}{episode.defender.generation ? ` ${episode.defender.generation.toUpperCase()}` : ''}{informationMode === 'ground-truth' ? ` vs ${episode.attacker.policy_id}` : ''}</strong>
           <span className={`semantics-badge semantics-${episode.environment.semantics ?? 'V1'}`} data-testid="semantics-badge">Semantics: {episode.environment.semantics ?? 'V1'}</span>
+          {informationMode === 'ground-truth' && <span className="attacker-badge" data-testid="attacker-label">{attackerLabel(episode.attacker.policy_id, episode.attacker.architecture)}</span>}
           <span>Time {clockLabel(timeS)} · step {episode.frames[sample.lowerIndex].step}</span>
           <span>Detection {episode.frames[sample.lowerIndex].policy_visible.enemy_detected ? 'acquired' : 'not acquired'}</span>
           {informationMode === 'ground-truth'

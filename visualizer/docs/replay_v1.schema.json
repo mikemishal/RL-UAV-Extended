@@ -24,7 +24,8 @@
             "final",
             "secondary_best",
             "conference_best",
-            "attacker_best"
+            "attacker_best",
+            "attacker_v2_final"
           ],
           "title": "Role",
           "type": "string"
@@ -1019,7 +1020,7 @@
               "items": {
                 "type": "number"
               },
-              "maxItems": 36,
+              "maxItems": 37,
               "minItems": 36,
               "type": "array"
             },

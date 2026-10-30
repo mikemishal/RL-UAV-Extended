@@ -24,7 +24,7 @@ class Checkpoint(ContractModel):
     artifact_id: str = Field(min_length=1)
     research_relative_path: str = Field(min_length=1)
     sha256: Sha256
-    role: Literal["d0_start", "final", "secondary_best", "conference_best", "attacker_best"]
+    role: Literal["d0_start", "final", "secondary_best", "conference_best", "attacker_best", "attacker_v2_final"]
 
 
 class PolicySelection(ContractModel):
@@ -170,7 +170,8 @@ class PolicyTelemetry(ContractModel):
     requested_action_norm: NonNegative
     defender_policy_input: list[FiniteFloat] = Field(min_length=1)
     defender_model_input: list[FiniteFloat] | None = None
-    attacker_observation: list[FiniteFloat] | None = Field(default=None, min_length=36, max_length=36)
+    # 36-D: legacy V1 attackers; 37-D: V2 A1 (V1 layout + remaining_endurance_fraction).
+    attacker_observation: list[FiniteFloat] | None = Field(default=None, min_length=36, max_length=37)
     attacker_tactical_command: Vec3 | None = None
     attacker_command_source: Literal["a0_scripted", "a1_learned"] | None = None
     attacker_mission_command: Vec3 | None = None

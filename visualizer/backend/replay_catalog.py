@@ -14,6 +14,7 @@ from .replay_engine import (
     EXPECTED_RESEARCH_COMMIT,
     REGISTRY_RELATIVE_PATH,
     SECTOR_FEATURE_DIM,
+    V2_ATTACKER_SEEDS,
     _git_value,
     _load_defender,
     _read_registry,
@@ -232,7 +233,7 @@ def build_replay_catalog(settings: Settings) -> dict[str, object]:
             available, reason = False, _checkpoint_reason(exc)
         attackers.append({
             "attacker_id": attacker_id,
-            "display_name": f"{attacker_id} — " + ("Held-out learned attacker" if seed == 203 else "Learned attacker"),
+            "display_name": f"{attacker_id} (legacy V1-trained) — " + ("Held-out learned attacker" if seed == 203 else "Learned attacker"),
             "classification": "learned",
             "architecture": "adaptive_attacker_v1",
             "training_seed": seed,
@@ -242,6 +243,32 @@ def build_replay_catalog(settings: Settings) -> dict[str, object]:
             "unavailability_reason": reason,
             "observation_shape": [36],
             "supported_scenarios": SUPPORTED_SCENARIOS,
+            "diagnostic_fields": ["attacker_observation", "tactical_command", "mission_command", "final_movement_command"],
+        })
+
+    for attacker_id, seed in V2_ATTACKER_SEEDS.items():
+        checkpoint = None
+        try:
+            checkpoint = _resolve_attacker_checkpoint(attacker_id, registry, store)
+            if checkpoint is None:
+                raise ApplicationError("CHECKPOINT_NOT_REGISTERED", "Attacker checkpoint is not registered.", 404)
+            _verify_artifact(store, checkpoint)
+            available, reason = True, None
+        except ApplicationError as exc:
+            available, reason = False, _checkpoint_reason(exc)
+        attackers.append({
+            "attacker_id": attacker_id,
+            "display_name": f"Attacker: {attacker_id.replace('-V2', ' V2')}"
+            + (" — held out from defender adaptation" if seed == 203 else " — canonical V2 learned attacker"),
+            "classification": "learned",
+            "architecture": "a1_v2_ppo",
+            "training_seed": seed,
+            "held_out": seed == 203,
+            "available": available,
+            "checkpoint_sha256": checkpoint.sha256 if checkpoint else None,
+            "unavailability_reason": reason,
+            "observation_shape": [37],
+            "supported_scenarios": [item for item in SUPPORTED_SCENARIOS],
             "diagnostic_fields": ["attacker_observation", "tactical_command", "mission_command", "final_movement_command"],
         })
 

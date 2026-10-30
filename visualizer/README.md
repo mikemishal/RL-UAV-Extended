@@ -11,7 +11,8 @@ performs policy inference, or changes recorded outcomes.
 
 ## Scientific integrity and coordinate decision
 
-Based on local research commit `bdbee45dc08a583a0da5ca882dc6b1269207a8cd` (tag `journal-v2-a0-canonical-v1`)
+Based on local research commit `408c4a3f1e554c827a3e50fb9a40875c3fd1b7f2` (V2 A1 campaign metadata on top of tag
+`journal-v2-a1-training-protocol-v1`; frozen canonical A0 is tag `journal-v2-a0-canonical-v1`, `bdbee45…`)
 (branch `research/journal-corrected-attacker-v2`),
 not a remote branch. All additions are confined to this `visualizer` directory.
 Scientific Python, experiment configuration, results, weights and tags are unchanged.
@@ -331,3 +332,12 @@ reproducibility limits.
 Phases 1–7 are complete through local case management, annotations, and
 provenance-checked exports. Phase 8 comprehensive packaging and final audit
 remain unimplemented.
+
+### Canonical-V2 A1 attackers (`A1-201-V2`, `A1-202-V2`, `A1-203-V2`)
+
+Selectable only with V2 semantics. The model, its sidecar manifest and the research campaign registry
+(`results/journal_v2_corrected_semantics/a1_training/a1_v2_training_v1/a1_v2_model_registry.json`) must agree on SHA-256,
+protocol (`a1_v2_training_v1`), reward version and a 37-D observation / 3-D action space; the observation is built by the
+research repository's `experiments.journal_v2_a1.build_a1_v2_observation`. They are never aliases of the legacy V1-trained
+`A1-201/202/203` checkpoints, which remain available separately and are labelled "legacy V1-trained".
+Replay headers show `Attacker: A1-201 V2` etc. These checkpoints are NOT yet canonical (pending gates and manual inspection).

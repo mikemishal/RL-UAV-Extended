@@ -24,7 +24,7 @@ from pydantic import FiniteFloat
 from .config import Settings, local_output_root
 from .data_access import ResearchDataStore
 from .application_error import ApplicationError
-from .replay_requests import ATTACKER_SEEDS, CLUTTER_ARCHITECTURES, CONFERENCE_ARCHITECTURES, ReplayRequest
+from .replay_requests import ATTACKER_SEEDS, CLUTTER_ARCHITECTURES, CONFERENCE_ARCHITECTURES, V2_ATTACKER_SEEDS, ReplayRequest
 from .replay_contract import (
     Checkpoint,
     EntityState,
@@ -49,8 +49,14 @@ from .replay_contract import (
 from .replay_validation import validate_trace as _validate_trace
 
 logger = logging.getLogger(__name__)
-EXPECTED_RESEARCH_COMMIT = "bdbee45dc08a583a0da5ca882dc6b1269207a8cd"  # journal-v2-a0-canonical-v1
+EXPECTED_RESEARCH_COMMIT = "408c4a3f1e554c827a3e50fb9a40875c3fd1b7f2"  # research HEAD: V2 A1 campaign metadata on top of journal-v2-a1-training-protocol-v1 (A0 canonical: bdbee45)
 REGISTRY_RELATIVE_PATH = "results/defender_adaptation_model_registry.json"
+# Canonical-V2 A1 campaign registry written by the research repository after training (never inferred).
+V2_A1_RESULTS_RELATIVE = "results/journal_v2_corrected_semantics/a1_training/a1_v2_training_v1"
+V2_A1_REGISTRY_RELATIVE_PATH = f"{V2_A1_RESULTS_RELATIVE}/a1_v2_model_registry.json"
+V2_A1_OBSERVATION_DIM = 37
+V2_A1_PROTOCOL = "a1_v2_training_v1"
+V2_A1_REWARD_VERSION = "a1_v2_reward_v1"
 SECTOR_FEATURE_DIM = 20
 LRPPO_MAX_ANGLE_DEG = 30.0
 HEADING_REVERSAL_THRESHOLD_DEG = 120.0
@@ -70,7 +76,7 @@ class _ResolvedCheckpoint:
     artifact_id: str
     relative_path: str
     sha256: str
-    role: Literal["d0_start", "final", "secondary_best", "conference_best", "attacker_best"]
+    role: Literal["d0_start", "final", "secondary_best", "conference_best", "attacker_best", "attacker_v2_final"]
     training_seed: int
 
 
@@ -132,6 +138,7 @@ def _research_modules(root: Path) -> dict[str, object]:
         "experiments.journal_v2_protocol",
         "experiments.journal_v2_validation_core",
         "experiments.adaptive_attacker_env",
+        "experiments.journal_v2_a1",
         "experiments.post_detection_diagnostic_protocol",
         "experiments.lead_residual_diagnostic_protocol",
         "experiments.clutter_benchmark_protocol",
@@ -297,9 +304,52 @@ def _resolve_defender_checkpoint(
     )
 
 
+def _resolve_v2_attacker_checkpoint(condition: str, store: ResearchDataStore) -> _ResolvedCheckpoint:
+    """Canonical-V2 A1 model: the research campaign registry, the model's own sidecar manifest and the
+    file itself must all agree on the SHA-256. Legacy V1 checkpoints are never mapped to a V2 identifier."""
+    seed = V2_ATTACKER_SEEDS[condition]
+    try:
+        registry = json.loads(store.read_bytes(V2_A1_REGISTRY_RELATIVE_PATH))
+    except ApplicationError as exc:
+        raise _fail("CHECKPOINT_NOT_REGISTERED", f"The V2 A1 model registry is unavailable: {exc.message}", 404) from exc
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise _fail("INVALID_MODEL_REGISTRY", "The V2 A1 model registry is not valid JSON.", 409) from exc
+    if registry.get("protocol") != V2_A1_PROTOCOL or registry.get("reward_version") != V2_A1_REWARD_VERSION:
+        raise _fail("INVALID_MODEL_REGISTRY", "The V2 A1 registry protocol/reward version is not the frozen one.", 409)
+    entry = (registry.get("attackers") or {}).get(condition)
+    if not isinstance(entry, dict):
+        raise _fail("CHECKPOINT_NOT_REGISTERED", f"No V2 A1 checkpoint is registered for {condition}.", 404)
+    relative = f"{V2_A1_RESULTS_RELATIVE}/seed_{seed}/checkpoints/final_model.zip"
+    if entry.get("path") != relative or entry.get("ppo_seed") != seed:
+        raise _fail("INVALID_MODEL_REGISTRY", f"{condition} registry entry does not point at its allowlisted final model.", 409)
+    if entry.get("observation_dim") != V2_A1_OBSERVATION_DIM or entry.get("action_dim") != 3:
+        raise _fail("INCOMPATIBLE_CHECKPOINT", f"{condition} is not registered as a 37-D observation / 3-D action model.", 409)
+    try:
+        manifest = json.loads(store.read_bytes(relative.replace(".zip", ".manifest.json")))
+    except (ApplicationError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise _fail("CHECKPOINT_NOT_REGISTERED", f"{condition} has no readable sidecar manifest.", 404) from exc
+    if (
+        manifest.get("model_sha256") != entry.get("sha256")
+        or manifest.get("ppo_seed") != seed
+        or manifest.get("training_protocol") != V2_A1_PROTOCOL
+        or manifest.get("reward_version") != V2_A1_REWARD_VERSION
+        or manifest.get("observation_dim") != V2_A1_OBSERVATION_DIM
+    ):
+        raise _fail("CHECKPOINT_HASH_MISMATCH", f"{condition} registry entry and sidecar manifest disagree.", 409)
+    return _ResolvedCheckpoint(
+        artifact_id=f"a1_v2:{seed}:final",
+        relative_path=relative,
+        sha256=entry["sha256"],
+        role="attacker_v2_final",
+        training_seed=seed,
+    )
+
+
 def _resolve_attacker_checkpoint(
     condition: str, registry: dict, store: ResearchDataStore
 ) -> _ResolvedCheckpoint | None:
+    if condition in V2_ATTACKER_SEEDS:
+        return _resolve_v2_attacker_checkpoint(condition, store)
     seed = ATTACKER_SEEDS.get(condition)
     if seed is None:
         return None
@@ -421,10 +471,27 @@ def _load_attacker(
         return None
     path = _verify_artifact(store, checkpoint)
     model = modules["stable_baselines3"].PPO.load(str(path), device="cpu")
-    _checkpoint_model_input(model, (36,), checkpoint.artifact_id)
+    _checkpoint_model_input(
+        model, (V2_A1_OBSERVATION_DIM,) if condition in V2_ATTACKER_SEEDS else (36,), checkpoint.artifact_id
+    )
     if _sha256(path) != checkpoint.sha256:
         raise _fail("CHECKPOINT_MUTATED", f"{condition} checkpoint changed during model loading.", 409)
     return model
+
+
+def _build_attacker_observation(condition: str, modules: dict[str, object], env: object) -> np.ndarray:
+    """Delegates to the research repository's own builders; the visualizer defines no observation features."""
+    detection_range = env.config.enemy_defender_detection_range
+    if condition in V2_ATTACKER_SEEDS:
+        observation = modules["experiments.journal_v2_a1"].build_a1_v2_observation(env, detection_range)
+        expected = V2_A1_OBSERVATION_DIM
+    else:
+        observation = modules["experiments.adaptive_attacker_env"].build_attacker_observation(env, detection_range)
+        expected = 36
+    observation = np.asarray(observation, dtype=np.float32)
+    if observation.shape != (expected,):
+        raise _fail("INCOMPATIBLE_CHECKPOINT", f"{condition} observation is {observation.shape}, expected ({expected},).", 500)
+    return observation
 
 
 def _plain(value: object, unavailable: dict[str, str], path: str = "$") -> object:
@@ -1166,10 +1233,7 @@ def run_replay_episode(request: ReplayRequest, settings: Settings | None = None)
             attacker_observation = None
             attacker_command = None
             if attacker_model is not None:
-                attacker_observation = modules["experiments.adaptive_attacker_env"].build_attacker_observation(
-                    env,
-                    env.config.enemy_defender_detection_range,
-                )
+                attacker_observation = _build_attacker_observation(request.attacker_condition, modules, env)
                 command, _state = attacker_model.predict(attacker_observation, deterministic=True)
                 attacker_command = np.asarray(command, dtype=np.float32).reshape(3)
                 if not np.all(np.isfinite(attacker_command)):
@@ -1363,10 +1427,14 @@ def run_replay_episode(request: ReplayRequest, settings: Settings | None = None)
                 "heading_reversal_threshold_deg": HEADING_REVERSAL_THRESHOLD_DEG,
             },
         )
+        is_v2_attacker = request.attacker_condition in V2_ATTACKER_SEEDS
         attacker_selection = PolicySelection(
             policy_kind="scripted" if attacker_model is None else "learned",
             policy_id=request.attacker_condition,
-            architecture="adaptive_attacker_v1" if attacker_model is not None else "scripted_a0",
+            architecture=(
+                "scripted_a0" if attacker_model is None
+                else "a1_v2_ppo" if is_v2_attacker else "adaptive_attacker_v1"
+            ),
             generation=None,
             training_seed=attacker_checkpoint.training_seed if attacker_checkpoint else None,
             checkpoint=(
@@ -1378,12 +1446,21 @@ def run_replay_episode(request: ReplayRequest, settings: Settings | None = None)
                 )
                 if attacker_checkpoint else None
             ),
-            observation_shape=(36,) if attacker_model is not None else None,
+            observation_shape=(
+                None if attacker_model is None else (V2_A1_OBSERVATION_DIM,) if is_v2_attacker else (36,)
+            ),
             estimator="attacker_local" if attacker_model is not None else "scripted_ground_truth",
             parameters={
                 "deterministic_inference": True if attacker_model is not None else None,
                 "tactical_override": attacker_model is not None,
-                "held_out_from_defender_adaptation": request.attacker_condition == "A1-203",
+                "held_out_from_defender_adaptation": request.attacker_condition in ("A1-203", "A1-203-V2"),
+                "canonical_v2_attacker": is_v2_attacker,
+                "display_label": (
+                    f"Attacker: {request.attacker_condition.replace('-V2', ' V2')}" if attacker_model is not None
+                    else "Attacker: A0"
+                ),
+                "training_protocol": V2_A1_PROTOCOL if is_v2_attacker else None,
+                "reward_version": V2_A1_REWARD_VERSION if is_v2_attacker else None,
             },
         )
         config_dict = _plain(dataclasses.asdict(config), {}, "$.config")
