@@ -49,7 +49,10 @@ function queryPreset() {
   const clutter = params.get('clutter');
   const seed = params.get('seed');
   const defender = params.get('defender');
+  const attacker = params.get('attacker');
   return {
+    // Attacker ids are validated against the catalog (available attackers only); unknown values are ignored.
+    attacker: attacker && /^(A0|A1-20[123](-V2)?)$/.test(attacker) ? attacker : null,
     semantics: (semantics === 'V1' || semantics === 'V2' ? semantics : 'V1') as Semantics,
     clutter: clutter && ['C0', 'C1', 'C2', 'C3'].includes(clutter) ? clutter : 'C0',
     seed: seed && /^\d+$/.test(seed) ? seed : '0',
@@ -433,7 +436,9 @@ export function App() {
             if (availableSeed) setTrainingSeed(availableSeed.training_seed);
           }
         }
-        const defaultAttacker = policyData.attackers.find(item => item.attacker_id === 'A0' && item.available)
+        const presetAttacker = queryPreset().attacker;
+        const defaultAttacker = policyData.attackers.find(item => item.attacker_id === presetAttacker && item.available)
+          ?? policyData.attackers.find(item => item.attacker_id === 'A0' && item.available)
           ?? policyData.attackers.find(item => item.available);
         if (defaultAttacker) setAttackerId(defaultAttacker.attacker_id);
       })
