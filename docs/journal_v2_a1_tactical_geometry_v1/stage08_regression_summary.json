@@ -1,0 +1,7 @@
+{
+ "command": "pytest tests -q --ignore=tests/test_defender_adaptation_training_runner.py --ignore=tests/test_vectorized_clutter_training.py --ignore=tests/test_journal_v2_a1_r2_training_runner.py",
+ "excluded_reason": "these three files run tiny PPO learn(); no PPO is executed in this task",
+ "new_tests": 51,
+ "previous_baseline": "785 passed at cd6bc38",
+ "result": "836 passed in 395.92s"
+}

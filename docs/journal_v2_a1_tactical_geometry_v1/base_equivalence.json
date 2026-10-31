@@ -1,0 +1,75 @@
+{
+ "definition": "policy forced to BASE (action 0) through the tactical machine vs unmodified scripted A0, same scenarios",
+ "episodes": 2000,
+ "families": [
+  "greedy",
+  "kalman_greedy",
+  "pn",
+  "lead",
+  "rmpc"
+ ],
+ "levels": [
+  {
+   "a0_collisions": 0,
+   "a0_endurance_exhausted": 0,
+   "episodes": 500,
+   "gained_collisions": 0,
+   "identical_outcome": 500,
+   "identical_trajectory": 500,
+   "level": "C0",
+   "machine_base_collisions": 0,
+   "machine_endurance_exhausted": 0,
+   "max_positional_deviation_m": 0.0,
+   "mismatches": [],
+   "tactical_steps_in_base": 0
+  },
+  {
+   "a0_collisions": 0,
+   "a0_endurance_exhausted": 0,
+   "episodes": 500,
+   "gained_collisions": 0,
+   "identical_outcome": 500,
+   "identical_trajectory": 500,
+   "level": "C1",
+   "machine_base_collisions": 0,
+   "machine_endurance_exhausted": 0,
+   "max_positional_deviation_m": 0.0,
+   "mismatches": [],
+   "tactical_steps_in_base": 0
+  },
+  {
+   "a0_collisions": 0,
+   "a0_endurance_exhausted": 0,
+   "episodes": 500,
+   "gained_collisions": 0,
+   "identical_outcome": 500,
+   "identical_trajectory": 500,
+   "level": "C2",
+   "machine_base_collisions": 0,
+   "machine_endurance_exhausted": 0,
+   "max_positional_deviation_m": 0.0,
+   "mismatches": [],
+   "tactical_steps_in_base": 0
+  },
+  {
+   "a0_collisions": 0,
+   "a0_endurance_exhausted": 0,
+   "episodes": 500,
+   "gained_collisions": 0,
+   "identical_outcome": 500,
+   "identical_trajectory": 500,
+   "level": "C3",
+   "machine_base_collisions": 0,
+   "machine_endurance_exhausted": 0,
+   "max_positional_deviation_m": 0.0,
+   "mismatches": [],
+   "tactical_steps_in_base": 0
+  }
+ ],
+ "passed": true,
+ "seeds": [
+  145000,
+  145099
+ ],
+ "sha256_of_levels": "22da966418bcab158dec634560b1b38607fd68a3b27964f08e3e6c2e4e928fbe"
+}

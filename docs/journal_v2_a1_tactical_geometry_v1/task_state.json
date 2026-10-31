@@ -1,0 +1,169 @@
+{
+ "created_utc": "2026-10-31T15:29:16.168903+00:00",
+ "halt": {
+  "input_commit": "cd6bc388a866b332cb01eac75958b011eb09d7e9",
+  "reason": "All 16 pre-registered geometries gain obstacle collisions vs matched BASE (G1) and endurance exhaustions (G2); no selection, no training",
+  "stage": "07_safety_authority_analysis",
+  "utc": "2026-10-31T17:02:56.626805+00:00",
+  "verdict": "C"
+ },
+ "stages": {
+  "01_verify_repository": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_tactical_geometry_v1/repository_verification.json": "a80315aa76ade63267dec01088a1407b6dc17ea7eb1a3c87575768bdd35487fb"
+   },
+   "completed_utc": "2026-10-31T15:29:16.555687+00:00",
+   "input_commit": "cd6bc388a866b332cb01eac75958b011eb09d7e9",
+   "note": "start state verified",
+   "output_artifacts": [
+    "docs/journal_v2_a1_tactical_geometry_v1/repository_verification.json"
+   ],
+   "started_utc": "2026-10-31T15:29:16.223956+00:00",
+   "status": "complete"
+  },
+  "02_freeze_maneuver_specification": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_tactical_geometry_v1/maneuver_specification.json": "68ef076d80c998cc92994efbb86dc2ba3fdc53bbd88a5e3206edb3803bb30eb9"
+   },
+   "completed_utc": "2026-10-31T15:29:16.630152+00:00",
+   "input_commit": "cd6bc388a866b332cb01eac75958b011eb09d7e9",
+   "note": "spec sha daffa22c31cd0c03",
+   "output_artifacts": [
+    "docs/journal_v2_a1_tactical_geometry_v1/maneuver_specification.json"
+   ],
+   "started_utc": "2026-10-31T15:29:16.620900+00:00",
+   "status": "complete"
+  },
+  "03_implement_maneuver_state": {
+   "artifact_sha256": {
+    "experiments/journal_v2_a1_tg.py": "7ee20482f451b1f711d21a25b4c6b53d8269ce63fb0f4f105cccf5be8f29ce8f",
+    "experiments/journal_v2_a1_tg_state.py": "bfe7c2540cc32795c8b1c7ae95faa7d6d6491f399af6a712c4283a88bb00b9f3"
+   },
+   "completed_utc": "2026-10-31T17:02:37.877029+00:00",
+   "input_commit": "cd6bc388a866b332cb01eac75958b011eb09d7e9",
+   "note": "finite state machine + geometry + env",
+   "output_artifacts": [
+    "experiments/journal_v2_a1_tg.py",
+    "experiments/journal_v2_a1_tg_state.py"
+   ],
+   "started_utc": "2026-10-31T17:02:37.873356+00:00",
+   "status": "complete"
+  },
+  "04_observation_update": {
+   "artifact_sha256": {
+    "experiments/journal_v2_a1_tg.py": "7ee20482f451b1f711d21a25b4c6b53d8269ce63fb0f4f105cccf5be8f29ce8f"
+   },
+   "completed_utc": "2026-10-31T17:02:37.947088+00:00",
+   "input_commit": "cd6bc388a866b332cb01eac75958b011eb09d7e9",
+   "note": "a1_v2_obs_v2: 37 + 5-way one-hot + remaining fraction = 43",
+   "output_artifacts": [
+    "experiments/journal_v2_a1_tg.py"
+   ],
+   "started_utc": "2026-10-31T17:02:37.942829+00:00",
+   "status": "complete"
+  },
+  "05_unit_tests": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_tactical_geometry_v1/base_equivalence.json": "d46facbbe302f8b7a67da3b8c4ce8105b32d17beebc35013b361dbd487121a63",
+    "docs/journal_v2_a1_tactical_geometry_v1/unit_test_result.json": "50e251eed7aa0869990814e1badb87d636850b55ae8dbdef7525ba286d93181e",
+    "tests/test_journal_v2_a1_tg.py": "9849a757e3296566e4cd6c30fc8ca8d93e35e1ecde1e03096db8913c79275a84"
+   },
+   "completed_utc": "2026-10-31T17:02:56.451517+00:00",
+   "input_commit": "cd6bc388a866b332cb01eac75958b011eb09d7e9",
+   "note": "51 passed in 4.82s",
+   "output_artifacts": [
+    "tests/test_journal_v2_a1_tg.py",
+    "docs/journal_v2_a1_tactical_geometry_v1/unit_test_result.json",
+    "docs/journal_v2_a1_tactical_geometry_v1/base_equivalence.json"
+   ],
+   "started_utc": "2026-10-31T17:02:38.005294+00:00",
+   "status": "complete"
+  },
+  "06_deterministic_geometry_sweep": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_tactical_geometry_v1/diagnostic_recordings.json": "115c9c4c8908f57a8ed03c77e9cca22f4e3d8a9952dc68c4ae0fb0aff783d548",
+    "docs/journal_v2_a1_tactical_geometry_v1/maneuver_specification.json": "68ef076d80c998cc92994efbb86dc2ba3fdc53bbd88a5e3206edb3803bb30eb9",
+    "docs/journal_v2_a1_tactical_geometry_v1/sweep_summary.json": "13d3178eded8b11bfaca2e1d0188da0b0483805a5bd1f0661302f8fa49b77059"
+   },
+   "completed_utc": "2026-10-31T17:02:56.559726+00:00",
+   "input_commit": "cd6bc388a866b332cb01eac75958b011eb09d7e9",
+   "note": "64 groups x 3200 episodes verified (204,800); raw groups stay in gitignored results/ with per-group SHA-256",
+   "output_artifacts": [
+    "docs/journal_v2_a1_tactical_geometry_v1/maneuver_specification.json",
+    "docs/journal_v2_a1_tactical_geometry_v1/sweep_summary.json",
+    "docs/journal_v2_a1_tactical_geometry_v1/diagnostic_recordings.json"
+   ],
+   "started_utc": "2026-10-31T17:02:56.554764+00:00",
+   "status": "complete"
+  },
+  "07_safety_authority_analysis": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_tactical_geometry_v1/sweep_results.md": "204fc1a549c65518d794e1f09313e306eb442960f4fb01a5f42a715dae62b680",
+    "docs/journal_v2_a1_tactical_geometry_v1/sweep_summary.json": "13d3178eded8b11bfaca2e1d0188da0b0483805a5bd1f0661302f8fa49b77059"
+   },
+   "completed_utc": "2026-10-31T17:02:56.619135+00:00",
+   "input_commit": "cd6bc388a866b332cb01eac75958b011eb09d7e9",
+   "note": "no candidate passes G1/G2 (16/16 fail); selected=None",
+   "output_artifacts": [
+    "docs/journal_v2_a1_tactical_geometry_v1/sweep_results.md",
+    "docs/journal_v2_a1_tactical_geometry_v1/sweep_summary.json"
+   ],
+   "started_utc": "2026-10-31T17:02:56.614684+00:00",
+   "status": "complete"
+  },
+  "08_regression": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_tactical_geometry_v1/stage08_regression_summary.json": "b9a11d873ba8572593d415f8911746fa3987d78bc31c4743413d02cd3c1260d9"
+   },
+   "completed_utc": "2026-10-31T17:10:28.510389+00:00",
+   "input_commit": "cd6bc388a866b332cb01eac75958b011eb09d7e9",
+   "note": "836 passed",
+   "output_artifacts": [
+    "docs/journal_v2_a1_tactical_geometry_v1/stage08_regression_summary.json"
+   ],
+   "started_utc": "2026-10-31T17:10:28.493792+00:00",
+   "status": "complete"
+  },
+  "09_checkpoint_integrity": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_tactical_geometry_v1/stage09_checkpoint_integrity.json": "2ca31539a56178134a305c91a6975c7c7c75d181a1ec31aff23101f075dda575"
+   },
+   "completed_utc": "2026-10-31T17:10:28.738894+00:00",
+   "input_commit": "cd6bc388a866b332cb01eac75958b011eb09d7e9",
+   "note": "30 historical + 3 failed-v1 verified; no v3 models",
+   "output_artifacts": [
+    "docs/journal_v2_a1_tactical_geometry_v1/stage09_checkpoint_integrity.json"
+   ],
+   "started_utc": "2026-10-31T17:10:28.564724+00:00",
+   "status": "complete"
+  },
+  "10_documentation": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_tactical_geometry_v1/README.md": "89200384698cb0cc8b1da3a147e652e420a6e7dab9806d943609ac34e0ad2344",
+    "docs/journal_v2_a1_tactical_geometry_v1/ablation_record_v2.md": "bdc2324c719a68215617b681c4a724ac01538b9c599684d556101b9cfbd389c5",
+    "docs/journal_v2_a1_tactical_geometry_v1/sweep_results.md": "204fc1a549c65518d794e1f09313e306eb442960f4fb01a5f42a715dae62b680"
+   },
+   "completed_utc": "2026-10-31T17:10:28.806033+00:00",
+   "input_commit": "cd6bc388a866b332cb01eac75958b011eb09d7e9",
+   "note": "negative-result README, ablation record v2, generated tables",
+   "output_artifacts": [
+    "docs/journal_v2_a1_tactical_geometry_v1/README.md",
+    "docs/journal_v2_a1_tactical_geometry_v1/ablation_record_v2.md",
+    "docs/journal_v2_a1_tactical_geometry_v1/sweep_results.md"
+   ],
+   "started_utc": "2026-10-31T17:10:28.801423+00:00",
+   "status": "complete"
+  },
+  "11_commit_tag_push": {
+   "artifact_sha256": {},
+   "completed_utc": "2026-10-31T17:10:41.070352+00:00",
+   "input_commit": "cd6bc388a866b332cb01eac75958b011eb09d7e9",
+   "note": "evidence-only commit on research/journal-corrected-attacker-v2; NO protocol tag (no geometry passed); parent cd6bc38",
+   "output_artifacts": [],
+   "started_utc": "2026-10-31T17:10:41.066946+00:00",
+   "status": "complete"
+  }
+ },
+ "task": "journal_v2_a1_tactical_geometry_v1",
+ "updated_utc": "2026-10-31T17:10:41.070365+00:00"
+}

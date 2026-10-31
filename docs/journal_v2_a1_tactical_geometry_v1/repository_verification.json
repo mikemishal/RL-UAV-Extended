@@ -1,0 +1,11 @@
+{
+ "a0_tag": "bdbee45dc08a583a0da5ca882dc6b1269207a8cd",
+ "branch": "research/journal-corrected-attacker-v2",
+ "expected_head_prefix": "cd6bc38",
+ "head": "cd6bc388a866b332cb01eac75958b011eb09d7e9",
+ "head_matches": true,
+ "reward_version": "a1_v2_reward_v2",
+ "semantics_tag": "db8c2995fb08279fff3d98e5fe1fef9a7a72e2ce",
+ "tracked_changes": true,
+ "uav_defend_diff_vs_a0_tag": true
+}

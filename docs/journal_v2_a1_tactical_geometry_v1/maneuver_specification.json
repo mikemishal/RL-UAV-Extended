@@ -1,0 +1,108 @@
+{
+ "action_version": "a1_v2_action_v5",
+ "actions": [
+  "BASE",
+  "LEFT_PULSE",
+  "RIGHT_PULSE",
+  "CLIMB_PULSE"
+ ],
+ "activation_requires": [
+  "defender information available",
+  "frozen common layer not owning steering (direct rollout safe)",
+  "no active pulse",
+  "rejoin complete"
+ ],
+ "climb_ceiling_rule": "BASE if (z_max - z) < max_climb_rate * dt",
+ "contexts": [
+  "greedy",
+  "lead",
+  "pn",
+  "passive_forced"
+ ],
+ "defender_gate": "true range <= config.enemy_defender_detection_range (25 m) [the observation's existing gate]",
+ "degenerate_horizontal_eps": 0.001,
+ "dt_s": 0.5,
+ "gates": {
+  "G1": "collisions(policy) <= collisions(BASE) per candidate x level x context x policy",
+  "G2": "ceiling-hover, sustained-hover, orbit, exhaustion, timeout counts <= BASE per cell",
+  "G3": "exists active defender & policy: >=10% episodes diverge >=2.0 m and (outcome differs or |mean min-separation diff|>=0.5 m)",
+  "G4": "fraction path-excess>5x <= BASE fraction + 0.5pp",
+  "G5": "no machine violations; run<=n; deterministic replay"
+ },
+ "geometry": {
+  "climb": "normalize(m + tan(theta_z) z_hat)",
+  "l": "normalize(z_hat x normalize([m_x, m_y, 0]))",
+  "left": "normalize(m + tan(theta) l)",
+  "m": "current unit attacker->asset direction, recomputed every step",
+  "right": "normalize(m - tan(theta) l)"
+ },
+ "levels": [
+  "C0",
+  "C1",
+  "C2",
+  "C3"
+ ],
+ "modes": [
+  "BASE",
+  "TACTICAL_LEFT",
+  "TACTICAL_RIGHT",
+  "TACTICAL_CLIMB",
+  "REJOIN",
+  "OBSTACLE_OVERRIDE"
+ ],
+ "observation_v2": {
+  "dim": 43,
+  "extra": [
+   "tactical_mode_base",
+   "tactical_mode_left",
+   "tactical_mode_right",
+   "tactical_mode_climb",
+   "tactical_mode_rejoin_or_obstacle_suppressed",
+   "tactical_remaining_fraction"
+  ]
+ },
+ "observation_version": "a1_v2_obs_v2",
+ "policies": [
+  "BASE",
+  "LEFT",
+  "RIGHT",
+  "CLIMB",
+  "ALT_LR",
+  "CYCLE_LCR",
+  "RANDOM",
+  "ADVERSARIAL"
+ ],
+ "pulse_grid_s": [
+  0.5,
+  1.0,
+  1.5,
+  2.0
+ ],
+ "rejoin_s": 1.0,
+ "reward_version": "a1_v2_reward_v2",
+ "seeds": [
+  145000,
+  145099
+ ],
+ "selection": [
+  "min endurance+timeout excess over BASE",
+  "min median path-excess (0.01)",
+  "shorter pulse",
+  "smaller angle"
+ ],
+ "spec_sha256": "daffa22c31cd0c03c1b349d974296ecb0f9e2332bc7533dc7f77db1348a33386",
+ "theta_grid_deg": [
+  10.0,
+  15.0,
+  20.0,
+  30.0
+ ],
+ "thresholds": {
+  "divergence_fraction": 0.1,
+  "divergence_m": 2.0,
+  "min_sep_diff_m": 0.5,
+  "path_excess_5x_allowance": 0.005,
+  "trajectory_steps_compared": 60
+ },
+ "training_protocol": "a1_v2_training_v3"
+}

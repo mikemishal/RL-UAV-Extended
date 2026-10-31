@@ -1,0 +1,6798 @@
+{
+ "candidates": [
+  {
+   "G1": false,
+   "G2": false,
+   "G3": false,
+   "G4": true,
+   "G5": true,
+   "authority_best": [
+    {
+     "context": "greedy",
+     "fraction_diverging": 0.0525,
+     "mean_min_sep_diff": 0.0001356351375579834,
+     "meaningful": false,
+     "outcome_differs": 26,
+     "policy": "ALT_LR"
+    },
+    {
+     "context": "greedy",
+     "fraction_diverging": 0.05,
+     "mean_min_sep_diff": 0.0527888149023056,
+     "meaningful": false,
+     "outcome_differs": 22,
+     "policy": "LEFT"
+    },
+    {
+     "context": "greedy",
+     "fraction_diverging": 0.05,
+     "mean_min_sep_diff": 0.07494466543197632,
+     "meaningful": false,
+     "outcome_differs": 22,
+     "policy": "CYCLE_LCR"
+    }
+   ],
+   "base_exhausted": 1,
+   "base_timeouts": 0,
+   "collisions_base_total": 0,
+   "collisions_tactical_total": 62,
+   "deterministic": true,
+   "endurance_exhausted": 87,
+   "excess_endurance_timeout_over_base": 80,
+   "g1_failing_cells": [
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "pn",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "RIGHT",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "RIGHT",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 1
+    }
+   ],
+   "g2_failing_cells": [
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       3,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       3,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "passive_forced",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       3,
+       0
+      ]
+     }
+    },
+    {
+     "context": "passive_forced",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "passive_forced",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "passive_forced",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       3,
+       0
+      ]
+     }
+    },
+    {
+     "context": "pn",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "pn",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    }
+   ],
+   "gained_collisions_total": 62,
+   "longest_tactical_run_max": 1,
+   "machine_violations": 0,
+   "median_path_excess_bin": 1.0,
+   "passed": false,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "base_gt5": 0,
+    "fraction_gt5": 0.00140625,
+    "gt1.3": 255,
+    "gt2": 225,
+    "gt5": 18,
+    "max": 8.00629849514559,
+    "mean": 1.0674588474232916,
+    "median": 1.0035919193595715
+   },
+   "pulse_s": 0.5,
+   "pulse_steps": 1,
+   "pulses_aborted": 0,
+   "pulses_cancelled_by_obstacle": 0,
+   "pulses_started": 24105,
+   "theta": 10.0,
+   "timeouts": 0
+  },
+  {
+   "G1": false,
+   "G2": false,
+   "G3": false,
+   "G4": true,
+   "G5": true,
+   "authority_best": [
+    {
+     "context": "pn",
+     "fraction_diverging": 0.0825,
+     "mean_min_sep_diff": 0.08963273286819458,
+     "meaningful": false,
+     "outcome_differs": 39,
+     "policy": "RANDOM"
+    },
+    {
+     "context": "pn",
+     "fraction_diverging": 0.08,
+     "mean_min_sep_diff": -0.005291624069213867,
+     "meaningful": false,
+     "outcome_differs": 47,
+     "policy": "ADVERSARIAL"
+    },
+    {
+     "context": "pn",
+     "fraction_diverging": 0.0775,
+     "mean_min_sep_diff": 0.05558404326438904,
+     "meaningful": false,
+     "outcome_differs": 44,
+     "policy": "CYCLE_LCR"
+    }
+   ],
+   "base_exhausted": 1,
+   "base_timeouts": 0,
+   "collisions_base_total": 0,
+   "collisions_tactical_total": 105,
+   "deterministic": true,
+   "endurance_exhausted": 136,
+   "excess_endurance_timeout_over_base": 129,
+   "g1_failing_cells": [
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 3,
+     "level": "C2",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 3
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "RIGHT",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "RIGHT",
+     "tactical": 2
+    }
+   ],
+   "g2_failing_cells": [
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    }
+   ],
+   "gained_collisions_total": 105,
+   "longest_tactical_run_max": 2,
+   "machine_violations": 0,
+   "median_path_excess_bin": 1.0,
+   "passed": false,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "base_gt5": 0,
+    "fraction_gt5": 0.0025,
+    "gt1.3": 253,
+    "gt2": 224,
+    "gt5": 32,
+    "max": 7.924401103016517,
+    "mean": 1.0726413525213983,
+    "median": 1.0042274648305212
+   },
+   "pulse_s": 1.0,
+   "pulse_steps": 2,
+   "pulses_aborted": 0,
+   "pulses_cancelled_by_obstacle": 78,
+   "pulses_started": 18371,
+   "theta": 10.0,
+   "timeouts": 0
+  },
+  {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G4": true,
+   "G5": true,
+   "authority_best": [
+    {
+     "context": "lead",
+     "fraction_diverging": 0.225,
+     "mean_min_sep_diff": 0.03452221155166626,
+     "meaningful": true,
+     "outcome_differs": 36,
+     "policy": "ALT_LR"
+    },
+    {
+     "context": "pn",
+     "fraction_diverging": 0.22,
+     "mean_min_sep_diff": 0.020642937421798707,
+     "meaningful": true,
+     "outcome_differs": 49,
+     "policy": "ALT_LR"
+    },
+    {
+     "context": "lead",
+     "fraction_diverging": 0.2175,
+     "mean_min_sep_diff": 0.08342616140842438,
+     "meaningful": true,
+     "outcome_differs": 35,
+     "policy": "CYCLE_LCR"
+    }
+   ],
+   "base_exhausted": 1,
+   "base_timeouts": 0,
+   "collisions_base_total": 0,
+   "collisions_tactical_total": 67,
+   "deterministic": true,
+   "endurance_exhausted": 57,
+   "excess_endurance_timeout_over_base": 52,
+   "g1_failing_cells": [
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "RIGHT",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "RIGHT",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 1
+    }
+   ],
+   "g2_failing_cells": [
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "passive_forced",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "passive_forced",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       5,
+       0
+      ]
+     }
+    },
+    {
+     "context": "passive_forced",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "passive_forced",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "pn",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "pn",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C1",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    }
+   ],
+   "gained_collisions_total": 67,
+   "longest_tactical_run_max": 3,
+   "machine_violations": 0,
+   "median_path_excess_bin": 1.0,
+   "passed": false,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "base_gt5": 0,
+    "fraction_gt5": 0.001484375,
+    "gt1.3": 137,
+    "gt2": 122,
+    "gt5": 19,
+    "max": 7.863701412312835,
+    "mean": 1.040413214937698,
+    "median": 1.0036475223826733
+   },
+   "pulse_s": 1.5,
+   "pulse_steps": 3,
+   "pulses_aborted": 0,
+   "pulses_cancelled_by_obstacle": 88,
+   "pulses_started": 15821,
+   "theta": 10.0,
+   "timeouts": 0
+  },
+  {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G4": false,
+   "G5": true,
+   "authority_best": [
+    {
+     "context": "lead",
+     "fraction_diverging": 0.235,
+     "mean_min_sep_diff": 0.10343639969825745,
+     "meaningful": true,
+     "outcome_differs": 46,
+     "policy": "CYCLE_LCR"
+    },
+    {
+     "context": "lead",
+     "fraction_diverging": 0.2325,
+     "mean_min_sep_diff": 0.05489602506160736,
+     "meaningful": true,
+     "outcome_differs": 47,
+     "policy": "ALT_LR"
+    },
+    {
+     "context": "pn",
+     "fraction_diverging": 0.225,
+     "mean_min_sep_diff": 0.02708531677722931,
+     "meaningful": true,
+     "outcome_differs": 62,
+     "policy": "ALT_LR"
+    }
+   ],
+   "base_exhausted": 1,
+   "base_timeouts": 0,
+   "collisions_base_total": 0,
+   "collisions_tactical_total": 87,
+   "deterministic": true,
+   "endurance_exhausted": 238,
+   "excess_endurance_timeout_over_base": 231,
+   "g1_failing_cells": [
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "RIGHT",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "RIGHT",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 6,
+     "level": "C2",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 6
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "RIGHT",
+     "tactical": 1
+    }
+   ],
+   "g2_failing_cells": [
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       3,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       3,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RIGHT",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    }
+   ],
+   "gained_collisions_total": 87,
+   "longest_tactical_run_max": 4,
+   "machine_violations": 0,
+   "median_path_excess_bin": 1.0,
+   "passed": false,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "base_gt5": 0,
+    "fraction_gt5": 0.007265625,
+    "gt1.3": 376,
+    "gt2": 346,
+    "gt5": 93,
+    "max": 7.8629881447070975,
+    "mean": 1.1154556601094743,
+    "median": 1.0035508451187196
+   },
+   "pulse_s": 2.0,
+   "pulse_steps": 4,
+   "pulses_aborted": 0,
+   "pulses_cancelled_by_obstacle": 151,
+   "pulses_started": 15464,
+   "theta": 10.0,
+   "timeouts": 0
+  },
+  {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G4": false,
+   "G5": true,
+   "authority_best": [
+    {
+     "context": "greedy",
+     "fraction_diverging": 0.135,
+     "mean_min_sep_diff": 0.10867834270000458,
+     "meaningful": true,
+     "outcome_differs": 38,
+     "policy": "RANDOM"
+    },
+    {
+     "context": "pn",
+     "fraction_diverging": 0.1325,
+     "mean_min_sep_diff": 0.10346007525920868,
+     "meaningful": true,
+     "outcome_differs": 37,
+     "policy": "RANDOM"
+    },
+    {
+     "context": "pn",
+     "fraction_diverging": 0.1225,
+     "mean_min_sep_diff": 0.023949045538902283,
+     "meaningful": true,
+     "outcome_differs": 38,
+     "policy": "ALT_LR"
+    }
+   ],
+   "base_exhausted": 1,
+   "base_timeouts": 0,
+   "collisions_base_total": 0,
+   "collisions_tactical_total": 194,
+   "deterministic": true,
+   "endurance_exhausted": 199,
+   "excess_endurance_timeout_over_base": 192,
+   "g1_failing_cells": [
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "pn",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 3,
+     "level": "C2",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 3
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 3,
+     "level": "C2",
+     "ok": false,
+     "policy": "RIGHT",
+     "tactical": 3
+    }
+   ],
+   "g2_failing_cells": [
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       5,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       4,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RIGHT",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "passive_forced",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       5,
+       0
+      ]
+     }
+    },
+    {
+     "context": "passive_forced",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       5,
+       0
+      ]
+     }
+    },
+    {
+     "context": "passive_forced",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       15,
+       0
+      ]
+     }
+    },
+    {
+     "context": "passive_forced",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       5,
+       0
+      ]
+     }
+    }
+   ],
+   "gained_collisions_total": 194,
+   "longest_tactical_run_max": 1,
+   "machine_violations": 0,
+   "median_path_excess_bin": 1.01,
+   "passed": false,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "base_gt5": 0,
+    "fraction_gt5": 0.00796875,
+    "gt1.3": 552,
+    "gt2": 472,
+    "gt5": 102,
+    "max": 8.670164997019093,
+    "mean": 1.1465291098858226,
+    "median": 1.0056602121420484
+   },
+   "pulse_s": 0.5,
+   "pulse_steps": 1,
+   "pulses_aborted": 0,
+   "pulses_cancelled_by_obstacle": 0,
+   "pulses_started": 26793,
+   "theta": 15.0,
+   "timeouts": 0
+  },
+  {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G4": false,
+   "G5": true,
+   "authority_best": [
+    {
+     "context": "lead",
+     "fraction_diverging": 0.9875,
+     "mean_min_sep_diff": 0.1156144803762436,
+     "meaningful": true,
+     "outcome_differs": 51,
+     "policy": "LEFT"
+    },
+    {
+     "context": "greedy",
+     "fraction_diverging": 0.985,
+     "mean_min_sep_diff": 0.11066642224788666,
+     "meaningful": true,
+     "outcome_differs": 47,
+     "policy": "LEFT"
+    },
+    {
+     "context": "pn",
+     "fraction_diverging": 0.9825,
+     "mean_min_sep_diff": 0.11618610322475434,
+     "meaningful": true,
+     "outcome_differs": 59,
+     "policy": "LEFT"
+    }
+   ],
+   "base_exhausted": 1,
+   "base_timeouts": 0,
+   "collisions_base_total": 0,
+   "collisions_tactical_total": 225,
+   "deterministic": true,
+   "endurance_exhausted": 395,
+   "excess_endurance_timeout_over_base": 388,
+   "g1_failing_cells": [
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "RIGHT",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 1
+    }
+   ],
+   "g2_failing_cells": [
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       3,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "passive_forced",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       8,
+       0
+      ]
+     }
+    },
+    {
+     "context": "passive_forced",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       13,
+       0
+      ]
+     }
+    },
+    {
+     "context": "passive_forced",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       37,
+       0
+      ]
+     }
+    },
+    {
+     "context": "passive_forced",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       20,
+       0
+      ]
+     }
+    }
+   ],
+   "gained_collisions_total": 225,
+   "longest_tactical_run_max": 2,
+   "machine_violations": 0,
+   "median_path_excess_bin": 1.01,
+   "passed": false,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "base_gt5": 0,
+    "fraction_gt5": 0.016796875,
+    "gt1.3": 779,
+    "gt2": 722,
+    "gt5": 215,
+    "max": 9.157476606745954,
+    "mean": 1.2300807456952605,
+    "median": 1.0065308951928569
+   },
+   "pulse_s": 1.0,
+   "pulse_steps": 2,
+   "pulses_aborted": 0,
+   "pulses_cancelled_by_obstacle": 153,
+   "pulses_started": 22829,
+   "theta": 15.0,
+   "timeouts": 0
+  },
+  {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G4": false,
+   "G5": true,
+   "authority_best": [
+    {
+     "context": "lead",
+     "fraction_diverging": 0.9875,
+     "mean_min_sep_diff": 0.20959271967411042,
+     "meaningful": true,
+     "outcome_differs": 73,
+     "policy": "LEFT"
+    },
+    {
+     "context": "greedy",
+     "fraction_diverging": 0.985,
+     "mean_min_sep_diff": 0.22042399108409882,
+     "meaningful": true,
+     "outcome_differs": 69,
+     "policy": "LEFT"
+    },
+    {
+     "context": "pn",
+     "fraction_diverging": 0.9825,
+     "mean_min_sep_diff": 0.1622233533859253,
+     "meaningful": true,
+     "outcome_differs": 71,
+     "policy": "LEFT"
+    }
+   ],
+   "base_exhausted": 1,
+   "base_timeouts": 0,
+   "collisions_base_total": 0,
+   "collisions_tactical_total": 301,
+   "deterministic": true,
+   "endurance_exhausted": 610,
+   "excess_endurance_timeout_over_base": 603,
+   "g1_failing_cells": [
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 4,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 4
+    },
+    {
+     "base": 0,
+     "context": "pn",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "pn",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 6,
+     "level": "C2",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 6
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 3,
+     "level": "C2",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 3
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "RIGHT",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 3,
+     "level": "C2",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 3
+    }
+   ],
+   "g2_failing_cells": [
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       4,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       10,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       7,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RIGHT",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       4,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       6,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       3,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    }
+   ],
+   "gained_collisions_total": 301,
+   "longest_tactical_run_max": 3,
+   "machine_violations": 0,
+   "median_path_excess_bin": 1.01,
+   "passed": false,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "base_gt5": 0,
+    "fraction_gt5": 0.023359375,
+    "gt1.3": 1149,
+    "gt2": 1065,
+    "gt5": 299,
+    "max": 19.052306326846573,
+    "mean": 1.3398194448321843,
+    "median": 1.0062569028300792
+   },
+   "pulse_s": 1.5,
+   "pulse_steps": 3,
+   "pulses_aborted": 0,
+   "pulses_cancelled_by_obstacle": 238,
+   "pulses_started": 20811,
+   "theta": 15.0,
+   "timeouts": 0
+  },
+  {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G4": false,
+   "G5": true,
+   "authority_best": [
+    {
+     "context": "lead",
+     "fraction_diverging": 0.9875,
+     "mean_min_sep_diff": 0.2593995624780655,
+     "meaningful": true,
+     "outcome_differs": 84,
+     "policy": "LEFT"
+    },
+    {
+     "context": "greedy",
+     "fraction_diverging": 0.985,
+     "mean_min_sep_diff": 0.28084591329097747,
+     "meaningful": true,
+     "outcome_differs": 77,
+     "policy": "LEFT"
+    },
+    {
+     "context": "pn",
+     "fraction_diverging": 0.9825,
+     "mean_min_sep_diff": 0.20037042140960692,
+     "meaningful": true,
+     "outcome_differs": 82,
+     "policy": "LEFT"
+    }
+   ],
+   "base_exhausted": 1,
+   "base_timeouts": 0,
+   "collisions_base_total": 0,
+   "collisions_tactical_total": 440,
+   "deterministic": true,
+   "endurance_exhausted": 977,
+   "excess_endurance_timeout_over_base": 970,
+   "g1_failing_cells": [
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 4,
+     "level": "C1",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 4
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 4,
+     "level": "C1",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 4
+    }
+   ],
+   "g2_failing_cells": [
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       7,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       4,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       15,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       6,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       3,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       7,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RIGHT",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       7,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       4,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       10,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       6,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       3,
+       0
+      ]
+     }
+    }
+   ],
+   "gained_collisions_total": 440,
+   "longest_tactical_run_max": 4,
+   "machine_violations": 0,
+   "median_path_excess_bin": 1.01,
+   "passed": false,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "base_gt5": 0,
+    "fraction_gt5": 0.0403125,
+    "gt1.3": 1749,
+    "gt2": 1619,
+    "gt5": 516,
+    "max": 11.718256895430505,
+    "mean": 1.526993435753057,
+    "median": 1.0062086666095655
+   },
+   "pulse_s": 2.0,
+   "pulse_steps": 4,
+   "pulses_aborted": 0,
+   "pulses_cancelled_by_obstacle": 443,
+   "pulses_started": 21496,
+   "theta": 15.0,
+   "timeouts": 0
+  },
+  {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G4": false,
+   "G5": true,
+   "authority_best": [
+    {
+     "context": "greedy",
+     "fraction_diverging": 0.29,
+     "mean_min_sep_diff": 0.043281840682029726,
+     "meaningful": true,
+     "outcome_differs": 46,
+     "policy": "LEFT"
+    },
+    {
+     "context": "lead",
+     "fraction_diverging": 0.2725,
+     "mean_min_sep_diff": 0.07155172765254975,
+     "meaningful": true,
+     "outcome_differs": 39,
+     "policy": "LEFT"
+    },
+    {
+     "context": "pn",
+     "fraction_diverging": 0.2725,
+     "mean_min_sep_diff": 0.06309534728527069,
+     "meaningful": true,
+     "outcome_differs": 45,
+     "policy": "LEFT"
+    }
+   ],
+   "base_exhausted": 1,
+   "base_timeouts": 0,
+   "collisions_base_total": 0,
+   "collisions_tactical_total": 308,
+   "deterministic": true,
+   "endurance_exhausted": 419,
+   "excess_endurance_timeout_over_base": 412,
+   "g1_failing_cells": [
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 5,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 5
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 3,
+     "level": "C1",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 3
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 3,
+     "level": "C1",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 3
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "pn",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 3,
+     "level": "C2",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 3
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 3,
+     "level": "C2",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 3
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 5,
+     "level": "C2",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 5
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "RIGHT",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 2
+    }
+   ],
+   "g2_failing_cells": [
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       5,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       3,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       3,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       5,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RIGHT",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       3,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "RIGHT",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "passive_forced",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       6,
+       0
+      ]
+     }
+    }
+   ],
+   "gained_collisions_total": 308,
+   "longest_tactical_run_max": 1,
+   "machine_violations": 0,
+   "median_path_excess_bin": 1.01,
+   "passed": false,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "base_gt5": 0,
+    "fraction_gt5": 0.017578125,
+    "gt1.3": 956,
+    "gt2": 826,
+    "gt5": 225,
+    "max": 8.564015314397109,
+    "mean": 1.2588959700551536,
+    "median": 1.0060533103296891
+   },
+   "pulse_s": 0.5,
+   "pulse_steps": 1,
+   "pulses_aborted": 0,
+   "pulses_cancelled_by_obstacle": 0,
+   "pulses_started": 30535,
+   "theta": 20.0,
+   "timeouts": 0
+  },
+  {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G4": false,
+   "G5": true,
+   "authority_best": [
+    {
+     "context": "lead",
+     "fraction_diverging": 0.99,
+     "mean_min_sep_diff": 0.14071495831012726,
+     "meaningful": true,
+     "outcome_differs": 63,
+     "policy": "LEFT"
+    },
+    {
+     "context": "lead",
+     "fraction_diverging": 0.99,
+     "mean_min_sep_diff": 0.10727899074554444,
+     "meaningful": true,
+     "outcome_differs": 55,
+     "policy": "ALT_LR"
+    },
+    {
+     "context": "greedy",
+     "fraction_diverging": 0.9875,
+     "mean_min_sep_diff": 0.20643471002578737,
+     "meaningful": true,
+     "outcome_differs": 84,
+     "policy": "LEFT"
+    }
+   ],
+   "base_exhausted": 1,
+   "base_timeouts": 0,
+   "collisions_base_total": 0,
+   "collisions_tactical_total": 798,
+   "deterministic": true,
+   "endurance_exhausted": 1683,
+   "excess_endurance_timeout_over_base": 1676,
+   "g1_failing_cells": [
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 4,
+     "level": "C1",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 4
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 5,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 5
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 3,
+     "level": "C1",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 3
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 7,
+     "level": "C1",
+     "ok": false,
+     "policy": "RIGHT",
+     "tactical": 7
+    },
+    {
+     "base": 0,
+     "context": "pn",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "pn",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 2
+    }
+   ],
+   "g2_failing_cells": [
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       16,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       3,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       36,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       7,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       5,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       11,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RIGHT",
+     "violations": {
+      "exhausted": [
+       3,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       5,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       20,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       5,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       3,
+       0
+      ]
+     }
+    }
+   ],
+   "gained_collisions_total": 798,
+   "longest_tactical_run_max": 2,
+   "machine_violations": 0,
+   "median_path_excess_bin": 1.01,
+   "passed": false,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "base_gt5": 0,
+    "fraction_gt5": 0.070234375,
+    "gt1.3": 3128,
+    "gt2": 2924,
+    "gt5": 899,
+    "max": 14.34345991404617,
+    "mean": 1.9086928086614645,
+    "median": 1.0093005502901171
+   },
+   "pulse_s": 1.0,
+   "pulse_steps": 2,
+   "pulses_aborted": 0,
+   "pulses_cancelled_by_obstacle": 352,
+   "pulses_started": 37215,
+   "theta": 20.0,
+   "timeouts": 0
+  },
+  {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G4": false,
+   "G5": true,
+   "authority_best": [
+    {
+     "context": "lead",
+     "fraction_diverging": 0.99,
+     "mean_min_sep_diff": 0.3835223114490509,
+     "meaningful": true,
+     "outcome_differs": 99,
+     "policy": "LEFT"
+    },
+    {
+     "context": "lead",
+     "fraction_diverging": 0.99,
+     "mean_min_sep_diff": 0.2522268319129944,
+     "meaningful": true,
+     "outcome_differs": 86,
+     "policy": "ALT_LR"
+    },
+    {
+     "context": "greedy",
+     "fraction_diverging": 0.9875,
+     "mean_min_sep_diff": 0.48865756392478943,
+     "meaningful": true,
+     "outcome_differs": 117,
+     "policy": "LEFT"
+    }
+   ],
+   "base_exhausted": 1,
+   "base_timeouts": 0,
+   "collisions_base_total": 0,
+   "collisions_tactical_total": 1145,
+   "deterministic": true,
+   "endurance_exhausted": 2133,
+   "excess_endurance_timeout_over_base": 2126,
+   "g1_failing_cells": [
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 4,
+     "level": "C1",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 4
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 5,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 5
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 3,
+     "level": "C1",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 3
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 4,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 4
+    }
+   ],
+   "g2_failing_cells": [
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       28,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       7,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       62,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       17,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       10,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       25,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RIGHT",
+     "violations": {
+      "exhausted": [
+       13,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       18,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       6,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       43,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       10,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       6,
+       0
+      ]
+     }
+    }
+   ],
+   "gained_collisions_total": 1145,
+   "longest_tactical_run_max": 3,
+   "machine_violations": 0,
+   "median_path_excess_bin": 1.03,
+   "passed": false,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "base_gt5": 0,
+    "fraction_gt5": 0.0871875,
+    "gt1.3": 4069,
+    "gt2": 3777,
+    "gt5": 1116,
+    "max": 10.973198038096294,
+    "mean": 2.1882465255257433,
+    "median": 1.0263924894830445
+   },
+   "pulse_s": 1.5,
+   "pulse_steps": 3,
+   "pulses_aborted": 0,
+   "pulses_cancelled_by_obstacle": 571,
+   "pulses_started": 32776,
+   "theta": 20.0,
+   "timeouts": 0
+  },
+  {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G4": false,
+   "G5": true,
+   "authority_best": [
+    {
+     "context": "lead",
+     "fraction_diverging": 0.99,
+     "mean_min_sep_diff": 0.46323211789131163,
+     "meaningful": true,
+     "outcome_differs": 118,
+     "policy": "LEFT"
+    },
+    {
+     "context": "lead",
+     "fraction_diverging": 0.99,
+     "mean_min_sep_diff": 0.33921348214149477,
+     "meaningful": true,
+     "outcome_differs": 100,
+     "policy": "ALT_LR"
+    },
+    {
+     "context": "greedy",
+     "fraction_diverging": 0.9875,
+     "mean_min_sep_diff": 0.5746457356214524,
+     "meaningful": true,
+     "outcome_differs": 134,
+     "policy": "LEFT"
+    }
+   ],
+   "base_exhausted": 1,
+   "base_timeouts": 0,
+   "collisions_base_total": 0,
+   "collisions_tactical_total": 1447,
+   "deterministic": true,
+   "endurance_exhausted": 2885,
+   "excess_endurance_timeout_over_base": 2878,
+   "g1_failing_cells": [
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 5,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 5
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 3,
+     "level": "C1",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 3
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "RIGHT",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 2
+    }
+   ],
+   "g2_failing_cells": [
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       35,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       14,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       65,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       24,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       16,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       21,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RIGHT",
+     "violations": {
+      "exhausted": [
+       17,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       21,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       9,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       45,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       16,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       11,
+       0
+      ]
+     }
+    }
+   ],
+   "gained_collisions_total": 1447,
+   "longest_tactical_run_max": 4,
+   "machine_violations": 0,
+   "median_path_excess_bin": 1.13,
+   "passed": false,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "base_gt5": 0,
+    "fraction_gt5": 0.128515625,
+    "gt1.3": 5360,
+    "gt2": 4978,
+    "gt5": 1645,
+    "max": 11.872358708977975,
+    "mean": 2.5875371869520123,
+    "median": 1.1338169239283313
+   },
+   "pulse_s": 2.0,
+   "pulse_steps": 4,
+   "pulses_aborted": 0,
+   "pulses_cancelled_by_obstacle": 1126,
+   "pulses_started": 34848,
+   "theta": 20.0,
+   "timeouts": 0
+  },
+  {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G4": false,
+   "G5": true,
+   "authority_best": [
+    {
+     "context": "greedy",
+     "fraction_diverging": 0.31,
+     "mean_min_sep_diff": 0.05684268534183502,
+     "meaningful": true,
+     "outcome_differs": 50,
+     "policy": "LEFT"
+    },
+    {
+     "context": "greedy",
+     "fraction_diverging": 0.2925,
+     "mean_min_sep_diff": 0.20902724981307982,
+     "meaningful": true,
+     "outcome_differs": 61,
+     "policy": "RANDOM"
+    },
+    {
+     "context": "lead",
+     "fraction_diverging": 0.285,
+     "mean_min_sep_diff": 0.07209756195545197,
+     "meaningful": true,
+     "outcome_differs": 46,
+     "policy": "LEFT"
+    }
+   ],
+   "base_exhausted": 1,
+   "base_timeouts": 0,
+   "collisions_base_total": 0,
+   "collisions_tactical_total": 367,
+   "deterministic": true,
+   "endurance_exhausted": 581,
+   "excess_endurance_timeout_over_base": 574,
+   "g1_failing_cells": [
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 3,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 3
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 4,
+     "level": "C1",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 4
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 4,
+     "level": "C1",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 4
+    },
+    {
+     "base": 0,
+     "context": "passive_forced",
+     "gained": 1,
+     "level": "C1",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 4,
+     "level": "C2",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 4
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 4,
+     "level": "C2",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 4
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 1,
+     "level": "C2",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 1
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 6,
+     "level": "C2",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 6
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 3,
+     "level": "C2",
+     "ok": false,
+     "policy": "RIGHT",
+     "tactical": 3
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 3,
+     "level": "C2",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 3
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 2,
+     "level": "C2",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 2
+    }
+   ],
+   "g2_failing_cells": [
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       7,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       3,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       3,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       4,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RIGHT",
+     "violations": {
+      "exhausted": [
+       4,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       5,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       3,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "RIGHT",
+     "violations": {
+      "exhausted": [
+       2,
+       0
+      ]
+     }
+    }
+   ],
+   "gained_collisions_total": 367,
+   "longest_tactical_run_max": 1,
+   "machine_violations": 0,
+   "median_path_excess_bin": 1.01,
+   "passed": false,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "base_gt5": 0,
+    "fraction_gt5": 0.023046875,
+    "gt1.3": 1220,
+    "gt2": 1071,
+    "gt5": 295,
+    "max": 10.860671244078556,
+    "mean": 1.3459563768369394,
+    "median": 1.0062323640726316
+   },
+   "pulse_s": 0.5,
+   "pulse_steps": 1,
+   "pulses_aborted": 0,
+   "pulses_cancelled_by_obstacle": 0,
+   "pulses_started": 32653,
+   "theta": 30.0,
+   "timeouts": 0
+  },
+  {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G4": false,
+   "G5": true,
+   "authority_best": [
+    {
+     "context": "lead",
+     "fraction_diverging": 0.995,
+     "mean_min_sep_diff": 1.507919459939003,
+     "meaningful": true,
+     "outcome_differs": 347,
+     "policy": "LEFT"
+    },
+    {
+     "context": "lead",
+     "fraction_diverging": 0.995,
+     "mean_min_sep_diff": 1.5350845122337342,
+     "meaningful": true,
+     "outcome_differs": 335,
+     "policy": "ADVERSARIAL"
+    },
+    {
+     "context": "greedy",
+     "fraction_diverging": 0.9925,
+     "mean_min_sep_diff": 2.036527228951454,
+     "meaningful": true,
+     "outcome_differs": 358,
+     "policy": "CYCLE_LCR"
+    }
+   ],
+   "base_exhausted": 1,
+   "base_timeouts": 0,
+   "collisions_base_total": 0,
+   "collisions_tactical_total": 2218,
+   "deterministic": true,
+   "endurance_exhausted": 5356,
+   "excess_endurance_timeout_over_base": 5349,
+   "g1_failing_cells": [
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 5,
+     "level": "C1",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 5
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 4,
+     "level": "C1",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 4
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 5,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 5
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 7,
+     "level": "C1",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 7
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 6,
+     "level": "C1",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 6
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 5,
+     "level": "C1",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 5
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 3,
+     "level": "C1",
+     "ok": false,
+     "policy": "RIGHT",
+     "tactical": 3
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 4,
+     "level": "C1",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 4
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 5,
+     "level": "C1",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 5
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 2,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 2
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 9,
+     "level": "C1",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 9
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 6,
+     "level": "C1",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 6
+    }
+   ],
+   "g2_failing_cells": [
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       79,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       67,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       84,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       63,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       86,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       64,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RIGHT",
+     "violations": {
+      "exhausted": [
+       75,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       62,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       58,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       56,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       51,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       76,
+       0
+      ]
+     }
+    }
+   ],
+   "gained_collisions_total": 2218,
+   "longest_tactical_run_max": 2,
+   "machine_violations": 0,
+   "median_path_excess_bin": 3.97,
+   "passed": false,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "base_gt5": 0,
+    "fraction_gt5": 0.243671875,
+    "gt1.3": 9074,
+    "gt2": 8423,
+    "gt5": 3119,
+    "max": 15.890049363906181,
+    "mean": 3.8237882809188157,
+    "median": 3.9735261036302827
+   },
+   "pulse_s": 1.0,
+   "pulse_steps": 2,
+   "pulses_aborted": 0,
+   "pulses_cancelled_by_obstacle": 701,
+   "pulses_started": 59109,
+   "theta": 30.0,
+   "timeouts": 0
+  },
+  {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G4": false,
+   "G5": true,
+   "authority_best": [
+    {
+     "context": "lead",
+     "fraction_diverging": 0.995,
+     "mean_min_sep_diff": 1.8700781852006911,
+     "meaningful": true,
+     "outcome_differs": 376,
+     "policy": "LEFT"
+    },
+    {
+     "context": "lead",
+     "fraction_diverging": 0.995,
+     "mean_min_sep_diff": 1.9535769957304001,
+     "meaningful": true,
+     "outcome_differs": 350,
+     "policy": "ADVERSARIAL"
+    },
+    {
+     "context": "greedy",
+     "fraction_diverging": 0.9925,
+     "mean_min_sep_diff": 2.300795775055885,
+     "meaningful": true,
+     "outcome_differs": 374,
+     "policy": "RIGHT"
+    }
+   ],
+   "base_exhausted": 1,
+   "base_timeouts": 0,
+   "collisions_base_total": 0,
+   "collisions_tactical_total": 2300,
+   "deterministic": true,
+   "endurance_exhausted": 5328,
+   "excess_endurance_timeout_over_base": 5321,
+   "g1_failing_cells": [
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 8,
+     "level": "C1",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 8
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 8,
+     "level": "C1",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 8
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 8,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 8
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 9,
+     "level": "C1",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 9
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 5,
+     "level": "C1",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 5
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 7,
+     "level": "C1",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 7
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 10,
+     "level": "C1",
+     "ok": false,
+     "policy": "RIGHT",
+     "tactical": 10
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 6,
+     "level": "C1",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 6
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 9,
+     "level": "C1",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 9
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 7,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 7
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 7,
+     "level": "C1",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 7
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 6,
+     "level": "C1",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 6
+    }
+   ],
+   "g2_failing_cells": [
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       75,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       56,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       74,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       67,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       91,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       58,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RIGHT",
+     "violations": {
+      "exhausted": [
+       89,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       70,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       55,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       71,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       60,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       88,
+       0
+      ]
+     }
+    }
+   ],
+   "gained_collisions_total": 2300,
+   "longest_tactical_run_max": 3,
+   "machine_violations": 0,
+   "median_path_excess_bin": 3.91,
+   "passed": false,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "base_gt5": 0,
+    "fraction_gt5": 0.243046875,
+    "gt1.3": 9288,
+    "gt2": 8640,
+    "gt5": 3111,
+    "max": 16.38314039887101,
+    "mean": 3.8565164231626445,
+    "median": 3.912307135223796
+   },
+   "pulse_s": 1.5,
+   "pulse_steps": 3,
+   "pulses_aborted": 0,
+   "pulses_cancelled_by_obstacle": 1287,
+   "pulses_started": 50568,
+   "theta": 30.0,
+   "timeouts": 0
+  },
+  {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G4": false,
+   "G5": true,
+   "authority_best": [
+    {
+     "context": "lead",
+     "fraction_diverging": 0.995,
+     "mean_min_sep_diff": 1.9762327843904495,
+     "meaningful": true,
+     "outcome_differs": 382,
+     "policy": "LEFT"
+    },
+    {
+     "context": "lead",
+     "fraction_diverging": 0.995,
+     "mean_min_sep_diff": 2.157177831530571,
+     "meaningful": true,
+     "outcome_differs": 358,
+     "policy": "ADVERSARIAL"
+    },
+    {
+     "context": "greedy",
+     "fraction_diverging": 0.9925,
+     "mean_min_sep_diff": 2.3823764377832415,
+     "meaningful": true,
+     "outcome_differs": 378,
+     "policy": "RIGHT"
+    }
+   ],
+   "base_exhausted": 1,
+   "base_timeouts": 0,
+   "collisions_base_total": 0,
+   "collisions_tactical_total": 2447,
+   "deterministic": true,
+   "endurance_exhausted": 5909,
+   "excess_endurance_timeout_over_base": 5902,
+   "g1_failing_cells": [
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 9,
+     "level": "C1",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 9
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 8,
+     "level": "C1",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 8
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 6,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 6
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 6,
+     "level": "C1",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 6
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 6,
+     "level": "C1",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 6
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 8,
+     "level": "C1",
+     "ok": false,
+     "policy": "RANDOM",
+     "tactical": 8
+    },
+    {
+     "base": 0,
+     "context": "greedy",
+     "gained": 6,
+     "level": "C1",
+     "ok": false,
+     "policy": "RIGHT",
+     "tactical": 6
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 10,
+     "level": "C1",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "tactical": 10
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 7,
+     "level": "C1",
+     "ok": false,
+     "policy": "ALT_LR",
+     "tactical": 7
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 9,
+     "level": "C1",
+     "ok": false,
+     "policy": "CLIMB",
+     "tactical": 9
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 10,
+     "level": "C1",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "tactical": 10
+    },
+    {
+     "base": 0,
+     "context": "lead",
+     "gained": 7,
+     "level": "C1",
+     "ok": false,
+     "policy": "LEFT",
+     "tactical": 7
+    }
+   ],
+   "g2_failing_cells": [
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       76,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       72,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       71,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       76,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       91,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RANDOM",
+     "violations": {
+      "exhausted": [
+       57,
+       0
+      ]
+     }
+    },
+    {
+     "context": "greedy",
+     "level": "C0",
+     "ok": false,
+     "policy": "RIGHT",
+     "violations": {
+      "exhausted": [
+       87,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ADVERSARIAL",
+     "violations": {
+      "exhausted": [
+       72,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "ALT_LR",
+     "violations": {
+      "exhausted": [
+       67,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CLIMB",
+     "violations": {
+      "exhausted": [
+       64,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "CYCLE_LCR",
+     "violations": {
+      "exhausted": [
+       68,
+       0
+      ]
+     }
+    },
+    {
+     "context": "lead",
+     "level": "C0",
+     "ok": false,
+     "policy": "LEFT",
+     "violations": {
+      "exhausted": [
+       88,
+       0
+      ]
+     }
+    }
+   ],
+   "gained_collisions_total": 2447,
+   "longest_tactical_run_max": 4,
+   "machine_violations": 0,
+   "median_path_excess_bin": 4.13,
+   "passed": false,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "base_gt5": 0,
+    "fraction_gt5": 0.26203125,
+    "gt1.3": 9684,
+    "gt2": 9008,
+    "gt5": 3354,
+    "max": 13.015187670412226,
+    "mean": 4.015602908383373,
+    "median": 4.1327535887740465
+   },
+   "pulse_s": 2.0,
+   "pulse_steps": 4,
+   "pulses_aborted": 0,
+   "pulses_cancelled_by_obstacle": 1719,
+   "pulses_started": 46411,
+   "theta": 30.0,
+   "timeouts": 0
+  }
+ ],
+ "collision_table": [
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 0,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 700,
+   "gained": 0,
+   "kind": "passive_forced",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 0,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 2,
+   "episodes": 2100,
+   "gained": 2,
+   "kind": "active",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 2,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 2,
+   "episodes": 700,
+   "gained": 2,
+   "kind": "passive_forced",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 2,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 11,
+   "episodes": 2100,
+   "gained": 15,
+   "kind": "active",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 15,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 4,
+   "episodes": 700,
+   "gained": 4,
+   "kind": "passive_forced",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 4,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 17,
+   "episodes": 2100,
+   "gained": 24,
+   "kind": "active",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 24,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 15,
+   "kind": "passive_forced",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 15,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 0,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 700,
+   "gained": 0,
+   "kind": "passive_forced",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 0,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 0,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 2,
+   "episodes": 700,
+   "gained": 3,
+   "kind": "passive_forced",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 3,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 15,
+   "episodes": 2100,
+   "gained": 25,
+   "kind": "active",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 25,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 6,
+   "episodes": 700,
+   "gained": 15,
+   "kind": "passive_forced",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 15,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 31,
+   "kind": "active",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 31,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 31,
+   "kind": "passive_forced",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 31,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 0,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 700,
+   "gained": 0,
+   "kind": "passive_forced",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 0,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 0,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 1,
+   "episodes": 700,
+   "gained": 1,
+   "kind": "passive_forced",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 1,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 9,
+   "episodes": 2100,
+   "gained": 12,
+   "kind": "active",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 12,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 6,
+   "episodes": 700,
+   "gained": 7,
+   "kind": "passive_forced",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 7,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 15,
+   "episodes": 2100,
+   "gained": 24,
+   "kind": "active",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 24,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 23,
+   "kind": "passive_forced",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 23,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 0,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 700,
+   "gained": 0,
+   "kind": "passive_forced",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 0,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 0,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 1,
+   "episodes": 700,
+   "gained": 2,
+   "kind": "passive_forced",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 2,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 12,
+   "episodes": 2100,
+   "gained": 15,
+   "kind": "active",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 15,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 3,
+   "episodes": 700,
+   "gained": 8,
+   "kind": "passive_forced",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 8,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 15,
+   "episodes": 2100,
+   "gained": 34,
+   "kind": "active",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 34,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 28,
+   "kind": "passive_forced",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 28,
+   "theta": 10.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 0,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 700,
+   "gained": 0,
+   "kind": "passive_forced",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 0,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 2,
+   "episodes": 2100,
+   "gained": 2,
+   "kind": "active",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 2,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 4,
+   "episodes": 700,
+   "gained": 6,
+   "kind": "passive_forced",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 6,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 17,
+   "episodes": 2100,
+   "gained": 31,
+   "kind": "active",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 31,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 40,
+   "kind": "passive_forced",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 40,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 18,
+   "episodes": 2100,
+   "gained": 51,
+   "kind": "active",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 51,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 64,
+   "kind": "passive_forced",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 64,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 0,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 700,
+   "gained": 0,
+   "kind": "passive_forced",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 0,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 0,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 5,
+   "episodes": 700,
+   "gained": 8,
+   "kind": "passive_forced",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 8,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 15,
+   "episodes": 2100,
+   "gained": 25,
+   "kind": "active",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 25,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 6,
+   "episodes": 700,
+   "gained": 47,
+   "kind": "passive_forced",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 47,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 55,
+   "kind": "active",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 55,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 90,
+   "kind": "passive_forced",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 90,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 0,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 700,
+   "gained": 0,
+   "kind": "passive_forced",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 0,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 4,
+   "episodes": 2100,
+   "gained": 5,
+   "kind": "active",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 5,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 2,
+   "episodes": 700,
+   "gained": 5,
+   "kind": "passive_forced",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 5,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 13,
+   "episodes": 2100,
+   "gained": 34,
+   "kind": "active",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 34,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 38,
+   "kind": "passive_forced",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 38,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 132,
+   "kind": "active",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 132,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 87,
+   "kind": "passive_forced",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 87,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 0,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 700,
+   "gained": 0,
+   "kind": "passive_forced",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 0,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 16,
+   "episodes": 2100,
+   "gained": 20,
+   "kind": "active",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 20,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 6,
+   "episodes": 700,
+   "gained": 22,
+   "kind": "passive_forced",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 22,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 65,
+   "kind": "active",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 65,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 71,
+   "kind": "passive_forced",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 71,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 141,
+   "kind": "active",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 141,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 121,
+   "kind": "passive_forced",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 121,
+   "theta": 15.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 0,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 700,
+   "gained": 0,
+   "kind": "passive_forced",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 0,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 1,
+   "episodes": 2100,
+   "gained": 1,
+   "kind": "active",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 1,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 4,
+   "episodes": 700,
+   "gained": 12,
+   "kind": "passive_forced",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 12,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 17,
+   "episodes": 2100,
+   "gained": 45,
+   "kind": "active",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 45,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 49,
+   "kind": "passive_forced",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 49,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 92,
+   "kind": "active",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 92,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 109,
+   "kind": "passive_forced",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 109,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 0,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 700,
+   "gained": 0,
+   "kind": "passive_forced",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 0,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 6,
+   "episodes": 2100,
+   "gained": 7,
+   "kind": "active",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 7,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 25,
+   "kind": "passive_forced",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 25,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 20,
+   "episodes": 2100,
+   "gained": 96,
+   "kind": "active",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 96,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 142,
+   "kind": "passive_forced",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 142,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 231,
+   "kind": "active",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 231,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 297,
+   "kind": "passive_forced",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 297,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 0,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 700,
+   "gained": 0,
+   "kind": "passive_forced",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 0,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 14,
+   "episodes": 2100,
+   "gained": 31,
+   "kind": "active",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 31,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 6,
+   "episodes": 700,
+   "gained": 20,
+   "kind": "passive_forced",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 20,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 176,
+   "kind": "active",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 176,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 121,
+   "kind": "passive_forced",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 121,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 527,
+   "kind": "active",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 527,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 270,
+   "kind": "passive_forced",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 270,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 0,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 700,
+   "gained": 0,
+   "kind": "passive_forced",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 0,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 41,
+   "kind": "active",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 41,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 29,
+   "kind": "passive_forced",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 29,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 245,
+   "kind": "active",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 245,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 183,
+   "kind": "passive_forced",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 183,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 581,
+   "kind": "active",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 581,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 368,
+   "kind": "passive_forced",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 368,
+   "theta": 20.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 0,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 700,
+   "gained": 0,
+   "kind": "passive_forced",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 0,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 0,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 4,
+   "episodes": 700,
+   "gained": 12,
+   "kind": "passive_forced",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 12,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 18,
+   "episodes": 2100,
+   "gained": 56,
+   "kind": "active",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 56,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 60,
+   "kind": "passive_forced",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 60,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 110,
+   "kind": "active",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 110,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 129,
+   "kind": "passive_forced",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 0.5,
+   "tactical_collisions": 129,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 0,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 700,
+   "gained": 0,
+   "kind": "passive_forced",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 0,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 95,
+   "kind": "active",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 95,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 38,
+   "kind": "passive_forced",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 38,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 515,
+   "kind": "active",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 515,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 213,
+   "kind": "passive_forced",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 213,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 945,
+   "kind": "active",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 945,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 412,
+   "kind": "passive_forced",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.0,
+   "tactical_collisions": 412,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 0,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 700,
+   "gained": 0,
+   "kind": "passive_forced",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 0,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 144,
+   "kind": "active",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 144,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 40,
+   "kind": "passive_forced",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 40,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 501,
+   "kind": "active",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 501,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 210,
+   "kind": "passive_forced",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 210,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 1007,
+   "kind": "active",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 1007,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 398,
+   "kind": "passive_forced",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 1.5,
+   "tactical_collisions": 398,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 2100,
+   "gained": 0,
+   "kind": "active",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 0,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 0,
+   "episodes": 700,
+   "gained": 0,
+   "kind": "passive_forced",
+   "level": "C0",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 0,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 154,
+   "kind": "active",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 154,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 42,
+   "kind": "passive_forced",
+   "level": "C1",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 42,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 589,
+   "kind": "active",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 589,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 216,
+   "kind": "passive_forced",
+   "level": "C2",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 216,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 21,
+   "episodes": 2100,
+   "gained": 1026,
+   "kind": "active",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 1026,
+   "theta": 30.0
+  },
+  {
+   "cells_with_gain": 7,
+   "episodes": 700,
+   "gained": 420,
+   "kind": "passive_forced",
+   "level": "C3",
+   "lost": 0,
+   "matched_base_collisions": 0,
+   "pulse_s": 2.0,
+   "tactical_collisions": 420,
+   "theta": 30.0
+  }
+ ],
+ "mechanism": [
+  {
+   "classified": 62,
+   "counts": {
+    "collided during a tactical pulse step": 20,
+    "collided while the frozen common layer owned steering (post-maneuver state)": 42
+   },
+   "pulse_s": 0.5,
+   "theta": 10.0
+  },
+  {
+   "classified": 105,
+   "counts": {
+    "collided during a tactical pulse step": 27,
+    "collided while the frozen common layer owned steering (post-maneuver state)": 78
+   },
+   "pulse_s": 1.0,
+   "theta": 10.0
+  },
+  {
+   "classified": 67,
+   "counts": {
+    "collided during a tactical pulse step": 30,
+    "collided while the frozen common layer owned steering (post-maneuver state)": 37
+   },
+   "pulse_s": 1.5,
+   "theta": 10.0
+  },
+  {
+   "classified": 87,
+   "counts": {
+    "collided during a tactical pulse step": 30,
+    "collided while the frozen common layer owned steering (post-maneuver state)": 57
+   },
+   "pulse_s": 2.0,
+   "theta": 10.0
+  },
+  {
+   "classified": 194,
+   "counts": {
+    "collided during a tactical pulse step": 21,
+    "collided while the frozen common layer owned steering (post-maneuver state)": 173
+   },
+   "pulse_s": 0.5,
+   "theta": 15.0
+  },
+  {
+   "classified": 225,
+   "counts": {
+    "collided during a tactical pulse step": 32,
+    "collided while the frozen common layer owned steering (post-maneuver state)": 193
+   },
+   "pulse_s": 1.0,
+   "theta": 15.0
+  },
+  {
+   "classified": 301,
+   "counts": {
+    "collided during a tactical pulse step": 42,
+    "collided while the frozen common layer owned steering (post-maneuver state)": 259
+   },
+   "pulse_s": 1.5,
+   "theta": 15.0
+  },
+  {
+   "classified": 400,
+   "counts": {
+    "collided during a tactical pulse step": 49,
+    "collided while the frozen common layer owned steering (post-maneuver state)": 351
+   },
+   "pulse_s": 2.0,
+   "theta": 15.0
+  },
+  {
+   "classified": 308,
+   "counts": {
+    "collided during a tactical pulse step": 23,
+    "collided while the frozen common layer owned steering (post-maneuver state)": 285
+   },
+   "pulse_s": 0.5,
+   "theta": 20.0
+  },
+  {
+   "classified": 400,
+   "counts": {
+    "collided during a tactical pulse step": 32,
+    "collided while the frozen common layer owned steering (post-maneuver state)": 368
+   },
+   "pulse_s": 1.0,
+   "theta": 20.0
+  },
+  {
+   "classified": 400,
+   "counts": {
+    "collided during a tactical pulse step": 30,
+    "collided in BASE": 2,
+    "collided in REJOIN": 1,
+    "collided while the frozen common layer owned steering (post-maneuver state)": 367
+   },
+   "pulse_s": 1.5,
+   "theta": 20.0
+  },
+  {
+   "classified": 400,
+   "counts": {
+    "collided during a tactical pulse step": 22,
+    "collided in REJOIN": 1,
+    "collided while the frozen common layer owned steering (post-maneuver state)": 377
+   },
+   "pulse_s": 2.0,
+   "theta": 20.0
+  },
+  {
+   "classified": 367,
+   "counts": {
+    "collided during a tactical pulse step": 27,
+    "collided while the frozen common layer owned steering (post-maneuver state)": 340
+   },
+   "pulse_s": 0.5,
+   "theta": 30.0
+  },
+  {
+   "classified": 400,
+   "counts": {
+    "collided during a tactical pulse step": 19,
+    "collided while the frozen common layer owned steering (post-maneuver state)": 381
+   },
+   "pulse_s": 1.0,
+   "theta": 30.0
+  },
+  {
+   "classified": 400,
+   "counts": {
+    "collided during a tactical pulse step": 19,
+    "collided while the frozen common layer owned steering (post-maneuver state)": 381
+   },
+   "pulse_s": 1.5,
+   "theta": 30.0
+  },
+  {
+   "classified": 400,
+   "counts": {
+    "collided during a tactical pulse step": 15,
+    "collided while the frozen common layer owned steering (post-maneuver state)": 385
+   },
+   "pulse_s": 2.0,
+   "theta": 30.0
+  }
+ ],
+ "n_records": 204800,
+ "selected": null,
+ "spec_sha256": "daffa22c31cd0c03c1b349d974296ecb0f9e2332bc7533dc7f77db1348a33386"
+}
