@@ -1,0 +1,749 @@
+[
+ {
+  "command": "random",
+  "level": "C3",
+  "seed": 145007,
+  "steps": 16,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "random",
+  "level": "C3",
+  "seed": 145008,
+  "steps": 49,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "random",
+  "level": "C3",
+  "seed": 145029,
+  "steps": 21,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "random",
+  "level": "C3",
+  "seed": 145040,
+  "steps": 19,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "random",
+  "level": "C3",
+  "seed": 145070,
+  "steps": 58,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "random",
+  "level": "C3",
+  "seed": 145092,
+  "steps": 26,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "right",
+  "level": "C3",
+  "seed": 145021,
+  "steps": 25,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "right",
+  "level": "C3",
+  "seed": 145033,
+  "steps": 21,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "right",
+  "level": "C3",
+  "seed": 145058,
+  "steps": 22,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "right",
+  "level": "C3",
+  "seed": 145062,
+  "steps": 21,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "right",
+  "level": "C3",
+  "seed": 145073,
+  "steps": 26,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "right",
+  "level": "C3",
+  "seed": 145088,
+  "steps": 22,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "alternating",
+  "level": "C3",
+  "seed": 145004,
+  "steps": 13,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 4
+ },
+ {
+  "command": "alternating",
+  "level": "C3",
+  "seed": 145033,
+  "steps": 20,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "alternating",
+  "level": "C3",
+  "seed": 145056,
+  "steps": 26,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "alternating",
+  "level": "C3",
+  "seed": 145060,
+  "steps": 18,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "alternating",
+  "level": "C3",
+  "seed": 145072,
+  "steps": 21,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "alternating",
+  "level": "C3",
+  "seed": 145081,
+  "steps": 16,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "left",
+  "level": "C3",
+  "seed": 145004,
+  "steps": 16,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 5
+ },
+ {
+  "command": "left",
+  "level": "C3",
+  "seed": 145006,
+  "steps": 48,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "left",
+  "level": "C3",
+  "seed": 145018,
+  "steps": 47,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "left",
+  "level": "C3",
+  "seed": 145028,
+  "steps": 14,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 3
+ },
+ {
+  "command": "left",
+  "level": "C3",
+  "seed": 145053,
+  "steps": 13,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 3
+ },
+ {
+  "command": "left",
+  "level": "C3",
+  "seed": 145072,
+  "steps": 23,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "left",
+  "level": "C3",
+  "seed": 145097,
+  "steps": 14,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 4
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145008,
+  "steps": 17,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145019,
+  "steps": 48,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145025,
+  "steps": 23,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145029,
+  "steps": 40,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145031,
+  "steps": 15,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 4
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145033,
+  "steps": 40,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145034,
+  "steps": 44,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145035,
+  "steps": 20,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145042,
+  "steps": 38,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145044,
+  "steps": 16,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 5
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145047,
+  "steps": 22,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145051,
+  "steps": 39,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 4
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145054,
+  "steps": 19,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145058,
+  "steps": 20,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145065,
+  "steps": 18,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 5
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145072,
+  "steps": 22,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145075,
+  "steps": 22,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145076,
+  "steps": 23,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145079,
+  "steps": 19,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 5
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145080,
+  "steps": 18,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145084,
+  "steps": 13,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 4
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145086,
+  "steps": 25,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145088,
+  "steps": 21,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145090,
+  "steps": 22,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145092,
+  "steps": 26,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C3",
+  "seed": 145097,
+  "steps": 24,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "random",
+  "level": "C1",
+  "seed": 145029,
+  "steps": 17,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 4
+ },
+ {
+  "command": "random",
+  "level": "C2",
+  "seed": 145029,
+  "steps": 26,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "random",
+  "level": "C2",
+  "seed": 145086,
+  "steps": 16,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 4
+ },
+ {
+  "command": "left",
+  "level": "C1",
+  "seed": 145024,
+  "steps": 40,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "left",
+  "level": "C2",
+  "seed": 145028,
+  "steps": 14,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 3
+ },
+ {
+  "command": "left",
+  "level": "C2",
+  "seed": 145053,
+  "steps": 13,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 3
+ },
+ {
+  "command": "left",
+  "level": "C2",
+  "seed": 145059,
+  "steps": 15,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 5
+ },
+ {
+  "command": "left",
+  "level": "C2",
+  "seed": 145097,
+  "steps": 14,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 4
+ },
+ {
+  "command": "right",
+  "level": "C2",
+  "seed": 145021,
+  "steps": 17,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "right",
+  "level": "C2",
+  "seed": 145058,
+  "steps": 22,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "right",
+  "level": "C2",
+  "seed": 145062,
+  "steps": 21,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "alternating",
+  "level": "C1",
+  "seed": 145028,
+  "steps": 14,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 3
+ },
+ {
+  "command": "alternating",
+  "level": "C1",
+  "seed": 145033,
+  "steps": 20,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "alternating",
+  "level": "C2",
+  "seed": 145006,
+  "steps": 48,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "alternating",
+  "level": "C2",
+  "seed": 145010,
+  "steps": 13,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 4
+ },
+ {
+  "command": "alternating",
+  "level": "C2",
+  "seed": 145062,
+  "steps": 23,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C1",
+  "seed": 145093,
+  "steps": 47,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C2",
+  "seed": 145008,
+  "steps": 17,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C2",
+  "seed": 145023,
+  "steps": 48,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C2",
+  "seed": 145027,
+  "steps": 47,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C2",
+  "seed": 145029,
+  "steps": 40,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C2",
+  "seed": 145054,
+  "steps": 19,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C2",
+  "seed": 145058,
+  "steps": 20,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C2",
+  "seed": 145065,
+  "steps": 18,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 5
+ },
+ {
+  "command": "up",
+  "level": "C2",
+  "seed": 145066,
+  "steps": 17,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 5
+ },
+ {
+  "command": "up",
+  "level": "C2",
+  "seed": 145072,
+  "steps": 22,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C2",
+  "seed": 145075,
+  "steps": 44,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C2",
+  "seed": 145076,
+  "steps": 21,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C2",
+  "seed": 145077,
+  "steps": 27,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ },
+ {
+  "command": "up",
+  "level": "C2",
+  "seed": 145079,
+  "steps": 19,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 5
+ },
+ {
+  "command": "up",
+  "level": "C2",
+  "seed": 145084,
+  "steps": 13,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": true,
+  "base_unsafe_in_last6": 4
+ },
+ {
+  "command": "up",
+  "level": "C2",
+  "seed": 145093,
+  "steps": 25,
+  "cls": "rejected_and_u_base_itself_predicted_unsafe (unrecoverable state)",
+  "accepted_in_last6": false,
+  "base_unsafe_in_last6": 6
+ }
+]

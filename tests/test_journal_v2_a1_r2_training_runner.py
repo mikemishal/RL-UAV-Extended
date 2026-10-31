@@ -87,7 +87,7 @@ def test_clean_run_commits_exactly_n_rollouts_and_final_artifacts(tmp_path):
             assert manifest and manifest["num_timesteps"] == k * 16
     assert not list(layout.scratch_rollouts.glob("rollout_04*"))
     assert T.sha256_file(layout.final_model) == final["model_sha256"] == T.verify_rollout(layout.canonical_rollouts, 3, seed=201, spec=SPEC, description=DESC)["model_sha256"]
-    assert final["canonical"] is False and final["reward_version"] == "a1_v2_reward_v2" and final["action_version"] == "a1_v2_action_v2"
+    assert final["canonical"] is False and final["reward_version"] == "a1_v2_reward_v2" and final["action_version"] == "a1_v2_action_v3"
     assert (layout.logs / "episodes_all_rollouts.jsonl").exists()
 
 

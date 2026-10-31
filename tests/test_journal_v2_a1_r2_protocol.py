@@ -28,7 +28,8 @@ def ret(comps, discounted=True):
 
 
 def test_identifiers_and_failed_v1_is_untouched():
-    assert (R.REWARD_VERSION, R.ACTION_VERSION, R.TRAINING_PROTOCOL) == ("a1_v2_reward_v2", "a1_v2_action_v2", "a1_v2_training_v2")
+    assert (R.REWARD_VERSION, R.ACTION_VERSION, R.TRAINING_PROTOCOL) == ("a1_v2_reward_v2", "a1_v2_action_v3", "a1_v2_training_v2")
+    assert R.ACTION_VERSION_V2 == "a1_v2_action_v2"  # the rejected unfiltered residual stays identifiable
     assert A.A1_V2_REWARD_VERSION == "a1_v2_reward_v1" and A.A1_V2_TRAINING_PROTOCOL == "a1_v2_training_v1"
     assert A.W_PROGRESS == 2.0 and A.W_TIME == 0.25 and A.potential(50.0, 100.0) == -0.5  # v1 reward unchanged
     assert R.RESULTS_ROOT.name == "a1_v2_training_v2" and R.FAILED_V1_RESULTS_ROOT.name == "a1_v2_training_v1"
@@ -154,7 +155,7 @@ def test_environment_interface_unchanged_and_reward_decomposes():
     assert env.observation_space.shape == (37,) and env.action_space.shape == (3,) and obs[-1] == 1.0
     obs, reward, _t, _u, info = env.step(np.array([0.0, 1.0, 0.0], np.float32))
     assert reward == pytest.approx(sum(info["a1_reward_components"].values())) and info["a1_reward_components"]["step"] == -0.1
-    assert 0.0 < info["a1_residual_angle_deg"] <= 15.0 and info["a1_action_version"] == "a1_v2_action_v2"
+    assert 0.0 < info["a1_residual_angle_deg"] <= 15.0 and info["a1_action_version"] == "a1_v2_action_v3"
     assert env.soldier_env.config.enemy_endurance_enabled and env.soldier_env.config.asset_motion_model == "legacy_gaussian_random_walk"
 
 

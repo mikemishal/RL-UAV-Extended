@@ -26,7 +26,8 @@ from experiments.journal_v2_protocol import V2_RESULTS_DIR
 
 # ----------------------------------------------------------------------------- identifiers
 REWARD_VERSION = "a1_v2_reward_v2"
-ACTION_VERSION = "a1_v2_action_v2"
+ACTION_VERSION = "a1_v2_action_v3"          # bounded residual + A1 tactical safety filter (this campaign)
+ACTION_VERSION_V2 = "a1_v2_action_v2"       # bounded residual WITHOUT a filter: rejected (diagnostic/ablation only)
 TRAINING_PROTOCOL = "a1_v2_training_v2"
 OBSERVATION_VERSION = A.A1_V2_OBSERVATION_VERSION  # "a1_v2_obs_v1": unchanged 37-D layout
 FAILED_V1 = {"training_protocol": A.A1_V2_TRAINING_PROTOCOL, "reward_version": A.A1_V2_REWARD_VERSION,
@@ -137,6 +138,38 @@ def residual_command(raw_action, u_base: np.ndarray, theta_max_deg: float) -> tu
     return u, angle
 
 
+def tactical_safety_check(env: SoldierEnv, command: np.ndarray) -> dict:
+    """A1 tactical safety filter (`a1_v2_action_v3`): is holding `command` obstacle-safe over the canonical horizon?
+
+    Uses only frozen machinery, exactly as the common V2 avoidance step builds its inputs: the attacker's PERCEIVED
+    static/dynamic obstacle set combined through `SoldierEnv._combined_avoidance_layout` (dynamic movers enter as their
+    conservative swept boxes), the attacker's current float32 state, `SoldierEnv._enemy_dynamics_limits()` (turn rate,
+    acceleration, climb/descent, dt, boundary) and `predict_constrained_trajectory` over
+    `enemy_obstacle_prediction_horizon_steps`, truncated at the capture sphere, then `predict_collision`.
+    UNSAFE iff the predicted swept path collides with that layout OR comes closer than the configured safety
+    clearance `enemy_obstacle_clearance` (the inflated safety geometry of the frozen candidate evaluation).
+    Pure: no environment, planner or RNG state is mutated. Valid only inside the override call (same step)."""
+    from uav_defend.obstacles.avoidance import predict_collision, predict_constrained_trajectory, truncate_prediction_at_target
+
+    perceived = getattr(env, "_enemy_last_perceived", None)
+    if perceived is None:
+        return {"safe": False, "collision": False, "min_clearance": float("nan"), "n_obstacles": -1}
+    config = env.config
+    layout = env._combined_avoidance_layout(
+        env._enemy_pos, env._enemy_vel, config.enemy_obstacle_prediction_horizon_steps, config.enemy_obstacle_clearance,
+        perceived.to_static_layout(), perceived.dynamic)
+    if len(layout) == 0:
+        return {"safe": True, "collision": False, "min_clearance": float("inf"), "n_obstacles": 0}
+    positions, _ = predict_constrained_trajectory(
+        np.asarray(env._enemy_pos, dtype=np.float32), np.asarray(env._enemy_vel, dtype=np.float32), command,
+        env._enemy_dynamics_limits(), config.enemy_obstacle_prediction_horizon_steps)
+    positions = truncate_prediction_at_target(positions, np.asarray(env._soldier_pos), config.threat_radius)
+    prediction = predict_collision(positions, layout)
+    safe = (not prediction.collision) and prediction.min_clearance >= config.enemy_obstacle_clearance
+    return {"safe": bool(safe), "collision": bool(prediction.collision), "min_clearance": float(prediction.min_clearance),
+            "n_obstacles": len(layout)}
+
+
 # ----------------------------------------------------------------------------- hover diagnostics (never a reward)
 HOVER_SPEED_MPS = 2.0          # actual physical speed below which the vehicle is "near-hover" (v_e = 12 m/s)
 HOVER_MIN_RUN_STEPS = 20       # ... for at least 20 consecutive steps (10 s)
@@ -209,10 +242,12 @@ class A1V2R2TrainingEnv(gym.Env):
 
     def __init__(self, ppo_seed: int, worker_index: int = 0, resume_index: int = 0,
                  defender_bank: A.A1V2DefenderBank | None = None, scripted_a0: bool = False,
-                 theta_max_deg: float | None = None, gamma: float = GAMMA):
+                 theta_max_deg: float | None = None, gamma: float = GAMMA, safety_filter: bool = True):
         super().__init__()
         self.ppo_seed, self.worker_index, self.resume_index = int(ppo_seed), int(worker_index), int(resume_index)
         self._scripted_a0 = bool(scripted_a0)
+        # safety_filter=False reproduces the REJECTED action-v2 (diagnostics/ablation only, never trained).
+        self.safety_filter = bool(safety_filter)
         self.theta_max_deg = float(theta_max_deg) if theta_max_deg is not None else load_selected_theta()
         self.gamma = float(gamma)
         self._bank = defender_bank if defender_bank is not None else A.A1V2DefenderBank()
@@ -221,20 +256,42 @@ class A1V2R2TrainingEnv(gym.Env):
         self.action_space = spaces.Box(low=-1.0, high=1.0, shape=(A.A1_V2_ACTION_DIM,), dtype=np.float32)
         self._env: SoldierEnv | None = None
         self._pending = np.zeros(3, dtype=np.float32)
-        self._last_angle = 0.0
+        self._diag = self._empty_diag()
         self.scenario: tuple[str, str, int] | None = None
+
+    @staticmethod
+    def _empty_diag() -> dict:
+        return {"proposed": False, "proposed_angle": 0.0, "executed_angle": 0.0, "safe": True, "intervened": False,
+                "min_clearance": float("inf"), "n_obstacles": 0}
 
     @property
     def soldier_env(self) -> SoldierEnv | None:
         return self._env
 
+    @property
+    def last_diagnostics(self) -> dict:
+        return dict(self._diag)
+
     def _override(self) -> np.ndarray:
+        """Tactical stage: bounded residual -> A1 safety filter -> accepted command, or the exact canonical u_base
+        (zero vector = 'no override'). The frozen common obstacle layer and dynamics run after this unchanged."""
+        diag = self._empty_diag()
+        self._diag = diag
         u_b = base_direction(self._env)
         if u_b is None:
-            self._last_angle = 0.0
             return np.zeros(3)
-        command, self._last_angle = residual_command(self._pending, u_b, self.theta_max_deg)
-        return command
+        command, angle = residual_command(self._pending, u_b, self.theta_max_deg)
+        if not command.any():
+            return np.zeros(3)
+        diag["proposed"], diag["proposed_angle"] = True, angle
+        if self.safety_filter:
+            check = tactical_safety_check(self._env, command)
+            diag.update(safe=check["safe"], min_clearance=check["min_clearance"], n_obstacles=check["n_obstacles"])
+        if diag["safe"]:
+            diag["executed_angle"] = angle
+            return command
+        diag["intervened"] = True
+        return np.zeros(3)
 
     def reset(self, *, seed: int | None = None, options: dict | None = None):
         super().reset(seed=seed)
@@ -250,7 +307,7 @@ class A1V2R2TrainingEnv(gym.Env):
         self._env = SoldierEnv(config)
         self._env.enemy_tactical_override = None if self._scripted_a0 else self._override
         self._pending = np.zeros(3, dtype=np.float32)
-        self._last_angle = 0.0
+        self._diag = self._empty_diag()
         _obs, info = self._env.reset(seed=int(scenario_seed))
         self._policy.reset()
         self._detection_range = float(config.enemy_defender_detection_range)
@@ -266,6 +323,9 @@ class A1V2R2TrainingEnv(gym.Env):
         self._sum = dict(terminal=0.0, progress=0.0, path=0.0, step=0.0)
         self._discounted = 0.0
         self._angles: list[float] = []
+        self._proposed_angles: list[float] = []
+        self._proposed_flags: list[bool] = []
+        self._interventions: list[bool] = []
         self._speeds: list[float] = []
         self._hspeeds: list[float] = []
         self._alts: list[float] = []
@@ -289,7 +349,11 @@ class A1V2R2TrainingEnv(gym.Env):
         self._speeds.append(float(np.linalg.norm(displacement)) / self._dt)
         self._hspeeds.append(float(np.linalg.norm(displacement[:2])) / self._dt)
         self._alts.append(float(pos[2]))
-        self._angles.append(0.0 if self._scripted_a0 else self._last_angle)
+        diag = self._empty_diag() if self._scripted_a0 else self._diag
+        self._angles.append(diag["executed_angle"])
+        self._proposed_angles.append(diag["proposed_angle"])
+        self._proposed_flags.append(diag["proposed"])
+        self._interventions.append(diag["intervened"])
         self._prev_pos = pos
         range_next = self._range_now()
         path_now = float(self._env._enemy_endurance_traveled)
@@ -322,6 +386,9 @@ class A1V2R2TrainingEnv(gym.Env):
             endurance_fraction_final=float(np.clip(1.0 - path_now / self._budget, 0.0, 1.0)),
             residual_angle_mean_deg=float(angles.mean()), residual_angle_p95_deg=float(np.percentile(angles, 95)),
             residual_fraction_near_theta=float((angles >= 0.9 * theta).mean()), theta_max_deg=theta,
+            proposed_angle_mean_deg=float(np.mean(self._proposed_angles)),
+            filter_proposals=int(np.sum(self._proposed_flags)), filter_interventions=int(np.sum(self._interventions)),
+            filter_intervention_rate=(float(np.sum(self._interventions)) / max(int(np.sum(self._proposed_flags)), 1)),
             mean_altitude_m=float(np.mean(self._alts)), mean_speed_mps=float(np.mean(self._speeds)),
             mean_horizontal_speed_mps=float(np.mean(self._hspeeds)), **hover,
         )
@@ -331,7 +398,13 @@ class A1V2R2TrainingEnv(gym.Env):
         info["a1_scenario"] = {"level": self._level, "defender": self._family, "scenario_seed": self.scenario[2]}
         info["a1_reward_version"] = REWARD_VERSION
         info["a1_action_version"] = ACTION_VERSION
-        info["a1_residual_angle_deg"] = 0.0 if self._scripted_a0 else self._last_angle
+        info["a1_residual_angle_deg"] = 0.0 if self._scripted_a0 else self._diag["executed_angle"]
+        if not self._scripted_a0:
+            info["a1_proposed_angle_deg"] = self._diag["proposed_angle"]
+            info["a1_filter_safe"] = self._diag["safe"]
+            info["a1_filter_intervened"] = self._diag["intervened"]
+            info["a1_filter_min_clearance"] = self._diag["min_clearance"]
+            info["a1_filter_n_obstacles"] = self._diag["n_obstacles"]
         if reward is not None:
             info["a1_reward_components"] = {"terminal": reward.terminal, "progress": reward.progress, "path": reward.path,
                                             "step": reward.step}
@@ -362,4 +435,10 @@ def protocol_description() -> dict:
                              "sustained_fraction": SUSTAINED_HOVER_FRACTION, "sustained_min_steps": SUSTAINED_HOVER_MIN_STEPS,
                              "ceiling_margin_m": CEILING_MARGIN_M, "ceiling_hover_share": CEILING_HOVER_SHARE},
         "gates": GATES, "failed_v1": FAILED_V1,
+        "safety_filter": {"semantics": "binary: accept the bounded residual iff the frozen constrained-dynamics rollout is predicted "
+                          "obstacle-safe, else execute exactly u_base",
+                          "predictor": "uav_defend.obstacles.avoidance.predict_constrained_trajectory + truncate_prediction_at_target + predict_collision",
+                          "layout": "SoldierEnv._combined_avoidance_layout(perceived static + threatening dynamic swept boxes)",
+                          "unsafe_if": "predicted collision OR predicted min clearance < enemy_obstacle_clearance",
+                          "common_obstacle_layer_still_runs": True, "applies_to": "V2 A1 action_v3 only"},
     }
