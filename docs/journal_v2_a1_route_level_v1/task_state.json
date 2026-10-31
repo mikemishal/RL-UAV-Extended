@@ -1,0 +1,190 @@
+{
+ "created_utc": "2026-10-31T18:29:49.490358+00:00",
+ "halt": {
+  "input_commit": "e76da9e4d8f7bc7710a8585e4095d6f5b4e5c847",
+  "reason": "All 6 configurations fail G1 (gained collisions 673-990/7000) and G2 (exhaustion 1985-3306 vs 0); route-level evasion has large positive authority but unsafe/non-mission behavior",
+  "stage": "08_safety_mission_analysis",
+  "utc": "2026-10-31T22:11:27.669029+00:00",
+  "verdict": "C"
+ },
+ "stages": {
+  "01_repository_verification": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_route_level_v1/repository_verification.json": "e20696c75bb6ee9672bf128f687253e9cfdd2c4eeeb151fef014949df3fa9ebb"
+   },
+   "completed_utc": "2026-10-31T18:29:50.813952+00:00",
+   "input_commit": "e76da9e4d8f7bc7710a8585e4095d6f5b4e5c847",
+   "note": "start state verified",
+   "output_artifacts": [
+    "docs/journal_v2_a1_route_level_v1/repository_verification.json"
+   ],
+   "started_utc": "2026-10-31T18:29:49.720948+00:00",
+   "status": "complete"
+  },
+  "02_route_planner_audit": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_route_level_v1/route_planner_audit.json": "6879565eef645e1a861cbff81f314acee54551ed46b88bd07947449c05c2f3f4"
+   },
+   "completed_utc": "2026-10-31T18:29:51.014007+00:00",
+   "input_commit": "e76da9e4d8f7bc7710a8585e4095d6f5b4e5c847",
+   "note": "planner is perception-constrained, static-only; usable for the attacker without privileged info",
+   "output_artifacts": [
+    "docs/journal_v2_a1_route_level_v1/route_planner_audit.json"
+   ],
+   "started_utc": "2026-10-31T18:29:51.004903+00:00",
+   "status": "complete"
+  },
+  "03_route_interface_specification": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_route_level_v1/route_interface_specification.json": "14aec27cf6835d3074752d31e38aa499a4b21068c223bb7edda13df570f741e7"
+   },
+   "completed_utc": "2026-10-31T18:29:51.425953+00:00",
+   "input_commit": "e76da9e4d8f7bc7710a8585e4095d6f5b4e5c847",
+   "note": "spec sha 5cdb448a669f4519",
+   "output_artifacts": [
+    "docs/journal_v2_a1_route_level_v1/route_interface_specification.json"
+   ],
+   "started_utc": "2026-10-31T18:29:51.396292+00:00",
+   "status": "complete"
+  },
+  "04_implementation": {
+   "artifact_sha256": {
+    "experiments/journal_v2_a1_route.py": "b64387f2b97a9f1f143a2109856fe54113c911948649b3beede7af7233470a1f",
+    "experiments/journal_v2_a1_route_audit.py": "bcafffec03759b4d04da160c109e32cefe6a2c5aab668b944e8cfa5b5a2fb0c0",
+    "experiments/journal_v2_a1_route_env.py": "e850ffdf9a90f36a4a549b9939947e888cb7f91d944bdf3244a62d4e6e6867cc",
+    "experiments/journal_v2_a1_route_report.py": "4a972e060c6a077594555643c1e5b9f702432930ad24cd2789902c158c480d4b",
+    "experiments/journal_v2_a1_route_sweep.py": "d8430111b55f33f2255dc9675f67a9c1ee986b65c9d432be0fb917588998c5e7",
+    "experiments/journal_v2_a1_rt_state.py": "305d6baf5d37256bad3a4e5248ec4926c9c367ddd3add4638e2b8873d9cdd6b2"
+   },
+   "completed_utc": "2026-10-31T22:10:57.498896+00:00",
+   "input_commit": "e76da9e4d8f7bc7710a8585e4095d6f5b4e5c847",
+   "note": "route controller + env + staged sweep + report",
+   "output_artifacts": [
+    "experiments/journal_v2_a1_route.py",
+    "experiments/journal_v2_a1_route_env.py",
+    "experiments/journal_v2_a1_route_sweep.py",
+    "experiments/journal_v2_a1_rt_state.py",
+    "experiments/journal_v2_a1_route_audit.py",
+    "experiments/journal_v2_a1_route_report.py"
+   ],
+   "started_utc": "2026-10-31T22:10:57.482366+00:00",
+   "status": "complete"
+  },
+  "05_observation_state_implementation": {
+   "artifact_sha256": {
+    "experiments/journal_v2_a1_route.py": "b64387f2b97a9f1f143a2109856fe54113c911948649b3beede7af7233470a1f",
+    "experiments/journal_v2_a1_route_env.py": "e850ffdf9a90f36a4a549b9939947e888cb7f91d944bdf3244a62d4e6e6867cc"
+   },
+   "completed_utc": "2026-10-31T22:10:57.893317+00:00",
+   "input_commit": "e76da9e4d8f7bc7710a8585e4095d6f5b4e5c847",
+   "note": "a1_v2_obs_route_v1 = 37 + 4 + 1 + 1 = 43",
+   "output_artifacts": [
+    "experiments/journal_v2_a1_route.py",
+    "experiments/journal_v2_a1_route_env.py"
+   ],
+   "started_utc": "2026-10-31T22:10:57.879352+00:00",
+   "status": "complete"
+  },
+  "06_unit_tests": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_route_level_v1/unit_test_result.json": "e4bea27dc0c58a004468e458a820c3faf302f93fa4c9efd5a73768089a424f75",
+    "tests/test_journal_v2_a1_route.py": "f71024edb6153970d2ba9e1c86a21728c0230934e8a19f6104e4e7ff1008ae6c"
+   },
+   "completed_utc": "2026-10-31T22:11:27.322035+00:00",
+   "input_commit": "e76da9e4d8f7bc7710a8585e4095d6f5b4e5c847",
+   "note": "42 passed in 10.17s",
+   "output_artifacts": [
+    "tests/test_journal_v2_a1_route.py",
+    "docs/journal_v2_a1_route_level_v1/unit_test_result.json"
+   ],
+   "started_utc": "2026-10-31T22:10:58.234622+00:00",
+   "status": "complete"
+  },
+  "07_deterministic_route_sweep": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_route_level_v1/sweep_summary.json": "a119f365fe84fdeac768e4b227c595eb827a1a3e939b47f1f7f9ae2902994db6"
+   },
+   "completed_utc": "2026-10-31T22:11:27.502389+00:00",
+   "input_commit": "e76da9e4d8f7bc7710a8585e4095d6f5b4e5c847",
+   "note": "staged: C0 x 4 defenders + C1-C3 x {greedy,pn}; 60 cells x 800 episodes = 48,000; RMPC and remaining C1-C3 defenders not run (G1/G2 monotone)",
+   "output_artifacts": [
+    "docs/journal_v2_a1_route_level_v1/sweep_summary.json"
+   ],
+   "started_utc": "2026-10-31T22:11:27.494800+00:00",
+   "status": "complete"
+  },
+  "08_safety_mission_analysis": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_route_level_v1/ablation_record_v4.md": "1798b5940ef8ad62a82526239072e800db1d789aafa7726f90382217368ff5bd",
+    "docs/journal_v2_a1_route_level_v1/sweep_results.md": "554fb8b1c1fc80c1ec06bb0970bec2d17342832e02e50ee51efa61a01ad3e985",
+    "docs/journal_v2_a1_route_level_v1/sweep_summary.json": "a119f365fe84fdeac768e4b227c595eb827a1a3e939b47f1f7f9ae2902994db6"
+   },
+   "completed_utc": "2026-10-31T22:11:27.656549+00:00",
+   "input_commit": "e76da9e4d8f7bc7710a8585e4095d6f5b4e5c847",
+   "note": "0/6 configurations pass G1/G2/G4/G6; G3, G5 pass; selected=None",
+   "output_artifacts": [
+    "docs/journal_v2_a1_route_level_v1/sweep_results.md",
+    "docs/journal_v2_a1_route_level_v1/sweep_summary.json",
+    "docs/journal_v2_a1_route_level_v1/ablation_record_v4.md"
+   ],
+   "started_utc": "2026-10-31T22:11:27.647916+00:00",
+   "status": "complete"
+  },
+  "09_regression": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_route_level_v1/stage09_regression_summary.json": "beb50806ddd05632b2efb6cab3f7e49c4f45e8fbc301d986855d4ac255e8f954"
+   },
+   "completed_utc": "2026-10-31T22:33:04.000364+00:00",
+   "input_commit": "e76da9e4d8f7bc7710a8585e4095d6f5b4e5c847",
+   "note": "912 passed",
+   "output_artifacts": [
+    "docs/journal_v2_a1_route_level_v1/stage09_regression_summary.json"
+   ],
+   "started_utc": "2026-10-31T22:33:03.975962+00:00",
+   "status": "complete"
+  },
+  "10_checkpoint_integrity": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_route_level_v1/stage10_checkpoint_integrity.json": "49c192e989b884f283c72d506d698e59c6a16398c211fbc2f1ae3537c1fbd3e6"
+   },
+   "completed_utc": "2026-10-31T22:33:04.701489+00:00",
+   "input_commit": "e76da9e4d8f7bc7710a8585e4095d6f5b4e5c847",
+   "note": "30 historical + 3 failed-v1 verified; no route models",
+   "output_artifacts": [
+    "docs/journal_v2_a1_route_level_v1/stage10_checkpoint_integrity.json"
+   ],
+   "started_utc": "2026-10-31T22:33:04.108019+00:00",
+   "status": "complete"
+  },
+  "11_publication_documentation": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_route_level_v1/README.md": "51d47c2f7728a1e006232558ec8bbdf1af1d6d0f92522ced9d3dffa380dcfe33",
+    "docs/journal_v2_a1_route_level_v1/ablation_record_v4.md": "1798b5940ef8ad62a82526239072e800db1d789aafa7726f90382217368ff5bd",
+    "docs/journal_v2_a1_route_level_v1/manuscript_notes.md": "481febd1d3d2f78a66382540c0358a6b500d861ce064aab64168b1f01566cbf1",
+    "docs/journal_v2_a1_route_level_v1/sweep_results.md": "554fb8b1c1fc80c1ec06bb0970bec2d17342832e02e50ee51efa61a01ad3e985"
+   },
+   "completed_utc": "2026-10-31T22:33:04.882955+00:00",
+   "input_commit": "e76da9e4d8f7bc7710a8585e4095d6f5b4e5c847",
+   "note": "negative-result README, manuscript notes, ablation v4",
+   "output_artifacts": [
+    "docs/journal_v2_a1_route_level_v1/README.md",
+    "docs/journal_v2_a1_route_level_v1/manuscript_notes.md",
+    "docs/journal_v2_a1_route_level_v1/ablation_record_v4.md",
+    "docs/journal_v2_a1_route_level_v1/sweep_results.md"
+   ],
+   "started_utc": "2026-10-31T22:33:04.873383+00:00",
+   "status": "complete"
+  },
+  "12_commit_tag_push": {
+   "artifact_sha256": {},
+   "completed_utc": "2026-10-31T22:33:05.075484+00:00",
+   "input_commit": "e76da9e4d8f7bc7710a8585e4095d6f5b4e5c847",
+   "note": "evidence-only commit on research/journal-corrected-attacker-v2; NO protocol tag (no configuration passed); parent e76da9e",
+   "output_artifacts": [],
+   "started_utc": "2026-10-31T22:33:05.064086+00:00",
+   "status": "complete"
+  }
+ },
+ "task": "journal_v2_a1_route_level_v1",
+ "updated_utc": "2026-10-31T22:33:05.075518+00:00"
+}

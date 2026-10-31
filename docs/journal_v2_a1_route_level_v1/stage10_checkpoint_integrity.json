@@ -1,0 +1,7 @@
+{
+ "a1_route_training_v1_model_files": [],
+ "failed_a1_v1_checkpoints": 3,
+ "failed_a1_v1_mismatches": [],
+ "historical_mismatches": [],
+ "historical_registered_checkpoints": 30
+}

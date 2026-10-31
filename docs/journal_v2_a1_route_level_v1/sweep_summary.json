@@ -1,0 +1,6140 @@
+{
+ "configs": [
+  {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G3_positive": true,
+   "G4": false,
+   "G5": true,
+   "G6": false,
+   "best_effect": 189,
+   "exhausted_total": 1985,
+   "gained_collisions_total": 673,
+   "median_path_excess": 2.9219680662531395,
+   "passed": false,
+   "policies": {
+    "ABOVE": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 254,
+      "fraction_diverging": 0.994,
+      "mean_extra_path_m": 161.8003120012131,
+      "mean_extra_steps": 31.234,
+      "mean_min_sep_diff_m": 2.1164864201545717,
+      "median_div_m": 5.907715294426433,
+      "net_captures": 189,
+      "outcome_changed": 847,
+      "reversals": 65
+     },
+     "cancels": {
+      "defender_info_lost": 859,
+      "no_path_after_subgoal": 1,
+      "replan_invalid": 479
+     },
+     "captures": 286,
+     "executed_while_owned": 0,
+     "exhausted": 425,
+     "gained_collisions": 140,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "defender_not_ahead": 2840,
+      "no_path": 237
+     },
+     "longest_route_run": 15,
+     "max_plans_in_4_steps": 6,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.203,
+      "gt1.3": 854,
+      "gt2": 802,
+      "gt5": 203,
+      "max": 8.939635187783072,
+      "mean": 3.6400041525235656,
+      "median": 3.5480187374342735
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         231,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 231,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 1.0,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         93,
+         0
+        ],
+        "orbit": [
+         1,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 12,
+       "exhausted": 93,
+       "gained": 12,
+       "orbit": 1,
+       "overshoot_fraction": 0.99,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         62,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 35,
+       "exhausted": 62,
+       "gained": 35,
+       "orbit": 0,
+       "overshoot_fraction": 0.91,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         39,
+         0
+        ],
+        "orbit": [
+         1,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 93,
+       "exhausted": 39,
+       "gained": 93,
+       "orbit": 1,
+       "overshoot_fraction": 0.88,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 7583,
+     "plans_committed": 4505,
+     "plans_per_episode": 7.583,
+     "replans_per_episode": 2.229,
+     "route_length_mean": 19.366104965725672,
+     "route_steps": 7.962,
+     "suppressed_by_obstacle": 53,
+     "timeouts": 0,
+     "waypoint_mean": 2.0489999833499835
+    },
+    "ADVERSARIAL": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 242,
+      "fraction_diverging": 0.967,
+      "mean_extra_path_m": 104.43676789277795,
+      "mean_extra_steps": 19.959,
+      "mean_min_sep_diff_m": 1.2163419072628021,
+      "median_div_m": 4.201880531381158,
+      "net_captures": 168,
+      "outcome_changed": 638,
+      "reversals": 74
+     },
+     "cancels": {
+      "defender_info_lost": 353,
+      "replan_invalid": 68,
+      "request_direct": 557
+     },
+     "captures": 265,
+     "executed_while_owned": 0,
+     "exhausted": 256,
+     "gained_collisions": 105,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 40,
+      "defender_not_ahead": 714,
+      "no_path": 110
+     },
+     "longest_route_run": 6,
+     "max_plans_in_4_steps": 6,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.135,
+      "gt1.3": 604,
+      "gt2": 553,
+      "gt5": 135,
+      "max": 9.5515328512119,
+      "mean": 2.748797617055463,
+      "median": 2.9219680662531395
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         133,
+         0
+        ],
+        "orbit": [
+         1,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 133,
+       "gained": 0,
+       "orbit": 1,
+       "overshoot_fraction": 0.6725,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         60,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 6,
+       "exhausted": 60,
+       "gained": 6,
+       "orbit": 0,
+       "overshoot_fraction": 0.69,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         41,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 36,
+       "exhausted": 41,
+       "gained": 36,
+       "orbit": 0,
+       "overshoot_fraction": 0.665,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         22,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 63,
+       "exhausted": 22,
+       "gained": 63,
+       "orbit": 0,
+       "overshoot_fraction": 0.625,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 3343,
+     "plans_committed": 2479,
+     "plans_per_episode": 3.343,
+     "replans_per_episode": 0.774,
+     "route_length_mean": 19.035430654224715,
+     "route_steps": 4.494,
+     "suppressed_by_obstacle": 20,
+     "timeouts": 0,
+     "waypoint_mean": 2.0429380952380956
+    },
+    "ALT_LR": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": false,
+     "G4": false,
+     "authority": {
+      "conversions": 50,
+      "fraction_diverging": 0.984,
+      "mean_extra_path_m": 30.838136088650597,
+      "mean_extra_steps": 5.914,
+      "mean_min_sep_diff_m": 0.269588871717453,
+      "median_div_m": 2.850157890363269,
+      "net_captures": -7,
+      "outcome_changed": 198,
+      "reversals": 57
+     },
+     "cancels": {
+      "defender_info_lost": 195,
+      "no_path_after_subgoal": 2,
+      "replan_invalid": 191
+     },
+     "captures": 90,
+     "executed_while_owned": 0,
+     "exhausted": 74,
+     "gained_collisions": 45,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 184,
+      "defender_not_ahead": 469,
+      "no_path": 196
+     },
+     "longest_route_run": 19,
+     "max_plans_in_4_steps": 6,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.034,
+      "gt1.3": 163,
+      "gt2": 149,
+      "gt5": 34,
+      "max": 8.408842323167024,
+      "mean": 1.4756138414816828,
+      "median": 1.0059197967424853
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         28,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 28,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.1125,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         14,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 1,
+       "exhausted": 14,
+       "gained": 1,
+       "orbit": 0,
+       "overshoot_fraction": 0.135,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         17,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 8,
+       "exhausted": 17,
+       "gained": 8,
+       "orbit": 0,
+       "overshoot_fraction": 0.225,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         15,
+         0
+        ],
+        "orbit": [
+         1,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 36,
+       "exhausted": 15,
+       "gained": 36,
+       "orbit": 1,
+       "overshoot_fraction": 0.315,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 3300,
+     "plans_committed": 2451,
+     "plans_per_episode": 3.3,
+     "replans_per_episode": 1.172,
+     "route_length_mean": 21.67774372257018,
+     "route_steps": 4.492,
+     "suppressed_by_obstacle": 15,
+     "timeouts": 0,
+     "waypoint_mean": 2.034123398355326
+    },
+    "LEFT": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 175,
+      "fraction_diverging": 0.984,
+      "mean_extra_path_m": 154.79966131950974,
+      "mean_extra_steps": 28.984,
+      "mean_min_sep_diff_m": 1.5209543149471283,
+      "median_div_m": 5.2354560431234916,
+      "net_captures": 100,
+      "outcome_changed": 785,
+      "reversals": 75
+     },
+     "cancels": {
+      "defender_info_lost": 556,
+      "no_path_after_subgoal": 2,
+      "replan_invalid": 216
+     },
+     "captures": 197,
+     "executed_while_owned": 0,
+     "exhausted": 468,
+     "gained_collisions": 131,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 142,
+      "defender_not_ahead": 862,
+      "no_path": 261
+     },
+     "longest_route_run": 14,
+     "max_plans_in_4_steps": 6,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.251,
+      "gt1.3": 748,
+      "gt2": 706,
+      "gt5": 251,
+      "max": 8.403366765559337,
+      "mean": 3.4538806461089706,
+      "median": 3.5944095864359586
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         261,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 261,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.8275,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         92,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 12,
+       "exhausted": 92,
+       "gained": 12,
+       "orbit": 0,
+       "overshoot_fraction": 0.81,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         72,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 42,
+       "exhausted": 72,
+       "gained": 42,
+       "orbit": 0,
+       "overshoot_fraction": 0.805,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         43,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 77,
+       "exhausted": 43,
+       "gained": 77,
+       "orbit": 0,
+       "overshoot_fraction": 0.765,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 4805,
+     "plans_committed": 3540,
+     "plans_per_episode": 4.805,
+     "replans_per_episode": 1.663,
+     "route_length_mean": 20.99983569996436,
+     "route_steps": 6.395,
+     "suppressed_by_obstacle": 35,
+     "timeouts": 0,
+     "waypoint_mean": 2.0457808868953444
+    },
+    "MAX_SEP": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": false,
+     "G4": false,
+     "authority": {
+      "conversions": 39,
+      "fraction_diverging": 0.183,
+      "mean_extra_path_m": 19.24273258352068,
+      "mean_extra_steps": 3.624,
+      "mean_min_sep_diff_m": 0.15254540085792542,
+      "median_div_m": 0.2249444375840393,
+      "net_captures": -19,
+      "outcome_changed": 126,
+      "reversals": 58
+     },
+     "cancels": {
+      "defender_info_lost": 41,
+      "replan_invalid": 6,
+      "request_direct": 43
+     },
+     "captures": 78,
+     "executed_while_owned": 0,
+     "exhausted": 62,
+     "gained_collisions": 18,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "defender_not_ahead": 3,
+      "no_path": 12
+     },
+     "longest_route_run": 7,
+     "max_plans_in_4_steps": 3,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.04,
+      "gt1.3": 99,
+      "gt2": 94,
+      "gt5": 40,
+      "max": 6.711606029067628,
+      "mean": 1.3354551275580382,
+      "median": 1.001870352817168
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         32,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 32,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.0925,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         15,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 2,
+       "exhausted": 15,
+       "gained": 2,
+       "orbit": 0,
+       "overshoot_fraction": 0.11,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         10,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 4,
+       "exhausted": 10,
+       "gained": 4,
+       "orbit": 0,
+       "overshoot_fraction": 0.11,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         5,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 12,
+       "exhausted": 5,
+       "gained": 12,
+       "orbit": 0,
+       "overshoot_fraction": 0.125,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 932,
+     "plans_committed": 917,
+     "plans_per_episode": 0.932,
+     "replans_per_episode": 0.092,
+     "route_length_mean": 13.402719141034556,
+     "route_steps": 1.107,
+     "suppressed_by_obstacle": 9,
+     "timeouts": 0,
+     "waypoint_mean": 2.0131944444444443
+    },
+    "RANDOM": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 148,
+      "fraction_diverging": 0.934,
+      "mean_extra_path_m": 93.90702682462026,
+      "mean_extra_steps": 17.984,
+      "mean_min_sep_diff_m": 0.9440551295280456,
+      "median_div_m": 3.62521615368448,
+      "net_captures": 69,
+      "outcome_changed": 546,
+      "reversals": 79
+     },
+     "cancels": {
+      "defender_info_lost": 471,
+      "no_path_after_subgoal": 1,
+      "replan_invalid": 160,
+      "request_direct": 372
+     },
+     "captures": 166,
+     "executed_while_owned": 0,
+     "exhausted": 260,
+     "gained_collisions": 104,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 67,
+      "defender_not_ahead": 1024,
+      "no_path": 140
+     },
+     "longest_route_run": 14,
+     "max_plans_in_4_steps": 5,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.13,
+      "gt1.3": 510,
+      "gt2": 479,
+      "gt5": 130,
+      "max": 8.561984265814868,
+      "mean": 2.5852422584355774,
+      "median": 1.401068485492652
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         134,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 134,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.53,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         53,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 6,
+       "exhausted": 53,
+       "gained": 6,
+       "orbit": 0,
+       "overshoot_fraction": 0.535,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         44,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 29,
+       "exhausted": 44,
+       "gained": 29,
+       "orbit": 0,
+       "overshoot_fraction": 0.53,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         29,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 69,
+       "exhausted": 29,
+       "gained": 69,
+       "orbit": 0,
+       "overshoot_fraction": 0.59,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 4002,
+     "plans_committed": 2770,
+     "plans_per_episode": 4.002,
+     "replans_per_episode": 1.019,
+     "route_length_mean": 19.994662173240314,
+     "route_steps": 4.944,
+     "suppressed_by_obstacle": 36,
+     "timeouts": 0,
+     "waypoint_mean": 2.0466868746129525
+    },
+    "RIGHT": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 184,
+      "fraction_diverging": 0.987,
+      "mean_extra_path_m": 150.1159837708156,
+      "mean_extra_steps": 28.101,
+      "mean_min_sep_diff_m": 1.5025825083255768,
+      "median_div_m": 5.172673258896161,
+      "net_captures": 112,
+      "outcome_changed": 774,
+      "reversals": 72
+     },
+     "cancels": {
+      "defender_info_lost": 515,
+      "no_path_after_subgoal": 3,
+      "replan_invalid": 190
+     },
+     "captures": 209,
+     "executed_while_owned": 0,
+     "exhausted": 440,
+     "gained_collisions": 130,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 128,
+      "defender_not_ahead": 802,
+      "no_path": 255
+     },
+     "longest_route_run": 15,
+     "max_plans_in_4_steps": 5,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.238,
+      "gt1.3": 737,
+      "gt2": 704,
+      "gt5": 238,
+      "max": 9.471146783541526,
+      "mean": 3.372947689087875,
+      "median": 3.488495762271129
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         246,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 246,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.8125,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         90,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 11,
+       "exhausted": 90,
+       "gained": 11,
+       "orbit": 0,
+       "overshoot_fraction": 0.8,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         71,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 36,
+       "exhausted": 71,
+       "gained": 36,
+       "orbit": 0,
+       "overshoot_fraction": 0.795,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         33,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 83,
+       "exhausted": 33,
+       "gained": 83,
+       "orbit": 0,
+       "overshoot_fraction": 0.74,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 4602,
+     "plans_committed": 3413,
+     "plans_per_episode": 4.602,
+     "replans_per_episode": 1.556,
+     "route_length_mean": 20.980140350183365,
+     "route_steps": 6.144,
+     "suppressed_by_obstacle": 60,
+     "timeouts": 0,
+     "waypoint_mean": 2.06741968786057
+    }
+   },
+   "radius_m": 5.0,
+   "replan_s": 1.0,
+   "replans_per_episode": 1.2149999999999999,
+   "reversals_at_best": 65
+  },
+  {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G3_positive": true,
+   "G4": false,
+   "G5": true,
+   "G6": false,
+   "best_effect": 283,
+   "exhausted_total": 2473,
+   "gained_collisions_total": 903,
+   "median_path_excess": 3.251805141082435,
+   "passed": false,
+   "policies": {
+    "ABOVE": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 351,
+      "fraction_diverging": 0.994,
+      "mean_extra_path_m": 153.08994203741534,
+      "mean_extra_steps": 29.304,
+      "mean_min_sep_diff_m": 2.0963510806560515,
+      "median_div_m": 5.401555301080302,
+      "net_captures": 283,
+      "outcome_changed": 874,
+      "reversals": 68
+     },
+     "cancels": {
+      "defender_info_lost": 711,
+      "replan_invalid": 214
+     },
+     "captures": 380,
+     "executed_while_owned": 0,
+     "exhausted": 353,
+     "gained_collisions": 139,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "defender_not_ahead": 1547,
+      "no_path": 186
+     },
+     "longest_route_run": 15,
+     "max_plans_in_4_steps": 6,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.18,
+      "gt1.3": 849,
+      "gt2": 805,
+      "gt5": 180,
+      "max": 8.846769047088554,
+      "mean": 3.483276101636939,
+      "median": 3.251805141082435
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         210,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 210,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.99,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         69,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 7,
+       "exhausted": 69,
+       "gained": 7,
+       "orbit": 0,
+       "overshoot_fraction": 0.99,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         48,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 42,
+       "exhausted": 48,
+       "gained": 42,
+       "orbit": 0,
+       "overshoot_fraction": 0.9,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         26,
+         0
+        ],
+        "orbit": [
+         1,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 90,
+       "exhausted": 26,
+       "gained": 90,
+       "orbit": 1,
+       "overshoot_fraction": 0.855,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 4157,
+     "plans_committed": 2424,
+     "plans_per_episode": 4.157,
+     "replans_per_episode": 0.525,
+     "route_length_mean": 22.12613552555743,
+     "route_steps": 7.576,
+     "suppressed_by_obstacle": 49,
+     "timeouts": 0,
+     "waypoint_mean": 2.0564196969696966
+    },
+    "ADVERSARIAL": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 292,
+      "fraction_diverging": 0.968,
+      "mean_extra_path_m": 137.43008454226674,
+      "mean_extra_steps": 26.196,
+      "mean_min_sep_diff_m": 1.601644565820694,
+      "median_div_m": 4.924723097493843,
+      "net_captures": 238,
+      "outcome_changed": 744,
+      "reversals": 54
+     },
+     "cancels": {
+      "defender_info_lost": 433,
+      "replan_invalid": 85,
+      "request_direct": 335
+     },
+     "captures": 335,
+     "executed_while_owned": 0,
+     "exhausted": 302,
+     "gained_collisions": 127,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 29,
+      "defender_not_ahead": 1021,
+      "no_path": 125
+     },
+     "longest_route_run": 10,
+     "max_plans_in_4_steps": 6,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.149,
+      "gt1.3": 748,
+      "gt2": 699,
+      "gt5": 149,
+      "max": 7.8716974607225865,
+      "mean": 3.14520614038696,
+      "median": 3.072230894158563
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         168,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 168,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.8575,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         63,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 9,
+       "exhausted": 63,
+       "gained": 9,
+       "orbit": 0,
+       "overshoot_fraction": 0.86,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         44,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 40,
+       "exhausted": 44,
+       "gained": 40,
+       "orbit": 0,
+       "overshoot_fraction": 0.82,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         27,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 78,
+       "exhausted": 27,
+       "gained": 78,
+       "orbit": 0,
+       "overshoot_fraction": 0.735,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 3034,
+     "plans_committed": 1857,
+     "plans_per_episode": 3.034,
+     "replans_per_episode": 0.053,
+     "route_length_mean": 20.940307345663506,
+     "route_steps": 5.149,
+     "suppressed_by_obstacle": 34,
+     "timeouts": 0,
+     "waypoint_mean": 2.054
+    },
+    "ALT_LR": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 192,
+      "fraction_diverging": 0.984,
+      "mean_extra_path_m": 153.57413601755695,
+      "mean_extra_steps": 28.852,
+      "mean_min_sep_diff_m": 1.5893493182659149,
+      "median_div_m": 5.237857367566167,
+      "net_captures": 117,
+      "outcome_changed": 794,
+      "reversals": 75
+     },
+     "cancels": {
+      "defender_info_lost": 634,
+      "replan_invalid": 193
+     },
+     "captures": 214,
+     "executed_while_owned": 0,
+     "exhausted": 438,
+     "gained_collisions": 149,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 106,
+      "defender_not_ahead": 874,
+      "no_path": 268
+     },
+     "longest_route_run": 16,
+     "max_plans_in_4_steps": 6,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.232,
+      "gt1.3": 755,
+      "gt2": 694,
+      "gt5": 232,
+      "max": 8.546261726801134,
+      "mean": 3.402875838882715,
+      "median": 3.429514638129497
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         241,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 241,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.8675,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         92,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 10,
+       "exhausted": 92,
+       "gained": 10,
+       "orbit": 0,
+       "overshoot_fraction": 0.865,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         63,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 46,
+       "exhausted": 63,
+       "gained": 46,
+       "orbit": 0,
+       "overshoot_fraction": 0.84,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         42,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 93,
+       "exhausted": 42,
+       "gained": 93,
+       "orbit": 0,
+       "overshoot_fraction": 0.825,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 3490,
+     "plans_committed": 2242,
+     "plans_per_episode": 3.49,
+     "replans_per_episode": 0.453,
+     "route_length_mean": 24.074590539723577,
+     "route_steps": 7.207,
+     "suppressed_by_obstacle": 41,
+     "timeouts": 0,
+     "waypoint_mean": 2.0604250334672023
+    },
+    "LEFT": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 144,
+      "fraction_diverging": 0.984,
+      "mean_extra_path_m": 164.54912690902935,
+      "mean_extra_steps": 30.87,
+      "mean_min_sep_diff_m": 1.6291723256111146,
+      "median_div_m": 5.237413483772309,
+      "net_captures": 66,
+      "outcome_changed": 822,
+      "reversals": 78
+     },
+     "cancels": {
+      "defender_info_lost": 598,
+      "no_path_after_subgoal": 1,
+      "replan_invalid": 150
+     },
+     "captures": 163,
+     "executed_while_owned": 0,
+     "exhausted": 520,
+     "gained_collisions": 150,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 106,
+      "defender_not_ahead": 769,
+      "no_path": 243
+     },
+     "longest_route_run": 16,
+     "max_plans_in_4_steps": 6,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.26,
+      "gt1.3": 777,
+      "gt2": 722,
+      "gt5": 260,
+      "max": 8.546261726801134,
+      "mean": 3.580694707023948,
+      "median": 3.7884968919677062
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         297,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 297,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.8675,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         104,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 13,
+       "exhausted": 104,
+       "gained": 13,
+       "orbit": 0,
+       "overshoot_fraction": 0.865,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         71,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 47,
+       "exhausted": 71,
+       "gained": 47,
+       "orbit": 0,
+       "overshoot_fraction": 0.84,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         48,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 90,
+       "exhausted": 48,
+       "gained": 90,
+       "orbit": 0,
+       "overshoot_fraction": 0.815,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 3331,
+     "plans_committed": 2213,
+     "plans_per_episode": 3.331,
+     "replans_per_episode": 0.381,
+     "route_length_mean": 23.841323510352016,
+     "route_steps": 6.774,
+     "suppressed_by_obstacle": 36,
+     "timeouts": 0,
+     "waypoint_mean": 2.0561746987951808
+    },
+    "MAX_SEP": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": false,
+     "G4": false,
+     "authority": {
+      "conversions": 37,
+      "fraction_diverging": 0.183,
+      "mean_extra_path_m": 17.10973143739567,
+      "mean_extra_steps": 3.214,
+      "mean_min_sep_diff_m": 0.16584506797790527,
+      "median_div_m": 0.2249444375840393,
+      "net_captures": -11,
+      "outcome_changed": 123,
+      "reversals": 48
+     },
+     "cancels": {
+      "defender_info_lost": 36,
+      "replan_invalid": 9,
+      "request_direct": 28
+     },
+     "captures": 86,
+     "executed_while_owned": 0,
+     "exhausted": 46,
+     "gained_collisions": 31,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 2,
+      "defender_not_ahead": 7,
+      "no_path": 12
+     },
+     "longest_route_run": 12,
+     "max_plans_in_4_steps": 2,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.024,
+      "gt1.3": 99,
+      "gt2": 90,
+      "gt5": 24,
+      "max": 7.0722793795007295,
+      "mean": 1.2979299008239982,
+      "median": 1.001870352817168
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         27,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 27,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.1,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         11,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 11,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.115,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         6,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 10,
+       "exhausted": 6,
+       "gained": 10,
+       "orbit": 0,
+       "overshoot_fraction": 0.12,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         2,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 21,
+       "exhausted": 2,
+       "gained": 21,
+       "orbit": 0,
+       "overshoot_fraction": 0.145,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 851,
+     "plans_committed": 830,
+     "plans_per_episode": 0.851,
+     "replans_per_episode": 0.016,
+     "route_length_mean": 13.887420587168602,
+     "route_steps": 1.159,
+     "suppressed_by_obstacle": 11,
+     "timeouts": 0,
+     "waypoint_mean": 2.012768817204301
+    },
+    "RANDOM": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 229,
+      "fraction_diverging": 0.934,
+      "mean_extra_path_m": 140.7699482796419,
+      "mean_extra_steps": 26.692,
+      "mean_min_sep_diff_m": 1.5979141573905944,
+      "median_div_m": 5.265101980848982,
+      "net_captures": 149,
+      "outcome_changed": 772,
+      "reversals": 80
+     },
+     "cancels": {
+      "defender_info_lost": 501,
+      "no_path_after_subgoal": 1,
+      "replan_invalid": 131,
+      "request_direct": 99
+     },
+     "captures": 246,
+     "executed_while_owned": 0,
+     "exhausted": 370,
+     "gained_collisions": 161,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 58,
+      "defender_not_ahead": 862,
+      "no_path": 147
+     },
+     "longest_route_run": 12,
+     "max_plans_in_4_steps": 5,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.164,
+      "gt1.3": 740,
+      "gt2": 695,
+      "gt5": 164,
+      "max": 8.108764214047499,
+      "mean": 3.2357485338089558,
+      "median": 3.1732574102752906
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         211,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 211,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.8475,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         76,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 13,
+       "exhausted": 76,
+       "gained": 13,
+       "orbit": 0,
+       "overshoot_fraction": 0.85,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         49,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 60,
+       "exhausted": 49,
+       "gained": 60,
+       "orbit": 0,
+       "overshoot_fraction": 0.795,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         34,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 88,
+       "exhausted": 34,
+       "gained": 88,
+       "orbit": 0,
+       "overshoot_fraction": 0.76,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 3029,
+     "plans_committed": 1962,
+     "plans_per_episode": 3.029,
+     "replans_per_episode": 0.235,
+     "route_length_mean": 22.593557539235547,
+     "route_steps": 5.933,
+     "suppressed_by_obstacle": 45,
+     "timeouts": 0,
+     "waypoint_mean": 2.0639459274469543
+    },
+    "RIGHT": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 177,
+      "fraction_diverging": 0.988,
+      "mean_extra_path_m": 151.16885666867498,
+      "mean_extra_steps": 28.341,
+      "mean_min_sep_diff_m": 1.5294887988567352,
+      "median_div_m": 5.208080260518265,
+      "net_captures": 105,
+      "outcome_changed": 784,
+      "reversals": 72
+     },
+     "cancels": {
+      "defender_info_lost": 481,
+      "replan_invalid": 131
+     },
+     "captures": 202,
+     "executed_while_owned": 0,
+     "exhausted": 444,
+     "gained_collisions": 146,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 106,
+      "defender_not_ahead": 763,
+      "no_path": 198
+     },
+     "longest_route_run": 16,
+     "max_plans_in_4_steps": 6,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.24,
+      "gt1.3": 725,
+      "gt2": 696,
+      "gt5": 240,
+      "max": 8.71831482755181,
+      "mean": 3.410628768432893,
+      "median": 3.617183889701532
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         244,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 244,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.8225,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         90,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 8,
+       "exhausted": 90,
+       "gained": 8,
+       "orbit": 0,
+       "overshoot_fraction": 0.825,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         74,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 36,
+       "exhausted": 74,
+       "gained": 36,
+       "orbit": 0,
+       "overshoot_fraction": 0.805,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         36,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 102,
+       "exhausted": 36,
+       "gained": 102,
+       "orbit": 0,
+       "overshoot_fraction": 0.81,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 3181,
+     "plans_committed": 2108,
+     "plans_per_episode": 3.181,
+     "replans_per_episode": 0.369,
+     "route_length_mean": 24.070647258103314,
+     "route_steps": 6.398,
+     "suppressed_by_obstacle": 51,
+     "timeouts": 0,
+     "waypoint_mean": 2.070953812386678
+    }
+   },
+   "radius_m": 5.0,
+   "replan_s": 2.0,
+   "replans_per_episode": 0.2902857142857143,
+   "reversals_at_best": 68
+  },
+  {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G3_positive": true,
+   "G4": false,
+   "G5": true,
+   "G6": false,
+   "best_effect": 144,
+   "exhausted_total": 2646,
+   "gained_collisions_total": 821,
+   "median_path_excess": 3.182422966814533,
+   "passed": false,
+   "policies": {
+    "ABOVE": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 214,
+      "fraction_diverging": 0.994,
+      "mean_extra_path_m": 168.53640939514992,
+      "mean_extra_steps": 33.04,
+      "mean_min_sep_diff_m": 3.213118835926056,
+      "median_div_m": 7.450680267679032,
+      "net_captures": 144,
+      "outcome_changed": 847,
+      "reversals": 70
+     },
+     "cancels": {
+      "defender_info_lost": 921,
+      "replan_invalid": 424
+     },
+     "captures": 241,
+     "executed_while_owned": 0,
+     "exhausted": 452,
+     "gained_collisions": 153,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "defender_not_ahead": 2772,
+      "no_path": 169
+     },
+     "longest_route_run": 15,
+     "max_plans_in_4_steps": 6,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.227,
+      "gt1.3": 862,
+      "gt2": 815,
+      "gt5": 227,
+      "max": 17.463771612276282,
+      "mean": 3.7736090613784756,
+      "median": 3.88504170596999
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         247,
+         0
+        ],
+        "orbit": [
+         4,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 247,
+       "gained": 0,
+       "orbit": 4,
+       "overshoot_fraction": 1.0,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         101,
+         0
+        ],
+        "orbit": [
+         2,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 11,
+       "exhausted": 101,
+       "gained": 11,
+       "orbit": 2,
+       "overshoot_fraction": 1.0,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         59,
+         0
+        ],
+        "orbit": [
+         1,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 52,
+       "exhausted": 59,
+       "gained": 52,
+       "orbit": 1,
+       "overshoot_fraction": 0.905,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         45,
+         0
+        ],
+        "orbit": [
+         1,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 90,
+       "exhausted": 45,
+       "gained": 90,
+       "orbit": 1,
+       "overshoot_fraction": 0.92,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 7664,
+     "plans_committed": 4723,
+     "plans_per_episode": 7.664,
+     "replans_per_episode": 2.42,
+     "route_length_mean": 21.932423558284636,
+     "route_steps": 8.242,
+     "suppressed_by_obstacle": 49,
+     "timeouts": 0,
+     "waypoint_mean": 2.0392781746031745
+    },
+    "ADVERSARIAL": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 200,
+      "fraction_diverging": 0.965,
+      "mean_extra_path_m": 143.01224371863856,
+      "mean_extra_steps": 27.68,
+      "mean_min_sep_diff_m": 1.8673739635944366,
+      "median_div_m": 4.993049589165009,
+      "net_captures": 128,
+      "outcome_changed": 731,
+      "reversals": 72
+     },
+     "cancels": {
+      "defender_info_lost": 543,
+      "replan_invalid": 128,
+      "request_direct": 664
+     },
+     "captures": 225,
+     "executed_while_owned": 0,
+     "exhausted": 396,
+     "gained_collisions": 107,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 68,
+      "defender_not_ahead": 1031,
+      "no_path": 150
+     },
+     "longest_route_run": 6,
+     "max_plans_in_4_steps": 5,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.166,
+      "gt1.3": 728,
+      "gt2": 689,
+      "gt5": 166,
+      "max": 7.756988998659245,
+      "mean": 3.2332712725054233,
+      "median": 3.159685443793768
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         219,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 219,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.7875,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         81,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 6,
+       "exhausted": 81,
+       "gained": 6,
+       "orbit": 0,
+       "overshoot_fraction": 0.785,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         64,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 27,
+       "exhausted": 64,
+       "gained": 27,
+       "orbit": 0,
+       "overshoot_fraction": 0.765,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         32,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 74,
+       "exhausted": 32,
+       "gained": 74,
+       "orbit": 0,
+       "overshoot_fraction": 0.705,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 4163,
+     "plans_committed": 2914,
+     "plans_per_episode": 4.163,
+     "replans_per_episode": 0.859,
+     "route_length_mean": 22.058325788970304,
+     "route_steps": 5.311,
+     "suppressed_by_obstacle": 39,
+     "timeouts": 0,
+     "waypoint_mean": 2.0486997805134077
+    },
+    "ALT_LR": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 174,
+      "fraction_diverging": 0.978,
+      "mean_extra_path_m": 97.09906546296557,
+      "mean_extra_steps": 18.307,
+      "mean_min_sep_diff_m": 1.0025850887298584,
+      "median_div_m": 4.651720111958586,
+      "net_captures": 108,
+      "outcome_changed": 543,
+      "reversals": 66
+     },
+     "cancels": {
+      "defender_info_lost": 560,
+      "replan_invalid": 296
+     },
+     "captures": 205,
+     "executed_while_owned": 0,
+     "exhausted": 250,
+     "gained_collisions": 103,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 130,
+      "defender_not_ahead": 862,
+      "no_path": 316
+     },
+     "longest_route_run": 22,
+     "max_plans_in_4_steps": 6,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.111,
+      "gt1.3": 494,
+      "gt2": 455,
+      "gt5": 111,
+      "max": 9.181185593284418,
+      "mean": 2.519565142941225,
+      "median": 1.1533080712361756
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         130,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 130,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.5025,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         56,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 8,
+       "exhausted": 56,
+       "gained": 8,
+       "orbit": 0,
+       "overshoot_fraction": 0.51,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         38,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 28,
+       "exhausted": 38,
+       "gained": 28,
+       "orbit": 0,
+       "overshoot_fraction": 0.54,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         26,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 67,
+       "exhausted": 26,
+       "gained": 67,
+       "orbit": 0,
+       "overshoot_fraction": 0.62,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 4715,
+     "plans_committed": 3407,
+     "plans_per_episode": 4.715,
+     "replans_per_episode": 1.767,
+     "route_length_mean": 24.68985043688959,
+     "route_steps": 6.293,
+     "suppressed_by_obstacle": 57,
+     "timeouts": 0,
+     "waypoint_mean": 2.0604898025950655
+    },
+    "LEFT": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 172,
+      "fraction_diverging": 0.978,
+      "mean_extra_path_m": 185.9192950623159,
+      "mean_extra_steps": 34.808,
+      "mean_min_sep_diff_m": 2.4786408576965333,
+      "median_div_m": 6.514152235900951,
+      "net_captures": 102,
+      "outcome_changed": 920,
+      "reversals": 70
+     },
+     "cancels": {
+      "defender_info_lost": 666,
+      "no_path_after_subgoal": 4,
+      "replan_invalid": 190
+     },
+     "captures": 199,
+     "executed_while_owned": 0,
+     "exhausted": 588,
+     "gained_collisions": 152,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 126,
+      "defender_not_ahead": 942,
+      "no_path": 329
+     },
+     "longest_route_run": 14,
+     "max_plans_in_4_steps": 5,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.321,
+      "gt1.3": 883,
+      "gt2": 844,
+      "gt5": 321,
+      "max": 8.545257200602473,
+      "mean": 3.9699770896241517,
+      "median": 3.966074547347914
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         331,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 331,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.9925,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         120,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 21,
+       "exhausted": 120,
+       "gained": 21,
+       "orbit": 0,
+       "overshoot_fraction": 0.985,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         84,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 53,
+       "exhausted": 84,
+       "gained": 53,
+       "orbit": 0,
+       "overshoot_fraction": 0.935,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         53,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 78,
+       "exhausted": 53,
+       "gained": 78,
+       "orbit": 0,
+       "overshoot_fraction": 0.875,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 5215,
+     "plans_committed": 3816,
+     "plans_per_episode": 5.215,
+     "replans_per_episode": 1.672,
+     "route_length_mean": 24.684311528050767,
+     "route_steps": 6.837,
+     "suppressed_by_obstacle": 47,
+     "timeouts": 0,
+     "waypoint_mean": 2.0628692579350476
+    },
+    "MAX_SEP": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": false,
+     "G4": false,
+     "authority": {
+      "conversions": 28,
+      "fraction_diverging": 0.143,
+      "mean_extra_path_m": 13.707796115997658,
+      "mean_extra_steps": 2.605,
+      "mean_min_sep_diff_m": 0.08605098223686218,
+      "median_div_m": 0.22768940501004903,
+      "net_captures": -20,
+      "outcome_changed": 89,
+      "reversals": 48
+     },
+     "cancels": {
+      "defender_info_lost": 15,
+      "replan_invalid": 6,
+      "request_direct": 21
+     },
+     "captures": 77,
+     "executed_while_owned": 0,
+     "exhausted": 41,
+     "gained_collisions": 15,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "no_path": 6
+     },
+     "longest_route_run": 8,
+     "max_plans_in_4_steps": 4,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.025,
+      "gt1.3": 72,
+      "gt2": 62,
+      "gt5": 25,
+      "max": 6.652435001946907,
+      "mean": 1.2346323585257943,
+      "median": 1.0017220299363243
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         16,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 16,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.0625,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         9,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 9,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.07,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         12,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 4,
+       "exhausted": 12,
+       "gained": 4,
+       "orbit": 0,
+       "overshoot_fraction": 0.08,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         4,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 11,
+       "exhausted": 4,
+       "gained": 11,
+       "orbit": 0,
+       "overshoot_fraction": 0.115,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 827,
+     "plans_committed": 821,
+     "plans_per_episode": 0.827,
+     "replans_per_episode": 0.021,
+     "route_length_mean": 17.324498909451695,
+     "route_steps": 0.891,
+     "suppressed_by_obstacle": 9,
+     "timeouts": 0,
+     "waypoint_mean": 2.0270444444444444
+    },
+    "RANDOM": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 190,
+      "fraction_diverging": 0.932,
+      "mean_extra_path_m": 135.98991356773573,
+      "mean_extra_steps": 26.124,
+      "mean_min_sep_diff_m": 1.7170954973697663,
+      "median_div_m": 5.3797211823662385,
+      "net_captures": 110,
+      "outcome_changed": 720,
+      "reversals": 80
+     },
+     "cancels": {
+      "defender_info_lost": 725,
+      "no_path_after_subgoal": 3,
+      "replan_invalid": 182,
+      "request_direct": 460
+     },
+     "captures": 207,
+     "executed_while_owned": 0,
+     "exhausted": 384,
+     "gained_collisions": 130,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 104,
+      "defender_not_ahead": 1160,
+      "no_path": 191
+     },
+     "longest_route_run": 16,
+     "max_plans_in_4_steps": 5,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.181,
+      "gt1.3": 694,
+      "gt2": 658,
+      "gt5": 181,
+      "max": 8.415044826845138,
+      "mean": 3.226083589107011,
+      "median": 3.182422966814533
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         205,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 205,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.7775,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         85,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 10,
+       "exhausted": 85,
+       "gained": 10,
+       "orbit": 0,
+       "overshoot_fraction": 0.77,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         62,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 38,
+       "exhausted": 62,
+       "gained": 38,
+       "orbit": 0,
+       "overshoot_fraction": 0.73,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         32,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 82,
+       "exhausted": 32,
+       "gained": 82,
+       "orbit": 0,
+       "overshoot_fraction": 0.705,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 4996,
+     "plans_committed": 3541,
+     "plans_per_episode": 4.996,
+     "replans_per_episode": 1.479,
+     "route_length_mean": 23.22419810203909,
+     "route_steps": 6.297,
+     "suppressed_by_obstacle": 42,
+     "timeouts": 0,
+     "waypoint_mean": 2.050958994708995
+    },
+    "RIGHT": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 188,
+      "fraction_diverging": 0.975,
+      "mean_extra_path_m": 177.20374101207884,
+      "mean_extra_steps": 33.118,
+      "mean_min_sep_diff_m": 2.501834990978241,
+      "median_div_m": 6.5111677853568235,
+      "net_captures": 124,
+      "outcome_changed": 888,
+      "reversals": 64
+     },
+     "cancels": {
+      "defender_info_lost": 564,
+      "no_path_after_subgoal": 4,
+      "replan_invalid": 167
+     },
+     "captures": 221,
+     "executed_while_owned": 0,
+     "exhausted": 535,
+     "gained_collisions": 161,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 174,
+      "defender_not_ahead": 791,
+      "no_path": 316
+     },
+     "longest_route_run": 12,
+     "max_plans_in_4_steps": 5,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.299,
+      "gt1.3": 836,
+      "gt2": 799,
+      "gt5": 299,
+      "max": 8.662118303966734,
+      "mean": 3.83866525596586,
+      "median": 3.915156235652455
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         299,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 299,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.9825,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         116,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 16,
+       "exhausted": 116,
+       "gained": 16,
+       "orbit": 0,
+       "overshoot_fraction": 0.955,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         80,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 48,
+       "exhausted": 80,
+       "gained": 48,
+       "orbit": 0,
+       "overshoot_fraction": 0.885,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         40,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 97,
+       "exhausted": 40,
+       "gained": 97,
+       "orbit": 0,
+       "overshoot_fraction": 0.805,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 4865,
+     "plans_committed": 3580,
+     "plans_per_episode": 4.865,
+     "replans_per_episode": 1.547,
+     "route_length_mean": 24.633262403261586,
+     "route_steps": 6.3,
+     "suppressed_by_obstacle": 55,
+     "timeouts": 0,
+     "waypoint_mean": 2.073091783947047
+    }
+   },
+   "radius_m": 7.5,
+   "replan_s": 1.0,
+   "replans_per_episode": 1.395,
+   "reversals_at_best": 70
+  },
+  {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G3_positive": true,
+   "G4": false,
+   "G5": true,
+   "G6": false,
+   "best_effect": 182,
+   "exhausted_total": 3039,
+   "gained_collisions_total": 954,
+   "median_path_excess": 3.8312224032502167,
+   "passed": false,
+   "policies": {
+    "ABOVE": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 263,
+      "fraction_diverging": 0.994,
+      "mean_extra_path_m": 169.113099633626,
+      "mean_extra_steps": 32.902,
+      "mean_min_sep_diff_m": 3.1888381180763243,
+      "median_div_m": 6.90223876724067,
+      "net_captures": 182,
+      "outcome_changed": 863,
+      "reversals": 81
+     },
+     "cancels": {
+      "defender_info_lost": 690,
+      "no_path_after_subgoal": 1,
+      "replan_invalid": 227
+     },
+     "captures": 279,
+     "executed_while_owned": 0,
+     "exhausted": 432,
+     "gained_collisions": 144,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "defender_not_ahead": 1833,
+      "no_path": 134
+     },
+     "longest_route_run": 15,
+     "max_plans_in_4_steps": 6,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.223,
+      "gt1.3": 890,
+      "gt2": 847,
+      "gt5": 223,
+      "max": 8.739767565993258,
+      "mean": 3.7713558021489844,
+      "median": 3.881253166579949
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         246,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 246,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 1.0,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         89,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 7,
+       "exhausted": 89,
+       "gained": 7,
+       "orbit": 0,
+       "overshoot_fraction": 1.0,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         59,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 48,
+       "exhausted": 59,
+       "gained": 48,
+       "orbit": 0,
+       "overshoot_fraction": 0.915,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         38,
+         0
+        ],
+        "orbit": [
+         1,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 89,
+       "exhausted": 38,
+       "gained": 89,
+       "orbit": 1,
+       "overshoot_fraction": 0.905,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 4434,
+     "plans_committed": 2467,
+     "plans_per_episode": 4.434,
+     "replans_per_episode": 0.514,
+     "route_length_mean": 24.999535505171874,
+     "route_steps": 7.887,
+     "suppressed_by_obstacle": 32,
+     "timeouts": 0,
+     "waypoint_mean": 2.0496214285714287
+    },
+    "ADVERSARIAL": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 235,
+      "fraction_diverging": 0.966,
+      "mean_extra_path_m": 151.88534361800598,
+      "mean_extra_steps": 29.288,
+      "mean_min_sep_diff_m": 2.326508506536484,
+      "median_div_m": 5.729511322966383,
+      "net_captures": 167,
+      "outcome_changed": 761,
+      "reversals": 68
+     },
+     "cancels": {
+      "defender_info_lost": 424,
+      "replan_invalid": 96,
+      "request_direct": 231
+     },
+     "captures": 264,
+     "executed_while_owned": 0,
+     "exhausted": 378,
+     "gained_collisions": 127,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 28,
+      "defender_not_ahead": 1335,
+      "no_path": 123
+     },
+     "longest_route_run": 9,
+     "max_plans_in_4_steps": 5,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.153,
+      "gt1.3": 782,
+      "gt2": 752,
+      "gt5": 153,
+      "max": 8.36257163104749,
+      "mean": 3.368541906923073,
+      "median": 3.305521798561705
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         206,
+         0
+        ],
+        "orbit": [
+         1,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 206,
+       "gained": 0,
+       "orbit": 1,
+       "overshoot_fraction": 0.88,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         82,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 9,
+       "exhausted": 82,
+       "gained": 9,
+       "orbit": 0,
+       "overshoot_fraction": 0.875,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         57,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 35,
+       "exhausted": 57,
+       "gained": 35,
+       "orbit": 0,
+       "overshoot_fraction": 0.815,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         33,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 83,
+       "exhausted": 33,
+       "gained": 83,
+       "orbit": 0,
+       "overshoot_fraction": 0.77,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 3412,
+     "plans_committed": 1926,
+     "plans_per_episode": 3.412,
+     "replans_per_episode": 0.048,
+     "route_length_mean": 23.684186363174696,
+     "route_steps": 5.178,
+     "suppressed_by_obstacle": 58,
+     "timeouts": 0,
+     "waypoint_mean": 2.04749498997996
+    },
+    "ALT_LR": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 161,
+      "fraction_diverging": 0.978,
+      "mean_extra_path_m": 178.37894402803505,
+      "mean_extra_steps": 33.537,
+      "mean_min_sep_diff_m": 2.6595689058303833,
+      "median_div_m": 6.834145405551064,
+      "net_captures": 86,
+      "outcome_changed": 885,
+      "reversals": 75
+     },
+     "cancels": {
+      "defender_info_lost": 605,
+      "no_path_after_subgoal": 5,
+      "replan_invalid": 200
+     },
+     "captures": 183,
+     "executed_while_owned": 0,
+     "exhausted": 552,
+     "gained_collisions": 165,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 118,
+      "defender_not_ahead": 995,
+      "no_path": 308
+     },
+     "longest_route_run": 19,
+     "max_plans_in_4_steps": 6,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.303,
+      "gt1.3": 843,
+      "gt2": 793,
+      "gt5": 303,
+      "max": 7.7027281786800454,
+      "mean": 3.8094952363791794,
+      "median": 3.8312224032502167
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         308,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 308,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.9925,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         123,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 19,
+       "exhausted": 123,
+       "gained": 19,
+       "orbit": 0,
+       "overshoot_fraction": 0.995,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         79,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 57,
+       "exhausted": 79,
+       "gained": 57,
+       "orbit": 0,
+       "overshoot_fraction": 0.935,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         42,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 89,
+       "exhausted": 42,
+       "gained": 89,
+       "orbit": 0,
+       "overshoot_fraction": 0.865,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 3780,
+     "plans_committed": 2354,
+     "plans_per_episode": 3.78,
+     "replans_per_episode": 0.506,
+     "route_length_mean": 27.82421462002193,
+     "route_steps": 7.639,
+     "suppressed_by_obstacle": 82,
+     "timeouts": 0,
+     "waypoint_mean": 2.0796618951224217
+    },
+    "LEFT": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 130,
+      "fraction_diverging": 0.978,
+      "mean_extra_path_m": 187.75528918658452,
+      "mean_extra_steps": 35.246,
+      "mean_min_sep_diff_m": 2.7518669085502623,
+      "median_div_m": 6.892234760946552,
+      "net_captures": 55,
+      "outcome_changed": 922,
+      "reversals": 75
+     },
+     "cancels": {
+      "defender_info_lost": 534,
+      "no_path_after_subgoal": 5,
+      "replan_invalid": 141
+     },
+     "captures": 152,
+     "executed_while_owned": 0,
+     "exhausted": 619,
+     "gained_collisions": 171,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 114,
+      "defender_not_ahead": 735,
+      "no_path": 299
+     },
+     "longest_route_run": 16,
+     "max_plans_in_4_steps": 5,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.342,
+      "gt1.3": 875,
+      "gt2": 823,
+      "gt5": 342,
+      "max": 8.074791072224675,
+      "mean": 3.997723828712087,
+      "median": 4.051996708406799
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         346,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 346,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.9925,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         133,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 25,
+       "exhausted": 133,
+       "gained": 25,
+       "orbit": 0,
+       "overshoot_fraction": 0.995,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         91,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 53,
+       "exhausted": 91,
+       "gained": 53,
+       "orbit": 0,
+       "overshoot_fraction": 0.935,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         49,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 93,
+       "exhausted": 49,
+       "gained": 93,
+       "orbit": 0,
+       "overshoot_fraction": 0.865,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 3369,
+     "plans_committed": 2220,
+     "plans_per_episode": 3.369,
+     "replans_per_episode": 0.347,
+     "route_length_mean": 27.422499638843895,
+     "route_steps": 6.807,
+     "suppressed_by_obstacle": 60,
+     "timeouts": 0,
+     "waypoint_mean": 2.075489203778677
+    },
+    "MAX_SEP": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": false,
+     "G4": false,
+     "authority": {
+      "conversions": 28,
+      "fraction_diverging": 0.143,
+      "mean_extra_path_m": 13.665661504456338,
+      "mean_extra_steps": 2.6,
+      "mean_min_sep_diff_m": 0.09518390250205994,
+      "median_div_m": 0.22768940501004903,
+      "net_captures": -22,
+      "outcome_changed": 91,
+      "reversals": 50
+     },
+     "cancels": {
+      "defender_info_lost": 16,
+      "replan_invalid": 5,
+      "request_direct": 7
+     },
+     "captures": 75,
+     "executed_while_owned": 0,
+     "exhausted": 41,
+     "gained_collisions": 18,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "no_path": 5
+     },
+     "longest_route_run": 13,
+     "max_plans_in_4_steps": 3,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.025,
+      "gt1.3": 73,
+      "gt2": 62,
+      "gt5": 25,
+      "max": 6.652435001946907,
+      "mean": 1.2329213110004944,
+      "median": 1.0017220299363243
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         16,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 16,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.0625,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         10,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 10,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.07,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         11,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 5,
+       "exhausted": 11,
+       "gained": 5,
+       "orbit": 0,
+       "overshoot_fraction": 0.08,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         4,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 13,
+       "exhausted": 4,
+       "gained": 13,
+       "orbit": 0,
+       "overshoot_fraction": 0.115,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 805,
+     "plans_committed": 800,
+     "plans_per_episode": 0.805,
+     "replans_per_episode": 0.01,
+     "route_length_mean": 17.41435940733802,
+     "route_steps": 0.924,
+     "suppressed_by_obstacle": 18,
+     "timeouts": 0,
+     "waypoint_mean": 2.0285555555555557
+    },
+    "RANDOM": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 201,
+      "fraction_diverging": 0.932,
+      "mean_extra_path_m": 155.39951088073275,
+      "mean_extra_steps": 29.64,
+      "mean_min_sep_diff_m": 2.509142094135284,
+      "median_div_m": 6.694202480743845,
+      "net_captures": 124,
+      "outcome_changed": 823,
+      "reversals": 77
+     },
+     "cancels": {
+      "defender_info_lost": 507,
+      "no_path_after_subgoal": 1,
+      "replan_invalid": 114,
+      "request_direct": 102
+     },
+     "captures": 221,
+     "executed_while_owned": 0,
+     "exhausted": 452,
+     "gained_collisions": 161,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 58,
+      "defender_not_ahead": 884,
+      "no_path": 163
+     },
+     "longest_route_run": 12,
+     "max_plans_in_4_steps": 5,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.232,
+      "gt1.3": 794,
+      "gt2": 744,
+      "gt5": 232,
+      "max": 8.817888729975609,
+      "mean": 3.507430490192814,
+      "median": 3.565324548318365
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         260,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 260,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.905,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         99,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 15,
+       "exhausted": 99,
+       "gained": 15,
+       "orbit": 0,
+       "overshoot_fraction": 0.905,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         65,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 50,
+       "exhausted": 65,
+       "gained": 50,
+       "orbit": 0,
+       "overshoot_fraction": 0.845,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         28,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 96,
+       "exhausted": 28,
+       "gained": 96,
+       "orbit": 0,
+       "overshoot_fraction": 0.785,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 3108,
+     "plans_committed": 2001,
+     "plans_per_episode": 3.108,
+     "replans_per_episode": 0.254,
+     "route_length_mean": 25.714704139177616,
+     "route_steps": 6.054,
+     "suppressed_by_obstacle": 47,
+     "timeouts": 0,
+     "waypoint_mean": 2.0597565157750344
+    },
+    "RIGHT": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 172,
+      "fraction_diverging": 0.976,
+      "mean_extra_path_m": 178.5601736473034,
+      "mean_extra_steps": 33.445,
+      "mean_min_sep_diff_m": 2.7269878697395327,
+      "median_div_m": 6.702476693653418,
+      "net_captures": 96,
+      "outcome_changed": 908,
+      "reversals": 76
+     },
+     "cancels": {
+      "defender_info_lost": 485,
+      "no_path_after_subgoal": 1,
+      "replan_invalid": 126
+     },
+     "captures": 193,
+     "executed_while_owned": 0,
+     "exhausted": 565,
+     "gained_collisions": 168,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 106,
+      "defender_not_ahead": 760,
+      "no_path": 255
+     },
+     "longest_route_run": 15,
+     "max_plans_in_4_steps": 6,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.315,
+      "gt1.3": 841,
+      "gt2": 808,
+      "gt5": 315,
+      "max": 10.034159549939858,
+      "mean": 3.8621512192186276,
+      "median": 3.8834357665858246
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         318,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 318,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.99,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         126,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 13,
+       "exhausted": 126,
+       "gained": 13,
+       "orbit": 0,
+       "overshoot_fraction": 0.965,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         74,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 52,
+       "exhausted": 74,
+       "gained": 52,
+       "orbit": 0,
+       "overshoot_fraction": 0.905,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         47,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 103,
+       "exhausted": 47,
+       "gained": 103,
+       "orbit": 0,
+       "overshoot_fraction": 0.83,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 3313,
+     "plans_committed": 2191,
+     "plans_per_episode": 3.313,
+     "replans_per_episode": 0.345,
+     "route_length_mean": 27.35235600934466,
+     "route_steps": 6.598,
+     "suppressed_by_obstacle": 68,
+     "timeouts": 0,
+     "waypoint_mean": 2.0839635145556197
+    }
+   },
+   "radius_m": 7.5,
+   "replan_s": 2.0,
+   "replans_per_episode": 0.28914285714285715,
+   "reversals_at_best": 81
+  },
+  {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G3_positive": true,
+   "G4": false,
+   "G5": true,
+   "G6": false,
+   "best_effect": 149,
+   "exhausted_total": 3025,
+   "gained_collisions_total": 990,
+   "median_path_excess": 3.8846008181372786,
+   "passed": false,
+   "policies": {
+    "ABOVE": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 174,
+      "fraction_diverging": 0.994,
+      "mean_extra_path_m": 179.38393626199354,
+      "mean_extra_steps": 35.868,
+      "mean_min_sep_diff_m": 4.1946064655780795,
+      "median_div_m": 8.188750047532508,
+      "net_captures": 102,
+      "outcome_changed": 841,
+      "reversals": 72
+     },
+     "cancels": {
+      "defender_info_lost": 1000,
+      "replan_invalid": 452
+     },
+     "captures": 199,
+     "executed_while_owned": 0,
+     "exhausted": 507,
+     "gained_collisions": 141,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "defender_not_ahead": 3029,
+      "no_path": 173
+     },
+     "longest_route_run": 14,
+     "max_plans_in_4_steps": 6,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.221,
+      "gt1.3": 903,
+      "gt2": 863,
+      "gt5": 221,
+      "max": 10.917369812474139,
+      "mean": 3.89367554881327,
+      "median": 4.026760765535881
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         271,
+         0
+        ],
+        "orbit": [
+         7,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 271,
+       "gained": 0,
+       "orbit": 7,
+       "overshoot_fraction": 1.0,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         116,
+         0
+        ],
+        "orbit": [
+         5,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 13,
+       "exhausted": 116,
+       "gained": 13,
+       "orbit": 5,
+       "overshoot_fraction": 1.0,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         77,
+         0
+        ],
+        "orbit": [
+         2,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 44,
+       "exhausted": 77,
+       "gained": 44,
+       "orbit": 2,
+       "overshoot_fraction": 0.915,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         43,
+         0
+        ],
+        "orbit": [
+         2,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 84,
+       "exhausted": 43,
+       "gained": 84,
+       "orbit": 2,
+       "overshoot_fraction": 0.925,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 7998,
+     "plans_committed": 4794,
+     "plans_per_episode": 7.998,
+     "replans_per_episode": 2.315,
+     "route_length_mean": 25.098802731788936,
+     "route_steps": 8.344,
+     "suppressed_by_obstacle": 38,
+     "timeouts": 0,
+     "waypoint_mean": 2.0301960317460317
+    },
+    "ADVERSARIAL": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 154,
+      "fraction_diverging": 0.966,
+      "mean_extra_path_m": 158.99505692932476,
+      "mean_extra_steps": 31.053,
+      "mean_min_sep_diff_m": 2.2452579984664918,
+      "median_div_m": 5.70986864997786,
+      "net_captures": 83,
+      "outcome_changed": 737,
+      "reversals": 71
+     },
+     "cancels": {
+      "defender_info_lost": 663,
+      "no_path_after_subgoal": 1,
+      "replan_invalid": 131,
+      "request_direct": 661
+     },
+     "captures": 180,
+     "executed_while_owned": 0,
+     "exhausted": 434,
+     "gained_collisions": 139,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 44,
+      "defender_not_ahead": 1102,
+      "no_path": 188
+     },
+     "longest_route_run": 9,
+     "max_plans_in_4_steps": 5,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.149,
+      "gt1.3": 768,
+      "gt2": 718,
+      "gt5": 149,
+      "max": 8.734524001179109,
+      "mean": 3.4289388807025833,
+      "median": 3.8846008181372786
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         241,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 241,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.8525,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         96,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 6,
+       "exhausted": 96,
+       "gained": 6,
+       "orbit": 0,
+       "overshoot_fraction": 0.845,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         65,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 43,
+       "exhausted": 65,
+       "gained": 43,
+       "orbit": 0,
+       "overshoot_fraction": 0.78,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         32,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 90,
+       "exhausted": 32,
+       "gained": 90,
+       "orbit": 0,
+       "overshoot_fraction": 0.735,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 4417,
+     "plans_committed": 3083,
+     "plans_per_episode": 4.417,
+     "replans_per_episode": 0.817,
+     "route_length_mean": 25.65280927302135,
+     "route_steps": 5.51,
+     "suppressed_by_obstacle": 45,
+     "timeouts": 0,
+     "waypoint_mean": 2.0567642857142854
+    },
+    "ALT_LR": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 209,
+      "fraction_diverging": 0.966,
+      "mean_extra_path_m": 155.83848677023232,
+      "mean_extra_steps": 29.316,
+      "mean_min_sep_diff_m": 1.7976368420124054,
+      "median_div_m": 5.890560238342262,
+      "net_captures": 149,
+      "outcome_changed": 808,
+      "reversals": 60
+     },
+     "cancels": {
+      "defender_info_lost": 597,
+      "replan_invalid": 369
+     },
+     "captures": 246,
+     "executed_while_owned": 0,
+     "exhausted": 424,
+     "gained_collisions": 168,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 148,
+      "defender_not_ahead": 1306,
+      "no_path": 452,
+      "planner_collision": 3
+     },
+     "longest_route_run": 18,
+     "max_plans_in_4_steps": 6,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.238,
+      "gt1.3": 765,
+      "gt2": 717,
+      "gt5": 238,
+      "max": 9.694607180223667,
+      "mean": 3.5203292329477622,
+      "median": 3.509808567806937
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         241,
+         0
+        ],
+        "orbit": [
+         1,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 241,
+       "gained": 0,
+       "orbit": 1,
+       "overshoot_fraction": 0.9075,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         85,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 20,
+       "exhausted": 85,
+       "gained": 20,
+       "orbit": 0,
+       "overshoot_fraction": 0.92,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         62,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 52,
+       "exhausted": 62,
+       "gained": 52,
+       "orbit": 0,
+       "overshoot_fraction": 0.83,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         36,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 96,
+       "exhausted": 36,
+       "gained": 96,
+       "orbit": 0,
+       "overshoot_fraction": 0.76,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 6072,
+     "plans_committed": 4163,
+     "plans_per_episode": 6.072,
+     "replans_per_episode": 2.207,
+     "route_length_mean": 27.78074648297713,
+     "route_steps": 7.28,
+     "suppressed_by_obstacle": 47,
+     "timeouts": 0,
+     "waypoint_mean": 2.0786436524166585
+    },
+    "LEFT": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 121,
+      "fraction_diverging": 0.966,
+      "mean_extra_path_m": 182.60863074101852,
+      "mean_extra_steps": 34.198,
+      "mean_min_sep_diff_m": 3.1282672848701476,
+      "median_div_m": 7.250429738532393,
+      "net_captures": 45,
+      "outcome_changed": 913,
+      "reversals": 76
+     },
+     "cancels": {
+      "defender_info_lost": 816,
+      "no_path_after_subgoal": 4,
+      "replan_invalid": 148
+     },
+     "captures": 142,
+     "executed_while_owned": 0,
+     "exhausted": 597,
+     "gained_collisions": 191,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 144,
+      "defender_not_ahead": 769,
+      "no_path": 368
+     },
+     "longest_route_run": 12,
+     "max_plans_in_4_steps": 5,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.327,
+      "gt1.3": 863,
+      "gt2": 789,
+      "gt5": 327,
+      "max": 9.183496742803564,
+      "mean": 3.896323463414642,
+      "median": 3.9482939142184197
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         346,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 346,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.9925,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         130,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 25,
+       "exhausted": 130,
+       "gained": 25,
+       "orbit": 0,
+       "overshoot_fraction": 0.985,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         78,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 67,
+       "exhausted": 78,
+       "gained": 67,
+       "orbit": 0,
+       "overshoot_fraction": 0.915,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         43,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 99,
+       "exhausted": 43,
+       "gained": 99,
+       "orbit": 0,
+       "overshoot_fraction": 0.815,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 5111,
+     "plans_committed": 3829,
+     "plans_per_episode": 5.111,
+     "replans_per_episode": 1.504,
+     "route_length_mean": 28.613991811634047,
+     "route_steps": 6.644,
+     "suppressed_by_obstacle": 46,
+     "timeouts": 0,
+     "waypoint_mean": 2.0755384328237088
+    },
+    "MAX_SEP": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": false,
+     "G4": false,
+     "authority": {
+      "conversions": 31,
+      "fraction_diverging": 0.194,
+      "mean_extra_path_m": 21.894340355625733,
+      "mean_extra_steps": 4.13,
+      "mean_min_sep_diff_m": 0.20464209628105162,
+      "median_div_m": 0.23280893453645632,
+      "net_captures": -22,
+      "outcome_changed": 129,
+      "reversals": 53
+     },
+     "cancels": {
+      "defender_info_lost": 26,
+      "replan_invalid": 10,
+      "request_direct": 50
+     },
+     "captures": 75,
+     "executed_while_owned": 0,
+     "exhausted": 63,
+     "gained_collisions": 26,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 10,
+      "defender_not_ahead": 3,
+      "no_path": 20
+     },
+     "longest_route_run": 8,
+     "max_plans_in_4_steps": 3,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.042,
+      "gt1.3": 120,
+      "gt2": 103,
+      "gt5": 42,
+      "max": 6.081896589361739,
+      "mean": 1.3702081685019514,
+      "median": 1.0017314930484775
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         33,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 33,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.1125,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         15,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 2,
+       "exhausted": 15,
+       "gained": 2,
+       "orbit": 0,
+       "overshoot_fraction": 0.125,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         9,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 8,
+       "exhausted": 9,
+       "gained": 8,
+       "orbit": 0,
+       "overshoot_fraction": 0.115,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         6,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 16,
+       "exhausted": 6,
+       "gained": 16,
+       "orbit": 0,
+       "overshoot_fraction": 0.17,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 924,
+     "plans_committed": 891,
+     "plans_per_episode": 0.924,
+     "replans_per_episode": 0.059,
+     "route_length_mean": 22.436366692094207,
+     "route_steps": 1.06,
+     "suppressed_by_obstacle": 7,
+     "timeouts": 0,
+     "waypoint_mean": 2.0523262548262546
+    },
+    "RANDOM": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 196,
+      "fraction_diverging": 0.926,
+      "mean_extra_path_m": 151.8371929688843,
+      "mean_extra_steps": 29.405,
+      "mean_min_sep_diff_m": 2.2491613173484803,
+      "median_div_m": 6.173653699390662,
+      "net_captures": 125,
+      "outcome_changed": 782,
+      "reversals": 71
+     },
+     "cancels": {
+      "defender_info_lost": 775,
+      "no_path_after_subgoal": 1,
+      "replan_invalid": 233,
+      "request_direct": 534
+     },
+     "captures": 222,
+     "executed_while_owned": 0,
+     "exhausted": 432,
+     "gained_collisions": 142,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 84,
+      "defender_not_ahead": 1338,
+      "no_path": 300
+     },
+     "longest_route_run": 14,
+     "max_plans_in_4_steps": 5,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.218,
+      "gt1.3": 779,
+      "gt2": 728,
+      "gt5": 218,
+      "max": 8.513068326483857,
+      "mean": 3.4723030824686654,
+      "median": 3.3488107710970985
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         227,
+         0
+        ],
+        "orbit": [
+         8,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 227,
+       "gained": 0,
+       "orbit": 8,
+       "overshoot_fraction": 0.885,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         105,
+         0
+        ],
+        "orbit": [
+         2,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 9,
+       "exhausted": 105,
+       "gained": 9,
+       "orbit": 2,
+       "overshoot_fraction": 0.875,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         65,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 43,
+       "exhausted": 65,
+       "gained": 43,
+       "orbit": 0,
+       "overshoot_fraction": 0.82,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         35,
+         0
+        ],
+        "orbit": [
+         1,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 90,
+       "exhausted": 35,
+       "gained": 90,
+       "orbit": 1,
+       "overshoot_fraction": 0.75,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 5491,
+     "plans_committed": 3768,
+     "plans_per_episode": 5.491,
+     "replans_per_episode": 1.502,
+     "route_length_mean": 27.076962240177714,
+     "route_steps": 6.673,
+     "suppressed_by_obstacle": 43,
+     "timeouts": 0,
+     "waypoint_mean": 2.055928965789214
+    },
+    "RIGHT": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 139,
+      "fraction_diverging": 0.95,
+      "mean_extra_path_m": 177.70143722269515,
+      "mean_extra_steps": 33.248,
+      "mean_min_sep_diff_m": 3.1364242367744444,
+      "median_div_m": 7.2297786964747415,
+      "net_captures": 65,
+      "outcome_changed": 897,
+      "reversals": 74
+     },
+     "cancels": {
+      "defender_info_lost": 767,
+      "no_path_after_subgoal": 1,
+      "replan_invalid": 130
+     },
+     "captures": 162,
+     "executed_while_owned": 0,
+     "exhausted": 568,
+     "gained_collisions": 183,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 108,
+      "defender_not_ahead": 711,
+      "no_path": 416
+     },
+     "longest_route_run": 15,
+     "max_plans_in_4_steps": 6,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.318,
+      "gt1.3": 822,
+      "gt2": 781,
+      "gt5": 318,
+      "max": 9.071854980441968,
+      "mean": 3.8224736826761547,
+      "median": 3.8882291942143303
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         325,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 325,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.99,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         121,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 15,
+       "exhausted": 121,
+       "gained": 15,
+       "orbit": 0,
+       "overshoot_fraction": 0.95,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         82,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 56,
+       "exhausted": 82,
+       "gained": 56,
+       "orbit": 0,
+       "overshoot_fraction": 0.885,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         40,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 112,
+       "exhausted": 40,
+       "gained": 112,
+       "orbit": 0,
+       "overshoot_fraction": 0.785,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 4946,
+     "plans_committed": 3709,
+     "plans_per_episode": 4.946,
+     "replans_per_episode": 1.461,
+     "route_length_mean": 28.657900580657213,
+     "route_steps": 6.415,
+     "suppressed_by_obstacle": 71,
+     "timeouts": 0,
+     "waypoint_mean": 2.0987737096466437
+    }
+   },
+   "radius_m": 10.0,
+   "replan_s": 1.0,
+   "replans_per_episode": 1.4092857142857143,
+   "reversals_at_best": 60
+  },
+  {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G3_positive": true,
+   "G4": false,
+   "G5": true,
+   "G6": false,
+   "best_effect": 105,
+   "exhausted_total": 3306,
+   "gained_collisions_total": 973,
+   "median_path_excess": 3.892433772292448,
+   "passed": false,
+   "policies": {
+    "ABOVE": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 148,
+      "fraction_diverging": 0.994,
+      "mean_extra_path_m": 185.96936302997813,
+      "mean_extra_steps": 36.807,
+      "mean_min_sep_diff_m": 4.273800256490707,
+      "median_div_m": 8.243755212280384,
+      "net_captures": 64,
+      "outcome_changed": 853,
+      "reversals": 84
+     },
+     "cancels": {
+      "defender_info_lost": 716,
+      "no_path_after_subgoal": 3,
+      "replan_invalid": 258
+     },
+     "captures": 161,
+     "executed_while_owned": 0,
+     "exhausted": 542,
+     "gained_collisions": 140,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "defender_not_ahead": 1976,
+      "no_path": 126
+     },
+     "longest_route_run": 14,
+     "max_plans_in_4_steps": 5,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.245,
+      "gt1.3": 921,
+      "gt2": 872,
+      "gt5": 245,
+      "max": 10.809903083009434,
+      "mean": 4.080134542020491,
+      "median": 4.226513381023418
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         293,
+         0
+        ],
+        "orbit": [
+         4,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 293,
+       "gained": 0,
+       "orbit": 4,
+       "overshoot_fraction": 1.0,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         120,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 11,
+       "exhausted": 120,
+       "gained": 11,
+       "orbit": 0,
+       "overshoot_fraction": 1.0,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         80,
+         0
+        ],
+        "orbit": [
+         1,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 43,
+       "exhausted": 80,
+       "gained": 43,
+       "orbit": 1,
+       "overshoot_fraction": 0.915,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         49,
+         0
+        ],
+        "orbit": [
+         1,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 86,
+       "exhausted": 49,
+       "gained": 86,
+       "orbit": 1,
+       "overshoot_fraction": 0.92,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 4621,
+     "plans_committed": 2519,
+     "plans_per_episode": 4.621,
+     "replans_per_episode": 0.48,
+     "route_length_mean": 28.288877193734006,
+     "route_steps": 7.926,
+     "suppressed_by_obstacle": 30,
+     "timeouts": 0,
+     "waypoint_mean": 2.045933333333333
+    },
+    "ADVERSARIAL": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 173,
+      "fraction_diverging": 0.966,
+      "mean_extra_path_m": 158.93918950794614,
+      "mean_extra_steps": 30.98,
+      "mean_min_sep_diff_m": 2.9022021532058715,
+      "median_div_m": 6.317785793400889,
+      "net_captures": 105,
+      "outcome_changed": 747,
+      "reversals": 68
+     },
+     "cancels": {
+      "defender_info_lost": 419,
+      "no_path_after_subgoal": 1,
+      "replan_invalid": 70,
+      "request_direct": 257
+     },
+     "captures": 202,
+     "executed_while_owned": 0,
+     "exhausted": 437,
+     "gained_collisions": 124,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 29,
+      "defender_not_ahead": 1145,
+      "no_path": 115
+     },
+     "longest_route_run": 12,
+     "max_plans_in_4_steps": 4,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.125,
+      "gt1.3": 781,
+      "gt2": 737,
+      "gt5": 125,
+      "max": 8.734524001179109,
+      "mean": 3.369148949866301,
+      "median": 3.7628323429159343
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         225,
+         0
+        ],
+        "orbit": [
+         4,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 225,
+       "gained": 0,
+       "orbit": 4,
+       "overshoot_fraction": 0.8625,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         106,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 8,
+       "exhausted": 106,
+       "gained": 8,
+       "orbit": 0,
+       "overshoot_fraction": 0.855,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         74,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 34,
+       "exhausted": 74,
+       "gained": 34,
+       "orbit": 0,
+       "overshoot_fraction": 0.79,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         32,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 82,
+       "exhausted": 32,
+       "gained": 82,
+       "orbit": 0,
+       "overshoot_fraction": 0.755,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 3237,
+     "plans_committed": 1948,
+     "plans_per_episode": 3.237,
+     "replans_per_episode": 0.065,
+     "route_length_mean": 26.908289958557862,
+     "route_steps": 5.109,
+     "suppressed_by_obstacle": 44,
+     "timeouts": 0,
+     "waypoint_mean": 2.048583333333333
+    },
+    "ALT_LR": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 143,
+      "fraction_diverging": 0.966,
+      "mean_extra_path_m": 179.47609945301934,
+      "mean_extra_steps": 33.802,
+      "mean_min_sep_diff_m": 3.5392750957012176,
+      "median_div_m": 7.99410407738103,
+      "net_captures": 68,
+      "outcome_changed": 893,
+      "reversals": 75
+     },
+     "cancels": {
+      "defender_info_lost": 611,
+      "no_path_after_subgoal": 2,
+      "replan_invalid": 116
+     },
+     "captures": 165,
+     "executed_while_owned": 0,
+     "exhausted": 566,
+     "gained_collisions": 179,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 114,
+      "defender_not_ahead": 736,
+      "no_path": 264
+     },
+     "longest_route_run": 16,
+     "max_plans_in_4_steps": 5,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.331,
+      "gt1.3": 820,
+      "gt2": 780,
+      "gt5": 331,
+      "max": 8.63838864756231,
+      "mean": 3.851909371393124,
+      "median": 4.013588599969248
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         327,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 327,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.9925,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         125,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 21,
+       "exhausted": 125,
+       "gained": 21,
+       "orbit": 0,
+       "overshoot_fraction": 0.995,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         73,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 61,
+       "exhausted": 73,
+       "gained": 61,
+       "orbit": 0,
+       "overshoot_fraction": 0.905,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         41,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 97,
+       "exhausted": 41,
+       "gained": 97,
+       "orbit": 0,
+       "overshoot_fraction": 0.8,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 3380,
+     "plans_committed": 2265,
+     "plans_per_episode": 3.38,
+     "replans_per_episode": 0.47,
+     "route_length_mean": 31.348773915240262,
+     "route_steps": 7.175,
+     "suppressed_by_obstacle": 44,
+     "timeouts": 0,
+     "waypoint_mean": 2.0860323952348496
+    },
+    "LEFT": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 114,
+      "fraction_diverging": 0.966,
+      "mean_extra_path_m": 182.4096795468935,
+      "mean_extra_steps": 34.258,
+      "mean_min_sep_diff_m": 3.6570920486450196,
+      "median_div_m": 7.99410407738103,
+      "net_captures": 37,
+      "outcome_changed": 908,
+      "reversals": 77
+     },
+     "cancels": {
+      "defender_info_lost": 424,
+      "no_path_after_subgoal": 2,
+      "replan_invalid": 96
+     },
+     "captures": 134,
+     "executed_while_owned": 0,
+     "exhausted": 611,
+     "gained_collisions": 181,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 114,
+      "defender_not_ahead": 635,
+      "no_path": 280
+     },
+     "longest_route_run": 17,
+     "max_plans_in_4_steps": 5,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.344,
+      "gt1.3": 830,
+      "gt2": 786,
+      "gt5": 344,
+      "max": 9.369436523392135,
+      "mean": 3.893848487479471,
+      "median": 4.046136526880437
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         349,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 349,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.9925,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         140,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 17,
+       "exhausted": 140,
+       "gained": 17,
+       "orbit": 0,
+       "overshoot_fraction": 0.995,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         78,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 66,
+       "exhausted": 78,
+       "gained": 66,
+       "orbit": 0,
+       "overshoot_fraction": 0.905,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         44,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 98,
+       "exhausted": 44,
+       "gained": 98,
+       "orbit": 0,
+       "overshoot_fraction": 0.795,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 3162,
+     "plans_committed": 2131,
+     "plans_per_episode": 3.162,
+     "replans_per_episode": 0.294,
+     "route_length_mean": 31.295381865424556,
+     "route_steps": 6.391,
+     "suppressed_by_obstacle": 41,
+     "timeouts": 0,
+     "waypoint_mean": 2.090699354042912
+    },
+    "MAX_SEP": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": false,
+     "G4": false,
+     "authority": {
+      "conversions": 26,
+      "fraction_diverging": 0.194,
+      "mean_extra_path_m": 21.700739460914644,
+      "mean_extra_steps": 4.099,
+      "mean_min_sep_diff_m": 0.22373133850097657,
+      "median_div_m": 0.23280893453645632,
+      "net_captures": -27,
+      "outcome_changed": 128,
+      "reversals": 53
+     },
+     "cancels": {
+      "defender_info_lost": 29,
+      "replan_invalid": 12,
+      "request_direct": 11
+     },
+     "captures": 70,
+     "executed_while_owned": 0,
+     "exhausted": 64,
+     "gained_collisions": 28,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 10,
+      "defender_not_ahead": 4,
+      "no_path": 19
+     },
+     "longest_route_run": 16,
+     "max_plans_in_4_steps": 3,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.045,
+      "gt1.3": 116,
+      "gt2": 100,
+      "gt5": 45,
+      "max": 6.388419655270263,
+      "mean": 1.3726457002308656,
+      "median": 1.0017314930484775
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         32,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 32,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.1125,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         17,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 17,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.125,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         9,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 10,
+       "exhausted": 9,
+       "gained": 10,
+       "orbit": 0,
+       "overshoot_fraction": 0.115,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         6,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 18,
+       "exhausted": 6,
+       "gained": 18,
+       "orbit": 0,
+       "overshoot_fraction": 0.17,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 863,
+     "plans_committed": 830,
+     "plans_per_episode": 0.863,
+     "replans_per_episode": 0.031,
+     "route_length_mean": 22.736961220213484,
+     "route_steps": 1.15,
+     "suppressed_by_obstacle": 10,
+     "timeouts": 0,
+     "waypoint_mean": 2.051644144144144
+    },
+    "RANDOM": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 137,
+      "fraction_diverging": 0.926,
+      "mean_extra_path_m": 165.31878985417944,
+      "mean_extra_steps": 31.722,
+      "mean_min_sep_diff_m": 3.194671988964081,
+      "median_div_m": 7.934957435700026,
+      "net_captures": 69,
+      "outcome_changed": 805,
+      "reversals": 68
+     },
+     "cancels": {
+      "defender_info_lost": 475,
+      "replan_invalid": 129,
+      "request_direct": 97
+     },
+     "captures": 166,
+     "executed_while_owned": 0,
+     "exhausted": 505,
+     "gained_collisions": 155,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 64,
+      "defender_not_ahead": 952,
+      "no_path": 167
+     },
+     "longest_route_run": 15,
+     "max_plans_in_4_steps": 6,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.262,
+      "gt1.3": 801,
+      "gt2": 752,
+      "gt5": 262,
+      "max": 8.671851485888276,
+      "mean": 3.6642288249702255,
+      "median": 3.8074452494174604
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         273,
+         0
+        ],
+        "orbit": [
+         2,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 273,
+       "gained": 0,
+       "orbit": 2,
+       "overshoot_fraction": 0.905,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         118,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 15,
+       "exhausted": 118,
+       "gained": 15,
+       "orbit": 0,
+       "overshoot_fraction": 0.895,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         78,
+         0
+        ],
+        "orbit": [
+         2,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 48,
+       "exhausted": 78,
+       "gained": 48,
+       "orbit": 2,
+       "overshoot_fraction": 0.835,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         36,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 92,
+       "exhausted": 36,
+       "gained": 92,
+       "orbit": 0,
+       "overshoot_fraction": 0.77,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 3221,
+     "plans_committed": 2038,
+     "plans_per_episode": 3.221,
+     "replans_per_episode": 0.246,
+     "route_length_mean": 29.722295838108053,
+     "route_steps": 6.051,
+     "suppressed_by_obstacle": 60,
+     "timeouts": 0,
+     "waypoint_mean": 2.0683944592329686
+    },
+    "RIGHT": {
+     "G1": false,
+     "G2": false,
+     "G3": true,
+     "G3_positive": true,
+     "G4": false,
+     "authority": {
+      "conversions": 147,
+      "fraction_diverging": 0.95,
+      "mean_extra_path_m": 179.18698197006236,
+      "mean_extra_steps": 33.588,
+      "mean_min_sep_diff_m": 3.5842721433639526,
+      "median_div_m": 7.830076627977532,
+      "net_captures": 74,
+      "outcome_changed": 899,
+      "reversals": 73
+     },
+     "cancels": {
+      "defender_info_lost": 427,
+      "no_path_after_subgoal": 1,
+      "replan_invalid": 74
+     },
+     "captures": 171,
+     "executed_while_owned": 0,
+     "exhausted": 581,
+     "gained_collisions": 166,
+     "ids_outside_perceived": 0,
+     "invalid": {
+      "ceiling": 106,
+      "defender_not_ahead": 583,
+      "no_path": 302
+     },
+     "longest_route_run": 13,
+     "max_plans_in_4_steps": 5,
+     "non_finite": 0,
+     "path_excess": {
+      "base_fraction_gt5": 0.0,
+      "fraction_gt5": 0.334,
+      "gt1.3": 826,
+      "gt2": 788,
+      "gt5": 334,
+      "max": 7.58636724976052,
+      "mean": 3.872345775098772,
+      "median": 3.892433772292448
+     },
+     "per_level": {
+      "C0": {
+       "G1": true,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         322,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 0,
+       "exhausted": 322,
+       "gained": 0,
+       "orbit": 0,
+       "overshoot_fraction": 0.99,
+       "timeout": 0
+      },
+      "C1": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         126,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 13,
+       "exhausted": 126,
+       "gained": 13,
+       "orbit": 0,
+       "overshoot_fraction": 0.95,
+       "timeout": 0
+      },
+      "C2": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         85,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 57,
+       "exhausted": 85,
+       "gained": 57,
+       "orbit": 0,
+       "overshoot_fraction": 0.885,
+       "timeout": 0
+      },
+      "C3": {
+       "G1": false,
+       "G2": false,
+       "G2_violations": {
+        "exhausted": [
+         48,
+         0
+        ]
+       },
+       "base_collisions": 0,
+       "base_exhausted": 0,
+       "base_overshoot_fraction": 0.0,
+       "collisions": 96,
+       "exhausted": 48,
+       "gained": 96,
+       "orbit": 0,
+       "overshoot_fraction": 0.79,
+       "timeout": 0
+      }
+     },
+     "plan_calls_with_unperceived": 0,
+     "plan_calls_without_info": 0,
+     "plans_attempted": 3058,
+     "plans_committed": 2065,
+     "plans_per_episode": 3.058,
+     "replans_per_episode": 0.284,
+     "route_length_mean": 31.187667699848188,
+     "route_steps": 6.184,
+     "suppressed_by_obstacle": 61,
+     "timeouts": 0,
+     "waypoint_mean": 2.101185556867375
+    }
+   },
+   "radius_m": 10.0,
+   "replan_s": 2.0,
+   "replans_per_episode": 0.2671428571428571,
+   "reversals_at_best": 68
+  }
+ ],
+ "coverage": {
+  "C0": [
+   "greedy",
+   "kalman_greedy",
+   "lead",
+   "pn"
+  ],
+  "C1": [
+   "greedy",
+   "pn"
+  ],
+  "C2": [
+   "greedy",
+   "pn"
+  ],
+  "C3": [
+   "greedy",
+   "pn"
+  ]
+ },
+ "flags": {
+  "deterministic_replay": true,
+  "direct_equals_a0": true
+ },
+ "forbidden_references": [],
+ "mechanisms": {
+  "R10.0_T1.0": {
+   "exhausted_base_outcome": {
+    "intercepted": 2724,
+    "soldier_caught": 255,
+    "unsafe_intercept": 46
+   },
+   "gained_collision_mechanism_sample": {
+    "on a route step; frozen layer not owning the collision step": 1,
+    "on a route step; frozen layer owned the collision step": 2,
+    "route ended 1-3 steps earlier; frozen layer owned the collision step": 8,
+    "route ended >3 steps earlier; frozen layer owned the collision step": 29
+   },
+   "gained_total": 990,
+   "path_excess_gt5": {
+    "base_outcome": {
+     "intercepted": 1371,
+     "soldier_caught": 116,
+     "unsafe_intercept": 26
+    },
+    "by_outcome": {
+     "defender_static_obstacle_collision": 2,
+     "enemy_endurance_exhausted": 1325,
+     "enemy_static_obstacle_collision": 26,
+     "intercepted": 42,
+     "soldier_caught": 118
+    },
+    "by_policy": {
+     "ABOVE": 221,
+     "ADVERSARIAL": 149,
+     "ALT_LR": 238,
+     "LEFT": 327,
+     "MAX_SEP": 42,
+     "RANDOM": 218,
+     "RIGHT": 318
+    },
+    "count": 1513
+   },
+   "sampled": 40
+  },
+  "R10.0_T2.0": {
+   "exhausted_base_outcome": {
+    "intercepted": 2967,
+    "soldier_caught": 286,
+    "unsafe_intercept": 53
+   },
+   "gained_collision_mechanism_sample": {
+    "on a route step; frozen layer owned the collision step": 4,
+    "route ended 1-3 steps earlier; frozen layer owned the collision step": 10,
+    "route ended >3 steps earlier; frozen layer owned the collision step": 26
+   },
+   "gained_total": 973,
+   "path_excess_gt5": {
+    "base_outcome": {
+     "intercepted": 1538,
+     "soldier_caught": 125,
+     "unsafe_intercept": 23
+    },
+    "by_outcome": {
+     "enemy_endurance_exhausted": 1477,
+     "enemy_static_obstacle_collision": 30,
+     "intercepted": 37,
+     "soldier_caught": 142
+    },
+    "by_policy": {
+     "ABOVE": 245,
+     "ADVERSARIAL": 125,
+     "ALT_LR": 331,
+     "LEFT": 344,
+     "MAX_SEP": 45,
+     "RANDOM": 262,
+     "RIGHT": 334
+    },
+    "count": 1686
+   },
+   "sampled": 40
+  },
+  "R5.0_T1.0": {
+   "exhausted_base_outcome": {
+    "intercepted": 1723,
+    "soldier_caught": 234,
+    "unsafe_intercept": 28
+   },
+   "gained_collision_mechanism_sample": {
+    "on a route step; frozen layer owned the collision step": 2,
+    "route ended 1-3 steps earlier; frozen layer owned the collision step": 9,
+    "route ended >3 steps earlier; frozen layer owned the collision step": 29
+   },
+   "gained_total": 673,
+   "path_excess_gt5": {
+    "base_outcome": {
+     "intercepted": 896,
+     "soldier_caught": 119,
+     "unsafe_intercept": 16
+    },
+    "by_outcome": {
+     "enemy_endurance_exhausted": 942,
+     "enemy_static_obstacle_collision": 7,
+     "intercepted": 8,
+     "soldier_caught": 74
+    },
+    "by_policy": {
+     "ABOVE": 203,
+     "ADVERSARIAL": 135,
+     "ALT_LR": 34,
+     "LEFT": 251,
+     "MAX_SEP": 40,
+     "RANDOM": 130,
+     "RIGHT": 238
+    },
+    "count": 1031
+   },
+   "sampled": 40
+  },
+  "R5.0_T2.0": {
+   "exhausted_base_outcome": {
+    "intercepted": 2177,
+    "soldier_caught": 248,
+    "unsafe_intercept": 48
+   },
+   "gained_collision_mechanism_sample": {
+    "on a route step; frozen layer owned the collision step": 1,
+    "route ended 1-3 steps earlier; frozen layer not owning the collision step": 2,
+    "route ended 1-3 steps earlier; frozen layer owned the collision step": 4,
+    "route ended >3 steps earlier; frozen layer owned the collision step": 33
+   },
+   "gained_total": 903,
+   "path_excess_gt5": {
+    "base_outcome": {
+     "intercepted": 1115,
+     "soldier_caught": 115,
+     "unsafe_intercept": 19
+    },
+    "by_outcome": {
+     "defender_dynamic_obstacle_collision": 1,
+     "enemy_endurance_exhausted": 1092,
+     "enemy_static_obstacle_collision": 9,
+     "intercepted": 17,
+     "soldier_caught": 130
+    },
+    "by_policy": {
+     "ABOVE": 180,
+     "ADVERSARIAL": 149,
+     "ALT_LR": 232,
+     "LEFT": 260,
+     "MAX_SEP": 24,
+     "RANDOM": 164,
+     "RIGHT": 240
+    },
+    "count": 1249
+   },
+   "sampled": 40
+  },
+  "R7.5_T1.0": {
+   "exhausted_base_outcome": {
+    "intercepted": 2352,
+    "soldier_caught": 247,
+    "unsafe_intercept": 47
+   },
+   "gained_collision_mechanism_sample": {
+    "on a route step; frozen layer owned the collision step": 4,
+    "route ended 1-3 steps earlier; frozen layer owned the collision step": 8,
+    "route ended >3 steps earlier; frozen layer owned the collision step": 28
+   },
+   "gained_total": 821,
+   "path_excess_gt5": {
+    "base_outcome": {
+     "intercepted": 1196,
+     "soldier_caught": 114,
+     "unsafe_intercept": 20
+    },
+    "by_outcome": {
+     "defender_dynamic_obstacle_collision": 1,
+     "enemy_endurance_exhausted": 1185,
+     "enemy_static_obstacle_collision": 7,
+     "intercepted": 33,
+     "soldier_caught": 104
+    },
+    "by_policy": {
+     "ABOVE": 227,
+     "ADVERSARIAL": 166,
+     "ALT_LR": 111,
+     "LEFT": 321,
+     "MAX_SEP": 25,
+     "RANDOM": 181,
+     "RIGHT": 299
+    },
+    "count": 1330
+   },
+   "sampled": 40
+  },
+  "R7.5_T2.0": {
+   "exhausted_base_outcome": {
+    "intercepted": 2720,
+    "soldier_caught": 273,
+    "unsafe_intercept": 46
+   },
+   "gained_collision_mechanism_sample": {
+    "on a route step; frozen layer owned the collision step": 2,
+    "route ended 1-3 steps earlier; frozen layer owned the collision step": 4,
+    "route ended >3 steps earlier; frozen layer owned the collision step": 34
+   },
+   "gained_total": 954,
+   "path_excess_gt5": {
+    "base_outcome": {
+     "intercepted": 1434,
+     "soldier_caught": 144,
+     "unsafe_intercept": 15
+    },
+    "by_outcome": {
+     "enemy_endurance_exhausted": 1409,
+     "enemy_static_obstacle_collision": 19,
+     "intercepted": 36,
+     "soldier_caught": 129
+    },
+    "by_policy": {
+     "ABOVE": 223,
+     "ADVERSARIAL": 153,
+     "ALT_LR": 303,
+     "LEFT": 342,
+     "MAX_SEP": 25,
+     "RANDOM": 232,
+     "RIGHT": 315
+    },
+    "count": 1593
+   },
+   "sampled": 40
+  }
+ },
+ "selected": null,
+ "spec_sha256": "5cdb448a669f4519d2949ef90fc596a073b5600fe9da9cca0003f18ff711dd7d"
+}

@@ -1,0 +1,130 @@
+{
+ "action_version": "a1_route_action_v1",
+ "configs": [
+  [
+   5.0,
+   1.0
+  ],
+  [
+   5.0,
+   2.0
+  ],
+  [
+   7.5,
+   1.0
+  ],
+  [
+   7.5,
+   2.0
+  ],
+  [
+   10.0,
+   1.0
+  ],
+  [
+   10.0,
+   2.0
+  ]
+ ],
+ "defenders": [
+  "greedy",
+  "kalman_greedy",
+  "pn",
+  "lead",
+  "rmpc"
+ ],
+ "gates": {
+  "G1": "every tactical policy, every level: collisions <= DIRECT and gained == 0",
+  "G2": "exhausted/timeout/orbit/hover <= DIRECT; fly-by fraction <= DIRECT+0.5pp",
+  "G3": ">=5% diverge >=1 m AND (>=10 conversions OR |mean min-sep diff|>=0.25 m); positive: conversions >= reversals",
+  "G4": "fraction path-excess>5x <= DIRECT + 0.5pp",
+  "G5": "0 plans without info, 0 ids outside perceived, 0 forbidden references, DIRECT == A0",
+  "G6": "finite, deterministic replay, route run <= 40 steps, <= 3 plans in 4 steps"
+ },
+ "intents": [
+  "DIRECT_ROUTE",
+  "EVADE_LEFT_ROUTE",
+  "EVADE_RIGHT_ROUTE",
+  "EVADE_ABOVE_ROUTE"
+ ],
+ "levels": [
+  "C0",
+  "C1",
+  "C2",
+  "C3"
+ ],
+ "lockout_rule": "after a route completion the controller stays DIRECT for one replan interval (added after a 4-scenario smoke test, before any sweep)",
+ "observation": {
+  "countdown": "route: steps until the cadence expires / replan_steps; DIRECT: post-completion hold remaining / replan_steps",
+  "dim": 43,
+  "extra": [
+   "route_mode_direct",
+   "route_mode_left",
+   "route_mode_right",
+   "route_mode_above",
+   "route_progress",
+   "route_replan_countdown"
+  ],
+  "progress": "1 - |subgoal - p_a| / initial distance to the subgoal, 1 after it is passed, 0 in DIRECT"
+ },
+ "observation_version": "a1_v2_obs_route_v1",
+ "planner": "uav_defend.obstacles.route_planner.build_and_search_route (existing visibility-graph + A*, perceived static obstacles only)",
+ "policies": [
+  "DIRECT",
+  "LEFT",
+  "RIGHT",
+  "ABOVE",
+  "ALT_LR",
+  "RANDOM",
+  "MAX_SEP",
+  "ADVERSARIAL"
+ ],
+ "radii_m": [
+  5.0,
+  7.5,
+  10.0
+ ],
+ "replan_s": [
+  1.0,
+  2.0
+ ],
+ "reward_version": "a1_v2_reward_v2",
+ "seeds": [
+  145000,
+  145099
+ ],
+ "selection": [
+  "zero gained collisions",
+  "no mission pathology",
+  "strongest positive tactical effect",
+  "fewer reversals",
+  "lower exhaustion",
+  "lower median path-excess",
+  "fewer replans",
+  "smaller R",
+  "longer cadence"
+ ],
+ "spec_sha256": "5cdb448a669f4519d2949ef90fc596a073b5600fe9da9cca0003f18ff711dd7d",
+ "thresholds": {
+  "conversions_min": 10,
+  "divergence_fraction": 0.05,
+  "divergence_m": 1.0,
+  "max_plans_in_4_steps": 3,
+  "min_ahead_m": 1.0,
+  "min_sep_diff_m": 0.25,
+  "min_vertical_fraction": 0.5,
+  "overshoot_allowance": 0.005,
+  "path_excess_5x_allowance": 0.005,
+  "route_run_bound_steps": 40,
+  "trajectory_steps_compared": 60
+ },
+ "training_protocol": "a1_route_training_v1",
+ "validation_rejections": [
+  "defender_not_ahead(s<1 m)",
+  "degenerate_geometry",
+  "ceiling(capped vertical offset < 0.5 R)",
+  "no_path",
+  "non_finite",
+  "planner_collision"
+ ]
+}

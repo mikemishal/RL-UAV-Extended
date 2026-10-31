@@ -1,0 +1,75 @@
+{
+ "can_be_used_for_attacker": true,
+ "canonical_perception_per_level": {
+  "C0": {
+   "avoidance_enabled": false,
+   "awareness_mode": "disabled",
+   "ground_truth_dynamic_obstacles": 0,
+   "ground_truth_static_obstacles": 0,
+   "guidance": "direct_obstacle_only",
+   "perceived_dynamic_at_step_1": 0,
+   "perceived_static_at_step_1": 0,
+   "route_planning_enabled_in_canonical_A0": false
+  },
+  "C1": {
+   "avoidance_enabled": true,
+   "awareness_mode": "map_local",
+   "ground_truth_dynamic_obstacles": 1,
+   "ground_truth_static_obstacles": 3,
+   "guidance": "direct_obstacle_only",
+   "perceived_dynamic_at_step_1": 0,
+   "perceived_static_at_step_1": 3,
+   "route_planning_enabled_in_canonical_A0": false
+  },
+  "C2": {
+   "avoidance_enabled": true,
+   "awareness_mode": "map_local",
+   "ground_truth_dynamic_obstacles": 2,
+   "ground_truth_static_obstacles": 8,
+   "guidance": "direct_obstacle_only",
+   "perceived_dynamic_at_step_1": 0,
+   "perceived_static_at_step_1": 8,
+   "route_planning_enabled_in_canonical_A0": false
+  },
+  "C3": {
+   "avoidance_enabled": true,
+   "awareness_mode": "map_local",
+   "ground_truth_dynamic_obstacles": 4,
+   "ground_truth_static_obstacles": 15,
+   "guidance": "direct_obstacle_only",
+   "perceived_dynamic_at_step_1": 0,
+   "perceived_static_at_step_1": 15,
+   "route_planning_enabled_in_canonical_A0": false
+  }
+ },
+ "canonical_v2_A0": "route planning is DISABLED (enemy_route_planning_enabled False, direct_obstacle_only): A0 = direct pursuit + frozen reactive layer; the planner is therefore never run for A0",
+ "docstring_of_perception_module_excerpt": "\n    \"disabled\"  -- backward-compatible: perceives the ENTIRE ground-truth\n        static layout and every current dynamic obstacle (pre-perception-\n        layer behavior, unchanged). Not a realistic journal attacker mode.\n    \"local\"     -- Level B: no prior map knowledge. A static obstacle is\n        perceived once the attacker comes within `enemy_obstacle_sensor_range`\n        of its AABB surface (not just its center); a dynamic obstacle is\n        perceived once within `enemy_dynamic_obstacle_sensor_range` of its\n        center. Sensing is a simple omnidirectional volume (no field of\n        view/occlusion/noise/missed detections -- an explicitly documented\n        abstraction for this first implementation; see task spec Section 5).\n    \"map_local\" -- Level C: `O_perceived = O_map union O_local`, where\n        O_map is every static obstacle with `AABBObstacle.map_known=True`\n       ",
+ "dynamic_obstacle_support": "none in the planner (it never reads PerceivedObstacleSet.dynamic); dynamic obstacles are handled only by the frozen reactive layer",
+ "integration_with_common_controller": "route command -> StatefulAvoidanceController (frozen, last stage) -> dynamics; the controller returns its input unchanged when its DIRECT mission rollout is predicted safe",
+ "limitations": [
+  "static obstacles only",
+  "visibility graph limited to planning_range (40 m) and 150 nodes",
+  "dynamics feasibility enforced only by the frozen reactive layer",
+  "route legs are not checked against dynamic obstacles or against the vehicle's turning radius"
+ ],
+ "map_knowledge_note": "in C1-C3 every static obstacle is map-known (perceived at step 1 == ground truth static), dynamic obstacles are only locally perceived (sensor range 15.0 m) and are not used by the planner; this IS the canonical attacker perception contract",
+ "moving_target_support": "yes (live final-waypoint tracking + target_moved replan); here the target is the protected asset",
+ "perception_inputs": "PerceivedObstacleSet ONLY (docstring: 'NEVER receives the ground-truth world'); build_and_search_route(position, goal, perceived, clearance, max_altitude, planning_range, max_graph_nodes)",
+ "planner_functions": [
+  "uav_defend/obstacles/route_planner.py: build_and_search_route (pure visibility graph + A*)",
+  "RoutePlanner (stateful wrapper)",
+  "RouteState (waypoints, index, obstacle ids, replan reason)"
+ ],
+ "privileged_information_analysis": "the planner accepts only a PerceivedObstacleSet and positions; the A1 route layer passes `env._enemy_last_perceived` (the set the frozen layer itself uses) and the current attacker/asset/defender positions (defender only while the A1 defender-information gate is open). The asset position is the mission target A0 already uses.",
+ "replan_logic": "RoutePlanner.plan: replans on no_active_route, route_unsafe_or_new_obstacle, target_moved (goal shift > max(0.5*planning_range, 4*clearance)), progress_stall, route_complete; final waypoint tracks the moving (local) goal every step",
+ "requires_privileged_information": false,
+ "route_following": "RoutePlanner returns the unit direction to the current waypoint; env feeds it as r_hat (legacy) into the common obstacle layer",
+ "route_representation": "RouteState: tuple of 3-D waypoints, current_waypoint_index, stable obstacle ids, replan reason, estimated length, goal_at_creation",
+ "signatures": {
+  "RoutePlanner.direct_path_clear": "(self, position: 'np.ndarray', true_target: 'np.ndarray', perceived: 'PerceivedObstacleSet') -> 'bool'",
+  "RoutePlanner.plan": "(self, position: 'np.ndarray', true_target: 'np.ndarray', perceived: 'PerceivedObstacleSet', awareness_mode: 'str') -> 'dict'",
+  "build_and_search_route": "(position: 'np.ndarray', goal: 'np.ndarray', perceived: 'PerceivedObstacleSet', clearance: 'float', max_altitude: 'float', planning_range: 'float', max_graph_nodes: 'int', turn_weight: 'float' = 3.0, vertical_weight: 'float' = 1.5, clearance_weight: 'float' = 2.0) -> 'tuple[np.ndarray, ...] | None'"
+ },
+ "static_obstacle_support": "yes: inflated AABBs from PerceivedObstacleSet.static; collision-free edges are a hard constraint, not a cost",
+ "waypoint_representation": "np.ndarray(3); graph nodes = start, goal, 4 inflated horizontal AABB corners per perceived static obstacle (+1 vertical-over waypoint when below the ceiling)"
+}

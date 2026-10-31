@@ -1,0 +1,10 @@
+{
+ "a0_tag_commit": "bdbee45dc08a583a0da5ca882dc6b1269207a8cd",
+ "branch": "research/journal-corrected-attacker-v2",
+ "expected_head_prefix": "e76da9e",
+ "head": "e76da9e4d8f7bc7710a8585e4095d6f5b4e5c847",
+ "head_matches": true,
+ "reward_version": "a1_v2_reward_v2",
+ "tracked_tree_clean": true,
+ "uav_defend_identical_to_a0_tag": true
+}
