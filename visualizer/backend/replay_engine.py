@@ -49,7 +49,7 @@ from .replay_contract import (
 from .replay_validation import validate_trace as _validate_trace
 
 logger = logging.getLogger(__name__)
-EXPECTED_RESEARCH_COMMIT = "b6874bd88dbb66c19704d1c818037a9820b43ea1"  # research HEAD: V2 A1 campaign metadata on top of journal-v2-a1-training-protocol-v1 (A0 canonical: bdbee45)
+EXPECTED_RESEARCH_COMMIT = "0ecf78e2d7e0727cdbdc1c6ca8e9e17b70699db5"  # research HEAD: V2 A1 campaign metadata on top of journal-v2-a1-training-protocol-v1 (A0 canonical: bdbee45)
 REGISTRY_RELATIVE_PATH = "results/defender_adaptation_model_registry.json"
 # Canonical-V2 A1 campaign registry written by the research repository after training (never inferred).
 V2_A1_RESULTS_RELATIVE = "results/journal_v2_corrected_semantics/a1_training/a1_v2_training_v1"
