@@ -1,0 +1,105 @@
+{
+ "created_utc": "2026-10-31T14:56:58.290182+00:00",
+ "halt": {
+  "input_commit": "0ecf78e2d7e0727cdbdc1c6ca8e9e17b70699db5",
+  "reason": "No LEFT/RIGHT/CLIMB primitive accepts a defender input (signature facts); they are geometric functions of a blocker set.; Without blockers every one of them returns the mission command bit-for-bit (clear space = BASE), so in C0 all four discrete actions would be BASE.",
+  "stage": "02_primitive_audit",
+  "utc": "2026-10-31T14:56:59.666597+00:00",
+  "verdict": "D"
+ },
+ "stages": {
+  "01_repository_verification": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_discrete_v4/stage01_repository_verification.json": "44305ceb93f2c3522ca7758e059c2cb46c6d9254428d410415769881db27880f"
+   },
+   "completed_utc": "2026-10-31T14:56:58.907669+00:00",
+   "input_commit": "0ecf78e2d7e0727cdbdc1c6ca8e9e17b70699db5",
+   "note": "",
+   "output_artifacts": [
+    "docs/journal_v2_a1_discrete_v4/stage01_repository_verification.json"
+   ],
+   "started_utc": "2026-10-31T14:56:58.378297+00:00",
+   "status": "complete"
+  },
+  "02_primitive_audit": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_discrete_v4/primitive_audit.json": "8b01a08f100910d516aa864194d7cc679a3391daf27d53232962dad53c11b38d"
+   },
+   "completed_utc": "2026-10-31T14:56:59.777405+00:00",
+   "input_commit": "0ecf78e2d7e0727cdbdc1c6ca8e9e17b70699db5",
+   "note": "",
+   "output_artifacts": [
+    "docs/journal_v2_a1_discrete_v4/primitive_audit.json"
+   ],
+   "started_utc": "2026-10-31T14:56:59.099973+00:00",
+   "status": "complete"
+  },
+  "03_architecture_implementation": {
+   "completed_utc": "2026-10-31T14:56:59.756354+00:00",
+   "halted_by": "02_primitive_audit",
+   "status": "not_applicable",
+   "verdict": "D"
+  },
+  "04_unit_tests": {
+   "completed_utc": "2026-10-31T14:56:59.756371+00:00",
+   "halted_by": "02_primitive_audit",
+   "status": "not_applicable",
+   "verdict": "D"
+  },
+  "05_stress_study_generation": {
+   "completed_utc": "2026-10-31T14:56:59.756375+00:00",
+   "halted_by": "02_primitive_audit",
+   "status": "not_applicable",
+   "verdict": "D"
+  },
+  "06_stress_study_analysis": {
+   "completed_utc": "2026-10-31T14:56:59.756378+00:00",
+   "halted_by": "02_primitive_audit",
+   "status": "not_applicable",
+   "verdict": "D"
+  },
+  "07_protocol_documentation": {
+   "completed_utc": "2026-10-31T14:56:59.756381+00:00",
+   "halted_by": "02_primitive_audit",
+   "status": "not_applicable",
+   "verdict": "D"
+  },
+  "08_non_training_regression": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_discrete_v4/stage08_regression_summary.json": "941b9fa7ce9d70250b9132b886b29d402c7d9e6772bedf5702081921a4b8c617"
+   },
+   "completed_utc": "2026-10-31T15:04:18.592633+00:00",
+   "input_commit": "0ecf78e2d7e0727cdbdc1c6ca8e9e17b70699db5",
+   "note": "",
+   "output_artifacts": [
+    "docs/journal_v2_a1_discrete_v4/stage08_regression_summary.json"
+   ],
+   "started_utc": "2026-10-31T14:57:51.695535+00:00",
+   "status": "complete"
+  },
+  "09_checkpoint_integrity": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_discrete_v4/stage09_checkpoint_integrity.json": "d9e684d757a4bc0aad673777f47300e0a252a6b4eb8dd6838a5bccc160f07f30"
+   },
+   "completed_utc": "2026-10-31T15:04:19.102493+00:00",
+   "input_commit": "0ecf78e2d7e0727cdbdc1c6ca8e9e17b70699db5",
+   "note": "",
+   "output_artifacts": [
+    "docs/journal_v2_a1_discrete_v4/stage09_checkpoint_integrity.json"
+   ],
+   "started_utc": "2026-10-31T15:04:18.885005+00:00",
+   "status": "complete"
+  },
+  "10_commit_tag_push": {
+   "artifact_sha256": {},
+   "completed_utc": "2026-10-31T15:07:28.175094+00:00",
+   "input_commit": "0ecf78e2d7e0727cdbdc1c6ca8e9e17b70699db5",
+   "note": "evidence commit WITHOUT protocol tag (verdict D); commit SHA = last commit touching this file",
+   "output_artifacts": [],
+   "started_utc": "2026-10-31T15:07:28.160285+00:00",
+   "status": "complete"
+  }
+ },
+ "task": "journal_v2_a1_discrete_action_v4",
+ "updated_utc": "2026-10-31T15:07:28.175109+00:00"
+}

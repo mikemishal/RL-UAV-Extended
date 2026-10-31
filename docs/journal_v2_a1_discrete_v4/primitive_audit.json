@@ -1,0 +1,171 @@
+{
+ "clear_space": {
+  "bit_identical_to_mission_command_without_blockers": {
+   "climb": 2000,
+   "left": 2000,
+   "right": 2000
+  },
+  "random_states": 2000
+ },
+ "conclusion": {
+  "defender_driven_left_right_climb_primitive_exists": false,
+  "reasons": [
+   "No LEFT/RIGHT/CLIMB primitive accepts a defender input (signature facts); they are geometric functions of a blocker set.",
+   "Without blockers every one of them returns the mission command bit-for-bit (clear space = BASE), so in C0 all four discrete actions would be BASE.",
+   "The mode is selected inside StatefulAvoidanceController.plan from collision rollouts; there is no mode/action input, and activation is a consequence of the DIRECT rollout colliding, not of a defender.",
+   "The only defender-driven primitive (SoldierEnv._compute_enemy_evasion) is a smooth radial 'away from defender' blend, not LEFT/RIGHT/CLIMB, stateless, and explicitly zeroed in the V2 direct_obstacle_only guidance.",
+   "Authority hierarchy 2 > 3 means A1 may not steer while the common obstacle planner is active, which is exactly when the primitives are defined.",
+   "A defender-relative lateral/vertical maneuver would require NEW geometry (a reference axis, offset and finite duration), which this task forbids."
+  ],
+  "verdict": "D"
+ },
+ "signatures": {
+  "ObstacleAvoidancePlanner.plan": {
+   "has_defender_input": false,
+   "has_mode_or_action_input": false,
+   "parameters": [
+    "self",
+    "position",
+    "velocity",
+    "u_base",
+    "layout",
+    "target_position",
+    "limits"
+   ],
+   "takes_mode_argument": false
+  },
+  "StatefulAvoidanceController.plan": {
+   "has_defender_input": false,
+   "has_mode_or_action_input": false,
+   "parameters": [
+    "self",
+    "position",
+    "velocity",
+    "u_base",
+    "layout",
+    "target_position",
+    "limits"
+   ],
+   "takes_mode_argument": false
+  },
+  "climb_guidance": {
+   "has_defender_input": false,
+   "has_mode_or_action_input": false,
+   "parameters": [
+    "position",
+    "u_mission",
+    "blockers",
+    "clearance",
+    "max_altitude",
+    "limits"
+   ],
+   "takes_mode_argument": false
+  },
+  "generate_bypass_candidates": {
+   "has_defender_input": false,
+   "has_mode_or_action_input": false,
+   "parameters": [
+    "position",
+    "obstacle",
+    "u_base",
+    "clearance",
+    "max_altitude",
+    "eps"
+   ],
+   "takes_mode_argument": false
+  },
+  "guidance_command": {
+   "has_defender_input": false,
+   "has_mode_or_action_input": false,
+   "parameters": [
+    "mode",
+    "position",
+    "u_mission",
+    "blockers",
+    "clearance",
+    "max_altitude",
+    "limits"
+   ],
+   "takes_mode_argument": true
+  },
+  "lateral_guidance": {
+   "has_defender_input": false,
+   "has_mode_or_action_input": false,
+   "parameters": [
+    "position",
+    "u_mission",
+    "blockers",
+    "clearance",
+    "side",
+    "eps"
+   ],
+   "takes_mode_argument": false
+  }
+ },
+ "statelessness_and_climb": {
+  "climb": [
+   0.9090593428863095,
+   0.0,
+   0.4166666666666667
+  ],
+  "climb_ascends_only_while_below_blocker_top_plus_clearance": true,
+  "climb_capped_at_ceiling_holds_altitude": true,
+  "climb_vertical_component_above": 0.0,
+  "climb_vertical_component_below": 0.4166666666666667,
+  "climb_z_required_m": 14.0,
+  "deterministic_pure_functions": true,
+  "left": [
+   0.3713906763541037,
+   0.9284766908852594,
+   0.0
+  ],
+  "left_right_geometry_anchored_to_nearest_blocker_corner": true,
+  "right": [
+   0.3713906763541037,
+   -0.9284766908852594,
+   0.0
+  ]
+ },
+ "threat_gate": {
+  "legacy_evasion_radius_m": 20.0,
+  "observation_defender_gate_range_m": 25.0
+ },
+ "threat_window": {
+  "C0": {
+   "avoidance_active_steps": 0,
+   "both": 0,
+   "defender_within_25m_steps": 2364,
+   "episodes": 500,
+   "episodes_with_threat_and_avoidance": 0,
+   "fraction_of_threat_steps_with_primitives_defined": 0.0,
+   "steps": 5310
+  },
+  "C1": {
+   "avoidance_active_steps": 0,
+   "both": 0,
+   "defender_within_25m_steps": 2376,
+   "episodes": 500,
+   "episodes_with_threat_and_avoidance": 0,
+   "fraction_of_threat_steps_with_primitives_defined": 0.0,
+   "steps": 5312
+  },
+  "C2": {
+   "avoidance_active_steps": 80,
+   "both": 25,
+   "defender_within_25m_steps": 2356,
+   "episodes": 500,
+   "episodes_with_threat_and_avoidance": 15,
+   "fraction_of_threat_steps_with_primitives_defined": 0.010611205432937181,
+   "steps": 5353
+  },
+  "C3": {
+   "avoidance_active_steps": 305,
+   "both": 60,
+   "defender_within_25m_steps": 2340,
+   "episodes": 500,
+   "episodes_with_threat_and_avoidance": 40,
+   "fraction_of_threat_steps_with_primitives_defined": 0.02564102564102564,
+   "steps": 5194
+  }
+ }
+}

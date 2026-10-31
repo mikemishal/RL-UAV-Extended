@@ -1,0 +1,11 @@
+{
+ "command": "pytest tests -q --no-header -p no:cacheprovider -x --tb=short --ignore=tests/test_defender_adaptation_training_runner.py --ignore=tests/test_vectorized_clutter_training.py --ignore=tests/test_journal_v2_a1_r2_training_runner.py",
+ "excluded_as_ppo_learning_tests": [
+  "tests/test_defender_adaptation_training_runner.py",
+  "tests/test_vectorized_clutter_training.py",
+  "tests/test_journal_v2_a1_r2_training_runner.py"
+ ],
+ "passed": 785,
+ "returncode": 0,
+ "summary_line": "785 passed in 383.74s (0:06:23)"
+}

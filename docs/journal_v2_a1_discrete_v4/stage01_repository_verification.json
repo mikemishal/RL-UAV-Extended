@@ -1,0 +1,13 @@
+{
+ "branch": "research/journal-corrected-attacker-v2",
+ "canonical_a0_commit": "bdbee45dc08a583a0da5ca882dc6b1269207a8cd",
+ "canonical_v2_guard": "8 configs pass",
+ "failed_evidence_preserved": [
+  "a1_v2_training_v1 (docs + results)",
+  "action-v2 theta study",
+  "action-v3 theta study"
+ ],
+ "head": "0ecf78e2d7e0727cdbdc1c6ca8e9e17b70699db5",
+ "reward": "a1_v2_reward_v2",
+ "uav_defend_diff_vs_a0_tag": 0
+}
