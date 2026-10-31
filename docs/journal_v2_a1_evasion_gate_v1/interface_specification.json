@@ -1,0 +1,77 @@
+{
+ "action_version": "a1_v2_action_v6",
+ "blends": [
+  0.0,
+  0.25,
+  0.5,
+  0.75,
+  1.0
+ ],
+ "combination": "u = normalize(m + b * evasion_component); b = 0 -> env u_base bit-for-bit",
+ "defenders": [
+  "greedy",
+  "kalman_greedy",
+  "pn",
+  "lead",
+  "rmpc"
+ ],
+ "gates": {
+  "G1": "per level pooled collisions(candidate) <= collisions(BASE); matched gained collisions == 0",
+  "G2": "per level exhausted/timeout/orbit/ceiling-hover/sustained-hover <= BASE; overshoot-episode fraction <= BASE + 0.5pp",
+  "G3": ">=5% episodes diverge >=1 m AND (>=10 interception->capture conversions OR |mean min-sep diff|>=0.25 m); positive: conversions >= reversals",
+  "G4": "fraction path-excess>5x <= BASE + 0.5pp",
+  "G5": "blend 0 bit-identical to canonical A0",
+  "G6": "evasion precedes frozen planner, suppressed when planner owns steering, no gained collision within 3 steps of executed evasion"
+ },
+ "gating": "executed blend forced to 0 when true defender range > enemy_defender_detection_range (A1 observation gate); suppressed when the frozen common layer owns steering",
+ "levels": [
+  "C0",
+  "C1",
+  "C2",
+  "C3"
+ ],
+ "observation_version": "a1_v2_obs_v1",
+ "policies": [
+  "BASE",
+  "FIXED_0.25",
+  "FIXED_0.50",
+  "FIXED_0.75",
+  "FIXED_1.00",
+  "SWITCH_0.25",
+  "SWITCH_0.50",
+  "SWITCH_0.75",
+  "SWITCH_1.00"
+ ],
+ "primitive": "SoldierEnv._compute_enemy_evasion (unmodified)",
+ "reward_version": "a1_v2_reward_v2",
+ "seeds": [
+  145000,
+  145099
+ ],
+ "selection": [
+  "zero gained collisions",
+  "no mission pathology",
+  "positive tactical effect",
+  "lower median path-excess",
+  "lower endurance+timeout",
+  "smaller blend",
+  "smallest useful set (BASE+LOW+HIGH only if distinct), no redundant strengths"
+ ],
+ "spec_sha256": "249da482ac7d1c11bdbe5954589526645ce40fc1e72d19a80d61da82def4645a",
+ "stress_policies": [
+  "ALTERNATE",
+  "MAX_WHEN_VISIBLE",
+  "RANDOM",
+  "ADVERSARIAL"
+ ],
+ "thresholds": {
+  "conversions_min": 10,
+  "divergence_fraction": 0.05,
+  "divergence_m": 1.0,
+  "min_sep_diff_m": 0.25,
+  "overshoot_allowance": 0.005,
+  "path_excess_5x_allowance": 0.005,
+  "trajectory_steps_compared": 60
+ },
+ "training_protocol": "a1_v2_training_v4"
+}

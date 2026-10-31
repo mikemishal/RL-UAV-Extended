@@ -1,0 +1,173 @@
+{
+ "created_utc": "2026-10-31T17:28:48.856029+00:00",
+ "halt": {
+  "input_commit": "ac0f585bc8af310b5f5e119be117afdb9cb32671",
+  "reason": "No nonzero blend passes G1 (gained collisions 11/4/31/38 of 2000) or G2 (exhaustion 23-49 vs 0); heading-level tactical control exhausted",
+  "stage": "07_analysis",
+  "utc": "2026-10-31T17:43:33.179611+00:00",
+  "verdict": "D"
+ },
+ "stages": {
+  "01_repository_verification": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_evasion_gate_v1/repository_verification.json": "f80c8c69d3bf0bc26a7900ea053be0bca89bf0c61effb992e92eb9bf4863ca7b"
+   },
+   "completed_utc": "2026-10-31T17:28:49.251831+00:00",
+   "input_commit": "ac0f585bc8af310b5f5e119be117afdb9cb32671",
+   "note": "start state verified",
+   "output_artifacts": [
+    "docs/journal_v2_a1_evasion_gate_v1/repository_verification.json"
+   ],
+   "started_utc": "2026-10-31T17:28:48.918490+00:00",
+   "status": "complete"
+  },
+  "02_primitive_audit": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_evasion_gate_v1/primitive_audit.json": "087e0f4617420d0f2ee341ad719a5627a481da67d792d9087b9685719f2bc7e6"
+   },
+   "completed_utc": "2026-10-31T17:28:49.312896+00:00",
+   "input_commit": "ac0f585bc8af310b5f5e119be117afdb9cb32671",
+   "note": "stateless, direction-only, precedes planner; planner veto only when direct rollout unsafe",
+   "output_artifacts": [
+    "docs/journal_v2_a1_evasion_gate_v1/primitive_audit.json"
+   ],
+   "started_utc": "2026-10-31T17:28:49.310739+00:00",
+   "status": "complete"
+  },
+  "03_interface_specification": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_evasion_gate_v1/interface_specification.json": "bef8e2b2786f691afa345ea5f7353cc945869b0997c7019db8a9a4c7fb928059"
+   },
+   "completed_utc": "2026-10-31T17:28:49.374266+00:00",
+   "input_commit": "ac0f585bc8af310b5f5e119be117afdb9cb32671",
+   "note": "spec sha 249da482ac7d1c11",
+   "output_artifacts": [
+    "docs/journal_v2_a1_evasion_gate_v1/interface_specification.json"
+   ],
+   "started_utc": "2026-10-31T17:28:49.367722+00:00",
+   "status": "complete"
+  },
+  "04_implementation": {
+   "artifact_sha256": {
+    "experiments/journal_v2_a1_eg.py": "e36529f426a73aa3230276dffeaf2fcbb7ac6b88f3e7fab65e43d14f9f12e7eb",
+    "experiments/journal_v2_a1_eg_audit.py": "f83cb0907d5f581e4d790fd58d60c9e5e292a1d43b2dc7c643fc158ea8c8c9af",
+    "experiments/journal_v2_a1_eg_report.py": "15cfde6078e863552567fcb7d8f45780199f6fd16e13615fbba7c56b54bb35b3",
+    "experiments/journal_v2_a1_eg_state.py": "c25891ece13ff98db94f7630261fd0f58b6ab0cb985f44f12626dbec19109010",
+    "experiments/journal_v2_a1_eg_sweep.py": "1121db755bbf66f0a09676e9cdf967b0ee8342ac6ad1dade1b407ddac706e73e"
+   },
+   "completed_utc": "2026-10-31T17:50:25.663534+00:00",
+   "input_commit": "ac0f585bc8af310b5f5e119be117afdb9cb32671",
+   "note": "A1V6TrainingEnv + sweep; note: per-step owned_flags summary field was added after the sweep (recording only; trajectories/outcomes unaffected, unit tests rerun)",
+   "output_artifacts": [
+    "experiments/journal_v2_a1_eg.py",
+    "experiments/journal_v2_a1_eg_sweep.py",
+    "experiments/journal_v2_a1_eg_state.py",
+    "experiments/journal_v2_a1_eg_audit.py",
+    "experiments/journal_v2_a1_eg_report.py"
+   ],
+   "started_utc": "2026-10-31T17:50:25.660369+00:00",
+   "status": "complete"
+  },
+  "05_unit_tests": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_evasion_gate_v1/unit_test_result.json": "ff501e882d2fc88bc18ed8299083fe9cf960b011c5f794d1da75ed2742cd8533",
+    "tests/test_journal_v2_a1_eg.py": "1fc2c4b1653002c057482c1c8bb7dfeea54d67212976262442c02d91f7d226a1"
+   },
+   "completed_utc": "2026-10-31T17:43:33.032994+00:00",
+   "input_commit": "ac0f585bc8af310b5f5e119be117afdb9cb32671",
+   "note": "34 passed in 3.97s",
+   "output_artifacts": [
+    "tests/test_journal_v2_a1_eg.py",
+    "docs/journal_v2_a1_evasion_gate_v1/unit_test_result.json"
+   ],
+   "started_utc": "2026-10-31T17:43:27.334272+00:00",
+   "status": "complete"
+  },
+  "06_deterministic_sweep": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_evasion_gate_v1/sweep_summary.json": "850a3b71fe9fe8490bd5a3fd1c4a8fc8c651a767141f330d554bcc2e31bb447a"
+   },
+   "completed_utc": "2026-10-31T17:43:33.118143+00:00",
+   "input_commit": "ac0f585bc8af310b5f5e119be117afdb9cb32671",
+   "note": "20 cells x 900 episodes verified (18,000); raw cells in gitignored results/ with per-cell SHA-256",
+   "output_artifacts": [
+    "docs/journal_v2_a1_evasion_gate_v1/sweep_summary.json"
+   ],
+   "started_utc": "2026-10-31T17:43:33.114827+00:00",
+   "status": "complete"
+  },
+  "07_analysis": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_evasion_gate_v1/ablation_record_v3.md": "afea14f83314b3021605ff86b899b8dc2702e706bc8eae6917bda56fb693b73d",
+    "docs/journal_v2_a1_evasion_gate_v1/sweep_results.md": "36c4e7e0efb0c5a1ec71b15a2c6da5153a652bfe7b59c05700dccc37da4ce833",
+    "docs/journal_v2_a1_evasion_gate_v1/sweep_summary.json": "850a3b71fe9fe8490bd5a3fd1c4a8fc8c651a767141f330d554bcc2e31bb447a"
+   },
+   "completed_utc": "2026-10-31T17:43:33.175615+00:00",
+   "input_commit": "ac0f585bc8af310b5f5e119be117afdb9cb32671",
+   "note": "0/4 nonzero blends pass G1/G2; no action set selected",
+   "output_artifacts": [
+    "docs/journal_v2_a1_evasion_gate_v1/sweep_results.md",
+    "docs/journal_v2_a1_evasion_gate_v1/sweep_summary.json",
+    "docs/journal_v2_a1_evasion_gate_v1/ablation_record_v3.md"
+   ],
+   "started_utc": "2026-10-31T17:43:33.171798+00:00",
+   "status": "complete"
+  },
+  "08_regression": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_evasion_gate_v1/stage08_regression_summary.json": "8dd4b1d5e4f6bd7b4106c303fcd82dd34cd51465c85395fdba3e5c072252243f"
+   },
+   "completed_utc": "2026-10-31T17:50:25.720093+00:00",
+   "input_commit": "ac0f585bc8af310b5f5e119be117afdb9cb32671",
+   "note": "870 passed",
+   "output_artifacts": [
+    "docs/journal_v2_a1_evasion_gate_v1/stage08_regression_summary.json"
+   ],
+   "started_utc": "2026-10-31T17:50:25.713846+00:00",
+   "status": "complete"
+  },
+  "09_checkpoint_integrity": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_evasion_gate_v1/stage09_checkpoint_integrity.json": "9732c4870fa655c62497b912f310fc10b9c9d15cef72ff87e86325e405410d03"
+   },
+   "completed_utc": "2026-10-31T17:50:25.927066+00:00",
+   "input_commit": "ac0f585bc8af310b5f5e119be117afdb9cb32671",
+   "note": "30 historical + 3 failed-v1 verified; no v4 models",
+   "output_artifacts": [
+    "docs/journal_v2_a1_evasion_gate_v1/stage09_checkpoint_integrity.json"
+   ],
+   "started_utc": "2026-10-31T17:50:25.773229+00:00",
+   "status": "complete"
+  },
+  "10_publication_documentation": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_evasion_gate_v1/README.md": "3e37877c2665a28b7dcb294e1618c78d10ffce836c9741665fe3cb8b5c024913",
+    "docs/journal_v2_a1_evasion_gate_v1/ablation_record_v3.md": "afea14f83314b3021605ff86b899b8dc2702e706bc8eae6917bda56fb693b73d",
+    "docs/journal_v2_a1_evasion_gate_v1/manuscript_notes.md": "1f641f78f5f1da307cc48eb0f4a85ed751358129696d102dac35337b4bf98349",
+    "docs/journal_v2_a1_evasion_gate_v1/sweep_results.md": "36c4e7e0efb0c5a1ec71b15a2c6da5153a652bfe7b59c05700dccc37da4ce833"
+   },
+   "completed_utc": "2026-10-31T17:50:25.995161+00:00",
+   "input_commit": "ac0f585bc8af310b5f5e119be117afdb9cb32671",
+   "note": "negative-result README, manuscript notes, ablation v3",
+   "output_artifacts": [
+    "docs/journal_v2_a1_evasion_gate_v1/README.md",
+    "docs/journal_v2_a1_evasion_gate_v1/manuscript_notes.md",
+    "docs/journal_v2_a1_evasion_gate_v1/ablation_record_v3.md",
+    "docs/journal_v2_a1_evasion_gate_v1/sweep_results.md"
+   ],
+   "started_utc": "2026-10-31T17:50:25.983799+00:00",
+   "status": "complete"
+  },
+  "11_commit_tag_push": {
+   "artifact_sha256": {},
+   "completed_utc": "2026-10-31T17:50:34.235527+00:00",
+   "input_commit": "ac0f585bc8af310b5f5e119be117afdb9cb32671",
+   "note": "evidence-only commit on research/journal-corrected-attacker-v2; NO protocol tag (no blend passed); parent ac0f585",
+   "output_artifacts": [],
+   "started_utc": "2026-10-31T17:50:34.232654+00:00",
+   "status": "complete"
+  }
+ },
+ "task": "journal_v2_a1_evasion_gate_v1",
+ "updated_utc": "2026-10-31T17:50:34.235544+00:00"
+}

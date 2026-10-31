@@ -1,0 +1,1257 @@
+{
+ "G5": true,
+ "flags": {
+  "base_equals_a0": true,
+  "deterministic_replay": true,
+  "finite": true,
+  "switch_equals_fixed": true
+ },
+ "mechanisms": {
+  "FIXED_0.25": {
+   "exhausted": {
+    "base_outcome": {
+     "soldier_caught": 23
+    },
+    "by_defender": {
+     "greedy": 6,
+     "kalman_greedy": 6,
+     "lead": 4,
+     "pn": 4,
+     "rmpc": 3
+    },
+    "by_level": {
+     "C0": 7,
+     "C1": 7,
+     "C2": 5,
+     "C3": 4
+    },
+    "count": 23,
+    "mean_base_steps": 11.826086956521738,
+    "mean_evasion_steps": 10.043478260869565,
+    "mean_max_deflection_deg": 8.080508028990101,
+    "mean_overshoots": 2.0,
+    "mean_steps": 56.0,
+    "with_overshoot_ge1": 23
+   },
+   "gained_collision_mechanism": {
+    "evasion ended >3 steps earlier; frozen layer owned the collision step": 11
+   },
+   "gained_collision_steps_since_last_evasion": {
+    "max": 12,
+    "median": 8.0
+   },
+   "path_excess_gt5": {
+    "all_exhausted": true,
+    "count": 0,
+    "defenders": {},
+    "outcomes": {}
+   }
+  },
+  "FIXED_0.50": {
+   "exhausted": {
+    "base_outcome": {
+     "soldier_caught": 36
+    },
+    "by_defender": {
+     "greedy": 8,
+     "kalman_greedy": 7,
+     "lead": 6,
+     "pn": 12,
+     "rmpc": 3
+    },
+    "by_level": {
+     "C0": 9,
+     "C1": 11,
+     "C2": 8,
+     "C3": 8
+    },
+    "count": 36,
+    "mean_base_steps": 11.36111111111111,
+    "mean_evasion_steps": 10.666666666666666,
+    "mean_max_deflection_deg": 15.93952140163667,
+    "mean_overshoots": 2.5277777777777777,
+    "mean_steps": 56.166666666666664,
+    "with_overshoot_ge1": 36
+   },
+   "gained_collision_mechanism": {
+    "evasion ended 1-3 steps earlier; frozen layer owned the collision step": 1,
+    "evasion ended >3 steps earlier; frozen layer owned the collision step": 3
+   },
+   "gained_collision_steps_since_last_evasion": {
+    "max": 9,
+    "median": 9.0
+   },
+   "path_excess_gt5": {
+    "all_exhausted": false,
+    "count": 6,
+    "defenders": {
+     "kalman_greedy": 1,
+     "lead": 2,
+     "pn": 3
+    },
+    "outcomes": {
+     "enemy_endurance_exhausted": 5,
+     "intercepted": 1
+    }
+   }
+  },
+  "FIXED_0.75": {
+   "exhausted": {
+    "base_outcome": {
+     "intercepted": 6,
+     "soldier_caught": 43
+    },
+    "by_defender": {
+     "greedy": 11,
+     "kalman_greedy": 14,
+     "lead": 7,
+     "pn": 11,
+     "rmpc": 6
+    },
+    "by_level": {
+     "C0": 16,
+     "C1": 18,
+     "C2": 11,
+     "C3": 4
+    },
+    "count": 49,
+    "mean_base_steps": 11.183673469387756,
+    "mean_evasion_steps": 11.306122448979592,
+    "mean_max_deflection_deg": 22.70622805576524,
+    "mean_overshoots": 2.4285714285714284,
+    "mean_steps": 55.48979591836735,
+    "with_overshoot_ge1": 49
+   },
+   "gained_collision_mechanism": {
+    "evasion ended 1-3 steps earlier; frozen layer owned the collision step": 12,
+    "evasion ended >3 steps earlier; frozen layer owned the collision step": 19
+   },
+   "gained_collision_steps_since_last_evasion": {
+    "max": 23,
+    "median": 5.0
+   },
+   "path_excess_gt5": {
+    "all_exhausted": true,
+    "count": 18,
+    "defenders": {
+     "greedy": 3,
+     "kalman_greedy": 6,
+     "lead": 3,
+     "pn": 4,
+     "rmpc": 2
+    },
+    "outcomes": {
+     "enemy_endurance_exhausted": 18
+    }
+   }
+  },
+  "FIXED_1.00": {
+   "exhausted": {
+    "base_outcome": {
+     "intercepted": 10,
+     "soldier_caught": 38
+    },
+    "by_defender": {
+     "greedy": 11,
+     "kalman_greedy": 11,
+     "lead": 7,
+     "pn": 9,
+     "rmpc": 10
+    },
+    "by_level": {
+     "C0": 18,
+     "C1": 15,
+     "C2": 11,
+     "C3": 4
+    },
+    "count": 48,
+    "mean_base_steps": 11.3125,
+    "mean_evasion_steps": 10.333333333333334,
+    "mean_max_deflection_deg": 31.06068441757668,
+    "mean_overshoots": 2.6458333333333335,
+    "mean_steps": 56.458333333333336,
+    "with_overshoot_ge1": 48
+   },
+   "gained_collision_mechanism": {
+    "evasion ended 1-3 steps earlier; frozen layer owned the collision step": 13,
+    "evasion ended >3 steps earlier; frozen layer owned the collision step": 24,
+    "evasion executed on the collision step; frozen layer not owning the collision step": 1
+   },
+   "gained_collision_steps_since_last_evasion": {
+    "max": 19,
+    "median": 6.0
+   },
+   "path_excess_gt5": {
+    "all_exhausted": false,
+    "count": 15,
+    "defenders": {
+     "greedy": 3,
+     "kalman_greedy": 3,
+     "lead": 2,
+     "pn": 4,
+     "rmpc": 3
+    },
+    "outcomes": {
+     "enemy_endurance_exhausted": 13,
+     "enemy_static_obstacle_collision": 2
+    }
+   }
+  }
+ },
+ "policies": {
+  "FIXED_0.25": {
+   "G1": false,
+   "G2": false,
+   "G3": false,
+   "G3_positive": false,
+   "G4": true,
+   "G6": true,
+   "authority": {
+    "conversions_int_to_capture": 38,
+    "episodes_with_evasion": 2000,
+    "fraction_diverging_ge_1m": 0.03,
+    "max_deflection_deg": 9.171347641489934,
+    "max_div_m": 4.069017080327877,
+    "mean_evasion_steps": 2.8115,
+    "mean_min_sep_diff_m": 0.03242934226989746,
+    "mean_path_diff_m": 3.752916991719458,
+    "mean_steps_diff": 0.7175,
+    "median_div_m": 0.050990195135927764,
+    "outcome_changed_episodes": 80,
+    "reversals_capture_to_int": 3
+   },
+   "base_exhausted": 0,
+   "base_timeouts": 0,
+   "executed_while_owned": 0,
+   "exhausted": 23,
+   "gained_collisions_total": 11,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "fraction_gt5": 0.0,
+    "gt1.3": 47,
+    "gt2": 37,
+    "gt5": 0,
+    "max": 4.905386498006362,
+    "mean": 1.062633077667663,
+    "median": 1.001023781727317
+   },
+   "per_level": {
+    "C0": {
+     "G1": true,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       7,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 0,
+     "exhausted": 7,
+     "gained": 0,
+     "orbit": 0,
+     "overshoot_fraction": 0.024,
+     "timeout": 0
+    },
+    "C1": {
+     "G1": false,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       7,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 1,
+     "exhausted": 7,
+     "gained": 1,
+     "orbit": 0,
+     "overshoot_fraction": 0.024,
+     "timeout": 0
+    },
+    "C2": {
+     "G1": false,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       5,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 3,
+     "exhausted": 5,
+     "gained": 3,
+     "orbit": 0,
+     "overshoot_fraction": 0.024,
+     "timeout": 0
+    },
+    "C3": {
+     "G1": false,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       4,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 7,
+     "exhausted": 4,
+     "gained": 7,
+     "orbit": 0,
+     "overshoot_fraction": 0.022,
+     "timeout": 0
+    }
+   },
+   "policy": "FIXED_0.25",
+   "suppression_totals": {
+    "evasion_inactive": 1896,
+    "no_defender_info": 14025,
+    "obstacle_authority": 16
+   },
+   "timeouts": 0,
+   "veto_gap_collisions": 0
+  },
+  "FIXED_0.50": {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G3_positive": true,
+   "G4": true,
+   "G6": false,
+   "authority": {
+    "conversions_int_to_capture": 47,
+    "episodes_with_evasion": 2000,
+    "fraction_diverging_ge_1m": 0.0635,
+    "max_deflection_deg": 18.19489221781167,
+    "max_div_m": 5.002689276779041,
+    "mean_evasion_steps": 2.895,
+    "mean_min_sep_diff_m": 0.04768066787719726,
+    "mean_path_diff_m": 5.998308826975873,
+    "mean_steps_diff": 1.145,
+    "median_div_m": 0.11618870346240419,
+    "outcome_changed_episodes": 101,
+    "reversals_capture_to_int": 4
+   },
+   "base_exhausted": 0,
+   "base_timeouts": 0,
+   "executed_while_owned": 0,
+   "exhausted": 36,
+   "gained_collisions_total": 4,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "fraction_gt5": 0.003,
+    "gt1.3": 63,
+    "gt2": 59,
+    "gt5": 6,
+    "max": 5.15502834126182,
+    "mean": 1.1006729125681705,
+    "median": 1.00117829407952
+   },
+   "per_level": {
+    "C0": {
+     "G1": true,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       9,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 0,
+     "exhausted": 9,
+     "gained": 0,
+     "orbit": 0,
+     "overshoot_fraction": 0.032,
+     "timeout": 0
+    },
+    "C1": {
+     "G1": true,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       11,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 0,
+     "exhausted": 11,
+     "gained": 0,
+     "orbit": 0,
+     "overshoot_fraction": 0.032,
+     "timeout": 0
+    },
+    "C2": {
+     "G1": false,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       8,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 2,
+     "exhausted": 8,
+     "gained": 2,
+     "orbit": 0,
+     "overshoot_fraction": 0.032,
+     "timeout": 0
+    },
+    "C3": {
+     "G1": false,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       8,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 2,
+     "exhausted": 8,
+     "gained": 2,
+     "orbit": 0,
+     "overshoot_fraction": 0.03,
+     "timeout": 0
+    }
+   },
+   "policy": "FIXED_0.50",
+   "suppression_totals": {
+    "evasion_inactive": 1973,
+    "no_defender_info": 14636,
+    "obstacle_authority": 16
+   },
+   "timeouts": 0,
+   "veto_gap_collisions": 1
+  },
+  "FIXED_0.75": {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G3_positive": true,
+   "G4": false,
+   "G6": false,
+   "authority": {
+    "conversions_int_to_capture": 47,
+    "episodes_with_evasion": 2000,
+    "fraction_diverging_ge_1m": 0.088,
+    "max_deflection_deg": 28.342485863164555,
+    "max_div_m": 5.796360927340533,
+    "mean_evasion_steps": 2.981,
+    "mean_min_sep_diff_m": 0.07330161738395691,
+    "mean_path_diff_m": 8.605922872195553,
+    "mean_steps_diff": 1.6335,
+    "median_div_m": 0.21023796041628628,
+    "outcome_changed_episodes": 145,
+    "reversals_capture_to_int": 2
+   },
+   "base_exhausted": 0,
+   "base_timeouts": 0,
+   "executed_while_owned": 0,
+   "exhausted": 49,
+   "gained_collisions_total": 31,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "fraction_gt5": 0.009,
+    "gt1.3": 109,
+    "gt2": 83,
+    "gt5": 18,
+    "max": 7.608198620628477,
+    "mean": 1.1474449205024524,
+    "median": 1.0014231105598452
+   },
+   "per_level": {
+    "C0": {
+     "G1": true,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       16,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 0,
+     "exhausted": 16,
+     "gained": 0,
+     "orbit": 0,
+     "overshoot_fraction": 0.058,
+     "timeout": 0
+    },
+    "C1": {
+     "G1": true,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       18,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 0,
+     "exhausted": 18,
+     "gained": 0,
+     "orbit": 0,
+     "overshoot_fraction": 0.058,
+     "timeout": 0
+    },
+    "C2": {
+     "G1": false,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       11,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 11,
+     "exhausted": 11,
+     "gained": 11,
+     "orbit": 0,
+     "overshoot_fraction": 0.058,
+     "timeout": 0
+    },
+    "C3": {
+     "G1": false,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       4,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 20,
+     "exhausted": 4,
+     "gained": 20,
+     "orbit": 0,
+     "overshoot_fraction": 0.054,
+     "timeout": 0
+    }
+   },
+   "policy": "FIXED_0.75",
+   "suppression_totals": {
+    "evasion_inactive": 2073,
+    "no_defender_info": 15321,
+    "obstacle_authority": 36
+   },
+   "timeouts": 0,
+   "veto_gap_collisions": 12
+  },
+  "FIXED_1.00": {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G3_positive": true,
+   "G4": false,
+   "G6": false,
+   "authority": {
+    "conversions_int_to_capture": 62,
+    "episodes_with_evasion": 2000,
+    "fraction_diverging_ge_1m": 0.1135,
+    "max_deflection_deg": 40.358079012076914,
+    "max_div_m": 6.456872307859277,
+    "mean_evasion_steps": 3.016,
+    "mean_min_sep_diff_m": 0.09864938926696777,
+    "mean_path_diff_m": 9.820061832053204,
+    "mean_steps_diff": 1.8495,
+    "median_div_m": 0.3142450366162397,
+    "outcome_changed_episodes": 180,
+    "reversals_capture_to_int": 6
+   },
+   "base_exhausted": 0,
+   "base_timeouts": 0,
+   "executed_while_owned": 0,
+   "exhausted": 48,
+   "gained_collisions_total": 38,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "fraction_gt5": 0.0075,
+    "gt1.3": 125,
+    "gt2": 96,
+    "gt5": 15,
+    "max": 7.63170352009248,
+    "mean": 1.1587478529829778,
+    "median": 1.0016550673341906
+   },
+   "per_level": {
+    "C0": {
+     "G1": true,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       18,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 0,
+     "exhausted": 18,
+     "gained": 0,
+     "orbit": 0,
+     "overshoot_fraction": 0.07,
+     "timeout": 0
+    },
+    "C1": {
+     "G1": false,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       15,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 1,
+     "exhausted": 15,
+     "gained": 1,
+     "orbit": 0,
+     "overshoot_fraction": 0.068,
+     "timeout": 0
+    },
+    "C2": {
+     "G1": false,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       11,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 14,
+     "exhausted": 11,
+     "gained": 14,
+     "orbit": 0,
+     "overshoot_fraction": 0.07,
+     "timeout": 0
+    },
+    "C3": {
+     "G1": false,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       4,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 23,
+     "exhausted": 4,
+     "gained": 23,
+     "orbit": 0,
+     "overshoot_fraction": 0.068,
+     "timeout": 0
+    }
+   },
+   "policy": "FIXED_1.00",
+   "suppression_totals": {
+    "evasion_inactive": 2088,
+    "no_defender_info": 15657,
+    "obstacle_authority": 47
+   },
+   "timeouts": 0,
+   "veto_gap_collisions": 14
+  },
+  "SWITCH_0.25": {
+   "G1": false,
+   "G2": false,
+   "G3": false,
+   "G3_positive": false,
+   "G4": true,
+   "G6": true,
+   "authority": {
+    "conversions_int_to_capture": 38,
+    "episodes_with_evasion": 2000,
+    "fraction_diverging_ge_1m": 0.03,
+    "max_deflection_deg": 9.171347641489934,
+    "max_div_m": 4.069017080327877,
+    "mean_evasion_steps": 2.8115,
+    "mean_min_sep_diff_m": 0.03242934226989746,
+    "mean_path_diff_m": 3.752916991719458,
+    "mean_steps_diff": 0.7175,
+    "median_div_m": 0.050990195135927764,
+    "outcome_changed_episodes": 80,
+    "reversals_capture_to_int": 3
+   },
+   "base_exhausted": 0,
+   "base_timeouts": 0,
+   "executed_while_owned": 0,
+   "exhausted": 23,
+   "gained_collisions_total": 11,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "fraction_gt5": 0.0,
+    "gt1.3": 47,
+    "gt2": 37,
+    "gt5": 0,
+    "max": 4.905386498006362,
+    "mean": 1.062633077667663,
+    "median": 1.001023781727317
+   },
+   "per_level": {
+    "C0": {
+     "G1": true,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       7,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 0,
+     "exhausted": 7,
+     "gained": 0,
+     "orbit": 0,
+     "overshoot_fraction": 0.024,
+     "timeout": 0
+    },
+    "C1": {
+     "G1": false,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       7,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 1,
+     "exhausted": 7,
+     "gained": 1,
+     "orbit": 0,
+     "overshoot_fraction": 0.024,
+     "timeout": 0
+    },
+    "C2": {
+     "G1": false,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       5,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 3,
+     "exhausted": 5,
+     "gained": 3,
+     "orbit": 0,
+     "overshoot_fraction": 0.024,
+     "timeout": 0
+    },
+    "C3": {
+     "G1": false,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       4,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 7,
+     "exhausted": 4,
+     "gained": 7,
+     "orbit": 0,
+     "overshoot_fraction": 0.022,
+     "timeout": 0
+    }
+   },
+   "policy": "SWITCH_0.25",
+   "suppression_totals": {
+    "evasion_inactive": 1761,
+    "no_defender_info": 80,
+    "obstacle_authority": 11
+   },
+   "timeouts": 0,
+   "veto_gap_collisions": 0
+  },
+  "SWITCH_0.50": {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G3_positive": true,
+   "G4": true,
+   "G6": false,
+   "authority": {
+    "conversions_int_to_capture": 47,
+    "episodes_with_evasion": 2000,
+    "fraction_diverging_ge_1m": 0.0635,
+    "max_deflection_deg": 18.19489221781167,
+    "max_div_m": 5.002689276779041,
+    "mean_evasion_steps": 2.895,
+    "mean_min_sep_diff_m": 0.04768066787719726,
+    "mean_path_diff_m": 5.998308826975873,
+    "mean_steps_diff": 1.145,
+    "median_div_m": 0.11618870346240419,
+    "outcome_changed_episodes": 101,
+    "reversals_capture_to_int": 4
+   },
+   "base_exhausted": 0,
+   "base_timeouts": 0,
+   "executed_while_owned": 0,
+   "exhausted": 36,
+   "gained_collisions_total": 4,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "fraction_gt5": 0.003,
+    "gt1.3": 63,
+    "gt2": 59,
+    "gt5": 6,
+    "max": 5.15502834126182,
+    "mean": 1.1006729125681705,
+    "median": 1.00117829407952
+   },
+   "per_level": {
+    "C0": {
+     "G1": true,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       9,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 0,
+     "exhausted": 9,
+     "gained": 0,
+     "orbit": 0,
+     "overshoot_fraction": 0.032,
+     "timeout": 0
+    },
+    "C1": {
+     "G1": true,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       11,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 0,
+     "exhausted": 11,
+     "gained": 0,
+     "orbit": 0,
+     "overshoot_fraction": 0.032,
+     "timeout": 0
+    },
+    "C2": {
+     "G1": false,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       8,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 2,
+     "exhausted": 8,
+     "gained": 2,
+     "orbit": 0,
+     "overshoot_fraction": 0.032,
+     "timeout": 0
+    },
+    "C3": {
+     "G1": false,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       8,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 2,
+     "exhausted": 8,
+     "gained": 2,
+     "orbit": 0,
+     "overshoot_fraction": 0.03,
+     "timeout": 0
+    }
+   },
+   "policy": "SWITCH_0.50",
+   "suppression_totals": {
+    "evasion_inactive": 1838,
+    "no_defender_info": 80,
+    "obstacle_authority": 11
+   },
+   "timeouts": 0,
+   "veto_gap_collisions": 1
+  },
+  "SWITCH_0.75": {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G3_positive": true,
+   "G4": false,
+   "G6": false,
+   "authority": {
+    "conversions_int_to_capture": 47,
+    "episodes_with_evasion": 2000,
+    "fraction_diverging_ge_1m": 0.088,
+    "max_deflection_deg": 28.342485863164555,
+    "max_div_m": 5.796360927340533,
+    "mean_evasion_steps": 2.981,
+    "mean_min_sep_diff_m": 0.07330161738395691,
+    "mean_path_diff_m": 8.605922872195553,
+    "mean_steps_diff": 1.6335,
+    "median_div_m": 0.21023796041628628,
+    "outcome_changed_episodes": 145,
+    "reversals_capture_to_int": 2
+   },
+   "base_exhausted": 0,
+   "base_timeouts": 0,
+   "executed_while_owned": 0,
+   "exhausted": 49,
+   "gained_collisions_total": 31,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "fraction_gt5": 0.009,
+    "gt1.3": 109,
+    "gt2": 83,
+    "gt5": 18,
+    "max": 7.608198620628477,
+    "mean": 1.1474449205024524,
+    "median": 1.0014231105598452
+   },
+   "per_level": {
+    "C0": {
+     "G1": true,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       16,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 0,
+     "exhausted": 16,
+     "gained": 0,
+     "orbit": 0,
+     "overshoot_fraction": 0.058,
+     "timeout": 0
+    },
+    "C1": {
+     "G1": true,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       18,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 0,
+     "exhausted": 18,
+     "gained": 0,
+     "orbit": 0,
+     "overshoot_fraction": 0.058,
+     "timeout": 0
+    },
+    "C2": {
+     "G1": false,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       11,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 11,
+     "exhausted": 11,
+     "gained": 11,
+     "orbit": 0,
+     "overshoot_fraction": 0.058,
+     "timeout": 0
+    },
+    "C3": {
+     "G1": false,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       4,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 20,
+     "exhausted": 4,
+     "gained": 20,
+     "orbit": 0,
+     "overshoot_fraction": 0.054,
+     "timeout": 0
+    }
+   },
+   "policy": "SWITCH_0.75",
+   "suppression_totals": {
+    "evasion_inactive": 1938,
+    "no_defender_info": 80,
+    "obstacle_authority": 31
+   },
+   "timeouts": 0,
+   "veto_gap_collisions": 12
+  },
+  "SWITCH_1.00": {
+   "G1": false,
+   "G2": false,
+   "G3": true,
+   "G3_positive": true,
+   "G4": false,
+   "G6": false,
+   "authority": {
+    "conversions_int_to_capture": 62,
+    "episodes_with_evasion": 2000,
+    "fraction_diverging_ge_1m": 0.1135,
+    "max_deflection_deg": 40.358079012076914,
+    "max_div_m": 6.456872307859277,
+    "mean_evasion_steps": 3.016,
+    "mean_min_sep_diff_m": 0.09864938926696777,
+    "mean_path_diff_m": 9.820061832053204,
+    "mean_steps_diff": 1.8495,
+    "median_div_m": 0.3142450366162397,
+    "outcome_changed_episodes": 180,
+    "reversals_capture_to_int": 6
+   },
+   "base_exhausted": 0,
+   "base_timeouts": 0,
+   "executed_while_owned": 0,
+   "exhausted": 48,
+   "gained_collisions_total": 38,
+   "path_excess": {
+    "base_fraction_gt5": 0.0,
+    "fraction_gt5": 0.0075,
+    "gt1.3": 125,
+    "gt2": 96,
+    "gt5": 15,
+    "max": 7.63170352009248,
+    "mean": 1.1587478529829778,
+    "median": 1.0016550673341906
+   },
+   "per_level": {
+    "C0": {
+     "G1": true,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       18,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 0,
+     "exhausted": 18,
+     "gained": 0,
+     "orbit": 0,
+     "overshoot_fraction": 0.07,
+     "timeout": 0
+    },
+    "C1": {
+     "G1": false,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       15,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 1,
+     "exhausted": 15,
+     "gained": 1,
+     "orbit": 0,
+     "overshoot_fraction": 0.068,
+     "timeout": 0
+    },
+    "C2": {
+     "G1": false,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       11,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 14,
+     "exhausted": 11,
+     "gained": 14,
+     "orbit": 0,
+     "overshoot_fraction": 0.07,
+     "timeout": 0
+    },
+    "C3": {
+     "G1": false,
+     "G2": false,
+     "G2_violations": {
+      "exhausted": [
+       4,
+       0
+      ]
+     },
+     "base_collisions": 0,
+     "base_exhausted": 0,
+     "base_orbit": 0,
+     "base_overshoot_fraction": 0.0,
+     "base_timeout": 0,
+     "collisions": 23,
+     "exhausted": 4,
+     "gained": 23,
+     "orbit": 0,
+     "overshoot_fraction": 0.068,
+     "timeout": 0
+    }
+   },
+   "policy": "SWITCH_1.00",
+   "suppression_totals": {
+    "evasion_inactive": 1953,
+    "no_defender_info": 80,
+    "obstacle_authority": 42
+   },
+   "timeouts": 0,
+   "veto_gap_collisions": 14
+  }
+ },
+ "selection": {
+  "final_blends": null,
+  "passing_blends": [],
+  "reason": "no nonzero blend passes G1-G4/G6 with positive effect"
+ },
+ "spec_sha256": "249da482ac7d1c11bdbe5954589526645ce40fc1e72d19a80d61da82def4645a"
+}

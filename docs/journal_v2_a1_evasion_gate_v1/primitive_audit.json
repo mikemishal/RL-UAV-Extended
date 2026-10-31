@@ -1,0 +1,197 @@
+{
+ "a1_blend_definition": "u(b) = normalize(m + b * evasion_component); b = 0 -> zero override vector -> the environment's own u_base bit-for-bit",
+ "a1_only_without_changing_a0": "yes: applied through the existing `enemy_tactical_override` hook (None for A0); `uav_defend` is byte-identical to the A0 tag",
+ "activation_condition": "smooth: alpha > 0 iff d < R_e = 20.0 m (no binary switch); weight at d=0 is gain = 0.75",
+ "changes_speed_or_direction": "direction only: the result is combined into a unit direction that the point-mass dynamics (max accel / climb limits) then track; no speed term",
+ "config_in_V2_episode": {
+  "enemy_defender_detection_range": 25.0,
+  "enemy_evasion_enabled": true,
+  "enemy_evasion_gain": 0.75,
+  "enemy_evasion_radius": 20.0,
+  "enemy_nominal_guidance_mode": "direct_obstacle_only",
+  "eps": 1e-08
+ },
+ "defender_geometry": "radial 'away' direction only: full 3-D line from the defender through the attacker; no defender velocity, no prediction, no route",
+ "function": "uav_defend/envs/soldier_env.py: SoldierEnv._compute_enemy_evasion(defender_pos, enemy_pos) -> dict",
+ "historical_injection": "inside SoldierEnv._move_enemy, computed before route arbitration (Phase 5) and summed into u_base_raw (legacy hostile model); route arbitration suspended route following while it was active",
+ "inputs": "true 3-D defender and attacker positions (ground truth, independent of detection/sensor state); config.enemy_evasion_{enabled,radius,gain}, config.eps",
+ "maximum_deflection_from_mission_direction_deg_if_away_is_orthogonal": 36.86989764584402,
+ "near_zero_distance": {
+  "all_finite": true,
+  "note": "alpha -> 1 and the direction is discontinuous only at d <= eps (fallback +z); no division by zero or NaN",
+  "probes": [
+   {
+    "activation": 1.0,
+    "away_direction": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "component_norm": 0.75,
+    "distance_m": 0.0,
+    "effective_weight": 0.75,
+    "finite": true,
+    "repeat_identical": true
+   },
+   {
+    "activation": 0.99999999995,
+    "away_direction": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "component_norm": 0.75,
+    "distance_m": 1e-09,
+    "effective_weight": 0.7499999999625,
+    "finite": true,
+    "repeat_identical": true
+   },
+   {
+    "activation": 0.99999999975,
+    "away_direction": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "component_norm": 0.75,
+    "distance_m": 5e-09,
+    "effective_weight": 0.7499999998125,
+    "finite": true,
+    "repeat_identical": true
+   },
+   {
+    "activation": 0.999999999,
+    "away_direction": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "component_norm": 0.75,
+    "distance_m": 2e-08,
+    "effective_weight": 0.74999999925,
+    "finite": true,
+    "repeat_identical": true
+   },
+   {
+    "activation": 0.95,
+    "away_direction": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "component_norm": 0.7124999761581421,
+    "distance_m": 1.0,
+    "effective_weight": 0.7124999999999999,
+    "finite": true,
+    "repeat_identical": true
+   },
+   {
+    "activation": 0.75,
+    "away_direction": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "component_norm": 0.5625,
+    "distance_m": 5.0,
+    "effective_weight": 0.5625,
+    "finite": true,
+    "repeat_identical": true
+   },
+   {
+    "activation": 0.5,
+    "away_direction": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "component_norm": 0.375,
+    "distance_m": 10.0,
+    "effective_weight": 0.375,
+    "finite": true,
+    "repeat_identical": true
+   },
+   {
+    "activation": 0.000500000000000056,
+    "away_direction": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "component_norm": 0.000375000003259629,
+    "distance_m": 19.99,
+    "effective_weight": 0.00037500000000004197,
+    "finite": true,
+    "repeat_identical": true
+   },
+   {
+    "activation": 0.0,
+    "away_direction": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "component_norm": 0.0,
+    "distance_m": 20.0,
+    "effective_weight": 0.0,
+    "finite": true,
+    "repeat_identical": true
+   },
+   {
+    "activation": 0.0,
+    "away_direction": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "component_norm": 0.0,
+    "distance_m": 25.0,
+    "effective_weight": 0.0,
+    "finite": true,
+    "repeat_identical": true
+   },
+   {
+    "activation": 0.0,
+    "away_direction": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "component_norm": 0.0,
+    "distance_m": 60.0,
+    "effective_weight": 0.0,
+    "finite": true,
+    "repeat_identical": true
+   }
+  ]
+ },
+ "observation": "stateless -> `a1_v2_obs_v1` (37-D) retained; the 43-D pulse-state observation is NOT used",
+ "obstacle_planner_can_override": {
+  "condition": "the frozen controller returns u_base UNCHANGED whenever its direct (mission-direction) rollout is predicted safe (stateful_avoidance.py line 343); its rollout re-derives the mission direction from the target position and does NOT test u_base. The planner therefore vetoes an evasion command only in states where the DIRECT mission line is itself predicted unsafe.",
+  "consequence": "an evasion-blended u_base that points toward an obstacle while the direct line is predicted clear is NOT checked by the frozen layer (the same veto gap that defeated action-v2, v3 and v5). The ordering criterion of the STOP rule is not met (planner is last), so the study proceeds, and the gap is measured empirically by G1/G6 rather than assumed.",
+  "ordering": "yes: the planner runs AFTER the evasion/override stage on the same step and its returned direction is the final command"
+ },
+ "order_in_move_enemy_lines_of_method": {
+  "compute_enemy_evasion": 108,
+  "evasion_and_override_precede_planner": true,
+  "frozen_obstacle_planner_plan": 265,
+  "legacy_command_sum": 207,
+  "tactical_override_replaces_u_base": 228,
+  "zeroed_in_v2": 115
+ },
+ "original_gain_blend": "legacy command: u_raw = r_hat + weave + sigma_e*z + evasion_component with gain 0.75; weave/noise draw RNG and are not part of this interface",
+ "output": {
+  "activation": "alpha = clip(1 - d/R_e, 0, 1) (0 if disabled)",
+  "away_direction": "unit (enemy-defender)/d; fallback +z if d <= eps",
+  "distance": "true 3-D range",
+  "effective_weight": "gain*alpha",
+  "evasion_component": "effective_weight * away_direction (pre-combination vector)"
+ },
+ "stateless": {
+  "hidden_state": "none: pure function of the two positions and static config",
+  "repeat_calls_identical_in_probes": true,
+  "self_attribute_writes_inside_function": []
+ },
+ "threat_gate_redundancy": "evasion activates only for d < 20 m and the A1 observation gate is 25 m, so the gate never removes an otherwise active evasion; it is structurally redundant here (scripted SWITCH_b and FIXED_b are expected to coincide; measured in the sweep)",
+ "v2_forces_contribution_to_zero": "yes: in _move_enemy (line 115 of the method) `direct_obstacle_only` replaces evasion_component with zeros and the legacy u_base_raw expression (line 207) is in the non-direct branch, so canonical A0 never uses it; diagnostics (distance, activation) are kept"
+}

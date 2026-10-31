@@ -1,0 +1,5 @@
+{
+ "command": "pytest tests/test_journal_v2_a1_eg.py -q",
+ "returncode": 0,
+ "summary": "34 passed in 3.97s"
+}
