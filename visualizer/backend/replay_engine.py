@@ -1290,7 +1290,14 @@ def run_replay_episode(request: ReplayRequest, settings: Settings | None = None)
             velocity[2] = np.clip(velocity[2], -config.enemy_max_descent_rate, config.enemy_max_climb_rate)
             env._enemy_vel = velocity.astype(np.float32)
             observation = env._get_obs()
-            info = env._get_info()
+            info = env._get_info(
+                "ongoing",
+                float(np.linalg.norm(np.asarray(env._soldier_pos, dtype=np.float64) - np.asarray(env._enemy_pos, dtype=np.float64))),
+                float(np.linalg.norm(np.asarray(env._defender_pos, dtype=np.float64) - np.asarray(env._enemy_pos, dtype=np.float64))),
+                defender_standby=config.defender_standby_until_detection,
+                controller_action_executed=False,
+                just_detected=False,
+            )
         elif request.defender_policy_id == "passive":
             # Same placement as record_episode(controller="passive"): parked far away, at rest.
             env._defender_pos = np.asarray(modules["experiments.journal_v2_validation_core"].PARKED_DEFENDER, dtype=np.float32)

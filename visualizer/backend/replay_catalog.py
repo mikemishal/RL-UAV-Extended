@@ -299,6 +299,7 @@ def build_replay_catalog(settings: Settings) -> dict[str, object]:
         })
 
     return {
+        "source_commit": source_commit,
         "registry_sha256": registry_sha,
         "deterministic_inference": True,
         "defenders": defenders,

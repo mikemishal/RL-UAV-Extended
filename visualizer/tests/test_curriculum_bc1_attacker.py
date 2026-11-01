@@ -6,7 +6,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-import sys
+import subprocess
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -139,21 +139,52 @@ def test_contract_accepts_the_curriculum_builder_only_with_v2_semantics():
         EnvironmentSpec(**{**spec, "semantics": "V1", "config": {}})
 
 
-@pytest.mark.skipif(not os.environ.get("VISUALIZER_RESEARCH_DATA_ROOT"), reason="Set VISUALIZER_RESEARCH_DATA_ROOT to run the real simulator test.")
-def test_real_replay_is_a_clean_basic_pursuit_capture_without_defender_interaction():
-    root = Path(os.environ["VISUALIZER_RESEARCH_DATA_ROOT"]).resolve()
-    if not (root / E.CURRICULUM_RESULTS_RELATIVE / "seed_203" / "bc_final_model.zip").exists():
+def _simulation_python_and_root():
+    root = os.environ.get("VISUALIZER_RESEARCH_DATA_ROOT")
+    python = os.environ.get("VISUALIZER_SIMULATION_PYTHON")
+    if not root or not python:
+        pytest.skip("Set VISUALIZER_RESEARCH_DATA_ROOT and VISUALIZER_SIMULATION_PYTHON to run the real simulator tests.")
+    if not (Path(root) / E.CURRICULUM_RESULTS_RELATIVE / "seed_203" / "bc_final_model.zip").exists():
         pytest.skip("research Stage-1-v2 models are not available")
-    pytest.importorskip("stable_baselines3")
-    sys.path.insert(0, str(root))
-    try:
-        bundle = E.run_replay_episode(request("A1-BC1-203", 203, evaluation_seed=146009))
-    finally:
-        sys.path.remove(str(root))
-    episode = bundle.episodes[0]
-    assert episode.summary.outcome == "soldier_caught" and episode.summary.steps == 11
-    assert episode.environment.builder.endswith("stage1v2_config") and episode.environment.config["v_s"] == 0.0
-    assert episode.attacker.parameters["curriculum_initialization_checkpoint"] is True
-    asset = {tuple(frame.asset.position_m) for frame in episode.frames}
-    assert len(asset) == 1
-    assert episode.summary.safety_metrics["minimum_defender_attacker_distance_m"] > 1.0
+    return python, root
+
+
+def _run_worker(python, root, code):
+    # A subprocess mirrors the backend (simulation interpreter, research root first on sys.path).
+    env = {**os.environ, "VISUALIZER_RESEARCH_DATA_ROOT": root, "PYTHONPATH": str(Path(__file__).resolve().parents[2])}
+    result = subprocess.run([python, "-c", code], capture_output=True, text=True, env=env, cwd=Path(__file__).resolve().parents[2], timeout=600)
+    assert result.returncode == 0, result.stderr[-2000:]
+    return json.loads(result.stdout.strip().splitlines()[-1])
+
+
+def test_real_replay_is_a_clean_basic_pursuit_capture_without_defender_interaction():
+    python, root = _simulation_python_and_root()
+    code = (
+        "import json\n"
+        "from visualizer.backend.replay_engine import ReplayRequest, run_replay_episode\n"
+        "r = ReplayRequest(defender_policy_id='passive', attacker_condition='A1-BC1-203', attacker_model_seed=203,"
+        " clutter_level='C0', semantics='V2', evaluation_seed=146009)\n"
+        "e = run_replay_episode(r).episodes[0]\n"
+        "print(json.dumps({'outcome': e.summary.outcome, 'steps': e.summary.steps, 'builder': e.environment.builder,"
+        " 'v_s': e.environment.config['v_s'], 'flag': e.attacker.parameters['curriculum_initialization_checkpoint'],"
+        " 'asset_positions': len({tuple(f.asset.position_m) for f in e.frames}),"
+        " 'min_defender_distance': e.summary.safety_metrics['minimum_defender_attacker_distance_m']}))\n"
+    )
+    result = _run_worker(python, root, code)
+    assert result["outcome"] == "soldier_caught" and result["steps"] == 11 and result["builder"].endswith("stage1v2_config")
+    assert result["v_s"] == 0.0 and result["flag"] is True and result["asset_positions"] == 1 and result["min_defender_distance"] > 1.0
+
+
+def test_real_catalog_lists_the_curriculum_attackers_with_the_pinned_source_commit():
+    python, root = _simulation_python_and_root()
+    code = (
+        "import json\n"
+        "from visualizer.backend.config import load_settings\n"
+        "from visualizer.backend.replay_catalog import build_replay_catalog\n"
+        "c = build_replay_catalog(load_settings())\n"
+        "print(json.dumps({'source_commit': c['source_commit'], 'registry_sha256': c['registry_sha256'],"
+        " 'attackers': {a['attacker_id']: a['available'] for a in c['attackers']}}))\n"
+    )
+    result = _run_worker(python, root, code)
+    assert result["source_commit"] == E.EXPECTED_RESEARCH_COMMIT and len(result["registry_sha256"]) == 64
+    assert all(result["attackers"].get(name) for name in CURRICULUM_ATTACKER_SEEDS)
