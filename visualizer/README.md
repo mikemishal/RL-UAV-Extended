@@ -11,7 +11,7 @@ performs policy inference, or changes recorded outcomes.
 
 ## Scientific integrity and coordinate decision
 
-Based on local research commit `67cf9348d4a65ee25d8b73ebb1a385c3cf9faf69` (V2 A1 campaign metadata on top of tag
+Based on local research commit `dac0230dc174595d8bb99c0a6e406278cf127a4c` (curriculum Stage-1-v2 expert-initialization evidence; tag `journal-v2-a1-curriculum-bc-stage1-v1`; on top of tag
 `journal-v2-a1-training-protocol-v1`; frozen canonical A0 is tag `journal-v2-a0-canonical-v1`, `bdbee45…`)
 (branch `research/journal-corrected-attacker-v2`),
 not a remote branch. All additions are confined to this `visualizer` directory.
@@ -341,3 +341,16 @@ protocol (`a1_v2_training_v1`), reward version and a 37-D observation / 3-D acti
 research repository's `experiments.journal_v2_a1.build_a1_v2_observation`. They are never aliases of the legacy V1-trained
 `A1-201/202/203` checkpoints, which remain available separately and are labelled "legacy V1-trained".
 Replay headers show `Attacker: A1-201 V2` etc. These checkpoints are NOT yet canonical (pending gates and manual inspection).
+
+### Curriculum Stage-1-v2 initialization attackers (`A1-BC1-201`, `A1-BC1-202`, `A1-BC1-203`)
+
+Behaviour-cloned (A0 expert) **curriculum initialization checkpoints, not final intelligent-attacker models**. They exist
+only in the research environment `curriculum_basic_pursuit_no_defender_interaction` (C0, V2 semantics, stationary asset,
+parked defender with interception disabled and defender observation masked), so the API accepts them only with
+`clutter_level=C0`, `semantics=V2` and the `passive` defender. The environment configuration is the research repository's
+own `experiments.journal_v2_a1_cur1v2.stage1v2_config()`, the initial heading/defender placement come from
+`experiments.journal_v2_a1_cur1`, and the observation is `build_a1_v2_observation` with the research
+`MASKED_DETECTION_RANGE`; the visualizer defines no simulation logic. The checkpoint must match the SHA-256 in the research
+handoff record `docs/journal_v2_a1_curriculum/stage1_v2/stage2_handoff.json`, which must declare a passed Stage 1 v2.
+Example: `?semantics=V2&clutter=C0&defender=passive&attacker=A1-BC1-203&seed=146009`; CLI:
+`--defender passive --clutter C0 --semantics V2 --attacker A1-BC1-203 --evaluation-seed 146009`.

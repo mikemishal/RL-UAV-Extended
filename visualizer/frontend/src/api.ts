@@ -440,7 +440,8 @@ export interface ReplayEpisode {
     awareness: string;
     scenario_kind: 'canonical';
     builder: 'experiments.journal_clutter_protocol.build_canonical_env_config'
-      | 'experiments.journal_v2_protocol.build_v2_env_config';
+      | 'experiments.journal_v2_protocol.build_v2_env_config'
+      | 'experiments.journal_v2_a1_cur1v2.stage1v2_config';
     semantics?: Semantics;
     config: Record<string, unknown>;
     config_sha256: string;

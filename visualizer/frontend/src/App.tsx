@@ -52,7 +52,7 @@ function queryPreset() {
   const attacker = params.get('attacker');
   return {
     // Attacker ids are validated against the catalog (available attackers only); unknown values are ignored.
-    attacker: attacker && /^(A0|A1-20[123](-V2)?)$/.test(attacker) ? attacker : null,
+    attacker: attacker && /^(A0|A1-20[123](-V2)?|A1-BC1-20[123])$/.test(attacker) ? attacker : null,
     semantics: (semantics === 'V1' || semantics === 'V2' ? semantics : 'V1') as Semantics,
     clutter: clutter && ['C0', 'C1', 'C2', 'C3'].includes(clutter) ? clutter : 'C0',
     seed: seed && /^\d+$/.test(seed) ? seed : '0',

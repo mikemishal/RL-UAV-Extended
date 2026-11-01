@@ -61,7 +61,8 @@ def request(attacker, semantics="V2", seed_model=None, **overrides):
 
 
 def test_attacker_identifiers_are_explicit_and_separate_from_v1():
-    assert ATTACKER_CONDITIONS == ("A0", "A1-201", "A1-202", "A1-203", "A1-201-V2", "A1-202-V2", "A1-203-V2")
+    assert ATTACKER_CONDITIONS[:7] == ("A0", "A1-201", "A1-202", "A1-203", "A1-201-V2", "A1-202-V2", "A1-203-V2")
+    assert ATTACKER_CONDITIONS[7:] == ("A1-BC1-201", "A1-BC1-202", "A1-BC1-203")
     assert V2_ATTACKER_SEEDS == {"A1-201-V2": 201, "A1-202-V2": 202, "A1-203-V2": 203}
 
 

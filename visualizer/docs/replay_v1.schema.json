@@ -25,7 +25,8 @@
             "secondary_best",
             "conference_best",
             "attacker_best",
-            "attacker_v2_final"
+            "attacker_v2_final",
+            "attacker_curriculum_bc"
           ],
           "title": "Role",
           "type": "string"
@@ -172,7 +173,8 @@
         "builder": {
           "enum": [
             "experiments.journal_clutter_protocol.build_canonical_env_config",
-            "experiments.journal_v2_protocol.build_v2_env_config"
+            "experiments.journal_v2_protocol.build_v2_env_config",
+            "experiments.journal_v2_a1_cur1v2.stage1v2_config"
           ],
           "title": "Builder",
           "type": "string"
