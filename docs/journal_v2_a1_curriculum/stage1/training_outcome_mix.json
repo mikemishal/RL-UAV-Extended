@@ -1,0 +1,98 @@
+{
+ "201": {
+  "1": {
+   "episodes": 444,
+   "mean_return": -18.01,
+   "mean_steps": 72.8,
+   "outcomes": {
+    "enemy_endurance_exhausted": 0.973,
+    "intercepted": 0.02,
+    "soldier_caught": 0.007
+   }
+  },
+  "4": {
+   "episodes": 445,
+   "mean_return": -17.76,
+   "mean_steps": 72.4,
+   "outcomes": {
+    "enemy_endurance_exhausted": 0.971,
+    "intercepted": 0.013,
+    "soldier_caught": 0.016
+   }
+  },
+  "8": {
+   "episodes": 454,
+   "mean_return": -17.02,
+   "mean_steps": 71.0,
+   "outcomes": {
+    "enemy_endurance_exhausted": 0.943,
+    "intercepted": 0.015,
+    "soldier_caught": 0.042
+   }
+  }
+ },
+ "202": {
+  "1": {
+   "episodes": 444,
+   "mean_return": -18.0,
+   "mean_steps": 72.6,
+   "outcomes": {
+    "enemy_endurance_exhausted": 0.986,
+    "intercepted": 0.007,
+    "soldier_caught": 0.007
+   }
+  },
+  "4": {
+   "episodes": 440,
+   "mean_return": -18.15,
+   "mean_steps": 73.0,
+   "outcomes": {
+    "enemy_endurance_exhausted": 0.98,
+    "intercepted": 0.018,
+    "soldier_caught": 0.002
+   }
+  },
+  "8": {
+   "episodes": 438,
+   "mean_return": -17.94,
+   "mean_steps": 73.3,
+   "outcomes": {
+    "enemy_endurance_exhausted": 0.966,
+    "intercepted": 0.025,
+    "soldier_caught": 0.009
+   }
+  }
+ },
+ "203": {
+  "1": {
+   "episodes": 441,
+   "mean_return": -18.09,
+   "mean_steps": 72.8,
+   "outcomes": {
+    "enemy_endurance_exhausted": 0.982,
+    "intercepted": 0.014,
+    "soldier_caught": 0.005
+   }
+  },
+  "4": {
+   "episodes": 441,
+   "mean_return": -18.03,
+   "mean_steps": 73.0,
+   "outcomes": {
+    "enemy_endurance_exhausted": 0.961,
+    "intercepted": 0.032,
+    "soldier_caught": 0.007
+   }
+  },
+  "8": {
+   "episodes": 438,
+   "mean_return": -17.89,
+   "mean_steps": 73.1,
+   "outcomes": {
+    "enemy_endurance_exhausted": 0.966,
+    "intercepted": 0.021,
+    "soldier_caught": 0.014
+   }
+  }
+ }
+}

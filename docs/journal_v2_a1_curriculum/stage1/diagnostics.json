@@ -1,0 +1,244 @@
+{
+ "201": {
+  "action_std": [
+   0.9734482765197754,
+   1.0307363271713257,
+   1.0501456260681152
+  ],
+  "action_std_mean": 1.0181101560592651,
+  "episodes": 40,
+  "heading_offset_deg": {
+   "captured_mean": 46.06760915600736,
+   "failed_mean": 55.89212376303818
+  },
+  "mean_action_norm": 0.4609963196590344,
+  "mean_boundary_share": 0.07586040293248467,
+  "mean_closing_share": 0.2810440549633804,
+  "mean_cos_to_los": 0.0691873196926584,
+  "mean_steps": 1131.0,
+  "model_rollout": 8,
+  "outcomes": {
+   "soldier_caught": 18,
+   "timeout": 22
+  },
+  "training_per_rollout": [
+   {
+    "capture_rate": 0.006756756756756757,
+    "episodes": 444,
+    "mean_duration_s": 36.384009009009006,
+    "mean_return": -18.00838170780767,
+    "rollout": 1
+   },
+   {
+    "capture_rate": 0.009070294784580499,
+    "episodes": 441,
+    "mean_duration_s": 36.502267573696145,
+    "mean_return": -17.970849526919515,
+    "rollout": 2
+   },
+   {
+    "capture_rate": 0.004524886877828055,
+    "episodes": 442,
+    "mean_duration_s": 36.300904977375566,
+    "mean_return": -18.03528247514088,
+    "rollout": 3
+   },
+   {
+    "capture_rate": 0.015730337078651686,
+    "episodes": 445,
+    "mean_duration_s": 36.18202247191011,
+    "mean_return": -17.75847599276163,
+    "rollout": 4
+   },
+   {
+    "capture_rate": 0.011312217194570135,
+    "episodes": 442,
+    "mean_duration_s": 36.473981900452486,
+    "mean_return": -17.90515491878918,
+    "rollout": 5
+   },
+   {
+    "capture_rate": 0.02040816326530612,
+    "episodes": 441,
+    "mean_duration_s": 36.52267573696145,
+    "mean_return": -17.714847772706243,
+    "rollout": 6
+   },
+   {
+    "capture_rate": 0.031818181818181815,
+    "episodes": 440,
+    "mean_duration_s": 36.419318181818184,
+    "mean_return": -17.445079611175803,
+    "rollout": 7
+   },
+   {
+    "capture_rate": 0.04185022026431718,
+    "episodes": 454,
+    "mean_duration_s": 35.47907488986784,
+    "mean_return": -17.02474823299386,
+    "rollout": 8
+   }
+  ]
+ },
+ "202": {
+  "action_std": [
+   0.9898661375045776,
+   1.0165677070617676,
+   1.0195209980010986
+  ],
+  "action_std_mean": 1.008651614189148,
+  "episodes": 40,
+  "heading_offset_deg": {
+   "captured_mean": NaN,
+   "failed_mean": 51.47109218987432
+  },
+  "mean_action_norm": 0.20777422217680144,
+  "mean_boundary_share": 0.025375,
+  "mean_closing_share": 0.0191,
+  "mean_cos_to_los": -0.005191981160591696,
+  "mean_steps": 2000.0,
+  "model_rollout": 8,
+  "outcomes": {
+   "timeout": 40
+  },
+  "training_per_rollout": [
+   {
+    "capture_rate": 0.006756756756756757,
+    "episodes": 444,
+    "mean_duration_s": 36.28378378378378,
+    "mean_return": -17.997189688013968,
+    "rollout": 1
+   },
+   {
+    "capture_rate": 0.0,
+    "episodes": 441,
+    "mean_duration_s": 36.574829931972786,
+    "mean_return": -18.20129400363104,
+    "rollout": 2
+   },
+   {
+    "capture_rate": 0.006802721088435374,
+    "episodes": 441,
+    "mean_duration_s": 36.36054421768708,
+    "mean_return": -18.00365928902674,
+    "rollout": 3
+   },
+   {
+    "capture_rate": 0.0022727272727272726,
+    "episodes": 440,
+    "mean_duration_s": 36.513636363636365,
+    "mean_return": -18.14693037868494,
+    "rollout": 4
+   },
+   {
+    "capture_rate": 0.0091324200913242,
+    "episodes": 438,
+    "mean_duration_s": 36.59703196347032,
+    "mean_return": -18.00584999992263,
+    "rollout": 5
+   },
+   {
+    "capture_rate": 0.01366742596810934,
+    "episodes": 439,
+    "mean_duration_s": 36.80979498861048,
+    "mean_return": -17.96370167124534,
+    "rollout": 6
+   },
+   {
+    "capture_rate": 0.0022471910112359553,
+    "episodes": 445,
+    "mean_duration_s": 36.21685393258427,
+    "mean_return": -18.087106229337778,
+    "rollout": 7
+   },
+   {
+    "capture_rate": 0.0091324200913242,
+    "episodes": 438,
+    "mean_duration_s": 36.62899543378995,
+    "mean_return": -17.944967297415573,
+    "rollout": 8
+   }
+  ]
+ },
+ "203": {
+  "action_std": [
+   1.0027501583099365,
+   1.0083115100860596,
+   1.060090184211731
+  ],
+  "action_std_mean": 1.0237172842025757,
+  "episodes": 40,
+  "heading_offset_deg": {
+   "captured_mean": 37.01121432505388,
+   "failed_mean": 51.841858288972276
+  },
+  "mean_action_norm": 0.18336866581036215,
+  "mean_boundary_share": 0.0035625000000000006,
+  "mean_closing_share": 0.0363875,
+  "mean_cos_to_los": 0.013919011726126838,
+  "mean_steps": 1950.425,
+  "model_rollout": 8,
+  "outcomes": {
+   "soldier_caught": 1,
+   "timeout": 39
+  },
+  "training_per_rollout": [
+   {
+    "capture_rate": 0.0045351473922902496,
+    "episodes": 441,
+    "mean_duration_s": 36.38208616780045,
+    "mean_return": -18.09388095102982,
+    "rollout": 1
+   },
+   {
+    "capture_rate": 0.004514672686230248,
+    "episodes": 443,
+    "mean_duration_s": 36.41647855530474,
+    "mean_return": -18.049263030844905,
+    "rollout": 2
+   },
+   {
+    "capture_rate": 0.0045871559633027525,
+    "episodes": 436,
+    "mean_duration_s": 36.857798165137616,
+    "mean_return": -18.15549295826359,
+    "rollout": 3
+   },
+   {
+    "capture_rate": 0.006802721088435374,
+    "episodes": 441,
+    "mean_duration_s": 36.51473922902494,
+    "mean_return": -18.028581401967514,
+    "rollout": 4
+   },
+   {
+    "capture_rate": 0.00683371298405467,
+    "episodes": 439,
+    "mean_duration_s": 36.75740318906606,
+    "mean_return": -18.136710257581353,
+    "rollout": 5
+   },
+   {
+    "capture_rate": 0.011389521640091117,
+    "episodes": 439,
+    "mean_duration_s": 36.59908883826879,
+    "mean_return": -17.950145304120184,
+    "rollout": 6
+   },
+   {
+    "capture_rate": 0.0182648401826484,
+    "episodes": 438,
+    "mean_duration_s": 36.76027397260274,
+    "mean_return": -17.815461318642694,
+    "rollout": 7
+   },
+   {
+    "capture_rate": 0.0136986301369863,
+    "episodes": 438,
+    "mean_duration_s": 36.5513698630137,
+    "mean_return": -17.88788816941215,
+    "rollout": 8
+   }
+  ]
+ }
+}

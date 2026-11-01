@@ -1,0 +1,6 @@
+{
+ "command": "pytest tests -q --ignore=tests/test_defender_adaptation_training_runner.py --ignore=tests/test_vectorized_clutter_training.py --ignore=tests/test_journal_v2_a1_r2_training_runner.py",
+ "new_tests": 36,
+ "previous_baseline": "912 passed at e76da9e/d705a65",
+ "result": "948 passed in 427.23s"
+}

@@ -1,0 +1,13 @@
+{
+ "all_three_mastered": false,
+ "common_structural_pathology": {},
+ "final_heldout_gates_passed": {},
+ "mastered_seeds": [],
+ "rule": ">= 2/3 seeds mastered AND every mastered seed passes the final 200-episode gate AND no common structural pathology",
+ "seeds_failed": [
+  201,
+  202,
+  203
+ ],
+ "stage1_pass": false
+}

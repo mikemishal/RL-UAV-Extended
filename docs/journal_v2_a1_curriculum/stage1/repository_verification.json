@@ -1,0 +1,23 @@
+{
+ "a0_tag_commit": "bdbee45dc08a583a0da5ca882dc6b1269207a8cd",
+ "branch": "research/journal-corrected-attacker-v2",
+ "canonical_v2_guard": "passed (assert_canonical_v2_training_config via build_episode_config C0, C3)",
+ "expected_head_prefix": "d705a65",
+ "failed_a1_experiments_preserved": [
+  "docs/journal_v2_a1_campaign_v1",
+  "docs/journal_v2_a1_campaign_v2",
+  "docs/journal_v2_a1_discrete_v4",
+  "docs/journal_v2_a1_tactical_geometry_v1",
+  "docs/journal_v2_a1_evasion_gate_v1",
+  "docs/journal_v2_a1_route_level_v1"
+ ],
+ "failed_a1_v1_checkpoints": 3,
+ "failed_a1_v1_mismatches": [],
+ "head": "d705a65e2234d7de6ecaa2eba8273dbdb59420c2",
+ "head_matches": true,
+ "historical_checkpoints": 30,
+ "historical_mismatches": [],
+ "reward_version": "a1_v2_reward_v2",
+ "tracked_tree_clean": true,
+ "uav_defend_identical_to_a0_tag": true
+}

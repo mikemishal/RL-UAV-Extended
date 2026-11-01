@@ -1,0 +1,34 @@
+{
+ "failed_a1_v1_checkpoints": 3,
+ "failed_a1_v1_mismatches": [],
+ "historical_mismatches": [],
+ "historical_registered_checkpoints": 30,
+ "note": "Stage-1 seeds were initialized fresh; no failed A1 model was loaded",
+ "stage1_loaded_any_prior_model": false,
+ "stage1_models": {
+  "201": {
+   "in_curriculum_namespace": true,
+   "matches_manifest": true,
+   "outside_failed_v1_namespace": true,
+   "path": "results\\journal_v2_corrected_semantics\\a1_curriculum\\stage1\\seed_201\\checkpoints\\accepted_model.zip",
+   "sha256": "e78e6bd9ee029db46d51d2ba97f660246f0ea98857aca91ca0a487650c887590",
+   "status": "FAIL"
+  },
+  "202": {
+   "in_curriculum_namespace": true,
+   "matches_manifest": true,
+   "outside_failed_v1_namespace": true,
+   "path": "results\\journal_v2_corrected_semantics\\a1_curriculum\\stage1\\seed_202\\checkpoints\\accepted_model.zip",
+   "sha256": "a36fbc8eeb6f8bb93600fde6f03a3ee1141a8fb8c1319c20ebf521f1822c7602",
+   "status": "FAIL"
+  },
+  "203": {
+   "in_curriculum_namespace": true,
+   "matches_manifest": true,
+   "outside_failed_v1_namespace": true,
+   "path": "results\\journal_v2_corrected_semantics\\a1_curriculum\\stage1\\seed_203\\checkpoints\\accepted_model.zip",
+   "sha256": "78c9b53d1256779db9b718c72b188a92257e21e587e77df49d906c5d4caa50a4",
+   "status": "FAIL"
+  }
+ }
+}

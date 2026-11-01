@@ -1,0 +1,191 @@
+{
+ "created_utc": "2026-11-01T00:28:41.661876+00:00",
+ "stages": {
+  "01_repository_verification": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage1/repository_verification.json": "ab72bdf9a1b412bac3be3cb93ce999f8a864a5db6fd3b97fbeba08a6e903c758"
+   },
+   "completed_utc": "2026-11-01T00:28:43.104432+00:00",
+   "config_sha256": null,
+   "input_commit": "d705a65e2234d7de6ecaa2eba8273dbdb59420c2",
+   "note": "clean d705a65; A0 tag unchanged; guard passes; 30+3 checkpoints verified",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage1/repository_verification.json"
+   ],
+   "started_utc": "2026-11-01T00:28:41.726797+00:00",
+   "status": "complete"
+  },
+  "02_curriculum_protocol_freeze": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage1/protocol.json": "90a3e7b1dd073c65e398dc4cff82a6920406c65ebadfab9a32d00e0966fbf2c6"
+   },
+   "completed_utc": "2026-11-01T00:28:43.181291+00:00",
+   "config_sha256": "7fb924c73e7e6a0e4314dbb6201798889b8d01010358da6ab186a3edc94b77b9",
+   "input_commit": "d705a65e2234d7de6ecaa2eba8273dbdb59420c2",
+   "note": "protocol sha 7fb924c73e7e6a0e",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage1/protocol.json"
+   ],
+   "started_utc": "2026-11-01T00:28:43.174283+00:00",
+   "status": "complete"
+  },
+  "03_environment_wrapper_implementation": {
+   "artifact_sha256": {
+    "experiments/journal_v2_a1_cur1.py": "64b1d5219dcf605bfd4adc7b9c4c8f69375f63c87522955f6be518482a31f386",
+    "experiments/journal_v2_a1_cur1_diagnostics.py": "37b8c885655b9e2fbc96f6bda948a368997ad5fe27344b350296268142d950be",
+    "experiments/journal_v2_a1_cur1_eval.py": "9a298f498e10019bc598d1baebca4494db2d637627e86480d3b7917a0aab07fb",
+    "experiments/journal_v2_a1_cur1_state.py": "85d7deec33a084d8b8684a1fdf26855d08e9588f236a450b25af338eb0b76c98",
+    "experiments/journal_v2_a1_cur1_training.py": "98677f0a53610581363b7431fef9391677521000768b63bcd0a4b22145f4fc69"
+   },
+   "completed_utc": "2026-11-01T01:52:57.605593+00:00",
+   "config_sha256": "7fb924c73e7e6a0e4314dbb6201798889b8d01010358da6ab186a3edc94b77b9",
+   "input_commit": "d705a65e2234d7de6ecaa2eba8273dbdb59420c2",
+   "note": "Stage1Env + restart-safe mastery runner (cur1.py / cur1_training.py unchanged since the protocol freeze); eval/diagnostics/state tooling added afterwards",
+   "output_artifacts": [
+    "experiments/journal_v2_a1_cur1.py",
+    "experiments/journal_v2_a1_cur1_training.py",
+    "experiments/journal_v2_a1_cur1_state.py",
+    "experiments/journal_v2_a1_cur1_eval.py",
+    "experiments/journal_v2_a1_cur1_diagnostics.py"
+   ],
+   "started_utc": "2026-11-01T01:52:57.602027+00:00",
+   "status": "complete"
+  },
+  "04_unit_tests": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage1/unit_test_result.json": "cf86004221c4560f32cad01ab339bc0e37ea0e10f4bf43956b73ba78f543eb32",
+    "tests/test_journal_v2_a1_cur1.py": "12b941ef5a203b5adc3a2b4ba0eee36878057c9835825c47eb52d0e117a5c3bc"
+   },
+   "completed_utc": "2026-11-01T01:53:20.126846+00:00",
+   "config_sha256": "7fb924c73e7e6a0e4314dbb6201798889b8d01010358da6ab186a3edc94b77b9",
+   "input_commit": "d705a65e2234d7de6ecaa2eba8273dbdb59420c2",
+   "note": "36 passed in 18.86s",
+   "output_artifacts": [
+    "tests/test_journal_v2_a1_cur1.py",
+    "docs/journal_v2_a1_curriculum/stage1/unit_test_result.json"
+   ],
+   "started_utc": "2026-11-01T01:52:57.675046+00:00",
+   "status": "complete"
+  },
+  "05_real_sb3_resume_validation": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage1/resume_validation.json": "d12301c6b5384b5cb5fdac6bc562589636648045daf7f675161fefeec5bf4ab5"
+   },
+   "completed_utc": "2026-11-01T00:29:01.110017+00:00",
+   "config_sha256": "7fb924c73e7e6a0e4314dbb6201798889b8d01010358da6ab186a3edc94b77b9",
+   "input_commit": "d705a65e2234d7de6ecaa2eba8273dbdb59420c2",
+   "note": "real SB3 + SubprocVecEnv: interrupted == uninterrupted (policy+optimizer state, episode logs) for 3 rollouts incl. injected crash",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage1/resume_validation.json"
+   ],
+   "started_utc": "2026-11-01T00:29:01.103880+00:00",
+   "status": "complete"
+  },
+  "06_seed_201_training": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage1/seed_201_manifest.json": "5f75cca5dfa010440214d52fcd34fa8b94cc8a32cc143a618dffbe6abdf63b81"
+   },
+   "completed_utc": "2026-11-01T01:53:20.197225+00:00",
+   "config_sha256": "7fb924c73e7e6a0e4314dbb6201798889b8d01010358da6ab186a3edc94b77b9",
+   "input_commit": "d705a65e2234d7de6ecaa2eba8273dbdb59420c2",
+   "note": "FAIL: 8 rollouts / 262144 steps, no mastery; accepted_model_sha256 e78e6bd9ee029db4 (NOT accepted)",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage1/seed_201_manifest.json"
+   ],
+   "started_utc": "2026-11-01T01:53:20.192577+00:00",
+   "status": "complete"
+  },
+  "07_seed_202_training": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage1/seed_202_manifest.json": "aca8889b696fd29bcc191605b5615d8ee6b501ec49a9fcba4c4f0824e74a80f1"
+   },
+   "completed_utc": "2026-11-01T01:53:20.762285+00:00",
+   "config_sha256": "7fb924c73e7e6a0e4314dbb6201798889b8d01010358da6ab186a3edc94b77b9",
+   "input_commit": "d705a65e2234d7de6ecaa2eba8273dbdb59420c2",
+   "note": "FAIL: 8 rollouts / 262144 steps, no mastery; accepted_model_sha256 a36fbc8eeb6f8bb9 (NOT accepted)",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage1/seed_202_manifest.json"
+   ],
+   "started_utc": "2026-11-01T01:53:20.754457+00:00",
+   "status": "complete"
+  },
+  "08_seed_203_training": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage1/seed_203_manifest.json": "1a3a11eedee823ef736aa82c9d61de67b82addf72203ef9aeb3f98a774391ea7"
+   },
+   "completed_utc": "2026-11-01T01:53:20.823456+00:00",
+   "config_sha256": "7fb924c73e7e6a0e4314dbb6201798889b8d01010358da6ab186a3edc94b77b9",
+   "input_commit": "d705a65e2234d7de6ecaa2eba8273dbdb59420c2",
+   "note": "FAIL: 8 rollouts / 262144 steps, no mastery; accepted_model_sha256 78c9b53d1256779d (NOT accepted)",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage1/seed_203_manifest.json"
+   ],
+   "started_utc": "2026-11-01T01:53:20.815523+00:00",
+   "status": "complete"
+  },
+  "09_final_heldout_evaluation": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage1/diagnostics.json": "823775a09751faa990080c68ea5d7d122cf55d6480d1d3173c8a1884493219f0",
+    "docs/journal_v2_a1_curriculum/stage1/figures/stage1_learning_curves.pdf": "900b87f79ccad994350f7cc57a433f802778277e7f84bac55734fda29e115385",
+    "docs/journal_v2_a1_curriculum/stage1/figures/stage1_learning_curves.png": "87ea8c7747501e7bff61541b0b35bfc784e96e57a84638cc23b32b4e8dbdeb53",
+    "docs/journal_v2_a1_curriculum/stage1/final_evaluation.json": "5ef67594913a4ee15ba094014ca621ebb7e9ac0abfa1409b105e029d1151a1eb",
+    "docs/journal_v2_a1_curriculum/stage1/rollout_results.md": "d3b934c969545b1acacd63beb8a7a47e1aa18361d677ded68556a851a93af491",
+    "docs/journal_v2_a1_curriculum/stage1/stage1_decision.json": "8fdf2d4e171934701afdc0326aa333c216876d848d41036e843cba22b4c84337"
+   },
+   "completed_utc": "2026-11-01T01:53:20.890074+00:00",
+   "config_sha256": "7fb924c73e7e6a0e4314dbb6201798889b8d01010358da6ab186a3edc94b77b9",
+   "input_commit": "d705a65e2234d7de6ecaa2eba8273dbdb59420c2",
+   "note": "0/3 mastered; Stage 1 FAIL; A0 reference 100% capture",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage1/final_evaluation.json",
+    "docs/journal_v2_a1_curriculum/stage1/stage1_decision.json",
+    "docs/journal_v2_a1_curriculum/stage1/diagnostics.json",
+    "docs/journal_v2_a1_curriculum/stage1/rollout_results.md",
+    "docs/journal_v2_a1_curriculum/stage1/figures/stage1_learning_curves.png",
+    "docs/journal_v2_a1_curriculum/stage1/figures/stage1_learning_curves.pdf"
+   ],
+   "started_utc": "2026-11-01T01:53:20.884651+00:00",
+   "status": "complete"
+  },
+  "10_visualizer_recordings": {
+   "completed_utc": "2026-11-01T01:53:21.015147+00:00",
+   "input_commit": "d705a65e2234d7de6ecaa2eba8273dbdb59420c2",
+   "reason": "Protocol: recordings/visualizer support are produced only if >= 2/3 seeds master Stage 1; 0/3 mastered. No curriculum IDs were registered.",
+   "status": "not_applicable"
+  },
+  "11_manuscript_notes": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage1/README.md": "41758a720d599fc725997a41312ebe59df93d7067075b785987f6eafcc6728ab",
+    "docs/journal_v2_a1_curriculum/stage1/ablation_record_v5.md": "2f1d43c2f15e985f97f7891c36693f6cff2afda660c0526c4aa3087a7265afd2",
+    "docs/journal_v2_a1_curriculum/stage1/checkpoint_integrity.json": "875d727e6696aea82d878ae27e2dc57efb0e7cab67e3dcd1edfd0708be1643ae",
+    "docs/journal_v2_a1_curriculum/stage1/manuscript_notes.md": "7708fb198ae3b599ea9f47b6ac1138603f1cffe55cde1b4bd6498a142bff06a2",
+    "docs/journal_v2_a1_curriculum/stage1/regression_summary.json": "06acafb85554644156d71b2fb1a1485fdfbe3580bce09781a3b66086fa946c25"
+   },
+   "completed_utc": "2026-11-01T02:00:24.406087+00:00",
+   "config_sha256": "7fb924c73e7e6a0e4314dbb6201798889b8d01010358da6ab186a3edc94b77b9",
+   "input_commit": "d705a65e2234d7de6ecaa2eba8273dbdb59420c2",
+   "note": "documentation, ablation chronology v5, regression and integrity evidence",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage1/README.md",
+    "docs/journal_v2_a1_curriculum/stage1/manuscript_notes.md",
+    "docs/journal_v2_a1_curriculum/stage1/ablation_record_v5.md",
+    "docs/journal_v2_a1_curriculum/stage1/regression_summary.json",
+    "docs/journal_v2_a1_curriculum/stage1/checkpoint_integrity.json"
+   ],
+   "started_utc": "2026-11-01T02:00:24.402072+00:00",
+   "status": "complete"
+  },
+  "12_commit_push": {
+   "artifact_sha256": {},
+   "completed_utc": "2026-11-01T02:00:24.474649+00:00",
+   "config_sha256": "7fb924c73e7e6a0e4314dbb6201798889b8d01010358da6ab186a3edc94b77b9",
+   "input_commit": "d705a65e2234d7de6ecaa2eba8273dbdb59420c2",
+   "note": "evidence + implementation commit on research/journal-corrected-attacker-v2; NO curriculum tag (Stage 1 failed); parent d705a65",
+   "output_artifacts": [],
+   "started_utc": "2026-11-01T02:00:24.471566+00:00",
+   "status": "complete"
+  }
+ },
+ "task": "journal_v2_a1_curriculum/stage1",
+ "updated_utc": "2026-11-01T02:00:24.474666+00:00"
+}
