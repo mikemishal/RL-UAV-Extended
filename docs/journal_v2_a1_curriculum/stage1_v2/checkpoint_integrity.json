@@ -1,0 +1,46 @@
+{
+ "failed_a1_v1_checkpoints": 3,
+ "failed_a1_v1_mismatches": [],
+ "historical_mismatches": [],
+ "historical_registered_checkpoints": 30,
+ "note": "Stage-1-v2 students were initialized fresh and trained by behaviour cloning; no PPO checkpoint was loaded and PPO learn() was never called",
+ "stage1_v1_failed_curriculum_models": {
+  "201": {
+   "marker_present": true,
+   "sha256_matches": true,
+   "status": "FAIL"
+  },
+  "202": {
+   "marker_present": true,
+   "sha256_matches": true,
+   "status": "FAIL"
+  },
+  "203": {
+   "marker_present": true,
+   "sha256_matches": true,
+   "status": "FAIL"
+  }
+ },
+ "stage1_v2_loaded_any_prior_model": false,
+ "stage1_v2_models": {
+  "201": {
+   "matches_handoff": true,
+   "path": "results\\journal_v2_corrected_semantics\\a1_curriculum\\stage1_v2\\seed_201\\bc_final_model.zip",
+   "sha256": "4bc446afebbb95f308234399ec22a2a6f84b39338f85a0f109384a338eb2aee4",
+   "under_stage1_v2_namespace": true
+  },
+  "202": {
+   "matches_handoff": true,
+   "path": "results\\journal_v2_corrected_semantics\\a1_curriculum\\stage1_v2\\seed_202\\bc_final_model.zip",
+   "sha256": "18da296243f10057868939c6b3d3bc07ff2de13e622241b9df10dc55ea30ab65",
+   "under_stage1_v2_namespace": true
+  },
+  "203": {
+   "matches_handoff": true,
+   "path": "results\\journal_v2_corrected_semantics\\a1_curriculum\\stage1_v2\\seed_203\\bc_final_model.zip",
+   "sha256": "a3e34511d60170ea9ce329ece56f4e778fd01fdc6e22cb918df379675dab42c3",
+   "under_stage1_v2_namespace": true
+  }
+ },
+ "uav_defend_identical_to_a0_tag": true
+}

@@ -1,0 +1,218 @@
+{
+ "coverage": {
+  "action_norm_min_max": [
+   0.9999998807907104,
+   1.0000001192092896
+  ],
+  "bearing_quadrant_episode_counts": [
+   1256,
+   1284,
+   1267,
+   1193
+  ],
+  "caught_fraction": 1.0,
+  "episodes": 5000,
+  "heading_offset_deg": [
+   0.03960390607068715,
+   46.01798311313331,
+   89.99168502815385
+  ],
+  "heading_offset_quartile_counts": [
+   1212,
+   1230,
+   1289,
+   1269
+  ],
+  "initial_altitude_m": [
+   10.002132415771484,
+   20.192073822021484,
+   29.998109817504883
+  ],
+  "initial_range_m": [
+   51.06467133205663,
+   59.9755904360152,
+   76.26305563667066
+  ],
+  "late_approach_fraction": 0.12726689706773078,
+  "late_approach_pairs_within_10m": 7144,
+  "normalized_offset_min_max": [
+   0.04082136228680611,
+   1.7137856483459473
+  ],
+  "pairs": 56134,
+  "pairs_per_episode_mean": 11.2268,
+  "pairs_per_episode_min_max": [
+   9,
+   16
+  ],
+  "step_index_histogram": [
+   5000,
+   5000,
+   5000,
+   5000,
+   5000,
+   5000,
+   5000,
+   5000,
+   5000,
+   4410,
+   3373,
+   2171,
+   884,
+   244,
+   43,
+   9
+  ],
+  "vertical_component_of_label": [
+   -1.0,
+   -0.33518439531326294,
+   -0.06339570134878159
+  ]
+ },
+ "dataset_sha256": "4de39a6021ea03123d63439a013d25063dc44fce32d64564f319df9bcea56c62",
+ "env_config_sha256": "b02c34240e8453f7d27c7be71c55830796105059234c801cebabc4f1be3cec81",
+ "episode_leakage": 0,
+ "expert_scenarios": [
+  160000,
+  164999
+ ],
+ "observation_version": "a1_v2_obs_v1",
+ "pairs": 56134,
+ "schema": "a1_cur1v2_expert_dataset/1",
+ "shards": [
+  {
+   "created_utc": "2026-11-01T02:39:50Z",
+   "env_config_sha256": "b02c34240e8453f7d27c7be71c55830796105059234c801cebabc4f1be3cec81",
+   "episodes": 500,
+   "npz_sha256": "c1b08baa153bd6da2895687599091e4430aec3ee20fb9951cbb23a121afaa2cb",
+   "pairs": 5641,
+   "schema": "a1_cur1v2_expert_shard/1",
+   "seed_range": [
+    160000,
+    160499
+   ],
+   "shard": 0
+  },
+  {
+   "created_utc": "2026-11-01T02:39:50Z",
+   "env_config_sha256": "b02c34240e8453f7d27c7be71c55830796105059234c801cebabc4f1be3cec81",
+   "episodes": 500,
+   "npz_sha256": "7bf15cf16e98753b6a8bbda40a93e892dd0dd9fe5ab5ae70791fd73430db983f",
+   "pairs": 5644,
+   "schema": "a1_cur1v2_expert_shard/1",
+   "seed_range": [
+    160500,
+    160999
+   ],
+   "shard": 1
+  },
+  {
+   "created_utc": "2026-11-01T02:39:50Z",
+   "env_config_sha256": "b02c34240e8453f7d27c7be71c55830796105059234c801cebabc4f1be3cec81",
+   "episodes": 500,
+   "npz_sha256": "b18b4a2c4cda42adbb6356106e1838e7ad6ab5ac7384f78c2f188940eaa686b1",
+   "pairs": 5597,
+   "schema": "a1_cur1v2_expert_shard/1",
+   "seed_range": [
+    161000,
+    161499
+   ],
+   "shard": 2
+  },
+  {
+   "created_utc": "2026-11-01T02:39:50Z",
+   "env_config_sha256": "b02c34240e8453f7d27c7be71c55830796105059234c801cebabc4f1be3cec81",
+   "episodes": 500,
+   "npz_sha256": "2e3e1f06b4943e99c00064e1757d79e4795f287c7f37d0be23ecf648c0d8aabb",
+   "pairs": 5576,
+   "schema": "a1_cur1v2_expert_shard/1",
+   "seed_range": [
+    161500,
+    161999
+   ],
+   "shard": 3
+  },
+  {
+   "created_utc": "2026-11-01T02:39:50Z",
+   "env_config_sha256": "b02c34240e8453f7d27c7be71c55830796105059234c801cebabc4f1be3cec81",
+   "episodes": 500,
+   "npz_sha256": "422ac14bab4d327ffb3483db1ffd9e334d0b0fcf130c89301200dddb18d92ce7",
+   "pairs": 5550,
+   "schema": "a1_cur1v2_expert_shard/1",
+   "seed_range": [
+    162000,
+    162499
+   ],
+   "shard": 4
+  },
+  {
+   "created_utc": "2026-11-01T02:39:50Z",
+   "env_config_sha256": "b02c34240e8453f7d27c7be71c55830796105059234c801cebabc4f1be3cec81",
+   "episodes": 500,
+   "npz_sha256": "499c6ef7ff657a134ceb4dc0eb4062e71d9a79bb1276ee08cf1c011fae13cda4",
+   "pairs": 5604,
+   "schema": "a1_cur1v2_expert_shard/1",
+   "seed_range": [
+    162500,
+    162999
+   ],
+   "shard": 5
+  },
+  {
+   "created_utc": "2026-11-01T02:39:50Z",
+   "env_config_sha256": "b02c34240e8453f7d27c7be71c55830796105059234c801cebabc4f1be3cec81",
+   "episodes": 500,
+   "npz_sha256": "813515c4d6f41b8b90cd6e278ea504afc716404c42fb4f9625001dfd813d0e67",
+   "pairs": 5635,
+   "schema": "a1_cur1v2_expert_shard/1",
+   "seed_range": [
+    163000,
+    163499
+   ],
+   "shard": 6
+  },
+  {
+   "created_utc": "2026-11-01T02:39:50Z",
+   "env_config_sha256": "b02c34240e8453f7d27c7be71c55830796105059234c801cebabc4f1be3cec81",
+   "episodes": 500,
+   "npz_sha256": "4dd2d0846724cf09ab202a089c8da2166c0e196e77e3ecfa9236fd81f75a04bc",
+   "pairs": 5571,
+   "schema": "a1_cur1v2_expert_shard/1",
+   "seed_range": [
+    163500,
+    163999
+   ],
+   "shard": 7
+  },
+  {
+   "created_utc": "2026-11-01T02:39:50Z",
+   "env_config_sha256": "b02c34240e8453f7d27c7be71c55830796105059234c801cebabc4f1be3cec81",
+   "episodes": 500,
+   "npz_sha256": "912f622cf1cc28fa6a25dbe2db3dd1e770d8d2c20c462bd5e7a18b6025edd732",
+   "pairs": 5674,
+   "schema": "a1_cur1v2_expert_shard/1",
+   "seed_range": [
+    164000,
+    164499
+   ],
+   "shard": 8
+  },
+  {
+   "created_utc": "2026-11-01T02:39:50Z",
+   "env_config_sha256": "b02c34240e8453f7d27c7be71c55830796105059234c801cebabc4f1be3cec81",
+   "episodes": 500,
+   "npz_sha256": "f4ed8eb232f38ab597b04cfba8c1df1c99a7b1c617a536cff96249582043299c",
+   "pairs": 5642,
+   "schema": "a1_cur1v2_expert_shard/1",
+   "seed_range": [
+    164500,
+    164999
+   ],
+   "shard": 9
+  }
+ ],
+ "train_episodes": 4000,
+ "train_pairs": 44916,
+ "val_episodes": 1000,
+ "val_pairs": 11218
+}

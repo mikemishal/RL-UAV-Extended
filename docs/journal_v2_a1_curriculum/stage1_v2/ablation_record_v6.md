@@ -1,0 +1,8 @@
+# A1 development ablation record v6 — expert initialization of curriculum Stage 1
+
+Rows 1–8 are unchanged from `docs/journal_v2_a1_curriculum/stage1/ablation_record_v5.md` (preserved). Recap of row 8: **pure PPO from scratch** on curriculum Stage 1 failed 0/3 (held-out capture 33.5% / 0% / 2.5%).
+
+| # | Design | Hypothesis | Test protocol | Quantitative outcome | Mechanism | Lesson |
+|---|---|---|---|---|---|---|
+| 8 | Pure PPO from scratch → **failed** | PPO learns stationary-asset capture unaided | 3 seeds × 8 rollouts (262,144 steps) | 0/3 mastered; capture 33.5% / 0% / 2.5% | random-looking exploration (std ≈ 1.02), no alignment with line of sight | exploration, not capacity, is the bottleneck |
+| 9 | **A0 expert initialization → current result** (`curriculum_basic_pursuit_no_defender_interaction`; BC of `a1_cur1_action_v1`, `a1_v2_obs_v1`; `log_std = −2`; one fixed expert-relabeling round; **no PPO `learn()`**) | basic pursuit is transferable from A0 by imitation, leaving RL for adversarial behaviour | 5,000 A0 episodes → 56,134 pairs (SHA `4de39a60…56c62`), seeds 201/202/203, 200 held-out episodes per seed (146000–146199), same mastery gate | **3/3 pass**: capture 100% / 100% / 100% (A0 100%), median path-excess 1.0235× (A0 1.0235×), 0 exhaustion/timeout/orbit/non-finite, cosine to A0 ≈ 1.0 | student reproduces the closed-form pursuit direction; relabeling round changed fidelity (MSE −40–45%) but not behaviour (round-0 policies pass too) | basic pursuit is *not* the obstacle once supervised; initialization checkpoints (not final attackers) are ready for Stage 2 (active defender, PPO to learn evasion) |

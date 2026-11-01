@@ -1,0 +1,40 @@
+{
+ "a0_tag_commit": "bdbee45dc08a583a0da5ca882dc6b1269207a8cd",
+ "branch": "research/journal-corrected-attacker-v2",
+ "canonical_v2_guard": "passed",
+ "expected_head_prefix": "67cf934",
+ "failed_a1_v1_checkpoints": 3,
+ "failed_a1_v1_mismatches": [],
+ "failed_experiments_preserved": [
+  "docs/journal_v2_a1_campaign_v1",
+  "docs/journal_v2_a1_discrete_v4",
+  "docs/journal_v2_a1_tactical_geometry_v1",
+  "docs/journal_v2_a1_evasion_gate_v1",
+  "docs/journal_v2_a1_route_level_v1",
+  "docs/journal_v2_a1_curriculum/stage1"
+ ],
+ "head": "67cf9348d4a65ee25d8b73ebb1a385c3cf9faf69",
+ "head_matches": true,
+ "historical_checkpoints": 30,
+ "historical_mismatches": [],
+ "reward_version": "a1_v2_reward_v2",
+ "stage1_v1_failed_models": {
+  "201": {
+   "marker_present": true,
+   "sha256_matches": true,
+   "status": "FAIL"
+  },
+  "202": {
+   "marker_present": true,
+   "sha256_matches": true,
+   "status": "FAIL"
+  },
+  "203": {
+   "marker_present": true,
+   "sha256_matches": true,
+   "status": "FAIL"
+  }
+ },
+ "tracked_tree_clean": true,
+ "uav_defend_identical_to_a0_tag": true
+}

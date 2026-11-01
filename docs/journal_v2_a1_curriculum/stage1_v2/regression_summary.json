@@ -1,0 +1,9 @@
+{
+ "command": "pytest tests -q -p no:cacheprovider --ignore=tests/test_defender_adaptation_training_runner.py --ignore=tests/test_vectorized_clutter_training.py --ignore=tests/test_journal_v2_a1_r2_training_runner.py",
+ "excluded": "three legacy test files that call PPO learn() (not run: this task never calls PPO learn())",
+ "passed": 979,
+ "failed": 0,
+ "previous_baseline_passed": 948,
+ "new_tests": 31,
+ "duration_s": 1293
+}

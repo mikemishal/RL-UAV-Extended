@@ -1,0 +1,118 @@
+{
+ "asset": "v_s = 0 (stationary); canonical reset; Stage-1-v1 randomized geometry (perimeter spawn, altitude U(10,30), initial heading offset U(0,90) deg)",
+ "bc": {
+  "batch_size": 256,
+  "epochs": 100,
+  "loss": "mse + (1 - cosine)",
+  "lr": 0.001,
+  "model_selection": "lowest validation loss over epochs",
+  "optimizer": "Adam"
+ },
+ "dataset": {
+  "episodes": 5000,
+  "expert_scenarios": [
+   160000,
+   164999
+  ],
+  "namespace_overlaps": {
+   "expert": [],
+   "expert_vs_relabel": false,
+   "relabel": []
+  },
+  "shards": 10,
+  "split": "by episode, 80% train / 20% validation (seeded permutation, tag 0xc1b1)",
+  "target_pairs": "40,000-60,000"
+ },
+ "defender_masking": {
+  "defender": "stationary, parked at the Stage-1-v1 ground corner, never acts, state retained",
+  "observation": "build_a1_v2_observation(env, detection_range=-1.0) -> defender flag/pos/vel slots exactly 0",
+  "termination": "intercept_radius = 1e-06 m (config) -> defender cannot terminate episodes"
+ },
+ "env_config_differences_from_canonical_C0_V2": {
+  "defender_standby_until_detection": {
+   "canonical": true,
+   "stage1_v2": false
+  },
+  "intercept_radius": {
+   "canonical": 2.5,
+   "stage1_v2": 1e-06
+  },
+  "v_s": {
+   "canonical": 1.5,
+   "stage1_v2": 0.0
+  }
+ },
+ "env_config_sha256": "b02c34240e8453f7d27c7be71c55830796105059234c801cebabc4f1be3cec81",
+ "evaluation": {
+  "episodes": 200,
+  "held_out": [
+   146000,
+   146199
+  ],
+  "never_used_for": "BC or relabeling",
+  "policy": "deterministic mean, no A0 fallback"
+ },
+ "expert": {
+  "privileged_information": false,
+  "teacher": "canonical scripted A0 (direct_obstacle_only), the normalized desired-direction command for the same state: unit(p_asset - p_attacker)"
+ },
+ "gate": {
+  "capture_min": 0.98,
+  "exhaustion_max": 0.01,
+  "gt2_max": 0.02,
+  "gt5_max": 0.0,
+  "median_path_excess_max": 1.2,
+  "nonfinite_max": 0,
+  "orbit_episodes_max": 0,
+  "timeout_max": 0.01
+ },
+ "hypothesis": "Basic pursuit can be efficiently transferred from the deterministic A0 expert to A1 through imitation learning, allowing subsequent reinforcement learning to focus on genuinely adversarial behavior rather than rediscovering elementary goal-directed navigation.",
+ "mode": "curriculum_basic_pursuit_no_defender_interaction",
+ "no_ppo": "no PPO learning call is ever made; PPO objects are constructed only to hold the policy architecture",
+ "pass_rule": ">= 2/3 seeds pass AND no shared structural pathology (same pathology category in > 1% of episodes for >= 2 passing seeds)",
+ "policy": {
+  "architecture": "SB3 PPO MlpPolicy, pi/vf [64,64] tanh, 37-D input, 3-D Gaussian action",
+  "initial_action_std": 0.1353352832366127,
+  "log_std_after_bc": -2.0,
+  "same_dataset_for_all_seeds": true,
+  "seeds": [
+   201,
+   202,
+   203
+  ],
+  "trained_parameters": [
+   "mlp_extractor.policy_net",
+   "action_net"
+  ],
+  "value_function": "not trained"
+ },
+ "protocol_sha256": "bbd0d87a10c8ee6d51b7bd4d3c85a290db5f75b03fb32baf91a9f6f247af8696",
+ "relabeling": {
+  "adaptive_repetition": false,
+  "fine_tune": {
+   "batch_size": 256,
+   "epochs": 50,
+   "loss": "mse + (1 - cosine)",
+   "lr": 0.0005,
+   "model_selection": "lowest validation loss over epochs",
+   "optimizer": "Adam",
+   "rounds": 1,
+   "start": "round-0 selected weights"
+  },
+  "label": "A0 action at the visited state",
+  "max_states_per_episode": 100,
+  "policy": "round-0 deterministic policy mean",
+  "rounds": 1,
+  "scenarios": [
+   170000,
+   170999
+  ]
+ },
+ "stage1_v1_failed_ablation": "docs/journal_v2_a1_curriculum/stage1/ (pure PPO from scratch, 0/3 seeds mastered) is preserved and NON-CANONICAL",
+ "versions": {
+  "action": "a1_cur1_action_v1",
+  "bc_protocol": "a1_cur1v2_bc_v1",
+  "observation": "a1_v2_obs_v1",
+  "reward": "a1_v2_reward_v2"
+ }
+}

@@ -1,0 +1,13 @@
+{
+ "all_three_passed": true,
+ "common_structural_pathology": {},
+ "near_pass_needs_review": false,
+ "rule": ">= 2/3 seeds pass AND no shared structural pathology (same pathology category in > 1% of episodes for >= 2 passing seeds)",
+ "seeds_failed": [],
+ "seeds_passed": [
+  201,
+  202,
+  203
+ ],
+ "stage1_v2_pass": true
+}

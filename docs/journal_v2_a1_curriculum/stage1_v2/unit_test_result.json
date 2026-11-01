@@ -1,0 +1,19 @@
+{
+ "file": "tests/test_journal_v2_a1_cur1v2.py",
+ "passed": 31,
+ "failed": 0,
+ "covers": [
+  "curriculum defender masking (slots 9-15 zero, even 0.7 m from the defender)",
+  "no defender termination; defender stationary and present",
+  "expert action extraction (unit norm, state-only; expert-label policy reproduces A0 bit-for-bit)",
+  "namespace non-overlap; episode-level split without leakage",
+  "dataset shard atomicity, restart skip, tamper detection, duplicate-writer lock; dataset hash",
+  "BC architecture, loss and cosine metric; only actor trained; critic and log_std untouched",
+  "log_std = -2 initialization; model save/load round trip",
+  "epoch checkpoint restart exactness incl. injected power loss; tampered epoch rejected; duplicate trainer refused",
+  "expert-relabeling dataset (policy-visited states, A0 labels, cap) and exactly one round",
+  "deterministic evaluation; gate boundaries; stage decision rule",
+  "protocol hash vs frozen artifact; no PPO learn() in any Stage-1-v2 module; task-state restart semantics"
+ ],
+ "visualizer": {"suite": "visualizer/tests (system Python + fa_target)", "passed": 121, "skipped": 11, "frontend_tsc": "clean"}
+}

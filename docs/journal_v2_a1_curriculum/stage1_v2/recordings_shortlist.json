@@ -1,0 +1,112 @@
+{
+ "scenario_set": "held-out 146000-146199 (never used for BC or relabeling)",
+ "clutter": "C0",
+ "semantics": "V2",
+ "defender": "passive (parked, masked; curriculum_basic_pursuit_no_defender_interaction)",
+ "recordings": [
+  {
+   "attacker": "A1-BC1-203",
+   "category": "normal_pursuit",
+   "evaluation_seed": 146009,
+   "outcome": "soldier_caught",
+   "steps": 11,
+   "path_excess": 1.0238,
+   "initial_range_m": 60.48,
+   "initial_altitude_m": 19.44,
+   "initial_heading_offset_deg": 46.98
+  },
+  {
+   "attacker": "A1-BC1-203",
+   "category": "large_heading_error",
+   "evaluation_seed": 146194,
+   "outcome": "soldier_caught",
+   "steps": 12,
+   "path_excess": 1.0833,
+   "initial_range_m": 60.74,
+   "initial_altitude_m": 11.23,
+   "initial_heading_offset_deg": 88.98
+  },
+  {
+   "attacker": "A1-BC1-203",
+   "category": "vertical_separation",
+   "evaluation_seed": 146044,
+   "outcome": "soldier_caught",
+   "steps": 13,
+   "path_excess": 1.0358,
+   "initial_range_m": 66.86,
+   "initial_altitude_m": 29.96,
+   "initial_heading_offset_deg": 85.22
+  },
+  {
+   "attacker": "A1-BC1-203",
+   "category": "long_distance",
+   "evaluation_seed": 146007,
+   "outcome": "soldier_caught",
+   "steps": 13,
+   "path_excess": 1.0003,
+   "initial_range_m": 75.23,
+   "initial_altitude_m": 27.25,
+   "initial_heading_offset_deg": 22.76
+  },
+  {
+   "attacker": "A1-BC1-203",
+   "category": "worst_successful_path",
+   "evaluation_seed": 146191,
+   "outcome": "soldier_caught",
+   "steps": 14,
+   "path_excess": 1.3349,
+   "initial_range_m": 58.64,
+   "initial_altitude_m": 27.19,
+   "initial_heading_offset_deg": 88.76
+  },
+  {
+   "attacker": "A1-BC1-202",
+   "category": "large_heading_error",
+   "evaluation_seed": 146194,
+   "outcome": "soldier_caught",
+   "steps": 12,
+   "path_excess": 1.0833,
+   "initial_range_m": 60.74,
+   "initial_altitude_m": 11.23,
+   "initial_heading_offset_deg": 88.98
+  },
+  {
+   "attacker": "A1-BC1-202",
+   "category": "worst_successful_path",
+   "evaluation_seed": 146191,
+   "outcome": "soldier_caught",
+   "steps": 14,
+   "path_excess": 1.3376,
+   "initial_range_m": 58.64,
+   "initial_altitude_m": 27.19,
+   "initial_heading_offset_deg": 88.76
+  },
+  {
+   "attacker": "A1-BC1-201",
+   "category": "normal_pursuit",
+   "evaluation_seed": 146009,
+   "outcome": "soldier_caught",
+   "steps": 11,
+   "path_excess": 1.0238,
+   "initial_range_m": 60.48,
+   "initial_altitude_m": 19.44,
+   "initial_heading_offset_deg": 46.98
+  },
+  {
+   "attacker": "A1-BC1-201",
+   "category": "worst_successful_path",
+   "evaluation_seed": 146191,
+   "outcome": "soldier_caught",
+   "steps": 14,
+   "path_excess": 1.3367,
+   "initial_range_m": 58.64,
+   "initial_altitude_m": 27.19,
+   "initial_heading_offset_deg": 88.76
+  }
+ ],
+ "failures_in_heldout": {
+  "201": [],
+  "202": [],
+  "203": []
+ }
+}

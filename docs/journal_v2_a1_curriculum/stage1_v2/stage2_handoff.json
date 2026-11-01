@@ -1,0 +1,278 @@
+{
+ "a0_reference": {
+  "asset_displacement_max_m": 0.0,
+  "capture": 1.0,
+  "collision": 0.0,
+  "episodes": 200,
+  "exhaustion": 0.0,
+  "expert_cosine_mean": null,
+  "expert_cosine_median": null,
+  "expert_cosine_min": null,
+  "expert_cosine_p5": null,
+  "expert_cosine_steps": 0,
+  "flyby_episodes": 0,
+  "gt1.3": 0.005,
+  "gt2": 0.0,
+  "gt5": 0.0,
+  "gt5_count": 0,
+  "held_action_steps": 0,
+  "intercepted": 0.0,
+  "max_path_excess": 1.3368033434880915,
+  "mean_duration_s": 5.6475,
+  "mean_path_excess": 1.0428642991251276,
+  "mean_path_length_m": 61.48745430885504,
+  "mean_return": 10.483076333415518,
+  "mean_return_discounted": 9.478966881593346,
+  "mean_terminal_distance_m": 2.0000000137163405,
+  "median_path_excess": 1.0234657455476694,
+  "min_defender_separation_m": 11.527482986450195,
+  "nonclosing_episodes": 0,
+  "nonfinite": 0,
+  "orbit_episodes": 0,
+  "pathology_rate": 0.0,
+  "repeated_flyby_episodes": 0,
+  "reward_path": -0.20237682538483232,
+  "reward_progress": 1.8149531588003487,
+  "reward_step": -1.1295,
+  "reward_terminal": 10.0,
+  "timeout": 0.0
+ },
+ "architecture": {
+  "action_dim": 3,
+  "activation": "tanh",
+  "net_arch": {
+   "pi": [
+    64,
+    64
+   ],
+   "vf": [
+    64,
+    64
+   ]
+  },
+  "obs_dim": 37,
+  "policy": "SB3 PPO MlpPolicy"
+ },
+ "bc_dataset": {
+  "expert_scenarios": [
+   160000,
+   164999
+  ],
+  "pairs": 56134,
+  "sha256": "4de39a6021ea03123d63439a013d25063dc44fce32d64564f319df9bcea56c62",
+  "train_pairs": 44916,
+  "val_pairs": 11218
+ },
+ "checkpoints": {
+  "201": {
+   "model_sha256": "4bc446afebbb95f308234399ec22a2a6f84b39338f85a0f109384a338eb2aee4",
+   "path": "results\\journal_v2_corrected_semantics\\a1_curriculum\\stage1_v2\\seed_201\\bc_final_model.zip",
+   "relabel_provenance": {
+    "added_expert_labels_total": 11117,
+    "added_train_states": 8884,
+    "added_val_states": 2233,
+    "episodes": 1000,
+    "max_states_per_episode": 100,
+    "mean_states_per_episode": 11.117,
+    "outcomes_round0_policy": {
+     "soldier_caught": 1000
+    },
+    "relabel_npz_sha256": "74e71a4f4832841966e8229c99cac0b4df121afc16f03d2cf8e937ca5a3da6fa",
+    "scenario_range": [
+     170000,
+     170999
+    ],
+    "seed": 201,
+    "visited_states": 11117
+   }
+  },
+  "202": {
+   "model_sha256": "18da296243f10057868939c6b3d3bc07ff2de13e622241b9df10dc55ea30ab65",
+   "path": "results\\journal_v2_corrected_semantics\\a1_curriculum\\stage1_v2\\seed_202\\bc_final_model.zip",
+   "relabel_provenance": {
+    "added_expert_labels_total": 11114,
+    "added_train_states": 8882,
+    "added_val_states": 2232,
+    "episodes": 1000,
+    "max_states_per_episode": 100,
+    "mean_states_per_episode": 11.114,
+    "outcomes_round0_policy": {
+     "soldier_caught": 1000
+    },
+    "relabel_npz_sha256": "98d93b9cf41ea15da1b838281cc4ef68d1f18a82cfe87200d4d1c3588b9d2607",
+    "scenario_range": [
+     170000,
+     170999
+    ],
+    "seed": 202,
+    "visited_states": 11114
+   }
+  },
+  "203": {
+   "model_sha256": "a3e34511d60170ea9ce329ece56f4e778fd01fdc6e22cb918df379675dab42c3",
+   "path": "results\\journal_v2_corrected_semantics\\a1_curriculum\\stage1_v2\\seed_203\\bc_final_model.zip",
+   "relabel_provenance": {
+    "added_expert_labels_total": 11114,
+    "added_train_states": 8883,
+    "added_val_states": 2231,
+    "episodes": 1000,
+    "max_states_per_episode": 100,
+    "mean_states_per_episode": 11.114,
+    "outcomes_round0_policy": {
+     "soldier_caught": 1000
+    },
+    "relabel_npz_sha256": "fd06ea5c863db7c3b567f8143deb0106d7acece3b842c16a9781304e89d9fe83",
+    "scenario_range": [
+     170000,
+     170999
+    ],
+    "seed": 203,
+    "visited_states": 11114
+   }
+  }
+ },
+ "curriculum_mode": "curriculum_basic_pursuit_no_defender_interaction",
+ "decision": {
+  "all_three_passed": true,
+  "common_structural_pathology": {},
+  "near_pass_needs_review": false,
+  "rule": ">= 2/3 seeds pass AND no shared structural pathology (same pathology category in > 1% of episodes for >= 2 passing seeds)",
+  "seeds_failed": [],
+  "seeds_passed": [
+   201,
+   202,
+   203
+  ],
+  "stage1_v2_pass": true
+ },
+ "env_config_sha256": "b02c34240e8453f7d27c7be71c55830796105059234c801cebabc4f1be3cec81",
+ "evaluation": {
+  "201": {
+   "asset_displacement_max_m": 0.0,
+   "capture": 1.0,
+   "collision": 0.0,
+   "episodes": 200,
+   "exhaustion": 0.0,
+   "expert_cosine_mean": 0.9999477141990302,
+   "expert_cosine_median": 0.9999864367699938,
+   "expert_cosine_min": 0.98986793193249,
+   "expert_cosine_p5": 0.9998080519477053,
+   "expert_cosine_steps": 2259,
+   "flyby_episodes": 0,
+   "gt1.3": 0.005,
+   "gt2": 0.0,
+   "gt5": 0.0,
+   "gt5_count": 0,
+   "held_action_steps": 0,
+   "intercepted": 0.0,
+   "max_path_excess": 1.3367240890914973,
+   "mean_duration_s": 5.6475,
+   "mean_path_excess": 1.0428886915685014,
+   "mean_path_length_m": 61.494612052931785,
+   "mean_return": 10.483044262929978,
+   "mean_return_discounted": 9.47894489549098,
+   "mean_terminal_distance_m": 2.0000000024638616,
+   "median_path_excess": 1.0235163085603838,
+   "min_defender_separation_m": 11.529210090637207,
+   "nonclosing_episodes": 0,
+   "nonfinite": 0,
+   "orbit_episodes": 0,
+   "pathology_rate": 0.0,
+   "repeated_flyby_episodes": 0,
+   "reward_path": -0.20240011315060047,
+   "reward_progress": 1.8149443760805781,
+   "reward_step": -1.1295,
+   "reward_terminal": 10.0,
+   "timeout": 0.0
+  },
+  "202": {
+   "asset_displacement_max_m": 0.0,
+   "capture": 1.0,
+   "collision": 0.0,
+   "episodes": 200,
+   "exhaustion": 0.0,
+   "expert_cosine_mean": 0.9999567753804164,
+   "expert_cosine_median": 0.9999829435961627,
+   "expert_cosine_min": 0.9972738469631399,
+   "expert_cosine_p5": 0.9998604269060312,
+   "expert_cosine_steps": 2258,
+   "flyby_episodes": 0,
+   "gt1.3": 0.005,
+   "gt2": 0.0,
+   "gt5": 0.0,
+   "gt5_count": 0,
+   "held_action_steps": 0,
+   "intercepted": 0.0,
+   "max_path_excess": 1.3375851243123449,
+   "mean_duration_s": 5.645,
+   "mean_path_excess": 1.0429023747722603,
+   "mean_path_length_m": 61.49599204666723,
+   "mean_return": 10.483639345107138,
+   "mean_return_discounted": 9.479898069265277,
+   "mean_terminal_distance_m": 1.9999999984239367,
+   "median_path_excess": 1.0235973804286718,
+   "min_defender_separation_m": 11.535856246948242,
+   "nonclosing_episodes": 0,
+   "nonfinite": 0,
+   "orbit_episodes": 0,
+   "pathology_rate": 0.0,
+   "repeated_flyby_episodes": 0,
+   "reward_path": -0.2024053508207841,
+   "reward_progress": 1.8150446959279218,
+   "reward_step": -1.129,
+   "reward_terminal": 10.0,
+   "timeout": 0.0
+  },
+  "203": {
+   "asset_displacement_max_m": 0.0,
+   "capture": 1.0,
+   "collision": 0.0,
+   "episodes": 200,
+   "exhaustion": 0.0,
+   "expert_cosine_mean": 0.9999551839944332,
+   "expert_cosine_median": 0.9999865858477563,
+   "expert_cosine_min": 0.9952363159164519,
+   "expert_cosine_p5": 0.9998622702323015,
+   "expert_cosine_steps": 2258,
+   "flyby_episodes": 0,
+   "gt1.3": 0.005,
+   "gt2": 0.0,
+   "gt5": 0.0,
+   "gt5_count": 0,
+   "held_action_steps": 0,
+   "intercepted": 0.0,
+   "max_path_excess": 1.3349247773899366,
+   "mean_duration_s": 5.645,
+   "mean_path_excess": 1.0428914720897295,
+   "mean_path_length_m": 61.48876642173462,
+   "mean_return": 10.483668522136183,
+   "mean_return_discounted": 9.479919963155899,
+   "mean_terminal_distance_m": 2.000000010402179,
+   "median_path_excess": 1.0235103226444728,
+   "min_defender_separation_m": 11.537341117858887,
+   "nonclosing_episodes": 0,
+   "nonfinite": 0,
+   "orbit_episodes": 0,
+   "pathology_rate": 0.0,
+   "repeated_flyby_episodes": 0,
+   "reward_path": -0.20238163456822528,
+   "reward_progress": 1.815050156704408,
+   "reward_step": -1.129,
+   "reward_terminal": 10.0,
+   "timeout": 0.0
+  }
+ },
+ "initial_action_std": 0.1353352832366127,
+ "log_std": -2.0,
+ "next_stage": "Stage 2: stationary asset, C0, ACTIVE stationary defender, PPO to learn evasion while preserving pursuit competence (not started)",
+ "note": "These are curriculum initialization checkpoints, not final intelligent-attacker models.",
+ "protocol_sha256": "bbd0d87a10c8ee6d51b7bd4d3c85a290db5f75b03fb32baf91a9f6f247af8696",
+ "stage": "journal_v2_a1_curriculum/stage1_v2",
+ "value_function": "randomly initialized (NOT trained by BC); PPO must learn it",
+ "versions": {
+  "action": "a1_cur1_action_v1",
+  "bc_protocol": "a1_cur1v2_bc_v1",
+  "observation": "a1_v2_obs_v1",
+  "reward": "a1_v2_reward_v2"
+ }
+}

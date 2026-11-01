@@ -1,0 +1,201 @@
+{
+ "created_utc": "2026-11-01T02:39:42.790441+00:00",
+ "stages": {
+  "01_verify_repository": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage1_v2/repository_verification.json": "417192b8d3cabbe17a36684db024eebd58a162e50657c8ad463c51b395fc9934"
+   },
+   "completed_utc": "2026-11-01T02:39:44.472675+00:00",
+   "config_sha256": null,
+   "input_commit": "67cf9348d4a65ee25d8b73ebb1a385c3cf9faf69",
+   "note": "clean 67cf934; checkpoints and Stage-1-v1 failed models verified",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage1_v2/repository_verification.json"
+   ],
+   "started_utc": "2026-11-01T02:39:42.840472+00:00",
+   "status": "complete"
+  },
+  "02_freeze_stage1_v2_protocol": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage1_v2/protocol.json": "5051fe0b63d7fb2d351104933e52e6341d94bc20468dd57f11ee90c8b865d271"
+   },
+   "completed_utc": "2026-11-01T02:39:44.554177+00:00",
+   "config_sha256": "bbd0d87a10c8ee6d51b7bd4d3c85a290db5f75b03fb32baf91a9f6f247af8696",
+   "input_commit": "67cf9348d4a65ee25d8b73ebb1a385c3cf9faf69",
+   "note": "protocol sha bbd0d87a10c8ee6d",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage1_v2/protocol.json"
+   ],
+   "started_utc": "2026-11-01T02:39:44.538987+00:00",
+   "status": "complete"
+  },
+  "03_implement_clean_curriculum_wrapper": {
+   "artifact_sha256": {
+    "experiments/journal_v2_a1_cur1v2.py": "96a2df7b78012f5943ba1a2a37b9ea44f869e08c7da8e2274fa6a79632c9ee0d",
+    "experiments/journal_v2_a1_cur1v2_bc.py": "e2c3c4e4ed6fbc8a663fac16e336dbf72e42343bca2513a6c7b32c807ea87ad8",
+    "experiments/journal_v2_a1_cur1v2_data.py": "2a8f5de6c543ba89ac9ba0aaf7afc129dd002ab2706da120555cdd625c4a7737",
+    "experiments/journal_v2_a1_cur1v2_run.py": "bb71c70a24f31cfca05880685b05e710ad2e08254f4394ba22e24508e04ec514",
+    "experiments/journal_v2_a1_cur1v2_state.py": "353d3946e3cc882644044071a95d37fa4b3f14cb02dd0dc4d05e469f25ea55bd"
+   },
+   "completed_utc": "2026-11-01T02:39:44.616740+00:00",
+   "config_sha256": "bbd0d87a10c8ee6d51b7bd4d3c85a290db5f75b03fb32baf91a9f6f247af8696",
+   "input_commit": "67cf9348d4a65ee25d8b73ebb1a385c3cf9faf69",
+   "note": "clean wrapper + BC pipeline (see tests/test_journal_v2_a1_cur1v2.py)",
+   "output_artifacts": [
+    "experiments/journal_v2_a1_cur1v2.py",
+    "experiments/journal_v2_a1_cur1v2_data.py",
+    "experiments/journal_v2_a1_cur1v2_bc.py",
+    "experiments/journal_v2_a1_cur1v2_state.py",
+    "experiments/journal_v2_a1_cur1v2_run.py"
+   ],
+   "started_utc": "2026-11-01T02:39:44.612314+00:00",
+   "status": "complete"
+  },
+  "04_generate_expert_dataset": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage1_v2/dataset_manifest.json": "7445ab6750e2681f495cb5b46b68e1bd6a9de16d56a065bded4b5e5a745c94db"
+   },
+   "completed_utc": "2026-11-01T02:39:51.098844+00:00",
+   "config_sha256": "bbd0d87a10c8ee6d51b7bd4d3c85a290db5f75b03fb32baf91a9f6f247af8696",
+   "input_commit": "67cf9348d4a65ee25d8b73ebb1a385c3cf9faf69",
+   "note": "56134 pairs, sha 4de39a6021ea0312",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage1_v2/dataset_manifest.json"
+   ],
+   "started_utc": "2026-11-01T02:39:44.674547+00:00",
+   "status": "complete"
+  },
+  "05_train_bc_seed_201": {
+   "artifact_sha256": {
+    "results/journal_v2_corrected_semantics/a1_curriculum/stage1_v2/seed_201/round0_summary.json": "8559c68ea4a34c2988ba287971c0d1ae27fe9db0340175275abdaf4880fb663c"
+   },
+   "completed_utc": "2026-11-01T02:40:28.770756+00:00",
+   "config_sha256": "bbd0d87a10c8ee6d51b7bd4d3c85a290db5f75b03fb32baf91a9f6f247af8696",
+   "input_commit": "67cf9348d4a65ee25d8b73ebb1a385c3cf9faf69",
+   "note": "round-0 BC seed 201: val cos 0.99993, epoch 99",
+   "output_artifacts": [
+    "results/journal_v2_corrected_semantics/a1_curriculum/stage1_v2/seed_201/round0_summary.json"
+   ],
+   "started_utc": "2026-11-01T02:39:51.225990+00:00",
+   "status": "complete"
+  },
+  "06_train_bc_seed_202": {
+   "artifact_sha256": {
+    "results/journal_v2_corrected_semantics/a1_curriculum/stage1_v2/seed_202/round0_summary.json": "60a0a769a916a822cabbdd5d3269576dc85aa9b35b6a42fbe6322ea01893e158"
+   },
+   "completed_utc": "2026-11-01T02:41:03.019573+00:00",
+   "config_sha256": "bbd0d87a10c8ee6d51b7bd4d3c85a290db5f75b03fb32baf91a9f6f247af8696",
+   "input_commit": "67cf9348d4a65ee25d8b73ebb1a385c3cf9faf69",
+   "note": "round-0 BC seed 202: val cos 0.99995, epoch 99",
+   "output_artifacts": [
+    "results/journal_v2_corrected_semantics/a1_curriculum/stage1_v2/seed_202/round0_summary.json"
+   ],
+   "started_utc": "2026-11-01T02:40:28.892414+00:00",
+   "status": "complete"
+  },
+  "07_train_bc_seed_203": {
+   "artifact_sha256": {
+    "results/journal_v2_corrected_semantics/a1_curriculum/stage1_v2/seed_203/round0_summary.json": "736e81edfc7a6c339857ec172b0db38023d123229cb5ed71bf8cceacf0d6650c"
+   },
+   "completed_utc": "2026-11-01T02:41:35.159881+00:00",
+   "config_sha256": "bbd0d87a10c8ee6d51b7bd4d3c85a290db5f75b03fb32baf91a9f6f247af8696",
+   "input_commit": "67cf9348d4a65ee25d8b73ebb1a385c3cf9faf69",
+   "note": "round-0 BC seed 203: val cos 0.99994, epoch 98",
+   "output_artifacts": [
+    "results/journal_v2_corrected_semantics/a1_curriculum/stage1_v2/seed_203/round0_summary.json"
+   ],
+   "started_utc": "2026-11-01T02:41:03.122231+00:00",
+   "status": "complete"
+  },
+  "08_fixed_expert_relabeling_round": {
+   "artifact_sha256": {
+    "results/journal_v2_corrected_semantics/a1_curriculum/stage1_v2/seed_201/final_summary.json": "12bf6372067437b2edb9550424499e1ae720728f0aa4d4131a69b98b8c910dca",
+    "results/journal_v2_corrected_semantics/a1_curriculum/stage1_v2/seed_202/final_summary.json": "609f3d2d00da1f482d9cc3c9917299c2a0d5e8b338ce916f19ca5acfa5d858e1",
+    "results/journal_v2_corrected_semantics/a1_curriculum/stage1_v2/seed_203/final_summary.json": "86bd27c27737e2f3e851b7651dd72826bada1c1afc5a29e749d118a458ac3478"
+   },
+   "completed_utc": "2026-11-01T02:42:52.226226+00:00",
+   "config_sha256": "bbd0d87a10c8ee6d51b7bd4d3c85a290db5f75b03fb32baf91a9f6f247af8696",
+   "input_commit": "67cf9348d4a65ee25d8b73ebb1a385c3cf9faf69",
+   "note": "one fixed expert-relabeling round + fine-tune for seeds 201/202/203",
+   "output_artifacts": [
+    "results/journal_v2_corrected_semantics/a1_curriculum/stage1_v2/seed_201/final_summary.json",
+    "results/journal_v2_corrected_semantics/a1_curriculum/stage1_v2/seed_202/final_summary.json",
+    "results/journal_v2_corrected_semantics/a1_curriculum/stage1_v2/seed_203/final_summary.json"
+   ],
+   "started_utc": "2026-11-01T02:41:35.252079+00:00",
+   "status": "complete"
+  },
+  "09_heldout_evaluation": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage1_v2/final_evaluation.json": "b150c25c8b9d1e94bd5016e9efd42efcb8f8062f80764b6b30a0fd5634a5b6e4",
+    "docs/journal_v2_a1_curriculum/stage1_v2/stage1_v2_decision.json": "453f3682fbbd06d88a08b8604c7e9aef2306fad237f1af4da6fcda3b5466b90c",
+    "docs/journal_v2_a1_curriculum/stage1_v2/stage2_handoff.json": "f095b39ae9c00dd38979f5b630c377a4647adb863c32b8fadbcb521b15ff178c"
+   },
+   "completed_utc": "2026-11-01T02:44:49.220956+00:00",
+   "config_sha256": "bbd0d87a10c8ee6d51b7bd4d3c85a290db5f75b03fb32baf91a9f6f247af8696",
+   "input_commit": "67cf9348d4a65ee25d8b73ebb1a385c3cf9faf69",
+   "note": "seeds passed [201, 202, 203]; stage pass=True",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage1_v2/final_evaluation.json",
+    "docs/journal_v2_a1_curriculum/stage1_v2/stage1_v2_decision.json",
+    "docs/journal_v2_a1_curriculum/stage1_v2/stage2_handoff.json"
+   ],
+   "started_utc": "2026-11-01T02:42:52.329871+00:00",
+   "status": "complete"
+  },
+  "10_visualizer_preparation": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage1_v2/recordings_shortlist.json": "f2b6b1fc7e62d9499ed3f7adc550c40a4751b64cb0b13e57fbaef94f9810301a"
+   },
+   "completed_utc": "2026-11-01T03:29:03.167153+00:00",
+   "config_sha256": null,
+   "input_commit": "67cf9348d4a65ee25d8b73ebb1a385c3cf9faf69",
+   "note": "A1-BC1-201/202/203 registered in the visualizer (separate repo commit); 9 recordings shortlisted and generated; seed-203 case left on screen",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage1_v2/recordings_shortlist.json"
+   ],
+   "started_utc": "2026-11-01T03:29:03.116499+00:00",
+   "status": "complete"
+  },
+  "11_manuscript_documentation": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage1_v2/README.md": "2cb69b82efbad94edd358dfb0989a3cd528a8c085da188a927ad5ea1117c11d7",
+    "docs/journal_v2_a1_curriculum/stage1_v2/ablation_record_v6.md": "3b4359cf86d6bd38dba41e95e7b7f296f31d42c5e8397fcce6b282a5e5234988",
+    "docs/journal_v2_a1_curriculum/stage1_v2/checkpoint_integrity.json": "f1c0f72733bfea5168ee7fb3508c0e71e609ce77da405e1469e919d6c3802541",
+    "docs/journal_v2_a1_curriculum/stage1_v2/manuscript_notes.md": "8704e51a8d3215ab2d904137ac8874d1ed00c2bd3916d4d1b9b59177b6b7cf06",
+    "docs/journal_v2_a1_curriculum/stage1_v2/regression_summary.json": "e736899649424202ea2728a8949a5e1b86a027fff9628c2bc504202c6f1289d2",
+    "docs/journal_v2_a1_curriculum/stage1_v2/unit_test_result.json": "05968ef5f58b40e980caad62502228fb133a4b2d51b0abc9c2cb316eca1667c7"
+   },
+   "completed_utc": "2026-11-01T03:29:03.460982+00:00",
+   "config_sha256": null,
+   "input_commit": "67cf9348d4a65ee25d8b73ebb1a385c3cf9faf69",
+   "note": "README, manuscript notes, ablation v6, integrity, regression",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage1_v2/README.md",
+    "docs/journal_v2_a1_curriculum/stage1_v2/manuscript_notes.md",
+    "docs/journal_v2_a1_curriculum/stage1_v2/ablation_record_v6.md",
+    "docs/journal_v2_a1_curriculum/stage1_v2/checkpoint_integrity.json",
+    "docs/journal_v2_a1_curriculum/stage1_v2/regression_summary.json",
+    "docs/journal_v2_a1_curriculum/stage1_v2/unit_test_result.json"
+   ],
+   "started_utc": "2026-11-01T03:29:03.421392+00:00",
+   "status": "complete"
+  },
+  "12_commit_push": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage1_v2/stage1_v2_decision.json": "453f3682fbbd06d88a08b8604c7e9aef2306fad237f1af4da6fcda3b5466b90c"
+   },
+   "completed_utc": "2026-11-01T03:29:17.149237+00:00",
+   "config_sha256": null,
+   "input_commit": "67cf9348d4a65ee25d8b73ebb1a385c3cf9faf69",
+   "note": "commit/push recorded in git history (a commit SHA cannot be self-referential)",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage1_v2/stage1_v2_decision.json"
+   ],
+   "started_utc": "2026-11-01T03:29:17.125710+00:00",
+   "status": "complete"
+  }
+ },
+ "task": "journal_v2_a1_curriculum/stage1_v2",
+ "updated_utc": "2026-11-01T03:29:17.150740+00:00"
+}
