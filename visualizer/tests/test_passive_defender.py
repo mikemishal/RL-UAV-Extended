@@ -174,7 +174,7 @@ def test_replay_reports_the_accepted_clean_research_source(passive_130017):
 
     provenance = passive_130017.provenance
     assert provenance.simulation_source_commit == EXPECTED_RESEARCH_COMMIT
-    assert EXPECTED_RESEARCH_COMMIT == "d705a65e2234d7de6ecaa2eba8273dbdb59420c2"
+    assert EXPECTED_RESEARCH_COMMIT == "67cf9348d4a65ee25d8b73ebb1a385c3cf9faf69"
     assert provenance.source_dirty is False
 
 
