@@ -1,0 +1,97 @@
+{
+ "a0_tag_commit": "bdbee45dc08a583a0da5ca882dc6b1269207a8cd",
+ "action_dim": 3,
+ "bc_checkpoints": {
+  "201": {
+   "attacker_id": "A1-BC1-201",
+   "model_sha256": "4bc446afebbb95f308234399ec22a2a6f84b39338f85a0f109384a338eb2aee4"
+  },
+  "202": {
+   "attacker_id": "A1-BC1-202",
+   "model_sha256": "18da296243f10057868939c6b3d3bc07ff2de13e622241b9df10dc55ea30ab65"
+  },
+  "203": {
+   "attacker_id": "A1-BC1-203",
+   "model_sha256": "a3e34511d60170ea9ce329ece56f4e778fd01fdc6e22cb918df379675dab42c3"
+  }
+ },
+ "branch": "research/journal-corrected-attacker-v2",
+ "expected_start_head": "dac0230",
+ "frozen_files": [
+  "experiments/journal_v2_a1.py",
+  "experiments/journal_v2_a1_r2.py",
+  "experiments/journal_v2_a1_cur1.py",
+  "experiments/journal_v2_a1_cur1v2.py",
+  "experiments/journal_v2_a1_cur1v2_bc.py",
+  "uav_defend"
+ ],
+ "frozen_files_identical_to_stage1_tag": true,
+ "handoff_stage1_v2_pass": true,
+ "handoff_versions": {
+  "action": "a1_cur1_action_v1",
+  "bc_protocol": "a1_cur1v2_bc_v1",
+  "observation": "a1_v2_obs_v1",
+  "reward": "a1_v2_reward_v2"
+ },
+ "head": "dac0230dc174595d8bb99c0a6e406278cf127a4c",
+ "head_is_expected_or_descendant": true,
+ "integrity": {
+  "failed_a1_v1_checkpoints": 3,
+  "failed_a1_v1_mismatches": [],
+  "historical_mismatches": [],
+  "historical_registered_checkpoints": 30,
+  "stage1_v1_failed_curriculum_models": {
+   "201": {
+    "marker_present": true,
+    "sha256_matches": true,
+    "status": "FAIL"
+   },
+   "202": {
+    "marker_present": true,
+    "sha256_matches": true,
+    "status": "FAIL"
+   },
+   "203": {
+    "marker_present": true,
+    "sha256_matches": true,
+    "status": "FAIL"
+   }
+  },
+  "stage1_v2_bc_models": {
+   "201": {
+    "model_sha256": "4bc446afebbb95f308234399ec22a2a6f84b39338f85a0f109384a338eb2aee4",
+    "sha256_matches_handoff": true
+   },
+   "202": {
+    "model_sha256": "18da296243f10057868939c6b3d3bc07ff2de13e622241b9df10dc55ea30ab65",
+    "sha256_matches_handoff": true
+   },
+   "203": {
+    "model_sha256": "a3e34511d60170ea9ce329ece56f4e778fd01fdc6e22cb918df379675dab42c3",
+    "sha256_matches_handoff": true
+   }
+  }
+ },
+ "n_envs": 16,
+ "observation_dim": 37,
+ "observation_schema_sha256": "987ce3815c92ec863473ad7524739333af2bd5c6ebdec2e06acc47725f3edc21",
+ "ppo_hyperparameters": {
+  "batch_size": 64,
+  "clip_range": 0.2,
+  "ent_coef": 0.01,
+  "gae_lambda": 0.95,
+  "gamma": 0.99,
+  "learning_rate": 0.0003,
+  "max_grad_norm": 0.5,
+  "n_epochs": 10,
+  "n_steps": 2048,
+  "vf_coef": 0.5
+ },
+ "reward_version": "a1_v2_reward_v2",
+ "stage1_tag": "journal-v2-a1-curriculum-bc-stage1-v1",
+ "stage1_tag_commit": "dac0230dc174595d8bb99c0a6e406278cf127a4c",
+ "stage1_tag_is_ancestor": true,
+ "tracked_tree_clean": true,
+ "uav_defend_identical_to_a0_tag": true,
+ "versions_unchanged": true
+}

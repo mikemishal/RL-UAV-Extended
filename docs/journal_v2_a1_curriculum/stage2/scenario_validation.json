@@ -1,0 +1,99 @@
+{
+ "deterministic_replay_first_50": true,
+ "placement_protocol": "a1_cur2_static_defender_nominal_path_v1",
+ "scenario_seeds": [
+  149000,
+  149999
+ ],
+ "stop_rule": "A0 interception fraction >= 0.7",
+ "stop_rule_passed": true,
+ "summary": {
+  "a0_capture_fraction": 0.0,
+  "a0_defender_visible_episode_fraction": 1.0,
+  "a0_gate_entry_to_interception_n": 1000,
+  "a0_gate_entry_to_interception_s": {
+   "max": 3.5,
+   "mean": 2.0135,
+   "median": 2.0,
+   "min": 1.5,
+   "p5": 1.5,
+   "p95": 2.5
+  },
+  "a0_interception_fraction": 1.0,
+  "a0_min_defender_separation_m": {
+   "max": 2.500002145767212,
+   "mean": 2.500000011444092,
+   "median": 2.5,
+   "min": 2.499997854232788,
+   "p5": 2.4999990463256836,
+   "p95": 2.5000009536743164
+  },
+  "a0_other_fraction": 0.0,
+  "a0_outcomes": {
+   "intercepted": 1000
+  },
+  "attacker_asset_distance_m": {
+   "max": 76.60122525593597,
+   "mean": 61.36944724950991,
+   "median": 60.374262265554876,
+   "min": 51.19055684243498,
+   "p5": 52.800702349040264,
+   "p95": 71.9805562415273
+  },
+  "defender_along_track_fraction_of_nominal_path": {
+   "max": 0.6499399507907313,
+   "mean": 0.5018409933842581,
+   "median": 0.500143696629965,
+   "min": 0.35041252818576,
+   "p5": 0.36363117990966576,
+   "p95": 0.6388737943968734
+  },
+  "defender_altitude_m": {
+   "max": 24.89238739013672,
+   "mean": 11.093842583656311,
+   "median": 10.582833290100098,
+   "min": 2.5485737323760986,
+   "p5": 4.991069436073303,
+   "p95": 18.683337974548333
+  },
+  "defender_initial_distance_to_attacker_m": {
+   "max": 47.367881484908374,
+   "mean": 29.806559212883784,
+   "median": 29.683169209786065,
+   "min": 17.16374169790909,
+   "p5": 20.909519149667954,
+   "p95": 40.32325853745526
+  },
+  "defender_perpendicular_offset_m": {
+   "max": 1.4961696737978625,
+   "mean": 0.7716350582650834,
+   "median": 0.805084830802935,
+   "min": 0.00010809175197146192,
+   "p5": 0.0744747308872073,
+   "p95": 1.432361027326347
+  },
+  "defender_projected_chord_fraction": {
+   "max": 0.6489192685690544,
+   "mean": 0.49114082841353923,
+   "median": 0.4888284396767435,
+   "min": 0.2688145080369428,
+   "p5": 0.3508241494213657,
+   "p95": 0.6328921809510618
+  },
+  "defender_visible_at_start_fraction": 0.243,
+  "nominal_a0_path_length_m": {
+   "max": 88.59577198892592,
+   "mean": 61.78959212307856,
+   "median": 61.09303539000654,
+   "min": 49.33490568095524,
+   "p5": 51.77008834436861,
+   "p95": 73.66066396673804
+  },
+  "placement_attempts": {
+   "max": 1,
+   "resampled_fraction": 0.0
+  },
+  "scenarios": 1000
+ },
+ "superseded_design": "docs/journal_v2_a1_curriculum/stage2/scenario_validation_initial_STOP.json (initial-chord placement: A0 interception 51.5%)"
+}

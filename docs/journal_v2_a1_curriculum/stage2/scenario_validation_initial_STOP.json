@@ -1,0 +1,119 @@
+{
+ "protocol_rule": "A0 intercepted in < 70% of scenarios => STOP and review the placement implementation",
+ "review": {
+  "a0_interception_by_initial_heading_offset_deg": {
+   "0-15": {
+    "a0_interception": 1.0,
+    "n": 155
+   },
+   "15-30": {
+    "a0_interception": 0.9770114942528736,
+    "n": 174
+   },
+   "30-45": {
+    "a0_interception": 0.7471264367816092,
+    "n": 174
+   },
+   "45-60": {
+    "a0_interception": 0.2654320987654321,
+    "n": 162
+   },
+   "60-75": {
+    "a0_interception": 0.0872093023255814,
+    "n": 172
+   },
+   "75-90": {
+    "a0_interception": 0.012269938650306749,
+    "n": 163
+   }
+  },
+  "a0_max_lateral_deviation_from_initial_chord_m": {
+   "max": 24.67506101674703,
+   "median": 3.481323316028404,
+   "median_when_intercepted": 0.7509842529881837,
+   "median_when_not_intercepted": 7.8120844529435995,
+   "p90": 11.71842149955852
+  },
+  "cause": "the Stage-1 random initial heading (offset U(0,90 deg) from the line of sight) makes A0 curve away from the initial chord before reaching the defender",
+  "placement_implementation": "faithful: lambda~U(0.35,0.65), r~U(0,1.5), uniform perpendicular angle, no draw ever re-sampled (max attempts 1), defender on the initial chord"
+ },
+ "scenario_seeds": [
+  149000,
+  149999
+ ],
+ "status": "STOP: A0 interception fraction below the pre-registered 0.70 threshold",
+ "summary": {
+  "a0_capture_fraction": 0.485,
+  "a0_defender_visible_episode_fraction": 1.0,
+  "a0_gate_entry_to_interception_n": 515,
+  "a0_gate_entry_to_interception_s": {
+   "max": 2.5,
+   "mean": 1.9194174757281552,
+   "median": 2.0,
+   "min": 1.5,
+   "p5": 1.5,
+   "p95": 2.0
+  },
+  "a0_interception_fraction": 0.515,
+  "a0_min_defender_separation_m": {
+   "max": 20.27401351928711,
+   "mean": 4.449117626190185,
+   "median": 2.5000009536743164,
+   "min": 2.499998092651367,
+   "p5": 2.4999992847442627,
+   "p95": 10.927168655395507
+  },
+  "a0_other_fraction": 0.0,
+  "a0_outcomes": {
+   "intercepted": 515,
+   "soldier_caught": 485
+  },
+  "attacker_asset_distance_m": {
+   "max": 76.60122525593597,
+   "mean": 61.36944724950991,
+   "median": 60.374262265554876,
+   "min": 51.19055684243498,
+   "p5": 52.800702349040264,
+   "p95": 71.9805562415273
+  },
+  "defender_along_track_fraction": {
+   "max": 0.6499399507907313,
+   "mean": 0.5018409933842581,
+   "median": 0.500143696629965,
+   "min": 0.35041252818576,
+   "p5": 0.36363117990966576,
+   "p95": 0.6388737943968734
+  },
+  "defender_altitude_m": {
+   "max": 20.0656681060791,
+   "mean": 10.090957513093949,
+   "median": 9.75425100326538,
+   "min": 2.5592243671417236,
+   "p5": 4.956555104255676,
+   "p95": 16.565991497039793
+  },
+  "defender_initial_distance_to_attacker_m": {
+   "max": 49.35075405716525,
+   "mean": 30.805457268983965,
+   "median": 30.749556502816397,
+   "min": 18.07427870763932,
+   "p5": 21.372082902732693,
+   "p95": 41.68041906919706
+  },
+  "defender_perpendicular_offset_m": {
+   "max": 1.4961696737978625,
+   "mean": 0.7716350582650834,
+   "median": 0.805084830802935,
+   "min": 0.00010809175197146192,
+   "p5": 0.0744747308872073,
+   "p95": 1.432361027326347
+  },
+  "defender_visible_at_start_fraction": 0.199,
+  "placement_attempts": {
+   "max": 1,
+   "resampled_fraction": 0.0
+  },
+  "scenarios": 1000
+ },
+ "training_started": false
+}

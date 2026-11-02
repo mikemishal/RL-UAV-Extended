@@ -1,0 +1,9 @@
+{
+ "command": "pytest tests -q -p no:cacheprovider --ignore=tests/test_defender_adaptation_training_runner.py --ignore=tests/test_vectorized_clutter_training.py --ignore=tests/test_journal_v2_a1_r2_training_runner.py",
+ "excluded": "three legacy test files that run long PPO training (unrelated to Stage 2)",
+ "passed": 1000,
+ "failed": 0,
+ "previous_baseline_passed": 979,
+ "new_tests": 21,
+ "duration_s": 673
+}

@@ -1,0 +1,18 @@
+{
+ "file": "tests/test_journal_v2_a1_cur2.py",
+ "passed": 21,
+ "failed": 0,
+ "also_passing": "tests/test_journal_v2_a1_cur1.py + tests/test_journal_v2_a1_cur1v2.py (48 tests) re-run unchanged",
+ "covers": [
+  "static-defender placement (deterministic, lambda/r distribution, perpendicular to the nominal A0 path, within r of it, re-sampled never clipped)",
+  "superseded chord placement reproduces the 70% rule failure; nominal-path placement gives A0 interception >= 97%",
+  "defender stationary, active, canonical interception (radius 2.5 m) terminates the episode; asset stationary",
+  "canonical 25 m defender observation gate (zeros outside, flag/position inside)",
+  "BC->PPO initialisation (actor + log_std copied, critic = PPO-seed fresh init, fresh optimizer, parent hash verified)",
+  "checkpoint/resume (real SB3, injected power loss, BC initialisation) and rollout recovery of partial/tampered artifacts",
+  "anchor evaluation; Stage-2 gate boundaries; mastery / retention-failure decision logic",
+  "paired scenario equivalence A0 vs A1; paired bootstrap; deterministic evaluation; validation payload tamper detection",
+  "namespaces disjoint from reserved ranges; isolated output namespace; protocol hash; 13-stage task state",
+  "Stage-2 decision rule (2/3 mastery, retention, shared pathology) and evasion-feature extraction (detour, side, return to pursuit)"
+ ]
+}

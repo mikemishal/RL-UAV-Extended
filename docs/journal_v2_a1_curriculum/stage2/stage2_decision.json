@@ -1,0 +1,27 @@
+{
+ "all_three_mastered": false,
+ "common_structural_pathology": {},
+ "figures": [
+  "docs/journal_v2_a1_curriculum/stage2/figures/fig1_capture_vs_timesteps.png",
+  "docs/journal_v2_a1_curriculum/stage2/figures/fig1_capture_vs_timesteps.pdf",
+  "docs/journal_v2_a1_curriculum/stage2/figures/fig2_interception_vs_timesteps.png",
+  "docs/journal_v2_a1_curriculum/stage2/figures/fig2_interception_vs_timesteps.pdf",
+  "docs/journal_v2_a1_curriculum/stage2/figures/fig3_anchor_capture_vs_timesteps.png",
+  "docs/journal_v2_a1_curriculum/stage2/figures/fig3_anchor_capture_vs_timesteps.pdf",
+  "docs/journal_v2_a1_curriculum/stage2/figures/fig4_path_excess_vs_timesteps.png",
+  "docs/journal_v2_a1_curriculum/stage2/figures/fig4_path_excess_vs_timesteps.pdf",
+  "docs/journal_v2_a1_curriculum/stage2/figures/fig5_trajectory_a0_vs_a1_201.png",
+  "docs/journal_v2_a1_curriculum/stage2/figures/fig5_trajectory_a0_vs_a1_201.pdf"
+ ],
+ "learning_without_mastery": true,
+ "rule": ">= 2/3 seeds master (two consecutive validation passes within 8 rollouts), mastered seeds retain Stage-1 pursuit (anchor >= 0.98), no shared pathology",
+ "seeds_mastered": [],
+ "seeds_retaining_stage1_pursuit": [],
+ "stage2_pass": false,
+ "training_status": {
+  "201": "FAIL",
+  "202": "FAIL",
+  "203": "FAIL"
+ },
+ "trajectory_figure_seed": 201
+}
