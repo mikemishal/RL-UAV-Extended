@@ -1,0 +1,352 @@
+{
+ "asset_motion": {
+  "axes": "horizontal (x, y); z = 0",
+  "boundary": "reflecting at [-50.0, 50.0]^2",
+  "dt_s": 0.5,
+  "model": "legacy_gaussian_random_walk",
+  "obstacle_blocking": "inert in C0 (no obstacles)",
+  "rng_stream": "SeedSequence(seed).spawn(4)[1] (`_rng_soldier`), one normal(0, sigma, size=2) draw per step",
+  "sigma_m_per_axis_per_step": 0.75,
+  "start": "origin (0, 0, 0)",
+  "v_s_mps": 1.5,
+  "velocity_persistence": "none (i.i.d. displacements; asset_motion_tau_s = 1.0 is used only by gauss_markov_velocity)"
+ },
+ "detection_radius_m": 15.0,
+ "protocol_sha256": "5a1a9254a350a9204ea02a9a3e6aa6d0db98ed07e8bdd2fd20732cf740cfaa26",
+ "scenario_protocol": "a1_cur4_moving_asset_hold_until_detection_greedy_v1",
+ "seeds": [
+  168000,
+  168999
+ ],
+ "summary": {
+  "a0": {
+   "asset_displacement_max_m": {
+    "max": 7.169735030911367,
+    "mean": 2.1950261988884536,
+    "median": 2.068385120877725,
+    "min": 0.48243432993071145,
+    "p5": 0.9728648738107425,
+    "p95": 4.007423582773285
+   },
+   "asset_final_displacement_m": {
+    "max": 6.9740385013727275,
+    "mean": 1.8756429143039868,
+    "median": 1.7518507148378626,
+    "min": 0.10240977155846963,
+    "p5": 0.46768389153026624,
+    "p95": 3.838366687845826
+   },
+   "capture": 0.0,
+   "duration_s": {
+    "max": 4.5,
+    "mean": 2.5625,
+    "median": 2.5,
+    "min": 1.5,
+    "p5": 1.5,
+    "p95": 3.5
+   },
+   "endurance_exhaustion": 0.0,
+   "interception": 1.0,
+   "median_path_excess": 1.020037088560112,
+   "min_defender_separation_m": {
+    "max": 2.5000035762786865,
+    "mean": 2.499999969959259,
+    "median": 2.5,
+    "min": 2.4999961853027344,
+    "p5": 2.4999983310699463,
+    "p95": 2.5000014305114746
+   },
+   "nonfinite_episodes": 0,
+   "outcomes": {
+    "intercepted": 1000
+   },
+   "path_length_m": {
+    "max": 41.66041005099418,
+    "mean": 25.246291154947652,
+    "median": 24.702912947268466,
+    "min": 12.368376283009482,
+    "p5": 15.698541249932926,
+    "p95": 36.26878015439228
+   },
+   "scenarios": 1000,
+   "timeout": 0.0
+  },
+  "a0_detection_time_s": {
+   "max": 3.5,
+   "mean": 1.6435,
+   "median": 1.5,
+   "min": 0.5,
+   "p5": 1.0,
+   "p95": 2.5
+  },
+  "a0_heading_bin_breakdown": {
+   "0-15": {
+    "a0_capture": 0.0,
+    "a0_interception": 1.0,
+    "n": 171
+   },
+   "15-30": {
+    "a0_capture": 0.0,
+    "a0_interception": 1.0,
+    "n": 161
+   },
+   "30-45": {
+    "a0_capture": 0.0,
+    "a0_interception": 1.0,
+    "n": 164
+   },
+   "45-60": {
+    "a0_capture": 0.0,
+    "a0_interception": 1.0,
+    "n": 186
+   },
+   "60-75": {
+    "a0_capture": 0.0,
+    "a0_interception": 1.0,
+    "n": 150
+   },
+   "75-90": {
+    "a0_capture": 0.0,
+    "a0_interception": 1.0,
+    "n": 168
+   }
+  },
+  "a0_hold_release_validity": {
+   "defender_initial_distance_min_m": 17.647971649564667,
+   "episodes_never_detected": 0,
+   "episodes_steps_le_1": 0,
+   "intercepted_with_fewer_than_2_visible_decisions": 0,
+   "interceptions_within_1_step_of_release_informational": 162,
+   "max_defender_displacement_before_release_m": 0.0,
+   "max_defender_speed_at_release_mps": 0.0,
+   "min_steps": 3,
+   "nonfinite_episodes": 0,
+   "policy_decisions_with_defender_visible_before_interception": {
+    "max": 6.0,
+    "mean": 3.695,
+    "median": 4.0,
+    "min": 3.0,
+    "p5": 3.0,
+    "p95": 4.0
+   },
+   "released_episodes": 1000,
+   "released_episodes_where_greedy_moved_defender": 1000,
+   "released_episodes_with_time_after_release": 1000
+  },
+  "crn": {
+   "compared_asset_positions": 792,
+   "identical": true,
+   "max_abs_difference_m": 0.0,
+   "policies": [
+    "a0",
+    "parent_201",
+    "parent_202",
+    "parent_203"
+   ],
+   "seeds": 50,
+   "terminal_bound_m": 4.5,
+   "terminal_event_state_max_difference_m": 1.5337556600570679
+  },
+  "deterministic_replay_first_50": true,
+  "parents": {
+   "201": {
+    "asset_displacement_max_m": {
+     "max": 25.18305677799988,
+     "mean": 5.139184268203327,
+     "median": 3.7162128810263173,
+     "min": 0.685978097350868,
+     "p5": 1.5391970283357286,
+     "p95": 13.135806929445755
+    },
+    "asset_final_displacement_m": {
+     "max": 23.74351305771863,
+     "mean": 3.8997005165908867,
+     "median": 2.673747983651329,
+     "min": 0.02247199193515148,
+     "p5": 0.7433231984500835,
+     "p95": 11.547742250676453
+    },
+    "capture": 0.538,
+    "duration_s": {
+     "max": 38.0,
+     "mean": 12.4205,
+     "median": 6.5,
+     "min": 1.5,
+     "p5": 2.0,
+     "p95": 32.5
+    },
+    "endurance_exhaustion": 0.216,
+    "interception": 0.246,
+    "median_path_excess": 1.0800486116513244,
+    "min_defender_separation_m": {
+     "max": 18.750782012939453,
+     "mean": 4.7756596095561985,
+     "median": 5.022976398468018,
+     "min": 2.499997615814209,
+     "p5": 2.4999992847442627,
+     "p95": 7.247381019592284
+    },
+    "nonfinite_episodes": 0,
+    "outcomes": {
+     "enemy_endurance_exhausted": 216,
+     "intercepted": 243,
+     "soldier_caught": 538,
+     "unsafe_intercept": 3
+    },
+    "parent_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+    "path_length_m": {
+     "max": 370.0413513183594,
+     "mean": 124.44841672176013,
+     "median": 68.69217998319115,
+     "min": 13.417226389100605,
+     "p5": 19.237120481136607,
+     "p95": 330.00765609741205
+    },
+    "scenarios": 1000,
+    "timeout": 0.0
+   },
+   "202": {
+    "asset_displacement_max_m": {
+     "max": 22.009107937690032,
+     "mean": 5.161424774999179,
+     "median": 3.785197265158641,
+     "min": 0.5332456785890015,
+     "p5": 1.5158337084364866,
+     "p95": 12.355368834757487
+    },
+    "asset_final_displacement_m": {
+     "max": 21.24225931783327,
+     "mean": 3.95685726846594,
+     "median": 2.661919526302901,
+     "min": 0.11357244444208937,
+     "p5": 0.6640690602562948,
+     "p95": 11.513910701126902
+    },
+    "capture": 0.546,
+    "duration_s": {
+     "max": 38.0,
+     "mean": 12.2215,
+     "median": 7.0,
+     "min": 1.5,
+     "p5": 2.0,
+     "p95": 32.5
+    },
+    "endurance_exhaustion": 0.197,
+    "interception": 0.257,
+    "median_path_excess": 1.0871067841573967,
+    "min_defender_separation_m": {
+     "max": 19.404403686523438,
+     "mean": 4.825497302293777,
+     "median": 5.063221216201782,
+     "min": 2.4999969005584717,
+     "p5": 2.499999523162842,
+     "p95": 7.3684728860855095
+    },
+    "nonfinite_episodes": 0,
+    "outcomes": {
+     "enemy_endurance_exhausted": 197,
+     "intercepted": 255,
+     "soldier_caught": 546,
+     "unsafe_intercept": 2
+    },
+    "parent_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485",
+    "path_length_m": {
+     "max": 378.5692596435547,
+     "mean": 123.20112225682996,
+     "median": 69.6856358197613,
+     "min": 11.738789214539077,
+     "p5": 18.910595997397795,
+     "p95": 326.25489425659174
+    },
+    "scenarios": 1000,
+    "timeout": 0.0
+   },
+   "203": {
+    "asset_displacement_max_m": {
+     "max": 25.18305677799988,
+     "mean": 5.202577741898971,
+     "median": 3.8696257960218716,
+     "min": 0.5332456785890015,
+     "p5": 1.5759168090060591,
+     "p95": 13.13209602637253
+    },
+    "asset_final_displacement_m": {
+     "max": 23.360810080035403,
+     "mean": 3.9614405926054452,
+     "median": 2.755885758442468,
+     "min": 0.10788549020707128,
+     "p5": 0.7435298179188653,
+     "p95": 11.594057798262732
+    },
+    "capture": 0.583,
+    "duration_s": {
+     "max": 37.0,
+     "mean": 12.538,
+     "median": 6.5,
+     "min": 1.5,
+     "p5": 2.0,
+     "p95": 32.0
+    },
+    "endurance_exhaustion": 0.222,
+    "interception": 0.195,
+    "median_path_excess": 1.078651050988348,
+    "min_defender_separation_m": {
+     "max": 15.314698219299316,
+     "mean": 4.923485082864762,
+     "median": 5.169883966445923,
+     "min": 2.499997854232788,
+     "p5": 2.499999523162842,
+     "p95": 7.105142569541931
+    },
+    "nonfinite_episodes": 0,
+    "outcomes": {
+     "enemy_endurance_exhausted": 222,
+     "intercepted": 195,
+     "soldier_caught": 583
+    },
+    "parent_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "path_length_m": {
+     "max": 378.5692596435547,
+     "mean": 130.14693251692177,
+     "median": 69.65322117308543,
+     "min": 13.308976796022899,
+     "p5": 19.258943881068458,
+     "p95": 334.65089607238764
+    },
+    "scenarios": 1000,
+    "timeout": 0.0
+   }
+  },
+  "scenarios": 1000
+ },
+ "verdict": {
+  "a0_dominates": false,
+  "checks": {
+   "a0_difficulty": true,
+   "a_parent_captures_gt_20pct": true,
+   "asset_moves": true,
+   "crn_asset_trajectories_identical": true,
+   "defender_fixed_before_release": true,
+   "defender_velocity_at_release_zero": true,
+   "deterministic_replay": true,
+   "greedy_takes_over_after_release": true,
+   "no_immediate_contact_degeneracy": true,
+   "no_nonfinite_state": true
+  },
+  "parent_capture": {
+   "201": 0.538,
+   "202": 0.546,
+   "203": 0.583
+  },
+  "parents_collapse": false,
+  "passed": true,
+  "rule": {
+   "a0": {
+    "a0_capture_max": 0.5,
+    "a0_interception_min": 0.5,
+    "rule": "A0 capture <= 0.50 OR A0 interception >= 0.50"
+   },
+   "parent": "at least one Stage3-v2 parent captures > 0.2"
+  }
+ }
+}

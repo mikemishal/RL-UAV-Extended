@@ -1,0 +1,11 @@
+{
+  "command": "pytest tests -q -p no:cacheprovider --ignore=tests/test_defender_adaptation_training_runner.py --ignore=tests/test_vectorized_clutter_training.py --ignore=tests/test_journal_v2_a1_r2_training_runner.py",
+  "passed": 1069,
+  "failed": 0,
+  "warnings": 1,
+  "duration_s": 1751.44,
+  "baseline_before_stage4": 1043,
+  "new_stage4_tests": 26,
+  "ignored_modules_reason": "same long-running training-runner modules excluded in earlier stage regressions (unchanged)",
+  "research_head_at_run": "3a2b23f (Stage-4 files uncommitted at run time)"
+}

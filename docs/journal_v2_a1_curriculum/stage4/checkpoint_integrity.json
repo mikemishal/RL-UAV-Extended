@@ -1,0 +1,117 @@
+{
+ "historical_and_curriculum": {
+  "failed_a1_v1_checkpoints": 3,
+  "failed_a1_v1_mismatches": [],
+  "historical_mismatches": [],
+  "historical_registered_checkpoints": 30,
+  "stage1_v1_failed_curriculum_models": {
+   "201": {
+    "marker_present": true,
+    "sha256_matches": true,
+    "status": "FAIL"
+   },
+   "202": {
+    "marker_present": true,
+    "sha256_matches": true,
+    "status": "FAIL"
+   },
+   "203": {
+    "marker_present": true,
+    "sha256_matches": true,
+    "status": "FAIL"
+   }
+  },
+  "stage1_v2_bc_models": {
+   "201": {
+    "model_sha256": "4bc446afebbb95f308234399ec22a2a6f84b39338f85a0f109384a338eb2aee4",
+    "sha256_matches_handoff": true
+   },
+   "202": {
+    "model_sha256": "18da296243f10057868939c6b3d3bc07ff2de13e622241b9df10dc55ea30ab65",
+    "sha256_matches_handoff": true
+   },
+   "203": {
+    "model_sha256": "a3e34511d60170ea9ce329ece56f4e778fd01fdc6e22cb918df379675dab42c3",
+    "sha256_matches_handoff": true
+   }
+  }
+ },
+ "stage2": {
+  "stage2_v1_seed_201": {
+   "accepted_sha256_matches": true,
+   "status": "FAIL"
+  },
+  "stage2_v1_seed_202": {
+   "accepted_sha256_matches": true,
+   "status": "FAIL"
+  },
+  "stage2_v1_seed_203": {
+   "accepted_sha256_matches": true,
+   "status": "FAIL"
+  },
+  "stage2_v2_seed_201": {
+   "accepted_sha256_matches": true,
+   "status": "FAIL"
+  },
+  "stage2_v2_seed_202": {
+   "accepted_sha256_matches": true,
+   "status": "FAIL"
+  },
+  "stage2_v2_seed_203": {
+   "accepted_sha256_matches": true,
+   "status": "FAIL"
+  }
+ },
+ "stage3_v2": {
+  "stage3_v2_seed_201": {
+   "accepted_sha256_matches_preregistered": true,
+   "all_rollouts_match": true,
+   "status": "MASTERED"
+  },
+  "stage3_v2_seed_202": {
+   "accepted_sha256_matches_preregistered": true,
+   "all_rollouts_match": true,
+   "status": "MASTERED"
+  },
+  "stage3_v2_seed_203": {
+   "accepted_sha256_matches_preregistered": true,
+   "all_rollouts_match": true,
+   "status": "MASTERED"
+  }
+ },
+ "stage4": {
+  "201": {
+   "accepted_sha256_matches_manifest": true,
+   "all_rollout_checkpoints_match": true,
+   "parent_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+   "rollouts_verified": 16,
+   "status": "FAIL"
+  },
+  "202": {
+   "accepted_sha256_matches_manifest": true,
+   "all_rollout_checkpoints_match": true,
+   "parent_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485",
+   "rollouts_verified": 16,
+   "status": "FAIL"
+  },
+  "203": {
+   "accepted_sha256_matches_manifest": true,
+   "all_rollout_checkpoints_match": true,
+   "parent_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+   "rollouts_verified": 16,
+   "status": "FAIL"
+  }
+ },
+ "summary": {
+  "all_ok": true,
+  "bc_models_verified": 3,
+  "failed_a1_v1_checkpoints_verified": 3,
+  "historical_mismatches": 0,
+  "historical_registered_checkpoints_verified": 30,
+  "stage1_v1_failed_models_verified": 3,
+  "stage2_v1_models_verified": 3,
+  "stage2_v2_models_verified": 3,
+  "stage3_v2_models_verified": 3,
+  "stage4_models_verified": 3
+ }
+}

@@ -1,0 +1,32 @@
+{
+ "all_three_mastered": false,
+ "common_structural_pathology": {},
+ "figures": [
+  "docs/journal_v2_a1_curriculum/stage4/figures/fig1_capture_vs_timesteps.png",
+  "docs/journal_v2_a1_curriculum/stage4/figures/fig1_capture_vs_timesteps.pdf",
+  "docs/journal_v2_a1_curriculum/stage4/figures/fig2_interception_vs_timesteps.png",
+  "docs/journal_v2_a1_curriculum/stage4/figures/fig2_interception_vs_timesteps.pdf",
+  "docs/journal_v2_a1_curriculum/stage4/figures/fig3_retention_anchors_vs_timesteps.png",
+  "docs/journal_v2_a1_curriculum/stage4/figures/fig3_retention_anchors_vs_timesteps.pdf",
+  "docs/journal_v2_a1_curriculum/stage4/figures/fig4_path_excess_vs_timesteps.png",
+  "docs/journal_v2_a1_curriculum/stage4/figures/fig4_path_excess_vs_timesteps.pdf",
+  "docs/journal_v2_a1_curriculum/stage4/figures/fig5_stage3_parent_vs_stage4_improvement.png",
+  "docs/journal_v2_a1_curriculum/stage4/figures/fig5_stage3_parent_vs_stage4_improvement.pdf",
+  "docs/journal_v2_a1_curriculum/stage4/figures/fig6_trajectory_a0_stage3_stage4_202.png",
+  "docs/journal_v2_a1_curriculum/stage4/figures/fig6_trajectory_a0_stage3_stage4_202.pdf"
+ ],
+ "promising_manual_review": false,
+ "rule": ">= 2/3 seeds master (two consecutive validation passes within 16 rollouts), mastered seeds retain all three anchors, no shared pathology; verdict B if not passed but >= 1 seed mastered or >= 2 seeds reach held-out capture >= 0.60 with a paired-CI lower bound above the Stage3-v2 parent",
+ "seeds_improving_over_parent_with_capture_ge_0.60": [
+  202
+ ],
+ "seeds_mastered": [],
+ "seeds_retaining_all_anchors": [],
+ "stage4_pass": false,
+ "training_status": {
+  "201": "FAIL",
+  "202": "FAIL",
+  "203": "FAIL"
+ },
+ "trajectory_figure_seed": 202
+}

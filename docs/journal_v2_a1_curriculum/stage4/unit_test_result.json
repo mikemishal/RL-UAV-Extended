@@ -1,0 +1,15 @@
+{
+ "file": "tests/test_journal_v2_a1_cur4.py",
+ "passed": 26,
+ "failed": 0,
+ "covers": [
+  "canonical asset motion: config identical to canonical V2 except defender standby; legacy_gaussian_random_walk, v_s 1.5, sigma 0.75 m/axis/step; realized trajectory == the documented recurrence from SeedSequence(seed).spawn(4)[1]; i.i.d. increments (scale, no velocity persistence)",
+  "common random numbers: identical asset trajectories across A0 / random policies / all four defender controllers / hold on-off on every completed step",
+  "no future-information leakage: placement == Stage3-v2 placement from the initial state (stationary-asset nominal path), initial attacker state identical, observation asset slots == CURRENT asset position, no future/predicted/asset-velocity features",
+  "hold-until-detection semantics unchanged under the moving asset (fixed, zero velocity before release, zero speed at release, first controller step = detection + 1)",
+  "deterministic replay; namespaces fresh/disjoint; frozen gate and boundary cases incl. the three anchors; seed decision (mastery, any-anchor retention failure, ties); scenario-validation verdict rules",
+  "Stage3-v2 parents are the pre-registered full hashes; parent initialisation copies actor/critic/log_std with a fresh optimizer; the three anchors are the unchanged earlier tasks (stationary asset)",
+  "protocol documents exactly one conceptual change; rollouts of another protocol are never accepted; 15-stage task state + isolated output namespace",
+  "real-SB3: interrupted (injected crash between model write and manifest, dead-PID lock) == uninterrupted run"
+ ]
+}

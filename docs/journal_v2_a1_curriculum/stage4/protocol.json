@@ -1,0 +1,232 @@
+{
+ "environment": {
+  "asset": "canonical V2 motion",
+  "asset_motion": {
+   "axes": "horizontal (x, y); z = 0",
+   "boundary": "reflecting at [-50.0, 50.0]^2",
+   "dt_s": 0.5,
+   "model": "legacy_gaussian_random_walk",
+   "obstacle_blocking": "inert in C0 (no obstacles)",
+   "rng_stream": "SeedSequence(seed).spawn(4)[1] (`_rng_soldier`), one normal(0, sigma, size=2) draw per step",
+   "sigma_m_per_axis_per_step": 0.75,
+   "start": "origin (0, 0, 0)",
+   "v_s_mps": 1.5,
+   "velocity_persistence": "none (i.i.d. displacements; asset_motion_tau_s = 1.0 is used only by gauss_markov_velocity)"
+  },
+  "asset_motion_check_vs_canonical": {
+   "L": {
+    "canonical": 50.0,
+    "stage4": 50.0
+   },
+   "asset_motion_model": {
+    "canonical": "legacy_gaussian_random_walk",
+    "stage4": "legacy_gaussian_random_walk"
+   },
+   "asset_motion_tau_s": {
+    "canonical": 1.0,
+    "stage4": 1.0
+   },
+   "dt": {
+    "canonical": 0.5,
+    "stage4": 0.5
+   },
+   "identical": true,
+   "model_is_legacy_gaussian_random_walk": true,
+   "v_s": {
+    "canonical": 1.5,
+    "stage4": 1.5
+   }
+  },
+  "clutter": "C0 (no static or dynamic obstacles)",
+  "common_random_numbers": "same evaluation seed => same initial attacker state, asset state, defender placement and asset-motion stream (`_rng_soldier`, spawned from the episode seed and independent of attacker/defender/sensor streams); asserted by tests and by the pre-training CRN report",
+  "config": "canonical C0 V2 measurement-track config with ONLY defender_standby_until_detection=False (as Stage3-v2)",
+  "curriculum_scaffold": "hold-until-detection is retained from Stage3-v2 and is NOT removed here",
+  "defender": "canonical scripted `greedy` controller, unmodified; HELD fixed (zero velocity/acceleration, Greedy action not applied) until canonical detection (`env._enemy_detected`: true 3-D attacker-defender distance <= detection_radius, sticky); the step in which detection becomes true is still held (canonical standby ordering); from the next step the unmodified Greedy action drives the unmodified constrained dynamics (18 m/s, 8 m/s^2, 90 deg/s) with canonical swept interception 2.5 m; never returns to hold",
+  "detection_radius_m": 15.0,
+  "differences_from_canonical": {
+   "defender_standby_until_detection": {
+    "canonical": true,
+    "stage4": false
+   }
+  },
+  "env_config_sha256": "544ddd8f997cee2ad9e0605840a8f055ade4a046804e80b3c83de048c9cb7a34",
+  "placement": "unchanged Stage3-v2 / Stage-2 nominal-A0-path placement computed from the INITIAL state with a stationary-asset nominal path; no dependence on future asset motion (no future-information leakage)"
+ },
+ "gate": {
+  "anchor1_capture_min": 0.98,
+  "anchor2_capture_min": 0.8,
+  "anchor3_capture_min": 0.75,
+  "capture_min": 0.7,
+  "exhaustion_max": 0.03,
+  "gt3_max": 0.05,
+  "gt5_max": 0.0,
+  "improvement_over_a0_min_pp": 20.0,
+  "interception_max": 0.3,
+  "median_path_excess_max": 2.0,
+  "nonfinite_max": 0,
+  "orbit_episodes_max": 0,
+  "timeout_max": 0.03
+ },
+ "generalization_diagnostic": {
+  "controllers": [
+   "kalman_greedy",
+   "pn",
+   "lead"
+  ],
+  "seeds": [
+   167000,
+   167099
+  ],
+  "semantics": "moving canonical asset, same hold-until-detection scaffold; diagnostic only"
+ },
+ "hypothesis": "After learning pursuit and moving-defender evasion in simplified conditions, curriculum initialization enables PPO to adapt to stochastic target motion without catastrophic loss of previously learned pursuit/evasion behavior.",
+ "identifiers": {
+  "action": "a1_cur1_action_v1",
+  "curriculum": "journal_v2_a1_curriculum",
+  "observation": "a1_v2_obs_v1",
+  "reward": "a1_v2_reward_v2",
+  "scenario_protocol": "a1_cur4_moving_asset_hold_until_detection_greedy_v1",
+  "stage": "stage4",
+  "training_protocol": "a1_cur4_training_v1"
+ },
+ "initialization": {
+  "actor_critic_log_std": "policy state_dict of the matching Stage3-v2 accepted checkpoint (actor, CRITIC, log_std); the critic is reused because observation and reward semantics are unchanged (its value estimates are stale for moving-asset states and adapt during PPO)",
+  "not_loaded": [
+   "BC checkpoints",
+   "Stage-2 models",
+   "Stage-3 optimizer state"
+  ],
+  "optimizer": "RESET (fresh Adam) at the curriculum boundary",
+  "timestep_counter": "reset to 0 (Stage-4 rollouts 1..16)"
+ },
+ "mastery": "two consecutive rollout validations pass ALL gate checks",
+ "observation_audit": "a1_v2_obs_v1 (37-D) is kept. It contains the CURRENT asset position (and own state, gated defender, endurance). The canonical asset walk has no velocity persistence (i.i.d. Gaussian displacements), so the current position is the complete Markov state: an asset-velocity feature would carry no predictive information and no future information is exposed. No augmentation needed.",
+ "paired_statistics": {
+  "bootstrap": "paired percentile bootstrap over scenarios",
+  "resamples": 10000,
+  "seed": 20260201
+ },
+ "parents": {
+  "checkpoints": {
+   "201": {
+    "model_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+    "rollout": 3,
+    "status": "quantitatively_accepted_curriculum_parent"
+   },
+   "202": {
+    "model_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485",
+    "rollout": 5,
+    "status": "quantitatively_accepted_curriculum_parent"
+   },
+   "203": {
+    "model_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "rollout": 7,
+    "status": "quantitatively_accepted_curriculum_parent"
+   }
+  },
+  "note": "Stage3-v2 checkpoints remain curriculum models, not final A1; earlier mastery results are not rewritten",
+  "status": "quantitatively_accepted_curriculum_parent"
+ },
+ "ppo": {
+  "hyperparameters": {
+   "batch_size": 64,
+   "clip_range": 0.2,
+   "ent_coef": 0.01,
+   "gae_lambda": 0.95,
+   "gamma": 0.99,
+   "learning_rate": 0.0003,
+   "max_grad_norm": 0.5,
+   "n_epochs": 10,
+   "n_steps": 2048,
+   "vf_coef": 0.5
+  },
+  "max_rollouts": 16,
+  "max_timesteps": 524288,
+  "n_envs": 16,
+  "policy": "MlpPolicy",
+  "rollout_steps": 32768,
+  "seeds": [
+   201,
+   202,
+   203
+  ],
+  "torch_threads": 2
+ },
+ "protocol_sha256": "5a1a9254a350a9204ea02a9a3e6aa6d0db98ed07e8bdd2fd20732cf740cfaa26",
+ "retention": {
+  "anchors": {
+   "anchor1_basic_pursuit": 0.98,
+   "anchor2_static_defender": 0.8,
+   "anchor3_moving_defender": 0.75
+  },
+  "stop": "capture below the anchor minimum on 2 consecutive rollouts on ANY anchor => CURRICULUM_RETENTION_FAILURE"
+ },
+ "reward": "a1_v2_reward_v2 unchanged (no moving-target shaping, no prediction/velocity-matching/defender-distance term)",
+ "scenario_validation_rule": {
+  "a0": {
+   "a0_capture_max": 0.5,
+   "a0_interception_min": 0.5,
+   "rule": "A0 capture <= 0.50 OR A0 interception >= 0.50"
+  },
+  "on_failure": "STOP before training and report; asset motion and placement are never modified",
+  "parents": "at least one Stage3-v2 parent captures > 0.2",
+  "validity": "hold/release semantics, no degeneracy, asset moves, CRN identical, deterministic"
+ },
+ "single_conceptual_change_from_stage3_v2": "The protected asset moves with the canonical V2 asset-motion model (legacy_gaussian_random_walk, v_s = 1.5 m/s) instead of being stationary.",
+ "stage3_v2": {
+  "commit": "3a2b23f",
+  "outputs_never_mixed": "separate results / scratch / docs namespaces; verify_rollout rejects any manifest with a different protocol sha",
+  "protocol_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+  "status": "quantitatively accepted curriculum parent (3/3 mastered; manual-review acceptance not recorded)"
+ },
+ "success_rule": ">= 2/3 seeds master, mastered seeds retain all three anchors, no shared structural pathology; < 2 => STOP, no clutter",
+ "tests": "target-motion complexity only",
+ "validation": {
+  "A": [
+   165000,
+   165099
+  ],
+  "B": [
+   165100,
+   165199
+  ],
+  "alternation": "rollout k: odd -> A, even -> B",
+  "anchor1_basic_pursuit": [
+   166000,
+   166099
+  ],
+  "anchor2_static_defender": [
+   166100,
+   166199
+  ],
+  "anchor3_moving_defender": [
+   166200,
+   166299
+  ],
+  "diagnostic": [
+   167000,
+   167099
+  ],
+  "final": "165000-165199 (200 episodes) + matched canonical A0 + matched Stage3-v2 parent (common random numbers)",
+  "namespace_overlaps": {
+   "anchor1": [],
+   "anchor2": [],
+   "anchor3": [],
+   "diagnostic": [],
+   "mutual": [],
+   "scenario_validation": [],
+   "training_overlap": [],
+   "training_stream": [
+    1000000,
+    2147483647
+   ],
+   "validation_A": [],
+   "validation_B": []
+  },
+  "scenario_validation": [
+   168000,
+   168999
+  ]
+ },
+ "version": "a1_curriculum_stage4"
+}
