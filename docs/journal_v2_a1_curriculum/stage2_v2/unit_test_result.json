@@ -1,0 +1,15 @@
+{
+ "file": "tests/test_journal_v2_a1_cur2v2.py",
+ "passed": 11,
+ "failed": 0,
+ "covers": [
+  "protocol differs from Stage2-v1 ONLY in ppo.max_rollouts / ppo.max_timesteps; Stage2-v1 definitions have not drifted (protocol hash recomputes)",
+  "validation set A/B alternation continues from Stage2-v1 (rollout 9 -> A ... 16 -> B)",
+  "the three Stage2-v1 rollout-8 parents are the pre-registered verified commits (be8b85e4 / 25e67e79 / 6472fbee prefixes)",
+  "seeding is read-only on Stage2-v1, idempotent, and leaves a recoverable rollout-8 state with 8 verified validations",
+  "output-namespace activation protects Stage2-v1 results",
+  "real-SB3: extending a finished run with a larger budget == the uninterrupted run (policy+optimizer state and episode-log hashes)",
+  "descriptive learning-curve trend labels; paired scenario alignment for the v1-vs-v2 budget-sensitivity statistic; task-state stages and namespaces"
+ ],
+ "also_passing": "tests/test_journal_v2_a1_cur2.py (21 tests) unchanged"
+}

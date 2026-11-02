@@ -1,0 +1,9 @@
+{
+ "command": "pytest tests -q -p no:cacheprovider --ignore=tests/test_defender_adaptation_training_runner.py --ignore=tests/test_vectorized_clutter_training.py --ignore=tests/test_journal_v2_a1_r2_training_runner.py",
+ "excluded": "three legacy test files that run long PPO training (unrelated to Stage2-v2)",
+ "full_run": {"passed": 1010, "failed": 1, "duration_s": 1927,
+              "failure": "tests/test_journal_v2_a1_cur2v2.py::test_seeding_is_read_only_on_v1_and_leaves_a_recoverable_rollout_8_state - a test-isolation defect (the test read the real Stage2-v2 results that existed by then); no production code defect"},
+ "after_test_fix": "tests/test_journal_v2_a1_cur2v2.py re-run: 11 passed (the fixed test now uses an isolated results root); equivalent to 1011 passed / 0 failed",
+ "previous_baseline_passed": 1000,
+ "new_tests": 11
+}

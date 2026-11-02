@@ -1,0 +1,130 @@
+{
+ "action_version": "a1_cur1_action_v1",
+ "branch": "research/journal-corrected-attacker-v2",
+ "expected_start_head": "b94659d",
+ "frozen_files": [
+  "experiments/journal_v2_a1.py",
+  "experiments/journal_v2_a1_r2.py",
+  "experiments/journal_v2_a1_cur1.py",
+  "experiments/journal_v2_a1_cur1v2.py",
+  "experiments/journal_v2_a1_cur1v2_bc.py",
+  "experiments/journal_v2_a1_cur2.py",
+  "experiments/journal_v2_a1_cur2_training.py",
+  "experiments/journal_v2_a1_cur2_final.py",
+  "experiments/journal_v2_a1_cur2_run.py",
+  "uav_defend"
+ ],
+ "frozen_files_identical_to_stage2_v1_commit": true,
+ "head": "b94659dd554b82d3726255aaff6f9718cf92198b",
+ "head_is_expected_or_descendant": true,
+ "integrity": {
+  "failed_a1_v1_checkpoints": 3,
+  "failed_a1_v1_mismatches": [],
+  "historical_mismatches": [],
+  "historical_registered_checkpoints": 30,
+  "stage1_v1_failed_curriculum_models": {
+   "201": {
+    "marker_present": true,
+    "sha256_matches": true,
+    "status": "FAIL"
+   },
+   "202": {
+    "marker_present": true,
+    "sha256_matches": true,
+    "status": "FAIL"
+   },
+   "203": {
+    "marker_present": true,
+    "sha256_matches": true,
+    "status": "FAIL"
+   }
+  },
+  "stage1_v2_bc_models": {
+   "201": {
+    "model_sha256": "4bc446afebbb95f308234399ec22a2a6f84b39338f85a0f109384a338eb2aee4",
+    "sha256_matches_handoff": true
+   },
+   "202": {
+    "model_sha256": "18da296243f10057868939c6b3d3bc07ff2de13e622241b9df10dc55ea30ab65",
+    "sha256_matches_handoff": true
+   },
+   "203": {
+    "model_sha256": "a3e34511d60170ea9ce329ece56f4e778fd01fdc6e22cb918df379675dab42c3",
+    "sha256_matches_handoff": true
+   }
+  }
+ },
+ "observation_version": "a1_v2_obs_v1",
+ "ppo_hyperparameters": {
+  "batch_size": 64,
+  "clip_range": 0.2,
+  "ent_coef": 0.01,
+  "gae_lambda": 0.95,
+  "gamma": 0.99,
+  "learning_rate": 0.0003,
+  "max_grad_norm": 0.5,
+  "n_epochs": 10,
+  "n_steps": 2048,
+  "vf_coef": 0.5
+ },
+ "reward_version": "a1_v2_reward_v2",
+ "stage2_v1_docs_identical_to_stage2_v1_commit": true,
+ "stage2_v1_parents": {
+  "201": {
+   "completed_rollout": 8,
+   "model_sha256": "be8b85e4d9c30b3808215e5346e03718726d883c22aab6518ea5581aa676fbeb",
+   "num_timesteps": 262144,
+   "rng_sha256": "5c83ccb8f180fc1f31505f3f42262f908273bdf6c0b512ca22388a7ca78362a0",
+   "rollout8_manifest_sha256": "fab6da1d8936db2b57bb55e02f55961dbb244f162f6a36d78fb9bfb4c25f2098",
+   "seed": 201,
+   "source_dir": "C:\\Users\\mimishal\\OneDrive\\Documents\\UIC\\PhD\\Research\\RL-UAV-Extended-lrppo-clutter\\results\\journal_v2_corrected_semantics\\a1_curriculum\\stage2\\seed_201\\rollouts",
+   "state_sha256_policy_and_optimizer": "e625a5345d64f14be3be250b1720d9bf4e831f64cd98512d449d13bd98f5d3bc",
+   "v1_final_validation": {
+    "anchor_capture": 1.0,
+    "capture": 0.73,
+    "interception": 0.27
+   },
+   "v1_seed_manifest_sha256": "fa784084be1cb210a3e06e5ee7c62da3c63f66c31357d164c09936f7c3eef325",
+   "v1_validation_sets_alternation": "odd->A, even->B"
+  },
+  "202": {
+   "completed_rollout": 8,
+   "model_sha256": "25e67e794a44b392c0170f774096216ae44d0f84c9fd9e29d547a8d595001361",
+   "num_timesteps": 262144,
+   "rng_sha256": "a1370d4c513f3d722de5bf6e6dec6bb863ba60c55e636aef66b004bac5e5b303",
+   "rollout8_manifest_sha256": "37bde415e62bc7cdce06ad13a52652dbefa8f6b5d56d0555c0058e3f4768fd76",
+   "seed": 202,
+   "source_dir": "C:\\Users\\mimishal\\OneDrive\\Documents\\UIC\\PhD\\Research\\RL-UAV-Extended-lrppo-clutter\\results\\journal_v2_corrected_semantics\\a1_curriculum\\stage2\\seed_202\\rollouts",
+   "state_sha256_policy_and_optimizer": "c97ba6ecd6c1a881eb0eadd7576ebccf1ab1a52ca2ad83d07163be9b3d10c949",
+   "v1_final_validation": {
+    "anchor_capture": 1.0,
+    "capture": 0.65,
+    "interception": 0.35
+   },
+   "v1_seed_manifest_sha256": "b4e57fc65e353140d8bcc2a62dede8ffb880eb058cb1eda48da9e9d591d1b4d3",
+   "v1_validation_sets_alternation": "odd->A, even->B"
+  },
+  "203": {
+   "completed_rollout": 8,
+   "model_sha256": "6472fbee620226379588871bdfb33c1b85edae82213170e68b208b16b4e472fa",
+   "num_timesteps": 262144,
+   "rng_sha256": "1305e126ea7f69629aece0c361c7483c65e25c730c2a745591b50f2019cb7ba5",
+   "rollout8_manifest_sha256": "0e5e235d865a616f05ec71bc0916bc8c9ec25333baa90711a65b3a2cd16a6c58",
+   "seed": 203,
+   "source_dir": "C:\\Users\\mimishal\\OneDrive\\Documents\\UIC\\PhD\\Research\\RL-UAV-Extended-lrppo-clutter\\results\\journal_v2_corrected_semantics\\a1_curriculum\\stage2\\seed_203\\rollouts",
+   "state_sha256_policy_and_optimizer": "befaab26ebc686a2e3ec18011035b96bbef5bc972194cc61a0ba9ba1a4962535",
+   "v1_final_validation": {
+    "anchor_capture": 1.0,
+    "capture": 0.59,
+    "interception": 0.41
+   },
+   "v1_seed_manifest_sha256": "1f74cf7c8379709044b8042132672e38dd9c3614bdaa0c3ad697fdbaf1b77e6b",
+   "v1_validation_sets_alternation": "odd->A, even->B"
+  }
+ },
+ "stage2_v1_protocol_sha256_recomputed": "07c9fcf5089fb9d957ce1745d27745bde3c83737c132c9b3b3397d3f390fc274",
+ "stage2_v1_protocol_sha256_stored": "07c9fcf5089fb9d957ce1745d27745bde3c83737c132c9b3b3397d3f390fc274",
+ "stage2_v1_tracked_files": 30,
+ "tracked_tree_clean": true,
+ "uav_defend_identical_to_a0_tag": true
+}

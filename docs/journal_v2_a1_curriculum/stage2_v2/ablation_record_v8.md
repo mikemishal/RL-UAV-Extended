@@ -1,0 +1,7 @@
+# A1 development ablation record v8 — Stage 2 training-budget extension
+
+Rows 1–10 are unchanged from `docs/journal_v2_a1_curriculum/stage2/ablation_record_v7.md` (preserved; row 10 = Stage2-v1, 8 rollouts, 0/3 mastered, held-out capture 67.0 / 58.5 / 55.5%).
+
+| # | Design | Hypothesis | Test protocol | Quantitative outcome | Mechanism | Lesson |
+|---|---|---|---|---|---|---|
+| 11 | **Stage2-v2: budget-only continuation of Stage2-v1 (8 → 16 rollouts, 524,288 steps)**; everything else identical (protocol diff = `max_rollouts`, `max_timesteps`) | Stage 2 is compute-limited; extending PPO under the frozen protocol lets the expert-initialized policies reach mastery | resume verified Stage2-v1 rollout-8 state (policy, critic, optimizer, RNG); rollouts 9–16; same alternating validations, matched A0, anchor, two-consecutive-pass mastery; 200 matched final scenarios | **0/3 mastered (rule not met)**; final held-out capture **90.0 / 88.5 / 89.0%** (v1: 67.0 / 58.5 / 55.5%; paired v2−v1 +23.0 / +30.0 / +33.5 pp, CIs exclude 0), A0 0%; interception 10–11.5%; anchor 1.00; path-excess 1.04; no pathologies | wider reactive detours (closest defender 5.2–5.4 m vs 2.5 m for A0); pursuit retained (cos to BC 0.97–0.98); capture still rising at the budget limit, sitting at the 90% threshold with ≈ ±5 pp validation noise | budget was the main limiter (+23…+34 pp) but did not by itself satisfy the strict two-consecutive rule within 16 rollouts; further extension = new scientific decision (not made); Stage 3 not started |

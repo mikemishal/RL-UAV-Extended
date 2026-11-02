@@ -1,0 +1,173 @@
+{
+ "differences_from_stage2_v1": {
+  "ppo.max_rollouts": [
+   8,
+   16
+  ],
+  "ppo.max_timesteps": [
+   262144,
+   524288
+  ]
+ },
+ "environment": {
+  "asset": "stationary (v_s = 0), canonical origin",
+  "clutter": "C0 (no static or dynamic obstacles)",
+  "config": "identical to the Stage-1-v1 configuration (canonical C0 V2 + passive-harness defender w/o standby sync + v_s = 0)",
+  "defender": "stationary, zero velocity, never acts; ACTIVE under canonical swept interception (intercept_radius 2.5 m unchanged); interception terminates the episode",
+  "defender_observation": "canonical gate: flag/pos/vel features nonzero only when the TRUE 3-D attacker-defender range <= enemy_defender_detection_range (25 m); zeros otherwise",
+  "differences_from_canonical": {
+   "defender_standby_until_detection": {
+    "canonical": true,
+    "stage2": false
+   },
+   "v_s": {
+    "canonical": 1.5,
+    "stage2": 0.0
+   }
+  },
+  "env_config_sha256": "3cd93a4922e9172fd49249143aec82667b578d1513fa1223af8941a2ba151f8f",
+  "initial_geometry": "Stage-1 distribution: perimeter spawn, altitude U(10,30), initial heading offset U(0,90) deg off the line of sight"
+ },
+ "gate": {
+  "anchor_capture_min": 0.98,
+  "capture_min": 0.9,
+  "exhaustion_max": 0.02,
+  "gt3_max": 0.02,
+  "gt5_max": 0.0,
+  "improvement_over_a0_min_pp": 20.0,
+  "median_path_excess_max": 1.6,
+  "nonfinite_max": 0,
+  "orbit_episodes_max": 0,
+  "timeout_max": 0.02
+ },
+ "hypothesis": "After expert initialization establishes reliable goal-directed pursuit, PPO can learn evasive deviations around a stationary interception threat without destroying the learned pursuit skill.",
+ "identifiers": {
+  "action": "a1_cur1_action_v1",
+  "curriculum": "journal_v2_a1_curriculum",
+  "observation": "a1_v2_obs_v1",
+  "placement_protocol": "a1_cur2_static_defender_nominal_path_v1",
+  "reward": "a1_v2_reward_v2",
+  "stage": "stage2",
+  "training_protocol": "a1_cur2_training_v1",
+  "version": "a1_curriculum_stage2_v2"
+ },
+ "initialization": {
+  "actor": "matching Stage-1 BC checkpoint (mlp_extractor.policy_net + action_net + log_std = -2.0)",
+  "critic": "FRESH, initialized by the PPO seed (value network of PPO(seed=seed))",
+  "not_loaded": [
+   "failed A1-v1 PPO weights",
+   "Stage-1-v1 failed PPO models"
+  ],
+  "optimizer": "fresh (no BC optimizer state)",
+  "parents": {
+   "201": {
+    "attacker_id": "A1-BC1-201",
+    "model_sha256": "4bc446afebbb95f308234399ec22a2a6f84b39338f85a0f109384a338eb2aee4"
+   },
+   "202": {
+    "attacker_id": "A1-BC1-202",
+    "model_sha256": "18da296243f10057868939c6b3d3bc07ff2de13e622241b9df10dc55ea30ab65"
+   },
+   "203": {
+    "attacker_id": "A1-BC1-203",
+    "model_sha256": "a3e34511d60170ea9ce329ece56f4e778fd01fdc6e22cb918df379675dab42c3"
+   }
+  }
+ },
+ "mastery": "two consecutive rollout validations pass ALL gate checks",
+ "paired_statistics": {
+  "bootstrap": "paired percentile bootstrap over scenarios",
+  "resamples": 10000,
+  "seed": 20260201
+ },
+ "placement": {
+  "lambda": [
+   0.35,
+   0.65
+  ],
+  "orientation": "uniform angle about the local path tangent",
+  "perpendicular_offset_m": [
+   0.0,
+   1.5
+  ],
+  "protocol": "a1_cur2_static_defender_nominal_path_v1",
+  "reference": "noise-free canonical-A0 nominal path from the Stage-2 initial state (lambda along its arc length); amendment of the original initial-chord reference, approved by the user after the chord design gave A0 interception 51.5% < 70% (scenario_validation_initial_STOP.json, no training had started)",
+  "stop_rule": "A0 interception fraction < 0.7 on (149000, 149999) => STOP, do not tune after training starts",
+  "stream": "SeedSequence([0xc2a3, scenario_seed])",
+  "validity": "|x|,|y| <= L and 0 <= z <= max_altitude; invalid draws re-sampled (never clipped), <= 50 attempts"
+ },
+ "ppo": {
+  "hyperparameters": {
+   "batch_size": 64,
+   "clip_range": 0.2,
+   "ent_coef": 0.01,
+   "gae_lambda": 0.95,
+   "gamma": 0.99,
+   "learning_rate": 0.0003,
+   "max_grad_norm": 0.5,
+   "n_epochs": 10,
+   "n_steps": 2048,
+   "vf_coef": 0.5
+  },
+  "max_rollouts": 16,
+  "max_timesteps": 524288,
+  "n_envs": 16,
+  "policy": "MlpPolicy",
+  "rollout_steps": 32768,
+  "seeds": [
+   201,
+   202,
+   203
+  ]
+ },
+ "protocol_sha256": "ff679fa4e65ac808ab0b9a5180e496bcf2ae19bfef12ba50806fbb2e56e2f8fa",
+ "retention": "anchor capture < 0.98 on 2 consecutive rollouts => PURSUIT RETENTION FAILURE (seed stops)",
+ "reward": "a1_v2_reward_v2 unchanged (no Stage-2 reward terms)",
+ "success_rule": ">= 2/3 seeds master, mastered seeds retain Stage-1 pursuit, no shared pathology",
+ "tests": "pursuit preservation + elementary adversarial avoidance",
+ "validation": {
+  "A": [
+   147000,
+   147099
+  ],
+  "B": [
+   147100,
+   147199
+  ],
+  "alternation": "rollout k: odd -> A, even -> B",
+  "anchor": [
+   148000,
+   148099
+  ],
+  "final": "147000-147199 (200 episodes per seed) + matched canonical A0",
+  "namespace_overlaps": {
+   "anchor": [],
+   "mutual": [],
+   "placement_validation": [],
+   "training_stream": [
+    1000000,
+    2147483647
+   ],
+   "validation_A": [],
+   "validation_B": []
+  }
+ },
+ "version": {
+  "changed": {
+   "max_rollouts": [
+    8,
+    16
+   ],
+   "max_timesteps": [
+    262144,
+    524288
+   ]
+  },
+  "continuation": "PPO policy, critic, optimizer, timestep counter and RNG/scenario-stream state restored from the verified Stage2-v1 rollout-8 commit (no BC re-initialisation)",
+  "id": "a1_curriculum_stage2_v2",
+  "kind": "preregistered budget-only continuation of Stage2-v1",
+  "stage2_v1_protocol_sha256": "07c9fcf5089fb9d957ce1745d27745bde3c83737c132c9b3b3397d3f390fc274",
+  "stop_rule": "fewer than 2/3 seeds mastered by rollout 16 => STOP; no automatic further budget increase",
+  "unchanged": "environment, defender placement, observation/action/reward, initialization, PPO hyperparameters, validation sets and alternation, anchor, gates, retention rule"
+ }
+}

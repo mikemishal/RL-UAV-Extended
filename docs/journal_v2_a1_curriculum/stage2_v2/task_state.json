@@ -1,0 +1,195 @@
+{
+ "created_utc": "2026-11-02T01:48:08.555798+00:00",
+ "stages": {
+  "01_repository_verification": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage2_v2/repository_verification.json": "d3af26da9b4217e96bb41d003dfcd0618bd179b50f13362145a026cadaf76797"
+   },
+   "completed_utc": "2026-11-02T01:48:12.134807+00:00",
+   "config_sha256": null,
+   "input_commit": "b94659dd554b82d3726255aaff6f9718cf92198b",
+   "note": "HEAD >= b94659d, clean, Stage2-v1 parents + integrity verified",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage2_v2/repository_verification.json"
+   ],
+   "started_utc": "2026-11-02T01:48:08.720196+00:00",
+   "status": "complete"
+  },
+  "02_stage2_v2_protocol_freeze": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage2_v2/protocol.json": "97cd79bce5d0c9865dfef907031ef3e807a7c3d721982a8412438c993da89678"
+   },
+   "completed_utc": "2026-11-02T01:48:12.232229+00:00",
+   "config_sha256": "ff679fa4e65ac808ab0b9a5180e496bcf2ae19bfef12ba50806fbb2e56e2f8fa",
+   "input_commit": "b94659dd554b82d3726255aaff6f9718cf92198b",
+   "note": "protocol sha ff679fa4e65ac808; only the budget differs from Stage2-v1",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage2_v2/protocol.json"
+   ],
+   "started_utc": "2026-11-02T01:48:12.205161+00:00",
+   "status": "complete"
+  },
+  "03_parent_checkpoint_seeding": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage2_v2/parent_checkpoints.json": "366728876112dc558b02e19b20bb59e79937538ab9b2a9e16a93c83f2dd64746"
+   },
+   "completed_utc": "2026-11-02T01:48:13.736472+00:00",
+   "config_sha256": "ff679fa4e65ac808ab0b9a5180e496bcf2ae19bfef12ba50806fbb2e56e2f8fa",
+   "input_commit": "b94659dd554b82d3726255aaff6f9718cf92198b",
+   "note": "rollouts 1-8 of the three seeds verified and seeded",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage2_v2/parent_checkpoints.json"
+   ],
+   "parents": {
+    "201": "be8b85e4d9c30b3808215e5346e03718726d883c22aab6518ea5581aa676fbeb",
+    "202": "25e67e794a44b392c0170f774096216ae44d0f84c9fd9e29d547a8d595001361",
+    "203": "6472fbee620226379588871bdfb33c1b85edae82213170e68b208b16b4e472fa"
+   },
+   "started_utc": "2026-11-02T01:48:12.296144+00:00",
+   "status": "complete"
+  },
+  "04_tests": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage2_v2/unit_test_result.json": "95d234c32428d96589ad4cb45212966917e59e7cb59d8cf2d9658f4a03598f92"
+   },
+   "completed_utc": "2026-11-02T01:50:18.773919+00:00",
+   "config_sha256": "ff679fa4e65ac808ab0b9a5180e496bcf2ae19bfef12ba50806fbb2e56e2f8fa",
+   "input_commit": "b94659dd554b82d3726255aaff6f9718cf92198b",
+   "note": "targeted tests passed",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage2_v2/unit_test_result.json"
+   ],
+   "started_utc": "2026-11-02T01:50:18.771055+00:00",
+   "status": "complete"
+  },
+  "05_seed_201_ppo_rollouts_9_16": {
+   "accepted_model_sha256": "d70b85a6a4d068646da1319f3f44b3057dce1e5fedd1f66b28c85b4cbd55f90c",
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage2_v2/seed_201_manifest.json": "ff6456ef6b10746df4e34c268a6a79cd2385309b83e3696093a2e30696f2e88f"
+   },
+   "completed_rollout": 16,
+   "completed_utc": "2026-11-02T01:54:59.957949+00:00",
+   "config_sha256": "ff679fa4e65ac808ab0b9a5180e496bcf2ae19bfef12ba50806fbb2e56e2f8fa",
+   "final_model_sha256": "d70b85a6a4d068646da1319f3f44b3057dce1e5fedd1f66b28c85b4cbd55f90c",
+   "final_state_sha256": "7b287a1982dd8d967a1338f1cf52ce8dc2064dda3517931c51c875de6916f7aa",
+   "input_commit": "b94659dd554b82d3726255aaff6f9718cf92198b",
+   "note": "seed 201: FAIL rollouts=16 mastery_rollout=None",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage2_v2/seed_201_manifest.json"
+   ],
+   "source_checkpoint_sha256": "be8b85e4d9c30b3808215e5346e03718726d883c22aab6518ea5581aa676fbeb",
+   "started_utc": "2026-11-02T01:50:18.828207+00:00",
+   "status": "complete"
+  },
+  "06_seed_202_ppo_rollouts_9_16": {
+   "accepted_model_sha256": "97a934bc2d115c4eec1a3b838fd754fd2dba93f57d91d84203aed9d7efb4d174",
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage2_v2/seed_202_manifest.json": "9f0e76b723048631e45c76e9145a3b63124bb4296278c2c1cee9e3e6f0e9675e"
+   },
+   "completed_rollout": 16,
+   "completed_utc": "2026-11-02T02:00:39.856025+00:00",
+   "config_sha256": "ff679fa4e65ac808ab0b9a5180e496bcf2ae19bfef12ba50806fbb2e56e2f8fa",
+   "final_model_sha256": "97a934bc2d115c4eec1a3b838fd754fd2dba93f57d91d84203aed9d7efb4d174",
+   "final_state_sha256": "d9e12581959c2a9c7fcbe18880c4d9f320d9c3ee917145813cf703560d0edc63",
+   "input_commit": "b94659dd554b82d3726255aaff6f9718cf92198b",
+   "note": "seed 202: FAIL rollouts=16 mastery_rollout=None",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage2_v2/seed_202_manifest.json"
+   ],
+   "source_checkpoint_sha256": "25e67e794a44b392c0170f774096216ae44d0f84c9fd9e29d547a8d595001361",
+   "started_utc": "2026-11-02T01:55:00.039083+00:00",
+   "status": "complete"
+  },
+  "07_seed_203_ppo_rollouts_9_16": {
+   "accepted_model_sha256": "06993dca67b59876c65afa956bcdace905482745b58cf39c9da87d713a578cac",
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage2_v2/seed_203_manifest.json": "87ff8db5f2a3117c4c999dbc3d9b2d1d2fbc29fdc10c87bf0f46b51ac3ec6779"
+   },
+   "completed_rollout": 16,
+   "completed_utc": "2026-11-02T02:08:24.568688+00:00",
+   "config_sha256": "ff679fa4e65ac808ab0b9a5180e496bcf2ae19bfef12ba50806fbb2e56e2f8fa",
+   "final_model_sha256": "06993dca67b59876c65afa956bcdace905482745b58cf39c9da87d713a578cac",
+   "final_state_sha256": "c928673c912ed280498f069d974a64e14006edbaa16d99af80b13c2890a220be",
+   "input_commit": "b94659dd554b82d3726255aaff6f9718cf92198b",
+   "note": "seed 203: FAIL rollouts=16 mastery_rollout=None",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage2_v2/seed_203_manifest.json"
+   ],
+   "source_checkpoint_sha256": "6472fbee620226379588871bdfb33c1b85edae82213170e68b208b16b4e472fa",
+   "started_utc": "2026-11-02T02:00:39.941338+00:00",
+   "status": "complete"
+  },
+  "08_final_evaluation": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage2_v2/bc_fidelity.json": "c770b608645c826442f9a912f4c3fac275bdc36b2e86a3ebaa5d5ddd2a50174f",
+    "docs/journal_v2_a1_curriculum/stage2_v2/budget_sensitivity.json": "ef3ae4a9d2cd7efbecdd7b74a3884f9eb1c6f9c98d441eedb2506c2fb861c2cc",
+    "docs/journal_v2_a1_curriculum/stage2_v2/checkpoint_integrity.json": "78b6a8c5118c6fbef42015dbaa4db9583d18700aa8525b82d1a12fac4d190a47",
+    "docs/journal_v2_a1_curriculum/stage2_v2/evasion_analysis.json": "2b8598a43432a041b11066dc4c16a0730b3fdc2442c0527294848a524d0cbdea",
+    "docs/journal_v2_a1_curriculum/stage2_v2/final_evaluation.json": "04a4e07aeecc716f6334b950d60e7e821c5ba391f9c155407266b97f97d65da2",
+    "docs/journal_v2_a1_curriculum/stage2_v2/learning_curves.json": "1b956aeb9e0b5d9cd32b0688fd058a6d53e3a30f14b78ced19f819ab4acc130c",
+    "docs/journal_v2_a1_curriculum/stage2_v2/rollout_results.md": "589f43118c42e4e574f639c48f0fa92690766c3e917f1ba259b38b8c27fcb279",
+    "docs/journal_v2_a1_curriculum/stage2_v2/stage2_decision.json": "ca4d7b1d731110d54d6a587faf8561e8a937bf955ff6bf99068a0e993bab51e5"
+   },
+   "completed_utc": "2026-11-02T02:13:34.000718+00:00",
+   "config_sha256": "ff679fa4e65ac808ab0b9a5180e496bcf2ae19bfef12ba50806fbb2e56e2f8fa",
+   "input_commit": "b94659dd554b82d3726255aaff6f9718cf92198b",
+   "note": "stage2_v2_pass=False mastered=[] (0/3)",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage2_v2/final_evaluation.json",
+    "docs/journal_v2_a1_curriculum/stage2_v2/evasion_analysis.json",
+    "docs/journal_v2_a1_curriculum/stage2_v2/bc_fidelity.json",
+    "docs/journal_v2_a1_curriculum/stage2_v2/stage2_decision.json",
+    "docs/journal_v2_a1_curriculum/stage2_v2/budget_sensitivity.json",
+    "docs/journal_v2_a1_curriculum/stage2_v2/learning_curves.json",
+    "docs/journal_v2_a1_curriculum/stage2_v2/rollout_results.md",
+    "docs/journal_v2_a1_curriculum/stage2_v2/checkpoint_integrity.json"
+   ],
+   "started_utc": "2026-11-02T02:13:33.975179+00:00",
+   "status": "complete"
+  },
+  "09_visualizer_recordings": {
+   "completed_utc": "2026-11-02T02:55:46.512169+00:00",
+   "input_commit": "b94659dd554b82d3726255aaff6f9718cf92198b",
+   "reason": "Stage2-v2 failed (0/3 seeds mastered): A1-CUR2-* registration and recordings are required only if >= 2 seeds master",
+   "status": "not_applicable"
+  },
+  "10_manuscript_documentation": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage2_v2/README.md": "0e70f461743539fe43443eae4d0936df4b18e616b382b3c5180746626abd4e16",
+    "docs/journal_v2_a1_curriculum/stage2_v2/ablation_record_v8.md": "f15166b6e3d63f7e9dbf9a2cf43f23046e5587c146a6178f19467c6c38847f6c",
+    "docs/journal_v2_a1_curriculum/stage2_v2/manuscript_notes.md": "191d3eb9163cd6f2af7ea98069a963c5f494916d6ba8de43b9292531f9c17804",
+    "docs/journal_v2_a1_curriculum/stage2_v2/regression_summary.json": "116626ef7845af4c69b4a394e690dc4f6e9c24c7703080066f37895b826979c0",
+    "docs/journal_v2_a1_curriculum/stage2_v2/unit_test_result.json": "95d234c32428d96589ad4cb45212966917e59e7cb59d8cf2d9658f4a03598f92"
+   },
+   "completed_utc": "2026-11-02T02:55:46.596711+00:00",
+   "config_sha256": "ff679fa4e65ac808ab0b9a5180e496bcf2ae19bfef12ba50806fbb2e56e2f8fa",
+   "input_commit": "b94659dd554b82d3726255aaff6f9718cf92198b",
+   "note": "README, manuscript notes, ablation v8, regression",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage2_v2/README.md",
+    "docs/journal_v2_a1_curriculum/stage2_v2/manuscript_notes.md",
+    "docs/journal_v2_a1_curriculum/stage2_v2/ablation_record_v8.md",
+    "docs/journal_v2_a1_curriculum/stage2_v2/regression_summary.json",
+    "docs/journal_v2_a1_curriculum/stage2_v2/unit_test_result.json"
+   ],
+   "started_utc": "2026-11-02T02:55:46.581639+00:00",
+   "status": "complete"
+  },
+  "11_commit_push": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage2_v2/stage2_decision.json": "ca4d7b1d731110d54d6a587faf8561e8a937bf955ff6bf99068a0e993bab51e5"
+   },
+   "completed_utc": "2026-11-02T02:55:46.717024+00:00",
+   "config_sha256": "ff679fa4e65ac808ab0b9a5180e496bcf2ae19bfef12ba50806fbb2e56e2f8fa",
+   "input_commit": "b94659dd554b82d3726255aaff6f9718cf92198b",
+   "note": "commit/push recorded in git history (a commit SHA cannot be self-referential)",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage2_v2/stage2_decision.json"
+   ],
+   "started_utc": "2026-11-02T02:55:46.703210+00:00",
+   "status": "complete"
+  }
+ },
+ "task": "journal_v2_a1_curriculum/stage2_v2",
+ "updated_utc": "2026-11-02T02:55:46.727692+00:00"
+}
