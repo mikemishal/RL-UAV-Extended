@@ -11,7 +11,7 @@ performs policy inference, or changes recorded outcomes.
 
 ## Scientific integrity and coordinate decision
 
-Based on local research commit `dac0230dc174595d8bb99c0a6e406278cf127a4c` (curriculum Stage-1-v2 expert-initialization evidence; tag `journal-v2-a1-curriculum-bc-stage1-v1`; on top of tag
+Based on local research commit `b94659dd554b82d3726255aaff6f9718cf92198b` (curriculum Stage-2 evidence, static-defender evasion, failed 0/3, no Stage-2 IDs registered; Stage-1-v2 BC attackers `A1-BC1-*` unchanged; tag `journal-v2-a1-curriculum-bc-stage1-v1`; on top of tag
 `journal-v2-a1-training-protocol-v1`; frozen canonical A0 is tag `journal-v2-a0-canonical-v1`, `bdbee45…`)
 (branch `research/journal-corrected-attacker-v2`),
 not a remote branch. All additions are confined to this `visualizer` directory.
