@@ -1,0 +1,9 @@
+{
+ "command": "pytest tests -q -p no:cacheprovider --ignore=tests/test_defender_adaptation_training_runner.py --ignore=tests/test_vectorized_clutter_training.py --ignore=tests/test_journal_v2_a1_r2_training_runner.py",
+ "excluded": "three legacy test files that run long PPO training (unrelated to Stage3-v2)",
+ "full_run": {"passed": 1043, "failed": 0, "duration_s": 2337},
+ "previous_baseline_passed": 1011,
+ "new_tests": 32,
+ "targeted": "tests/test_journal_v2_a1_cur3v2.py: 32 passed (hold/release, detection semantics, Greedy equivalence after release, zero release velocity, placement, observation, namespaces, gate, seed decision, retention, protocol, rollout rejection across protocols, parent initialisation, real-SB3 resume with injected crash)",
+ "note": "the regression ran on the working tree that is committed (uav_defend and canonical A0 untouched; frozen Stage1/2 modules unchanged vs 1214c38)"
+}

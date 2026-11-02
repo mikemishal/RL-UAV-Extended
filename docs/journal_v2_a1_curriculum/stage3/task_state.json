@@ -1,0 +1,29 @@
+{
+  "stage": "stage3_moving_greedy_defender",
+  "parent_status": "provisional_curriculum_transfer",
+  "research_head": "1214c38",
+  "parents": {
+    "201": "d70b85a6a4d068646da1319f3f44b3057dce1e5fedd1f66b28c85b4cbd55f90c",
+    "202": "97a934bc2d115c4eec1a3b838fd754fd2dba93f57d91d84203aed9d7efb4d174",
+    "203": "06993dca67b59876c65afa956bcdace905482745b58cf39c9da87d713a578cac"
+  },
+  "overall_status": "STOPPED_AT_SCENARIO_VALIDATION",
+  "superseded_by": "docs/journal_v2_a1_curriculum/stage3_v2/ (Stage3-v2: hold-until-detection Greedy). Stage3-v1 outputs are never mixed with Stage3-v2.",
+  "stop_reason": "Pre-registered rule: A0 interception must be in [0.60, 1.00]; observed 0.000 on 1000 scenarios (moving Greedy, nominal-path placement, zero initial velocity). No training performed.",
+  "stages": {
+    "1_repository_verification": "done",
+    "2_protocol_freeze": "pending (frozen only after scenario validation passes)",
+    "3_environment_implementation": "done (experiments/journal_v2_a1_cur3.py, uncommitted)",
+    "4_scenario_difficulty_validation": "FAILED_TOO_EASY (see scenario_validation.json)",
+    "5_tests": "not_started",
+    "6_real_sb3_resume_validation": "not_started",
+    "7_seed_201_training": "not_started",
+    "8_seed_202_training": "not_started",
+    "9_seed_203_training": "not_started",
+    "10_heldout_evaluation": "not_started",
+    "11_visualizer_recordings": "not_started",
+    "12_stage4_handoff": "not_started",
+    "13_manuscript_documentation": "not_started",
+    "14_commit_push": "not_started"
+  }
+}

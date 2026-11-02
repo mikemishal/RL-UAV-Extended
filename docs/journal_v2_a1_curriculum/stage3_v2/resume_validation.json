@@ -1,0 +1,52 @@
+{
+ "all_episode_logs_equal": true,
+ "all_states_equal": true,
+ "crash_injected_between_model_write_and_manifest": true,
+ "environment": "Stage3V2Env (hold-until-detection Greedy)",
+ "init_record_equal": true,
+ "interrupt_after": 1,
+ "n_envs": 4,
+ "n_steps": 64,
+ "partial_files_before_resume": [
+  "rollout_01.episodes.jsonl",
+  "rollout_01.manifest.json",
+  "rollout_01.rng.pkl",
+  "rollout_01.zip",
+  "rollout_02.episodes.jsonl",
+  "rollout_02.rng.pkl",
+  "rollout_02.zip"
+ ],
+ "platform": "Windows-11-10.0.26300-SP0",
+ "protocol_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+ "python": "3.13.14",
+ "rollouts": 3,
+ "rows": [
+  {
+   "episodes_equal": true,
+   "interrupted_state_sha256": "c8382b3cb6b3962a44a38bc6c99343715c1ec90bbca0ec01171cf3f7714f8e2c",
+   "num_timesteps_equal": true,
+   "rollout": 1,
+   "state_equal": true,
+   "uninterrupted_state_sha256": "c8382b3cb6b3962a44a38bc6c99343715c1ec90bbca0ec01171cf3f7714f8e2c"
+  },
+  {
+   "episodes_equal": true,
+   "interrupted_state_sha256": "304ecb06dcfc6276db241de2634b4266aea43b138470295d6b0be7b3778aa6d7",
+   "num_timesteps_equal": true,
+   "rollout": 2,
+   "state_equal": true,
+   "uninterrupted_state_sha256": "304ecb06dcfc6276db241de2634b4266aea43b138470295d6b0be7b3778aa6d7"
+  },
+  {
+   "episodes_equal": true,
+   "interrupted_state_sha256": "040c6ff7841efa68ef83ee9572b002e3917a2afee396a9e5a86260e6f39c197c",
+   "num_timesteps_equal": true,
+   "rollout": 3,
+   "state_equal": true,
+   "uninterrupted_state_sha256": "040c6ff7841efa68ef83ee9572b002e3917a2afee396a9e5a86260e6f39c197c"
+  }
+ ],
+ "seed": 201,
+ "vec_env": "SubprocVecEnv",
+ "wall_time_s": 115.53466248512268
+}

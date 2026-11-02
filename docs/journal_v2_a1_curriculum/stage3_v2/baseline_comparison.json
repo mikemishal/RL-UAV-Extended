@@ -1,0 +1,77 @@
+{
+ "note": "both columns re-run on the identical Stage3-v2 scenario block 157000-157999 through the same code path (`hold_until_detection` False vs True); the recorded v1 evidence used seeds 153000-153999",
+ "scenarios": 1000,
+ "seeds": [
+  157000,
+  157999
+ ],
+ "stage3_v1_escort": {
+  "a0_capture": 1.0,
+  "a0_interception": 0.0,
+  "a0_timeout": 0.0,
+  "defender_speed_at_detection_mps_median": 8.000000032484024,
+  "defender_speed_at_detection_mps_p95": 12.00000033938339,
+  "defender_vel_toward_attacker_at_detection_mps_median": -7.9925379769366955,
+  "detection_time_s_median": 1.0,
+  "episode_duration_s_median": 5.5,
+  "median_min_separation_m": 24.938634872436523
+ },
+ "stage3_v1_recorded_evidence": {
+  "a0_interception": 0.0,
+  "file": "docs/journal_v2_a1_curriculum/stage3/scenario_validation.json",
+  "median_min_separation_m": 25.057141304016113,
+  "seeds": [
+   153000,
+   153999
+  ]
+ },
+ "stage3_v2_hold": {
+  "a0_capture": 0.0,
+  "a0_interception": 1.0,
+  "a0_timeout": 0.0,
+  "defender_speed_at_detection_mps_median": 0.0,
+  "defender_speed_at_detection_mps_p95": 0.0,
+  "defender_vel_toward_attacker_at_detection_mps_median": 0.0,
+  "detection_time_s_median": 1.5,
+  "episode_duration_s_median": 2.5,
+  "median_min_separation_m": 2.5
+ },
+ "table": [
+  {
+   "metric": "A0 interception",
+   "stage3_v1_escort": 0.0,
+   "stage3_v2_hold": 1.0
+  },
+  {
+   "metric": "A0 capture",
+   "stage3_v1_escort": 1.0,
+   "stage3_v2_hold": 0.0
+  },
+  {
+   "metric": "Defender speed at detection (median, p95) [m/s]",
+   "stage3_v1_escort": [
+    8.000000032484024,
+    12.00000033938339
+   ],
+   "stage3_v2_hold": [
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "metric": "Defender velocity toward attacker at detection (median) [m/s]",
+   "stage3_v1_escort": -7.9925379769366955,
+   "stage3_v2_hold": 0.0
+  },
+  {
+   "metric": "Median min defender separation [m]",
+   "stage3_v1_escort": 24.938634872436523,
+   "stage3_v2_hold": 2.5
+  },
+  {
+   "metric": "Median episode duration [s]",
+   "stage3_v1_escort": 5.5,
+   "stage3_v2_hold": 2.5
+  }
+ ]
+}

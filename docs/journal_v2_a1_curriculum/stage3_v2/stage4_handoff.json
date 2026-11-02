@@ -1,0 +1,36 @@
+{
+ "stage": "stage3_v2_moving_greedy_defender_hold_until_detection",
+ "status": "quantitatively_accepted_pending_manual_review",
+ "note": "Created because Stage3-v2 passed its pre-registered rule (3/3 mastered). Not a final A1; every checkpoint here is a PROVISIONAL curriculum checkpoint derived from provisional Stage2-v2 parents. Stage 4 must not start before the manual inspection of the A1-CUR3V2-* recordings is accepted. No tag has been created.",
+ "decision": {
+  "stage3_v2_pass": true,
+  "seeds_mastered": [201, 202, 203],
+  "mastery_rollout": {"201": 3, "202": 5, "203": 7},
+  "held_out_capture_200": {"201": 0.835, "202": 0.825, "203": 0.865},
+  "matched_a0_capture": 0.0,
+  "paired_capture_vs_parent_pp": {"201": [10.5, 6.5, 15.0], "202": [7.5, 4.0, 11.5], "203": [14.5, 9.5, 20.0]},
+  "retention": {"stage1_anchor_capture": {"201": 1.0, "202": 1.0, "203": 1.0}, "static_anchor_capture": {"201": 0.9, "202": 0.94, "203": 0.95}},
+  "pathologies": "none (orbit 0, fly-by 0, non-closing 0, non-finite 0, no >3x path-excess)"
+ },
+ "versions": {"action": "a1_cur1_action_v1", "observation": "a1_v2_obs_v1", "reward": "a1_v2_reward_v2", "training_protocol": "a1_cur3v2_training_v1", "scenario_protocol": "a1_cur3v2_hold_until_detection_greedy_v1"},
+ "protocol_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+ "checkpoints": {
+  "201": {"path": "results/journal_v2_corrected_semantics/a1_curriculum/stage3_v2/seed_201/checkpoints/accepted_model.zip", "model_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78", "rollout": 3, "stage2_v2_parent_sha256": "d70b85a6a4d068646da1319f3f44b3057dce1e5fedd1f66b28c85b4cbd55f90c"},
+  "202": {"path": "results/journal_v2_corrected_semantics/a1_curriculum/stage3_v2/seed_202/checkpoints/accepted_model.zip", "model_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485", "rollout": 5, "stage2_v2_parent_sha256": "97a934bc2d115c4eec1a3b838fd754fd2dba93f57d91d84203aed9d7efb4d174"},
+  "203": {"path": "results/journal_v2_corrected_semantics/a1_curriculum/stage3_v2/seed_203/checkpoints/accepted_model.zip", "model_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c", "rollout": 7, "stage2_v2_parent_sha256": "06993dca67b59876c65afa956bcdace905482745b58cf39c9da87d713a578cac"}
+ },
+ "parent_status": "provisional_curriculum_transfer",
+ "initialization_for_stage4": {
+  "recommended": "same convention as Stage 3: matching Stage3-v2 accepted checkpoint -> actor + critic + log_std, FRESH optimizer, counter 0",
+  "critic_caveat": "the critic is only reused when observation and reward semantics are unchanged; a moving asset changes the value of states, so Stage 4 must pre-register whether to reuse or re-initialise the critic"
+ },
+ "next_stage": {
+  "name": "Stage 4: MOVING ASSET + MOVING SCRIPTED DEFENDER + C0",
+  "not_started": true,
+  "new_difficulty": "asset motion (canonical v_s) on top of the moving defender",
+  "must_keep": ["C0 (no obstacles)", "canonical Greedy defender, unmodified", "a1_v2_obs_v1 / a1_cur1_action_v1 / a1_v2_reward_v2 unless a documented observation change is required for asset velocity (audit first)", "frozen PPO hyper-parameters"],
+  "open_decisions": ["whether the hold-until-detection scaffold is retained, relaxed (pre-detection patrol) or removed", "A0 interception difficulty window for the moving-asset scenario family", "fresh validation / anchor blocks (do not reuse 154000-157999)"],
+  "scaffold_warning": "Stage3-v2 held the defender until detection; its speed at the closest approach is <= 8 m/s and release->interception is 0.5-1 s. Stage 4 results must not be described as sustained fast-pursuit evasion unless the scaffold is removed."
+ },
+ "namespaces_used_by_stage3_v2": {"validation_A": [154000, 154099], "validation_B": [154100, 154199], "stage1_anchor": [155000, 155099], "static_anchor": [155100, 155199], "diagnostic": [156000, 156099], "scenario_validation": [157000, 157999], "stage3_v1_evaluation_only": [151000, 153999], "scenario_stream_tag": "0xC3B1", "rejected": "149000-149199 (overlaps Stage-2 placement-validation 149000-149999)"}
+}

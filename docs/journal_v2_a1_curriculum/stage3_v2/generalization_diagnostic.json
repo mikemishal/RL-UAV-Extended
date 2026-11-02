@@ -1,0 +1,443 @@
+{
+ "201": {
+  "controllers": {
+   "greedy": {
+    "capture_minus_a0_pp": 76.0,
+    "capture_minus_parent_pp": 7.9999999999999964,
+    "matched_a0": {
+     "capture": 0.0,
+     "exhaustion": 0.0,
+     "interception": 1.0,
+     "median_path_excess": 1.0247696558215957,
+     "min_defender_separation_median_m": 2.500000238418579,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage2_v2_parent": {
+     "capture": 0.68,
+     "exhaustion": 0.0,
+     "interception": 0.32,
+     "median_path_excess": 1.0427022627798874,
+     "min_defender_separation_median_m": 4.378229856491089,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage3_v2": {
+     "capture": 0.76,
+     "exhaustion": 0.0,
+     "interception": 0.24,
+     "median_path_excess": 1.0511068579924878,
+     "min_defender_separation_median_m": 5.151597261428833,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    }
+   },
+   "kalman_greedy": {
+    "capture_minus_a0_pp": 76.0,
+    "capture_minus_parent_pp": 7.9999999999999964,
+    "matched_a0": {
+     "capture": 0.0,
+     "exhaustion": 0.0,
+     "interception": 1.0,
+     "median_path_excess": 1.0247696439131326,
+     "min_defender_separation_median_m": 2.5,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage2_v2_parent": {
+     "capture": 0.68,
+     "exhaustion": 0.0,
+     "interception": 0.32,
+     "median_path_excess": 1.0419206975622473,
+     "min_defender_separation_median_m": 4.415977239608765,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage3_v2": {
+     "capture": 0.76,
+     "exhaustion": 0.0,
+     "interception": 0.24,
+     "median_path_excess": 1.0511460691213061,
+     "min_defender_separation_median_m": 5.158699035644531,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    }
+   },
+   "lead": {
+    "capture_minus_a0_pp": 69.0,
+    "capture_minus_parent_pp": 12.0,
+    "matched_a0": {
+     "capture": 0.0,
+     "exhaustion": 0.0,
+     "interception": 1.0,
+     "median_path_excess": 1.0247657282969462,
+     "min_defender_separation_median_m": 2.5,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage2_v2_parent": {
+     "capture": 0.57,
+     "exhaustion": 0.0,
+     "interception": 0.43,
+     "median_path_excess": 1.0402703254811483,
+     "min_defender_separation_median_m": 3.9109565019607544,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage3_v2": {
+     "capture": 0.69,
+     "exhaustion": 0.0,
+     "interception": 0.31,
+     "median_path_excess": 1.050046599742676,
+     "min_defender_separation_median_m": 4.626056432723999,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    }
+   },
+   "pn": {
+    "capture_minus_a0_pp": 72.0,
+    "capture_minus_parent_pp": 13.0,
+    "matched_a0": {
+     "capture": 0.0,
+     "exhaustion": 0.0,
+     "interception": 1.0,
+     "median_path_excess": 1.0247355576035972,
+     "min_defender_separation_median_m": 2.4999998807907104,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage2_v2_parent": {
+     "capture": 0.59,
+     "exhaustion": 0.0,
+     "interception": 0.41,
+     "median_path_excess": 1.040274492407173,
+     "min_defender_separation_median_m": 3.6906386613845825,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage3_v2": {
+     "capture": 0.72,
+     "exhaustion": 0.0,
+     "interception": 0.28,
+     "median_path_excess": 1.0505071715548084,
+     "min_defender_separation_median_m": 4.508317947387695,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    }
+   }
+  },
+  "episodes": 100,
+  "note": "diagnostic only; not part of mastery or training",
+  "scenarios": [
+   156000,
+   156099
+  ],
+  "seed": 201
+ },
+ "202": {
+  "controllers": {
+   "greedy": {
+    "capture_minus_a0_pp": 84.0,
+    "capture_minus_parent_pp": 5.999999999999995,
+    "matched_a0": {
+     "capture": 0.0,
+     "exhaustion": 0.0,
+     "interception": 1.0,
+     "median_path_excess": 1.0247696558215957,
+     "min_defender_separation_median_m": 2.500000238418579,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage2_v2_parent": {
+     "capture": 0.78,
+     "exhaustion": 0.0,
+     "interception": 0.22,
+     "median_path_excess": 1.040783164091502,
+     "min_defender_separation_median_m": 4.832084655761719,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage3_v2": {
+     "capture": 0.84,
+     "exhaustion": 0.0,
+     "interception": 0.16,
+     "median_path_excess": 1.0473070257120387,
+     "min_defender_separation_median_m": 5.396320819854736,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    }
+   },
+   "kalman_greedy": {
+    "capture_minus_a0_pp": 85.0,
+    "capture_minus_parent_pp": 6.999999999999995,
+    "matched_a0": {
+     "capture": 0.0,
+     "exhaustion": 0.0,
+     "interception": 1.0,
+     "median_path_excess": 1.0247696439131326,
+     "min_defender_separation_median_m": 2.5,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage2_v2_parent": {
+     "capture": 0.78,
+     "exhaustion": 0.0,
+     "interception": 0.22,
+     "median_path_excess": 1.0407984266947135,
+     "min_defender_separation_median_m": 4.8469884395599365,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage3_v2": {
+     "capture": 0.85,
+     "exhaustion": 0.0,
+     "interception": 0.15,
+     "median_path_excess": 1.0488476868985783,
+     "min_defender_separation_median_m": 5.436550140380859,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    }
+   },
+   "lead": {
+    "capture_minus_a0_pp": 83.0,
+    "capture_minus_parent_pp": 8.999999999999996,
+    "matched_a0": {
+     "capture": 0.0,
+     "exhaustion": 0.0,
+     "interception": 1.0,
+     "median_path_excess": 1.0247657282969462,
+     "min_defender_separation_median_m": 2.5,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage2_v2_parent": {
+     "capture": 0.74,
+     "exhaustion": 0.0,
+     "interception": 0.26,
+     "median_path_excess": 1.040847092274392,
+     "min_defender_separation_median_m": 4.345338821411133,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage3_v2": {
+     "capture": 0.83,
+     "exhaustion": 0.0,
+     "interception": 0.17,
+     "median_path_excess": 1.0477564187949395,
+     "min_defender_separation_median_m": 5.00039005279541,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    }
+   },
+   "pn": {
+    "capture_minus_a0_pp": 86.0,
+    "capture_minus_parent_pp": 8.999999999999996,
+    "matched_a0": {
+     "capture": 0.0,
+     "exhaustion": 0.0,
+     "interception": 1.0,
+     "median_path_excess": 1.0247355576035972,
+     "min_defender_separation_median_m": 2.4999998807907104,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage2_v2_parent": {
+     "capture": 0.77,
+     "exhaustion": 0.0,
+     "interception": 0.23,
+     "median_path_excess": 1.0415378231127956,
+     "min_defender_separation_median_m": 4.521112442016602,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage3_v2": {
+     "capture": 0.86,
+     "exhaustion": 0.0,
+     "interception": 0.14,
+     "median_path_excess": 1.0475819577768393,
+     "min_defender_separation_median_m": 5.29436469078064,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    }
+   }
+  },
+  "episodes": 100,
+  "note": "diagnostic only; not part of mastery or training",
+  "scenarios": [
+   156000,
+   156099
+  ],
+  "seed": 202
+ },
+ "203": {
+  "controllers": {
+   "greedy": {
+    "capture_minus_a0_pp": 87.0,
+    "capture_minus_parent_pp": 20.999999999999996,
+    "matched_a0": {
+     "capture": 0.0,
+     "exhaustion": 0.0,
+     "interception": 1.0,
+     "median_path_excess": 1.0247696558215957,
+     "min_defender_separation_median_m": 2.500000238418579,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage2_v2_parent": {
+     "capture": 0.66,
+     "exhaustion": 0.0,
+     "interception": 0.34,
+     "median_path_excess": 1.0412144306485784,
+     "min_defender_separation_median_m": 4.56682014465332,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage3_v2": {
+     "capture": 0.87,
+     "exhaustion": 0.0,
+     "interception": 0.13,
+     "median_path_excess": 1.0525945496312774,
+     "min_defender_separation_median_m": 5.461803674697876,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    }
+   },
+   "kalman_greedy": {
+    "capture_minus_a0_pp": 87.0,
+    "capture_minus_parent_pp": 19.999999999999996,
+    "matched_a0": {
+     "capture": 0.0,
+     "exhaustion": 0.0,
+     "interception": 1.0,
+     "median_path_excess": 1.0247696439131326,
+     "min_defender_separation_median_m": 2.5,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage2_v2_parent": {
+     "capture": 0.67,
+     "exhaustion": 0.0,
+     "interception": 0.33,
+     "median_path_excess": 1.0414651989832242,
+     "min_defender_separation_median_m": 4.577987194061279,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage3_v2": {
+     "capture": 0.87,
+     "exhaustion": 0.0,
+     "interception": 0.13,
+     "median_path_excess": 1.052479528852221,
+     "min_defender_separation_median_m": 5.479856729507446,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    }
+   },
+   "lead": {
+    "capture_minus_a0_pp": 84.0,
+    "capture_minus_parent_pp": 26.0,
+    "matched_a0": {
+     "capture": 0.0,
+     "exhaustion": 0.0,
+     "interception": 1.0,
+     "median_path_excess": 1.0247657282969462,
+     "min_defender_separation_median_m": 2.5,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage2_v2_parent": {
+     "capture": 0.58,
+     "exhaustion": 0.0,
+     "interception": 0.42,
+     "median_path_excess": 1.0408935674822706,
+     "min_defender_separation_median_m": 3.691481828689575,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage3_v2": {
+     "capture": 0.84,
+     "exhaustion": 0.0,
+     "interception": 0.16,
+     "median_path_excess": 1.0519661299704484,
+     "min_defender_separation_median_m": 5.066282749176025,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    }
+   },
+   "pn": {
+    "capture_minus_a0_pp": 84.0,
+    "capture_minus_parent_pp": 24.0,
+    "matched_a0": {
+     "capture": 0.0,
+     "exhaustion": 0.0,
+     "interception": 1.0,
+     "median_path_excess": 1.0247355576035972,
+     "min_defender_separation_median_m": 2.4999998807907104,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage2_v2_parent": {
+     "capture": 0.6,
+     "exhaustion": 0.0,
+     "interception": 0.4,
+     "median_path_excess": 1.041099056929486,
+     "min_defender_separation_median_m": 3.8351187705993652,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    },
+    "stage3_v2": {
+     "capture": 0.84,
+     "exhaustion": 0.0,
+     "interception": 0.16,
+     "median_path_excess": 1.0520339685449656,
+     "min_defender_separation_median_m": 5.096692800521851,
+     "orbit_episodes": 0,
+     "repeated_flyby_episodes": 0,
+     "timeout": 0.0
+    }
+   }
+  },
+  "episodes": 100,
+  "note": "diagnostic only; not part of mastery or training",
+  "scenarios": [
+   156000,
+   156099
+  ],
+  "seed": 203
+ }
+}

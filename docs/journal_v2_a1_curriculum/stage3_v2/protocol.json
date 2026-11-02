@@ -1,0 +1,202 @@
+{
+ "environment": {
+  "asset": "stationary (v_s = 0)",
+  "clutter": "C0 (no static or dynamic obstacles)",
+  "config": "canonical C0 V2 measurement-track config with v_s=0 and defender_standby_until_detection=False",
+  "curriculum_scaffold": "hold-until-detection is a curriculum simplification (isolates evasion of a moving interceptor from the pre-contact escort transient); NOT the final defender benchmark; later stages must remove it",
+  "defender": "canonical scripted `greedy` controller, unmodified; HELD fixed (zero velocity/acceleration, Greedy action not applied) until canonical detection (`env._enemy_detected`: true 3-D attacker-defender distance <= detection_radius, sticky); the step in which detection becomes true is still held (canonical standby ordering); from the next step the unmodified Greedy action drives the unmodified constrained dynamics (18 m/s, 8 m/s^2, 90 deg/s) with canonical swept interception 2.5 m; never returns to hold",
+  "defender_observation": "canonical 25 m true-range gate (flag, position, velocity features); release flag / release time / lambda / nominal path are NOT observed",
+  "detection_radius_m": 15.0,
+  "differences_from_canonical": {
+   "defender_standby_until_detection": {
+    "canonical": true,
+    "stage3": false
+   },
+   "v_s": {
+    "canonical": 1.5,
+    "stage3": 0.0
+   }
+  },
+  "env_config_sha256": "3cd93a4922e9172fd49249143aec82667b578d1513fa1223af8941a2ba151f8f",
+  "placement": "Stage2-v2 nominal-A0-path placement (a1_cur2_static_defender_nominal_path_v1): lam ~ U(0.35,0.65), r ~ U(0,1.5 m), never resampled to force an outcome"
+ },
+ "gate": {
+  "capture_min": 0.8,
+  "exhaustion_max": 0.02,
+  "gt3_max": 0.05,
+  "gt5_max": 0.0,
+  "improvement_over_a0_min_pp": 20.0,
+  "interception_max": 0.2,
+  "median_path_excess_max": 1.8,
+  "nonfinite_max": 0,
+  "orbit_episodes_max": 0,
+  "stage1_anchor_capture_min": 0.98,
+  "static_anchor_capture_min": 0.8,
+  "timeout_max": 0.02
+ },
+ "gate_identical_to_stage3_v1": true,
+ "generalization_diagnostic": {
+  "controllers": [
+   "kalman_greedy",
+   "pn",
+   "lead"
+  ],
+  "seeds": [
+   156000,
+   156099
+  ],
+  "semantics": "same hold-until-detection wrapper; diagnostic only"
+ },
+ "hypothesis": "A policy that has learned static-threat evasion can transfer that behavior to a moving scripted interceptor while preserving its expert-initialized pursuit capability.",
+ "identifiers": {
+  "action": "a1_cur1_action_v1",
+  "curriculum": "journal_v2_a1_curriculum",
+  "observation": "a1_v2_obs_v1",
+  "reward": "a1_v2_reward_v2",
+  "scenario_protocol": "a1_cur3v2_hold_until_detection_greedy_v1",
+  "stage": "stage3_v2",
+  "training_protocol": "a1_cur3v2_training_v1"
+ },
+ "initialization": {
+  "actor_critic_log_std": "policy state_dict of the matching Stage2-v2 rollout-16 model (actor, CRITIC and log_std preserved: observation / reward / value semantics unchanged)",
+  "not_loaded": [
+   "BC checkpoints",
+   "failed PPO models",
+   "Stage-2 optimizer state"
+  ],
+  "optimizer": "RESET (fresh Adam from PPO construction) at the curriculum boundary",
+  "timestep_counter": "reset to 0 (Stage3-v2 rollouts numbered 1..16)"
+ },
+ "mastery": "two consecutive rollout validations pass ALL gate checks",
+ "observation_audit": "keep 37-D: the defender is invisible (zero features) outside the 25 m gate and stationary until released, the release (15 m detection) happens while it is already inside the gate, and its onset is then inferable from the observed defender velocity feature; the only unobservable quantity is the defender's pre-release dwell, which carries no information the attacker could use",
+ "other_changes_specified_by_the_decision": {
+  "a0_interception_min": [
+   0.6,
+   0.7
+  ],
+  "scenario_stream_tag": [
+   "0xc3a1",
+   "0xc3b1"
+  ],
+  "validation_namespace": "fresh Stage3-v2 held-out seed blocks (below)"
+ },
+ "paired_statistics": {
+  "bootstrap": "paired percentile bootstrap over scenarios",
+  "resamples": 10000,
+  "seed": 20260201
+ },
+ "parents": {
+  "checkpoints": {
+   "201": {
+    "model_sha256": "d70b85a6a4d068646da1319f3f44b3057dce1e5fedd1f66b28c85b4cbd55f90c",
+    "rollout": 16,
+    "status": "provisional_curriculum_transfer"
+   },
+   "202": {
+    "model_sha256": "97a934bc2d115c4eec1a3b838fd754fd2dba93f57d91d84203aed9d7efb4d174",
+    "rollout": 16,
+    "status": "provisional_curriculum_transfer"
+   },
+   "203": {
+    "model_sha256": "06993dca67b59876c65afa956bcdace905482745b58cf39c9da87d713a578cac",
+    "rollout": 16,
+    "status": "provisional_curriculum_transfer"
+   }
+  },
+  "note": "Stage2-v2 did NOT satisfy its frozen mastery rule (0/3); the rollout-16 checkpoints are PROVISIONAL CURRICULUM INITIALIZATION CHECKPOINTS after manual inspection, not accepted/final A1 models",
+  "rollout": 16,
+  "stage2_v2_commit": "1214c38",
+  "status": "provisional_curriculum_transfer"
+ },
+ "ppo": {
+  "hyperparameters": {
+   "batch_size": 64,
+   "clip_range": 0.2,
+   "ent_coef": 0.01,
+   "gae_lambda": 0.95,
+   "gamma": 0.99,
+   "learning_rate": 0.0003,
+   "max_grad_norm": 0.5,
+   "n_epochs": 10,
+   "n_steps": 2048,
+   "vf_coef": 0.5
+  },
+  "max_rollouts": 16,
+  "max_timesteps": 524288,
+  "n_envs": 16,
+  "policy": "MlpPolicy",
+  "rollout_steps": 32768,
+  "seeds": [
+   201,
+   202,
+   203
+  ]
+ },
+ "protocol_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+ "retention": {
+  "stage1_anchor": "capture < 0.98 on 2 consecutive rollouts => PURSUIT_RETENTION_FAILURE",
+  "static_anchor": "capture < 0.8 on 2 consecutive rollouts => STATIC_EVASION_RETENTION_FAILURE"
+ },
+ "reward": "a1_v2_reward_v2 unchanged (no evasion/distance/direction/action terms)",
+ "scenario_validation_rule": {
+  "interception_below_min": "STOP (too easy)",
+  "range": [
+   0.7,
+   1.0
+  ],
+  "validity": "no immediate-contact degeneracy (no episode ending within 1 step of reset, defender initial distance > detection radius, every intercepted episode gave the policy >= 2 decisions with the defender inside the 25 m gate), defender velocity at release = 0, defender fixed before release, Greedy takes over after release, no invalid state"
+ },
+ "single_conceptual_change_from_stage3_v1": "Defender motion is suppressed before canonical detection; after detection, the existing Greedy controller is released unchanged.",
+ "stage3_v1": {
+  "evidence": "docs/journal_v2_a1_curriculum/stage3/scenario_validation.json",
+  "outputs_never_mixed": "separate results / scratch / docs namespaces; verify_rollout rejects any manifest with a different protocol sha",
+  "protocol_sha256": "c4a7edbef9d862defb4cf7001a17e1d640d03a169e74f25eaac0b43434006dd5",
+  "verdict": "STOPPED at scenario validation: A0 interception 0/1000 (escort transient)"
+ },
+ "success_rule": ">= 2/3 seeds master, mastered seeds retain Stage-1 pursuit and static-defender evasion, no shared structural pathology",
+ "tests": "moving-adversary complexity only (asset stationary, C0, no obstacles, no defender-policy diversity)",
+ "validation": {
+  "A": [
+   154000,
+   154099
+  ],
+  "B": [
+   154100,
+   154199
+  ],
+  "alternation": "rollout k: odd -> A, even -> B",
+  "diagnostic": [
+   156000,
+   156099
+  ],
+  "final": "154000-154199 (200 episodes) + matched canonical A0 + Stage2-v2 parent",
+  "namespace_overlaps": {
+   "diagnostic": [],
+   "mutual": [],
+   "rejected_suggestion_149000_149199": "overlaps Stage-2 placement-validation 149000-149999 (evaluation only); fresh block used",
+   "scenario_validation": [],
+   "stage1_anchor": [],
+   "static_anchor": [],
+   "training_overlap": [],
+   "training_stream": [
+    1000000,
+    2147483647
+   ],
+   "validation_A": [],
+   "validation_B": []
+  },
+  "scenario_validation": [
+   157000,
+   157999
+  ],
+  "stage1_anchor": [
+   155000,
+   155099
+  ],
+  "static_anchor": [
+   155100,
+   155199
+  ]
+ },
+ "version": "a1_curriculum_stage3_v2"
+}

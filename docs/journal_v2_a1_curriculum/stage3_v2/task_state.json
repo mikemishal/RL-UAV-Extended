@@ -1,0 +1,262 @@
+{
+ "created_utc": "2026-11-02T04:03:18.433517+00:00",
+ "overall_status": "STAGE3_V2_PASSED_QUANTITATIVELY_PENDING_MANUAL_REVIEW",
+ "stage3_v1": "superseded (docs/journal_v2_a1_curriculum/stage3/): STOPPED at scenario validation, A0 interception 0/1000",
+ "stages": {
+  "01_repository_cleanup_verification": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage3/scenario_validation.json": "682e25488952caff1273e39d52e9c69367118bcf5262915b77a60a92623c0ab5",
+    "docs/journal_v2_a1_curriculum/stage3_v2/repository_verification.json": "7d7ce4b2bf31c0b8a30924777566acbc619b59b51d20374644d47a8e4dd1bf54"
+   },
+   "completed_utc": "2026-11-02T04:03:21.437531+00:00",
+   "config_sha256": null,
+   "input_commit": "1214c3807ca9adfc5aa95b01f2a0e1d5a7699526",
+   "note": "HEAD 1214c38, tracked tree clean, Stage3-v1 evidence preserved, parents/integrity verified",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage3_v2/repository_verification.json",
+    "docs/journal_v2_a1_curriculum/stage3/scenario_validation.json"
+   ],
+   "started_utc": "2026-11-02T04:03:18.645069+00:00",
+   "status": "complete"
+  },
+  "02_stage3_v2_protocol_freeze": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage3_v2/protocol.json": "c7b6aab027c277cf66232435e5e96fbfc500e4038e0d0a73a710ea80e71b77c8"
+   },
+   "completed_utc": "2026-11-02T04:03:21.592075+00:00",
+   "config_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+   "input_commit": "1214c3807ca9adfc5aa95b01f2a0e1d5a7699526",
+   "note": "protocol sha 195848ac91d665e6",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage3_v2/protocol.json"
+   ],
+   "started_utc": "2026-11-02T04:03:21.567370+00:00",
+   "status": "complete"
+  },
+  "03_hold_wrapper_implementation": {
+   "artifact_sha256": {
+    "experiments/journal_v2_a1_cur3v2.py": "3568c45a94ded8bd79e44f4aa0aa9d419ce44f6bcadef495e12c9fe4d8119fa3",
+    "experiments/journal_v2_a1_cur3v2_run.py": "eb6738bb8a8a9b1ca9dc70fd354d53e8bcc899d120b970649c2c4640337136b0",
+    "experiments/journal_v2_a1_cur3v2_state.py": "53ca791e6fe5ffa8ffcb4fc2a9e4da7beca56ba38c68c73b7eff591df879e3ea",
+    "experiments/journal_v2_a1_cur3v2_training.py": "fac3a7b71e1de7a4718d49d00049c9090bf7af3681f1c6b817e51b5bfda375c8"
+   },
+   "completed_utc": "2026-11-02T04:45:22.526908+00:00",
+   "config_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+   "input_commit": "1214c3807ca9adfc5aa95b01f2a0e1d5a7699526",
+   "note": "Stage3V2Env hold/release wrapper + runner (tests/test_journal_v2_a1_cur3v2.py)",
+   "output_artifacts": [
+    "experiments/journal_v2_a1_cur3v2.py",
+    "experiments/journal_v2_a1_cur3v2_training.py",
+    "experiments/journal_v2_a1_cur3v2_state.py",
+    "experiments/journal_v2_a1_cur3v2_run.py"
+   ],
+   "started_utc": "2026-11-02T04:45:22.509388+00:00",
+   "status": "complete"
+  },
+  "04_scenario_validation": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage3_v2/baseline_comparison.json": "8400c0599a3d5843cc6c52ccc2853ac2b5947fea5d784041591e4c1605b1a7bf",
+    "docs/journal_v2_a1_curriculum/stage3_v2/scenario_validation.json": "d2ff9cce432058dc134fe81b14797c4cde80023f0b770505a7e916a021672abb"
+   },
+   "completed_utc": "2026-11-02T04:04:53.452784+00:00",
+   "config_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+   "input_commit": "1214c3807ca9adfc5aa95b01f2a0e1d5a7699526",
+   "note": "A0 interception 1.000 on 1000 scenarios; validity checks passed",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage3_v2/scenario_validation.json",
+    "docs/journal_v2_a1_curriculum/stage3_v2/baseline_comparison.json"
+   ],
+   "started_utc": "2026-11-02T04:04:27.554138+00:00",
+   "status": "complete"
+  },
+  "05_tests": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage3_v2/unit_test_result.json": "a9a8d391448976211f1c31f8f0e357668aa194a1f117cee7f7995d1712fcd421"
+   },
+   "completed_utc": "2026-11-02T04:04:53.541612+00:00",
+   "config_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+   "input_commit": "1214c3807ca9adfc5aa95b01f2a0e1d5a7699526",
+   "note": "targeted tests passed",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage3_v2/unit_test_result.json"
+   ],
+   "started_utc": "2026-11-02T04:04:53.537365+00:00",
+   "status": "complete"
+  },
+  "06_sb3_resume_validation": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage3_v2/resume_validation.json": "5696be1986bda5e2fa4fc7aa6f3db6c28fea492463ef6ecf0b14f6c1081892ec"
+   },
+   "completed_utc": "2026-11-02T04:45:22.936401+00:00",
+   "config_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+   "input_commit": "1214c3807ca9adfc5aa95b01f2a0e1d5a7699526",
+   "note": "interrupted == uninterrupted (state hashes, episode logs) incl. injected crash",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage3_v2/resume_validation.json"
+   ],
+   "started_utc": "2026-11-02T04:45:22.926166+00:00",
+   "status": "complete"
+  },
+  "07_seed_201_training": {
+   "accepted_model_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage3_v2/seed_201_manifest.json": "d05fa989c29d051535359ec67cf8fe256385525a6cd41303d04d7fb49e164493"
+   },
+   "completed_rollout": 3,
+   "completed_utc": "2026-11-02T04:53:47.846853+00:00",
+   "config_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+   "final_model_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+   "final_state_sha256": "dd4b87a90efdeb89c06485976e47f276604928784b87bcdf656c4d26cbd6fd44",
+   "input_commit": "1214c3807ca9adfc5aa95b01f2a0e1d5a7699526",
+   "note": "seed 201: MASTERED rollouts=3 mastery_rollout=3",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage3_v2/seed_201_manifest.json"
+   ],
+   "parent_sha256": "d70b85a6a4d068646da1319f3f44b3057dce1e5fedd1f66b28c85b4cbd55f90c",
+   "started_utc": "2026-11-02T04:45:23.079180+00:00",
+   "status": "complete"
+  },
+  "08_seed_202_training": {
+   "accepted_model_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485",
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage3_v2/seed_202_manifest.json": "d65d0aac54ddb272ca64b10de441c690b13905129825bd71c8b8894941d4c927"
+   },
+   "completed_rollout": 5,
+   "completed_utc": "2026-11-02T05:07:24.250260+00:00",
+   "config_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+   "final_model_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485",
+   "final_state_sha256": "41968158dcba287b22997b1171258c02c856b32481eb58744e81bbd990127ad2",
+   "input_commit": "1214c3807ca9adfc5aa95b01f2a0e1d5a7699526",
+   "note": "seed 202: MASTERED rollouts=5 mastery_rollout=5",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage3_v2/seed_202_manifest.json"
+   ],
+   "parent_sha256": "97a934bc2d115c4eec1a3b838fd754fd2dba93f57d91d84203aed9d7efb4d174",
+   "started_utc": "2026-11-02T04:53:48.367895+00:00",
+   "status": "complete"
+  },
+  "09_seed_203_training": {
+   "accepted_model_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage3_v2/seed_203_manifest.json": "fbbc25ffbc826b6616ab1457b7c7b2abf5e3a9aa7f1e5c598cab05411e716aac"
+   },
+   "completed_rollout": 7,
+   "completed_utc": "2026-11-02T05:25:51.256705+00:00",
+   "config_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+   "final_model_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+   "final_state_sha256": "113548c044437c7c3e1f5fda0157e4c987fdbb1ca270d9e9203bdbd3318e0728",
+   "input_commit": "1214c3807ca9adfc5aa95b01f2a0e1d5a7699526",
+   "note": "seed 203: MASTERED rollouts=7 mastery_rollout=7",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage3_v2/seed_203_manifest.json"
+   ],
+   "parent_sha256": "06993dca67b59876c65afa956bcdace905482745b58cf39c9da87d713a578cac",
+   "started_utc": "2026-11-02T05:07:24.773659+00:00",
+   "status": "complete"
+  },
+  "10_heldout_evaluation": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage3_v2/behavior_analysis.json": "de3042fe0e8161b5b91ed9235789af53a6fb6f98938d3091bd4b6e98d56e90e3",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig1_capture_vs_timesteps.pdf": "fce884a339dc322f6a456d438417499eee83a95f13a8dfad4beb056fb4cc1a8f",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig1_capture_vs_timesteps.png": "5813778ceac01dfbe45b19922007d9c606a721cbbce37e6010d09f1540b30243",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig2_interception_vs_timesteps.pdf": "2b56d2332bf499640a6135cf35884558da367b52cf7700c7dae8e85a4eac5231",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig2_interception_vs_timesteps.png": "b9ded9235e426b995df5f117be4429b615f93be64f1ce1bab2aeb157c6e98b0c",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig3_pursuit_retention_vs_timesteps.pdf": "40c293aa8aff454a8622ee2a820fd1be13c9203a932fd6765c2ba86f33297b3a",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig3_pursuit_retention_vs_timesteps.png": "bee85f98caba23c5a5f73fa1ef86e1e28d6c23df70d8d03675ec22b1ede6cdb6",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig4_static_evasion_retention_vs_timesteps.pdf": "1358005f9c24d485c8066a08ab0a1cbc3f22c99cfce2ff19dd3e4303485270b2",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig4_static_evasion_retention_vs_timesteps.png": "1bb11f5e7ea27a9ea5dab4c183e47e8c4c9b5311e0e5431abd6aebf8f8ff5971",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig5_path_excess_vs_timesteps.pdf": "edc194408ef48364dc04a344502f56024bad70ce4bdb736904e10fc45f410534",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig5_path_excess_vs_timesteps.png": "9dd0ad3a114e51c5dfd5030741e64a9825cdc283792347c2071c9570861161e1",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig6_trajectory_a0_vs_a1_203.pdf": "0c209b53c2ee0dfe86c49bd0959c0aa934a67225c6ef7fb558410bdbbe013844",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig6_trajectory_a0_vs_a1_203.png": "be4454927fc569873394b980d692256cd7891e154a433562df772f8a5cbeb466",
+    "docs/journal_v2_a1_curriculum/stage3_v2/final_evaluation.json": "6db2e30bcfdcb1b1797fe102bfb1436da94f70a5f687516d832a6021db6bd844",
+    "docs/journal_v2_a1_curriculum/stage3_v2/generalization_diagnostic.json": "1cce3c5be8ccbfe60149d3e267f055fc376776ea204d2b0cb1231ef81da5299c",
+    "docs/journal_v2_a1_curriculum/stage3_v2/stage3_v2_decision.json": "1e616a49dbd24a7882720a388cf51126839e2da62650bfd7604b17e814d52711"
+   },
+   "completed_utc": "2026-11-02T06:24:36.752528+00:00",
+   "config_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+   "input_commit": "1214c3807ca9adfc5aa95b01f2a0e1d5a7699526",
+   "note": "stage3_v2_pass=True mastered=[201, 202, 203] (3/3); held-out capture 83.5/82.5/86.5%",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage3_v2/final_evaluation.json",
+    "docs/journal_v2_a1_curriculum/stage3_v2/behavior_analysis.json",
+    "docs/journal_v2_a1_curriculum/stage3_v2/generalization_diagnostic.json",
+    "docs/journal_v2_a1_curriculum/stage3_v2/stage3_v2_decision.json",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig1_capture_vs_timesteps.png",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig1_capture_vs_timesteps.pdf",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig2_interception_vs_timesteps.png",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig2_interception_vs_timesteps.pdf",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig3_pursuit_retention_vs_timesteps.png",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig3_pursuit_retention_vs_timesteps.pdf",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig4_static_evasion_retention_vs_timesteps.png",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig4_static_evasion_retention_vs_timesteps.pdf",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig5_path_excess_vs_timesteps.png",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig5_path_excess_vs_timesteps.pdf",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig6_trajectory_a0_vs_a1_203.png",
+    "docs/journal_v2_a1_curriculum/stage3_v2/figures/fig6_trajectory_a0_vs_a1_203.pdf"
+   ],
+   "started_utc": "2026-11-02T06:24:36.739204+00:00",
+   "status": "complete"
+  },
+  "11_visualizer_manual_recordings": {
+   "completed_utc": "2026-11-02T06:24:37.474730+00:00",
+   "input_commit": "1214c3807ca9adfc5aa95b01f2a0e1d5a7699526",
+   "reason": "recordings, review IDs A1-CUR3V2-201/202/203 and cases live in the visualizer repository (visualizer/review/stage3v2_review_shortlist.json) and are built AFTER the research commit so the replays carry the final research commit; see the visualizer commit",
+   "status": "not_applicable"
+  },
+  "12_stage4_handoff": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage3_v2/stage4_handoff.json": "9fffe2884394f35fd8b0809d2fd8fa487b486473a7376599c9c686e403f29fcb"
+   },
+   "completed_utc": "2026-11-02T06:24:38.111261+00:00",
+   "config_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+   "input_commit": "1214c3807ca9adfc5aa95b01f2a0e1d5a7699526",
+   "note": "handoff written: quantitatively accepted, pending manual review; Stage 4 not started",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage3_v2/stage4_handoff.json"
+   ],
+   "started_utc": "2026-11-02T06:24:37.599794+00:00",
+   "status": "complete"
+  },
+  "13_manuscript_documentation": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage3_v2/README.md": "f57ad6107f54ec33bc0924549b61fe303f7fada7e55a6050b47c7d82044004e6",
+    "docs/journal_v2_a1_curriculum/stage3_v2/ablation_record_v9.md": "531f476f27cefdcbc42b5074049f99b93b3d27c02061c596668a852304a4e008",
+    "docs/journal_v2_a1_curriculum/stage3_v2/checkpoint_integrity.json": "2fc52e04f4acab36f7f2386786b2863d332485f9d00174e1b4c31620eb74adaf",
+    "docs/journal_v2_a1_curriculum/stage3_v2/manuscript_notes.md": "3e52178aa0c9b2ed569aae76b7f3b76bd7ad3ed24ede138e5ffc3bb00e65626b",
+    "docs/journal_v2_a1_curriculum/stage3_v2/regression_summary.json": "3f594028ccd26884b44248a11942e36d22d1d906e3ad6ef5f819835166435ffb",
+    "docs/journal_v2_a1_curriculum/stage3_v2/rollout_results.md": "f93bb7d7b2e9ed65b4e3f97527c415c2d4b0cccacdcff65d529bcb4977a52b27"
+   },
+   "completed_utc": "2026-11-02T06:24:38.296230+00:00",
+   "config_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+   "input_commit": "1214c3807ca9adfc5aa95b01f2a0e1d5a7699526",
+   "note": "README, manuscript notes, ablation v9, rollout tables, regression 1043 passed, checkpoint integrity",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage3_v2/README.md",
+    "docs/journal_v2_a1_curriculum/stage3_v2/manuscript_notes.md",
+    "docs/journal_v2_a1_curriculum/stage3_v2/ablation_record_v9.md",
+    "docs/journal_v2_a1_curriculum/stage3_v2/rollout_results.md",
+    "docs/journal_v2_a1_curriculum/stage3_v2/regression_summary.json",
+    "docs/journal_v2_a1_curriculum/stage3_v2/checkpoint_integrity.json"
+   ],
+   "started_utc": "2026-11-02T06:24:38.289767+00:00",
+   "status": "complete"
+  },
+  "14_commit_push": {
+   "artifact_sha256": {
+    "docs/journal_v2_a1_curriculum/stage3_v2/protocol.json": "c7b6aab027c277cf66232435e5e96fbfc500e4038e0d0a73a710ea80e71b77c8"
+   },
+   "completed_utc": "2026-11-02T06:24:38.743246+00:00",
+   "config_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+   "input_commit": "1214c3807ca9adfc5aa95b01f2a0e1d5a7699526",
+   "note": "commit/push recorded in git history (a commit SHA cannot be self-referential); no tag created (pending manual review)",
+   "output_artifacts": [
+    "docs/journal_v2_a1_curriculum/stage3_v2/protocol.json"
+   ],
+   "started_utc": "2026-11-02T06:24:38.730776+00:00",
+   "status": "complete"
+  }
+ },
+ "task": "journal_v2_a1_curriculum/stage3_v2",
+ "updated_utc": "2026-11-02T06:24:38.796537+00:00"
+}

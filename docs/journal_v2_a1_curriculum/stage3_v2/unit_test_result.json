@@ -1,0 +1,18 @@
+{
+ "file": "tests/test_journal_v2_a1_cur3v2.py",
+ "passed": 32,
+ "failed": 0,
+ "covers": [
+  "canonical detection radius 15 m / config identical to Stage-2 (hold lives in the wrapper); no namespace overlaps",
+  "hold state: defender position exactly fixed, velocity/acceleration/command zero before release (including the detection transition step)",
+  "release at the first canonical detection (true 3-D distance <= 15 m), sticky, never reverts; first controller step = detection step + 1; zero velocity at release",
+  "after release the unmodified Greedy action drives the unmodified constrained defender dynamics (canonical _move_defender equivalence, speed/acceleration limits)",
+  "Greedy action == pure pursuit of the measurement; policy class unmodified; without hold the wrapper reproduces Stage3-v1 escort exactly",
+  "placement == unchanged Stage-2 nominal-path placement; observation is the unchanged 37-D canonical gate with no release information",
+  "deterministic replay; namespaces fresh/disjoint (149000-149999 rejected); gate identical to Stage3-v1 incl. boundary cases",
+  "seed decision (mastery, pursuit retention, static-evasion retention, ties); scenario-validation verdict rules; sampled validation passes validity rules",
+  "Stage2-v2 rollout-16 parents are the pre-registered provisional checkpoints; parent initialisation copies actor/critic/log_std with a fresh optimizer",
+  "protocol documents exactly one conceptual change; rollouts of another protocol are never accepted; 14-stage task state + isolated output namespace",
+  "real-SB3: interrupted (with injected crash between model write and manifest, dead-PID lock) == uninterrupted run (state hashes and episode logs)"
+ ]
+}

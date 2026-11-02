@@ -1,0 +1,125 @@
+{
+  "protocol_sha256": "c4a7edbef9d862defb4cf7001a17e1d640d03a169e74f25eaac0b43434006dd5",
+  "scenario_protocol": "a1_cur3_moving_greedy_nominal_path_v1",
+  "seeds": [
+    153000,
+    153999
+  ],
+  "required_a0_interception": [
+    0.6,
+    1.0
+  ],
+  "verdict": "STOP_TASK_TOO_EASY",
+  "summary": {
+    "scenarios": 1000,
+    "a0_interception_fraction": 0.0,
+    "a0_capture_fraction": 1.0,
+    "a0_other_fraction": 0.0,
+    "a0_outcomes": {
+      "soldier_caught": 1000
+    },
+    "a0_episode_duration_s": {
+      "min": 4.5,
+      "p5": 4.5,
+      "median": 5.5,
+      "mean": 5.5845,
+      "p95": 6.5,
+      "max": 8.0
+    },
+    "a0_defender_visible_s_before_interception": null,
+    "a0_first_visible_step_of_intercepted": null,
+    "defender_visible_at_start_fraction": 0.235,
+    "a0_min_defender_separation_m": {
+      "min": 6.1061553955078125,
+      "p5": 13.250645160675049,
+      "median": 25.057141304016113,
+      "mean": 24.708936172485352,
+      "p95": 36.78531761169433,
+      "max": 45.768165588378906
+    },
+    "heading_bin_breakdown": {
+      "0-15": {
+        "n": 162,
+        "a0_interception": 0.0,
+        "a0_capture": 1.0
+      },
+      "15-30": {
+        "n": 154,
+        "a0_interception": 0.0,
+        "a0_capture": 1.0
+      },
+      "30-45": {
+        "n": 166,
+        "a0_interception": 0.0,
+        "a0_capture": 1.0
+      },
+      "45-60": {
+        "n": 184,
+        "a0_interception": 0.0,
+        "a0_capture": 1.0
+      },
+      "60-75": {
+        "n": 155,
+        "a0_interception": 0.0,
+        "a0_capture": 1.0
+      },
+      "75-90": {
+        "n": 179,
+        "a0_interception": 0.0,
+        "a0_capture": 1.0
+      }
+    },
+    "attacker_asset_distance_m": {
+      "min": 51.13988603103875,
+      "p5": 52.40542424355627,
+      "median": 59.573968396015516,
+      "mean": 60.937336679784764,
+      "p95": 72.15285079867711,
+      "max": 76.47657824167139
+    },
+    "defender_along_track_fraction": {
+      "min": 0.35021597377563984,
+      "p5": 0.36456690491024996,
+      "median": 0.5036912582128447,
+      "mean": 0.5029123139647405,
+      "p95": 0.6353676978512203,
+      "max": 0.6497984801897487
+    },
+    "defender_perpendicular_offset_m": {
+      "min": 0.0009130776658156647,
+      "p5": 0.06006918060410937,
+      "median": 0.7410967957466712,
+      "mean": 0.7378267146700243,
+      "p95": 1.395588145163277,
+      "max": 1.4982277696986002
+    },
+    "defender_initial_distance_to_attacker_m": {
+      "min": 17.713978499653432,
+      "p5": 20.604693856083614,
+      "median": 29.313616091939245,
+      "mean": 29.671476658262836,
+      "p95": 40.27075914271861,
+      "max": 46.017455487984066
+    },
+    "defender_max_speed_mps": {
+      "min": 12.572947465593703,
+      "p5": 14.031844513056452,
+      "median": 16.91388835970559,
+      "mean": 16.338713050464104,
+      "p95": 18.00000036386371,
+      "max": 18.00000086960144
+    },
+    "defender_speed_at_first_visibility_mps": {
+      "min": 0.0,
+      "p5": 0.0,
+      "median": 3.9999998995494854,
+      "mean": 2.9966167074253947,
+      "p95": 8.082180180269741,
+      "max": 12.058071581051786
+    },
+    "placement_attempts_max": 1,
+    "nonfinite_episodes": 0,
+    "immediate_contact_episodes_steps_le_1": 0,
+    "min_steps": 9
+  }
+}

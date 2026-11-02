@@ -1,0 +1,220 @@
+{
+ "detection_radius_m": 15.0,
+ "deterministic_replay_first_50": true,
+ "note": "examined the A0 baseline before PPO training only; the immediate-contact criterion was defined as 'episode ends within 1 step of reset / < 2 policy decisions with the defender in the 25 m gate' (interceptions within 1 step after release are inherent in the geometry and reported informationally)",
+ "protocol_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+ "scenario_protocol": "a1_cur3v2_hold_until_detection_greedy_v1",
+ "seeds": [
+  157000,
+  157999
+ ],
+ "summary": {
+  "a0_capture_fraction": 0.0,
+  "a0_episode_duration_s": {
+   "max": 4.5,
+   "mean": 2.5895,
+   "median": 2.5,
+   "min": 1.5,
+   "p5": 1.5,
+   "p95": 3.5
+  },
+  "a0_interception_fraction": 1.0,
+  "a0_min_defender_separation_m": {
+   "max": 2.5000038146972656,
+   "mean": 2.5000000257492063,
+   "median": 2.5,
+   "min": 2.4999961853027344,
+   "p5": 2.4999985575675963,
+   "p95": 2.5000016689300537
+  },
+  "a0_other_fraction": 0.0,
+  "a0_outcomes": {
+   "intercepted": 1000
+  },
+  "a0_timeout_fraction": 0.0,
+  "attacker_asset_distance_m": {
+   "max": 76.3658177659502,
+   "mean": 61.36676313186119,
+   "median": 60.24694442624249,
+   "min": 51.21438406444942,
+   "p5": 52.80699286378522,
+   "p95": 72.07472313770658
+  },
+  "defender_along_track_fraction": {
+   "max": 0.6490510765770543,
+   "mean": 0.5005689351049928,
+   "median": 0.49870584508536386,
+   "min": 0.35006624470389136,
+   "p5": 0.36264564628863444,
+   "p95": 0.6346140615784746
+  },
+  "defender_initial_distance_to_attacker_m": {
+   "max": 47.213160492049774,
+   "mean": 29.7337820827616,
+   "median": 29.39659125115059,
+   "min": 17.55321076630168,
+   "p5": 20.689832595832026,
+   "p95": 39.900559274019585
+  },
+  "defender_max_speed_mps": {
+   "max": 7.999982480389165,
+   "mean": 7.280533840925793,
+   "median": 7.927887436864019,
+   "min": 3.9999998496065574,
+   "p5": 3.9999999663338768,
+   "p95": 7.996869116915657
+  },
+  "defender_perpendicular_offset_m": {
+   "max": 1.4991344861253466,
+   "mean": 0.7586584334077897,
+   "median": 0.7553581843789892,
+   "min": 0.004141465353163454,
+   "p5": 0.08672965091460809,
+   "p95": 1.4207318799171778
+  },
+  "defender_speed_at_closest_approach_mps": {
+   "max": 7.999982480389165,
+   "mean": 7.280533840925793,
+   "median": 7.927887436864019,
+   "min": 3.9999998496065574,
+   "p5": 3.9999999663338768,
+   "p95": 7.996869116915657
+  },
+  "defender_speed_at_detection_mps": {
+   "max": 0.0,
+   "mean": 0.0,
+   "median": 0.0,
+   "min": 0.0,
+   "p5": 0.0,
+   "p95": 0.0
+  },
+  "defender_speed_at_release_mps": {
+   "max": 0.0,
+   "mean": 0.0,
+   "median": 0.0,
+   "min": 0.0,
+   "p5": 0.0,
+   "p95": 0.0
+  },
+  "defender_vel_toward_attacker_at_detection_mps": {
+   "max": 0.0,
+   "mean": 0.0,
+   "median": 0.0,
+   "min": 0.0,
+   "p5": 0.0,
+   "p95": 0.0
+  },
+  "defender_visible_at_start_fraction": 0.241,
+  "detected_fraction": 1.0,
+  "detection_time_s": {
+   "max": 3.5,
+   "mean": 1.6685,
+   "median": 1.5,
+   "min": 0.5,
+   "p5": 1.0,
+   "p95": 2.5
+  },
+  "first_controller_action_time_s": {
+   "max": 4.0,
+   "mean": 2.1685,
+   "median": 2.0,
+   "min": 1.0,
+   "p5": 1.5,
+   "p95": 3.0
+  },
+  "heading_bin_breakdown": {
+   "0-15": {
+    "a0_capture": 0.0,
+    "a0_interception": 1.0,
+    "n": 187
+   },
+   "15-30": {
+    "a0_capture": 0.0,
+    "a0_interception": 1.0,
+    "n": 165
+   },
+   "30-45": {
+    "a0_capture": 0.0,
+    "a0_interception": 1.0,
+    "n": 158
+   },
+   "45-60": {
+    "a0_capture": 0.0,
+    "a0_interception": 1.0,
+    "n": 165
+   },
+   "60-75": {
+    "a0_capture": 0.0,
+    "a0_interception": 1.0,
+    "n": 164
+   },
+   "75-90": {
+    "a0_capture": 0.0,
+    "a0_interception": 1.0,
+    "n": 161
+   }
+  },
+  "interception_steps_after_release": {
+   "max": 2.0,
+   "mean": 1.842,
+   "median": 2.0,
+   "min": 1.0,
+   "p5": 1.0,
+   "p95": 2.0
+  },
+  "placement_attempts_max": 1,
+  "release_time_s": {
+   "max": 3.5,
+   "mean": 1.6685,
+   "median": 1.5,
+   "min": 0.5,
+   "p5": 1.0,
+   "p95": 2.5
+  },
+  "scenarios": 1000,
+  "time_release_to_capture_s": null,
+  "time_release_to_interception_s": {
+   "max": 1.0,
+   "mean": 0.921,
+   "median": 1.0,
+   "min": 0.5,
+   "p5": 0.5,
+   "p95": 1.0
+  },
+  "validity": {
+   "defender_initial_distance_min_m": 17.55321076630168,
+   "episodes_never_detected": 0,
+   "episodes_steps_le_1": 0,
+   "intercepted_with_fewer_than_2_visible_decisions": 0,
+   "interceptions_within_1_step_of_release_informational": 158,
+   "max_defender_displacement_before_release_m": 0.0,
+   "max_defender_speed_at_release_mps": 0.0,
+   "min_steps": 3,
+   "nonfinite_episodes": 0,
+   "policy_decisions_with_defender_visible_before_interception": {
+    "max": 6.0,
+    "mean": 3.668,
+    "median": 4.0,
+    "min": 3.0,
+    "p5": 3.0,
+    "p95": 4.0
+   },
+   "released_episodes": 1000,
+   "released_episodes_where_greedy_moved_defender": 1000,
+   "released_episodes_with_time_after_release": 1000
+  }
+ },
+ "verdict": {
+  "checks": {
+   "a0_interception_in_range": true,
+   "defender_fixed_before_release": true,
+   "defender_velocity_at_release_zero": true,
+   "greedy_takes_over_after_release": true,
+   "no_immediate_contact_degeneracy": true,
+   "no_nonfinite_state": true
+  },
+  "passed": true,
+  "stop_rule": "A0 interception in [0.7, 1.0]; < 0.7 => STOP",
+  "too_easy": false
+ }
+}
