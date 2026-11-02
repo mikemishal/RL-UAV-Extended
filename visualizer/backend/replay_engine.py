@@ -183,6 +183,7 @@ def _research_modules(root: Path) -> dict[str, object]:
         "experiments.journal_v2_a1_cur1v2",
         "experiments.journal_v2_a1_cur2",
         "experiments.journal_v2_a1_cur3v2",
+        "experiments.post_detection_diagnostic_protocol",
         "experiments.lead_residual_diagnostic_protocol",
         "experiments.clutter_benchmark_protocol",
     )

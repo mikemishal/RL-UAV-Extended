@@ -173,6 +173,15 @@ def test_committed_shortlist_is_complete_verified_and_prioritised():
             assert v["replay_sha256"].startswith(EXPECTED_SHA_PREFIX[r["model_seed"]]) and v["replay_sha256"] == v["manifest_sha256"]
 
 
+def test_research_module_list_keeps_every_module_the_defender_catalog_needs_and_adds_stage3v2():
+    import inspect
+
+    source = inspect.getsource(E._research_modules)
+    for name in ("experiments.post_detection_diagnostic_protocol", "experiments.lead_residual_diagnostic_protocol", "experiments.clutter_benchmark_protocol",
+                 "experiments.journal_v2_a1_cur2", "experiments.journal_v2_a1_cur3v2"):
+        assert f'"{name}"' in source
+
+
 def _sim_env():
     root, python = os.environ.get("VISUALIZER_RESEARCH_DATA_ROOT"), os.environ.get("VISUALIZER_SIMULATION_PYTHON")
     if not root or not python:
@@ -187,6 +196,21 @@ def _worker(python, root, code):
     result = subprocess.run([python, "-c", code], capture_output=True, text=True, env=env, cwd=REPO, timeout=900)
     assert result.returncode == 0, result.stderr[-2000:]
     return json.loads(result.stdout.strip().splitlines()[-1])
+
+
+def test_real_catalog_lists_the_stage3v2_review_attackers_as_available_with_the_pinned_commit():
+    python, root = _sim_env()
+    out = subprocess.run([python, "-m", "visualizer.backend.catalog_cli"], capture_output=True, text=True, cwd=REPO, timeout=900,
+                         env={**os.environ, "VISUALIZER_RESEARCH_DATA_ROOT": root, "VISUALIZER_SIMULATION_PYTHON": python, "PYTHONPATH": str(REPO)})
+    assert out.returncode == 0, out.stderr[-2000:]
+    catalog = json.loads(out.stdout.strip().splitlines()[-1])
+    assert catalog["source_commit"] == E.EXPECTED_RESEARCH_COMMIT
+    by_id = {a["attacker_id"]: a for a in catalog["attackers"]}
+    for attacker, seed in REVIEW3_ATTACKER_SEEDS.items():
+        entry = by_id[attacker]
+        assert entry["available"] and entry["checkpoint_sha256"].startswith(EXPECTED_SHA_PREFIX[seed]) and entry["architecture"] == "a1_cur3v2_review" and "PROVISIONAL" in entry["display_name"]
+    assert by_id[REVIEW3_A0_REFERENCE]["available"] and by_id[REVIEW3_A0_REFERENCE]["classification"] == "scripted"
+    assert {"greedy", "kalman_greedy", "pn", "lead"} <= {d["policy_id"] for d in catalog["defenders"]}
 
 
 def test_real_replays_hold_then_release_the_defender_and_match_the_research_run():
