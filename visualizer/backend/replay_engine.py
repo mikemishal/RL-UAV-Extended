@@ -56,7 +56,7 @@ from .replay_contract import (
 from .replay_validation import validate_trace as _validate_trace
 
 logger = logging.getLogger(__name__)
-EXPECTED_RESEARCH_COMMIT = "b94659dd554b82d3726255aaff6f9718cf92198b"  # research HEAD: curriculum Stage-2 evidence (static-defender evasion, FAILED 0/3; no curriculum Stage-2 IDs registered) on top of Stage-1-v2 BC (A1-BC1-*) and journal-v2-a1-training-protocol-v1 (A0 canonical: bdbee45)
+EXPECTED_RESEARCH_COMMIT = "1214c3807ca9adfc5aa95b01f2a0e1d5a7699526"  # research HEAD: curriculum Stage2-v2 budget-extension evidence (0/3 mastered; no Stage-2 IDs registered) on top of Stage-2 v1, Stage-1-v2 BC (A1-BC1-*) and journal-v2-a1-training-protocol-v1 (A0 canonical: bdbee45)
 REGISTRY_RELATIVE_PATH = "results/defender_adaptation_model_registry.json"
 # Canonical-V2 A1 campaign registry written by the research repository after training (never inferred).
 V2_A1_RESULTS_RELATIVE = "results/journal_v2_corrected_semantics/a1_training/a1_v2_training_v1"
