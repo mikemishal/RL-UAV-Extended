@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ReplayPlayback } from './ReplayPlayback';
 import type { PlaybackReadout } from './ReplayPlayback';
 import { PolicyInspector } from './PolicyDiagnostics';
@@ -50,9 +50,12 @@ function queryPreset() {
   const seed = params.get('seed');
   const defender = params.get('defender');
   const attacker = params.get('attacker');
+  const replay = params.get('replay');
   return {
+    // A recorded replay (opaque 32-hex id) to open on load, e.g. ?replay=<id>; ignored unless it is in the validated replay list.
+    replay: replay && /^[0-9a-f]{32}$/.test(replay) ? replay : null,
     // Attacker ids are validated against the catalog (available attackers only); unknown values are ignored.
-    attacker: attacker && /^(A0|A1-20[123](-V2)?|A1-BC1-20[123])$/.test(attacker) ? attacker : null,
+    attacker: attacker && /^(A0|A1-20[123](-V2)?|A1-BC1-20[123]|A1-CUR2V2-20[123]-REVIEW|A0-CUR2V2-REFERENCE)$/.test(attacker) ? attacker : null,
     semantics: (semantics === 'V1' || semantics === 'V2' ? semantics : 'V1') as Semantics,
     clutter: clutter && ['C0', 'C1', 'C2', 'C3'].includes(clutter) ? clutter : 'C0',
     seed: seed && /^\d+$/.test(seed) ? seed : '0',
@@ -459,6 +462,17 @@ export function App() {
   useEffect(() => {
     if (!recordedReplayId && replays[0]) setRecordedReplayId(replays[0].replay_id);
   }, [recordedReplayId, replays]);
+
+  const presetReplayApplied = useRef(false);
+  useEffect(() => {
+    const id = queryPreset().replay;
+    if (!id || presetReplayApplied.current || !replays.some(item => item.replay_id === id)) return;
+    presetReplayApplied.current = true;
+    setRecordedReplayId(id);
+    setViewMode('single');
+    selectReplay(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [replays]);
 
   const availableDefenders = catalog?.defenders.filter(item => item.available) ?? [];
   const defender = availableDefenders.find(item => item.policy_id === defenderId) ?? availableDefenders[0];

@@ -1,0 +1,710 @@
+{
+ "label": "Stage2-v2 REVIEW \u2014 NOT MASTERED / NON-CANONICAL",
+ "scientific_status": "NOT MASTERED / NON-CANONICAL; no scientific status changed",
+ "research_commit": "1214c3807ca9adfc5aa95b01f2a0e1d5a7699526",
+ "environment": "exact research Stage-2 scenario: V2, C0, stationary asset, stationary ACTIVE defender placed on A0's nominal path, 37-D observation, continuous 3-D action",
+ "recordings": [
+  {
+   "attacker": "A1-CUR2V2-201-REVIEW",
+   "model_seed": 201,
+   "evaluation_seed": 147149,
+   "kind": "representative_high_quality_success",
+   "title": "Seed 201 \u2014 representative HIGH-QUALITY successful evasion",
+   "high_quality": true,
+   "priority": 1,
+   "recording_name": "replay-147149-passive-analytical-A1-CUR2V2-201-REVIEW-C0",
+   "replay_id": "ff5a2c388c131b2a0a1856a5155c3bf0",
+   "replay_file": "visualizer/data/local/replay-147149-passive-analytical-A1-CUR2V2-201-REVIEW-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "trajectory_within_tolerance": true,
+     "defender_position_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "defender_position_difference_m": 0.0,
+    "replay_path_excess": 1.01979635765933,
+    "research_path_excess": 1.0197963557204117,
+    "replay_sha256": "d70b85a6a4d068646da1319f3f44b3057dce1e5fedd1f66b28c85b4cbd55f90c",
+    "research_sha256": "d70b85a6a4d068646da1319f3f44b3057dce1e5fedd1f66b28c85b4cbd55f90c",
+    "manifest_sha256": "d70b85a6a4d068646da1319f3f44b3057dce1e5fedd1f66b28c85b4cbd55f90c"
+   },
+   "stats": {
+    "outcome": "soldier_caught",
+    "steps": 10,
+    "duration_s": 5.0,
+    "path_excess": 1.01979635765933,
+    "closest_defender_separation_m": 3.248956168331613,
+    "defender_first_visible_step": 0,
+    "defender_position_m": [
+     -3.1491825580596924,
+     29.260656356811523,
+     4.302806854248047
+    ],
+    "initial_attacker_position_m": [
+     -5.438667297363281,
+     50.0,
+     11.465466499328613
+    ]
+   },
+   "what_to_look_for": "Stage2-v2 REVIEW \u2014 NOT MASTERED / NON-CANONICAL\nShowcase case (clear pre-gate pursuit, reactive deviation, return to pursuit, efficient path, comfortable separation). Use it as the reference for what the policy does when it works.\n\nFacts (research analysis):\n- The defender is inside the 25 m information gate from step 0 (t = 0.0 s) \u2014 i.e. already at the start.\n- Closest defender approach at step 5 (t = 2.5 s), separation 3.25 m (A0: exactly 2.5 m = contact); passes left of the defender; max lateral deviation from the initial chord 3.1 m, vertical 2.2 m.\n- First >10\u00b0 departure from the Stage-1 BC direction at step 0 (defender distance 22.1 m).\n- After the closest approach the mean cosine toward the asset is 0.989; path-excess 1.020.\n\nWhat to look for:\n1. Before the defender becomes visible (inside the 25 m information gate), does A1 fly toward the asset normally (no early swerving)?\n2. Does it deviate only AFTER defender information becomes available?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m)?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours?",
+   "case_id": "bb5bc9d5236848f78249cb8599665ffc",
+   "order": 1,
+   "url": "http://127.0.0.1:5173/?replay=ff5a2c388c131b2a0a1856a5155c3bf0",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=passive&attacker=A1-CUR2V2-201-REVIEW&seed=147149"
+  },
+  {
+   "attacker": "A1-CUR2V2-203-REVIEW",
+   "model_seed": 203,
+   "evaluation_seed": 147145,
+   "kind": "representative_high_quality_success",
+   "title": "Seed 203 \u2014 representative HIGH-QUALITY successful evasion",
+   "high_quality": true,
+   "priority": 2,
+   "recording_name": "replay-147145-passive-analytical-A1-CUR2V2-203-REVIEW-C0",
+   "replay_id": "93844ff11116e7ead6abf89c885f0e52",
+   "replay_file": "visualizer/data/local/replay-147145-passive-analytical-A1-CUR2V2-203-REVIEW-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "trajectory_within_tolerance": true,
+     "defender_position_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "defender_position_difference_m": 0.0,
+    "replay_path_excess": 1.018527953929512,
+    "research_path_excess": 1.018527957363031,
+    "replay_sha256": "06993dca67b59876c65afa956bcdace905482745b58cf39c9da87d713a578cac",
+    "research_sha256": "06993dca67b59876c65afa956bcdace905482745b58cf39c9da87d713a578cac",
+    "manifest_sha256": "06993dca67b59876c65afa956bcdace905482745b58cf39c9da87d713a578cac"
+   },
+   "stats": {
+    "outcome": "soldier_caught",
+    "steps": 11,
+    "duration_s": 5.5,
+    "path_excess": 1.018527953929512,
+    "closest_defender_separation_m": 5.511358390543143,
+    "defender_first_visible_step": 2,
+    "defender_position_m": [
+     -17.59756088256836,
+     -22.95758628845215,
+     7.967007160186768
+    ],
+    "initial_attacker_position_m": [
+     -37.67811965942383,
+     -50.0,
+     18.986833572387695
+    ]
+   },
+   "what_to_look_for": "Stage2-v2 REVIEW \u2014 NOT MASTERED / NON-CANONICAL\nShowcase case (clear pre-gate pursuit, reactive deviation, return to pursuit, efficient path, comfortable separation). Use it as the reference for what the policy does when it works.\n\nFacts (research analysis):\n- The defender is inside the 25 m information gate from step 2 (t = 1.0 s); before that A1 sees no defender features.\n- Closest defender approach at step 6 (t = 3.0 s), separation 5.51 m (A0: exactly 2.5 m = contact); passes right of the defender; max lateral deviation from the initial chord 5.5 m, vertical 2.2 m.\n- First >10\u00b0 departure from the Stage-1 BC direction at step 2 (defender distance 24.4 m).\n- After the closest approach the mean cosine toward the asset is 0.994; path-excess 1.019.\n\nWhat to look for:\n1. Before the defender becomes visible (inside the 25 m information gate), does A1 fly toward the asset normally (no early swerving)?\n2. Does it deviate only AFTER defender information becomes available?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m)?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours?",
+   "case_id": "19b72c3741f34096972847f46ae420ae",
+   "order": 2,
+   "url": "http://127.0.0.1:5173/?replay=93844ff11116e7ead6abf89c885f0e52",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=passive&attacker=A1-CUR2V2-203-REVIEW&seed=147145"
+  },
+  {
+   "attacker": "A1-CUR2V2-203-REVIEW",
+   "model_seed": 203,
+   "evaluation_seed": 147007,
+   "kind": "interception_failure",
+   "title": "Seed 203 \u2014 INTERCEPTION failure (largest attempted evasion)",
+   "priority": 3,
+   "recording_name": "replay-147007-passive-analytical-A1-CUR2V2-203-REVIEW-C0",
+   "replay_id": "7da7770775975b634ce04d2ef50ec9d8",
+   "replay_file": "visualizer/data/local/replay-147007-passive-analytical-A1-CUR2V2-203-REVIEW-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "trajectory_within_tolerance": true,
+     "defender_position_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "defender_position_difference_m": 0.0,
+    "replay_path_excess": 1.0679763516895386,
+    "research_path_excess": 1.0679763340843633,
+    "replay_sha256": "06993dca67b59876c65afa956bcdace905482745b58cf39c9da87d713a578cac",
+    "research_sha256": "06993dca67b59876c65afa956bcdace905482745b58cf39c9da87d713a578cac",
+    "manifest_sha256": "06993dca67b59876c65afa956bcdace905482745b58cf39c9da87d713a578cac"
+   },
+   "stats": {
+    "outcome": "intercepted",
+    "steps": 6,
+    "duration_s": 3.0,
+    "path_excess": 1.0679763516895386,
+    "closest_defender_separation_m": 2.4999998446308336,
+    "defender_first_visible_step": 1,
+    "defender_position_m": [
+     -12.061592102050781,
+     -23.938446044921875,
+     14.915358543395996
+    ],
+    "initial_attacker_position_m": [
+     -15.673627853393555,
+     -50.0,
+     27.123933792114258
+    ]
+   },
+   "what_to_look_for": "Stage2-v2 REVIEW \u2014 NOT MASTERED / NON-CANONICAL\nFailure case: use it to understand how the remaining \u2248 10% of scenarios fail.\n\nFacts (research analysis):\n- The defender is inside the 25 m information gate from step 1 (t = 0.5 s); before that A1 sees no defender features.\n- Interception failure: the policy reacted (max displacement 5.8 m from its no-defender path) but still entered the 2.5 m interception radius. Look at whether the dodge was too late, too small, or in a direction that stays inside the radius.\n\nWhat to look for:\n1. Before the defender becomes visible (inside the 25 m information gate), does A1 fly toward the asset normally (no early swerving)?\n2. Does it deviate only AFTER defender information becomes available?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m)?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours?",
+   "case_id": "4f60e2b9cb1c4fbcab43bdacd2920a0f",
+   "order": 3,
+   "url": "http://127.0.0.1:5173/?replay=7da7770775975b634ce04d2ef50ec9d8",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=passive&attacker=A1-CUR2V2-203-REVIEW&seed=147007"
+  },
+  {
+   "attacker": "A0-CUR2V2-REFERENCE",
+   "model_seed": null,
+   "evaluation_seed": 147149,
+   "kind": "matched_a0_reference",
+   "title": "Matched canonical A0 reference (same scenario as the seed-201 high-quality success, 147149)",
+   "priority": 4,
+   "recording_name": "replay-147149-passive-analytical-A0-CUR2V2-REFERENCE-C0",
+   "replay_id": "7e6cced512d8d2c1484db16b14204082",
+   "replay_file": "visualizer/data/local/replay-147149-passive-analytical-A0-CUR2V2-REFERENCE-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "trajectory_within_tolerance": true,
+     "defender_position_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "defender_position_difference_m": 0.0,
+    "replay_path_excess": 1.0246035537893257,
+    "research_path_excess": 1.0246035498292938,
+    "replay_sha256": null,
+    "research_sha256": null,
+    "manifest_sha256": null
+   },
+   "stats": {
+    "outcome": "intercepted",
+    "steps": 5,
+    "duration_s": 2.5,
+    "path_excess": 1.0246035537893257,
+    "closest_defender_separation_m": 2.4999998970970845,
+    "defender_first_visible_step": 0,
+    "defender_position_m": [
+     -3.1491825580596924,
+     29.260656356811523,
+     4.302806854248047
+    ],
+    "initial_attacker_position_m": [
+     -5.438667297363281,
+     50.0,
+     11.465466499328613
+    ]
+   },
+   "what_to_look_for": "Stage2-v2 REVIEW \u2014 NOT MASTERED / NON-CANONICAL\nReference: the scripted attacker that the learned policies are being compared against.\n\nFacts (research analysis):\n- The defender is inside the 25 m information gate from step 0 (t = 0.0 s) \u2014 i.e. already at the start.\n- Canonical A0 flies straight at the asset, ignores the defender and is INTERCEPTED (A0 captures 0/200 in this scenario family). Compare its path with the A1 recording of the same scenario.\n\nWhat to look for:\n1. Before the defender becomes visible (inside the 25 m information gate), does A1 fly toward the asset normally (no early swerving)?\n2. Does it deviate only AFTER defender information becomes available?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m)?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours?",
+   "case_id": "4a0ae358b4a44ef7a1cbdfa4425ddf88",
+   "order": 4,
+   "url": "http://127.0.0.1:5173/?replay=7e6cced512d8d2c1484db16b14204082",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=passive&attacker=A0-CUR2V2-REFERENCE&seed=147149"
+  },
+  {
+   "attacker": "A1-CUR2V2-201-REVIEW",
+   "model_seed": 201,
+   "evaluation_seed": 147038,
+   "kind": "closest_successful_pass",
+   "title": "Seed 201 \u2014 CLOSEST successful defender pass",
+   "priority": null,
+   "recording_name": "replay-147038-passive-analytical-A1-CUR2V2-201-REVIEW-C0",
+   "replay_id": "4a05c88ea4334e6036dd2545412a6d45",
+   "replay_file": "visualizer/data/local/replay-147038-passive-analytical-A1-CUR2V2-201-REVIEW-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "trajectory_within_tolerance": true,
+     "defender_position_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "defender_position_difference_m": 0.0,
+    "replay_path_excess": 1.0384436804832051,
+    "research_path_excess": 1.03844367982274,
+    "replay_sha256": "d70b85a6a4d068646da1319f3f44b3057dce1e5fedd1f66b28c85b4cbd55f90c",
+    "research_sha256": "d70b85a6a4d068646da1319f3f44b3057dce1e5fedd1f66b28c85b4cbd55f90c",
+    "manifest_sha256": "d70b85a6a4d068646da1319f3f44b3057dce1e5fedd1f66b28c85b4cbd55f90c"
+   },
+   "stats": {
+    "outcome": "soldier_caught",
+    "steps": 10,
+    "duration_s": 5.0,
+    "path_excess": 1.0384436804832051,
+    "closest_defender_separation_m": 2.883033641158004,
+    "defender_first_visible_step": 0,
+    "defender_position_m": [
+     -1.21872079372406,
+     -30.245689392089844,
+     13.034168243408203
+    ],
+    "initial_attacker_position_m": [
+     1.0610028505325317,
+     -50.0,
+     17.844911575317383
+    ]
+   },
+   "what_to_look_for": "Stage2-v2 REVIEW \u2014 NOT MASTERED / NON-CANONICAL\nEdge case: this is the narrowest successful pass; check that the margin to the 2.5 m interception sphere is real and the maneuver is deliberate.\n\nFacts (research analysis):\n- The defender is inside the 25 m information gate from step 0 (t = 0.0 s) \u2014 i.e. already at the start.\n- Closest defender approach at step 4 (t = 2.0 s), separation 2.88 m (A0: exactly 2.5 m = contact); passes right of the defender; max lateral deviation from the initial chord 3.6 m, vertical 3.1 m.\n- First >10\u00b0 departure from the Stage-1 BC direction at step 0 (defender distance 20.5 m).\n- After the closest approach the mean cosine toward the asset is 0.949; path-excess 1.038.\n\nWhat to look for:\n1. Before the defender becomes visible (inside the 25 m information gate), does A1 fly toward the asset normally (no early swerving)?\n2. Does it deviate only AFTER defender information becomes available?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m)?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours?",
+   "case_id": "51d9c8c8c6ff4f18b72e50c4822118f6",
+   "order": 5,
+   "url": "http://127.0.0.1:5173/?replay=4a05c88ea4334e6036dd2545412a6d45",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=passive&attacker=A1-CUR2V2-201-REVIEW&seed=147038"
+  },
+  {
+   "attacker": "A1-CUR2V2-201-REVIEW",
+   "model_seed": 201,
+   "evaluation_seed": 147094,
+   "kind": "interception_failure",
+   "title": "Seed 201 \u2014 INTERCEPTION failure (largest attempted evasion)",
+   "priority": null,
+   "recording_name": "replay-147094-passive-analytical-A1-CUR2V2-201-REVIEW-C0",
+   "replay_id": "eb6c1337bcc720f952fa695180bae9b5",
+   "replay_file": "visualizer/data/local/replay-147094-passive-analytical-A1-CUR2V2-201-REVIEW-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "trajectory_within_tolerance": true,
+     "defender_position_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "defender_position_difference_m": 0.0,
+    "replay_path_excess": 1.0791829376814923,
+    "research_path_excess": 1.0791828579315634,
+    "replay_sha256": "d70b85a6a4d068646da1319f3f44b3057dce1e5fedd1f66b28c85b4cbd55f90c",
+    "research_sha256": "d70b85a6a4d068646da1319f3f44b3057dce1e5fedd1f66b28c85b4cbd55f90c",
+    "manifest_sha256": "d70b85a6a4d068646da1319f3f44b3057dce1e5fedd1f66b28c85b4cbd55f90c"
+   },
+   "stats": {
+    "outcome": "intercepted",
+    "steps": 6,
+    "duration_s": 3.0,
+    "path_excess": 1.0791829376814923,
+    "closest_defender_separation_m": 2.499998290472838,
+    "defender_first_visible_step": 1,
+    "defender_position_m": [
+     -33.85573196411133,
+     15.927894592285156,
+     7.66226053237915
+    ],
+    "initial_attacker_position_m": [
+     -50.0,
+     37.478511810302734,
+     14.299492835998535
+    ]
+   },
+   "what_to_look_for": "Stage2-v2 REVIEW \u2014 NOT MASTERED / NON-CANONICAL\nFailure case: use it to understand how the remaining \u2248 10% of scenarios fail.\n\nFacts (research analysis):\n- The defender is inside the 25 m information gate from step 1 (t = 0.5 s); before that A1 sees no defender features.\n- Interception failure: the policy reacted (max displacement 5.8 m from its no-defender path) but still entered the 2.5 m interception radius. Look at whether the dodge was too late, too small, or in a direction that stays inside the radius.\n\nWhat to look for:\n1. Before the defender becomes visible (inside the 25 m information gate), does A1 fly toward the asset normally (no early swerving)?\n2. Does it deviate only AFTER defender information becomes available?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m)?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours?",
+   "case_id": "78e19f39fed9467abbc8a4f4e8b5f82d",
+   "order": 6,
+   "url": "http://127.0.0.1:5173/?replay=eb6c1337bcc720f952fa695180bae9b5",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=passive&attacker=A1-CUR2V2-201-REVIEW&seed=147094"
+  },
+  {
+   "attacker": "A1-CUR2V2-201-REVIEW",
+   "model_seed": 201,
+   "evaluation_seed": 147071,
+   "kind": "largest_successful_detour",
+   "title": "Seed 201 \u2014 LARGEST successful detour",
+   "priority": null,
+   "recording_name": "replay-147071-passive-analytical-A1-CUR2V2-201-REVIEW-C0",
+   "replay_id": "4a80a7cbe4ec0670b4eb63bd4cde5c5a",
+   "replay_file": "visualizer/data/local/replay-147071-passive-analytical-A1-CUR2V2-201-REVIEW-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "trajectory_within_tolerance": true,
+     "defender_position_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "defender_position_difference_m": 0.0,
+    "replay_path_excess": 1.203135757249903,
+    "research_path_excess": 1.2031357645409455,
+    "replay_sha256": "d70b85a6a4d068646da1319f3f44b3057dce1e5fedd1f66b28c85b4cbd55f90c",
+    "research_sha256": "d70b85a6a4d068646da1319f3f44b3057dce1e5fedd1f66b28c85b4cbd55f90c",
+    "manifest_sha256": "d70b85a6a4d068646da1319f3f44b3057dce1e5fedd1f66b28c85b4cbd55f90c"
+   },
+   "stats": {
+    "outcome": "soldier_caught",
+    "steps": 15,
+    "duration_s": 7.5,
+    "path_excess": 1.203135757249903,
+    "closest_defender_separation_m": 7.931892915831831,
+    "defender_first_visible_step": 4,
+    "defender_position_m": [
+     15.240152359008789,
+     29.51527214050293,
+     8.356350898742676
+    ],
+    "initial_attacker_position_m": [
+     50.0,
+     44.7768669128418,
+     14.82667350769043
+    ]
+   },
+   "what_to_look_for": "Stage2-v2 REVIEW \u2014 NOT MASTERED / NON-CANONICAL\nEdge case: this is the widest successful detour; judge whether it is purposeful (clearing the defender, then returning) or an excessive/unnecessary arc.\n\nFacts (research analysis):\n- The defender is inside the 25 m information gate from step 4 (t = 2.0 s); before that A1 sees no defender features.\n- Closest defender approach at step 8 (t = 4.0 s), separation 7.93 m (A0: exactly 2.5 m = contact); passes over of the defender; max lateral deviation from the initial chord 17.7 m, vertical 8.9 m.\n- First >10\u00b0 departure from the Stage-1 BC direction at step 0 (defender distance 38.5 m).\n- After the closest approach the mean cosine toward the asset is 0.949; path-excess 1.203.\n\nWhat to look for:\n1. Before the defender becomes visible (inside the 25 m information gate), does A1 fly toward the asset normally (no early swerving)?\n2. Does it deviate only AFTER defender information becomes available?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m)?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours?",
+   "case_id": "0b98110a947349c5b3e27dec10db2fac",
+   "order": 7,
+   "url": "http://127.0.0.1:5173/?replay=4a80a7cbe4ec0670b4eb63bd4cde5c5a",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=passive&attacker=A1-CUR2V2-201-REVIEW&seed=147071"
+  },
+  {
+   "attacker": "A1-CUR2V2-202-REVIEW",
+   "model_seed": 202,
+   "evaluation_seed": 147061,
+   "kind": "closest_successful_pass",
+   "title": "Seed 202 \u2014 CLOSEST successful defender pass",
+   "priority": null,
+   "recording_name": "replay-147061-passive-analytical-A1-CUR2V2-202-REVIEW-C0",
+   "replay_id": "bb706f8281df1e870a2739a326cd40ad",
+   "replay_file": "visualizer/data/local/replay-147061-passive-analytical-A1-CUR2V2-202-REVIEW-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "trajectory_within_tolerance": true,
+     "defender_position_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "defender_position_difference_m": 0.0,
+    "replay_path_excess": 1.0408215652840376,
+    "research_path_excess": 1.0408215513901187,
+    "replay_sha256": "97a934bc2d115c4eec1a3b838fd754fd2dba93f57d91d84203aed9d7efb4d174",
+    "research_sha256": "97a934bc2d115c4eec1a3b838fd754fd2dba93f57d91d84203aed9d7efb4d174",
+    "manifest_sha256": "97a934bc2d115c4eec1a3b838fd754fd2dba93f57d91d84203aed9d7efb4d174"
+   },
+   "stats": {
+    "outcome": "soldier_caught",
+    "steps": 10,
+    "duration_s": 5.0,
+    "path_excess": 1.0408215652840376,
+    "closest_defender_separation_m": 2.7048359920775815,
+    "defender_first_visible_step": 0,
+    "defender_position_m": [
+     -30.580825805664062,
+     -10.130075454711914,
+     8.893550872802734
+    ],
+    "initial_attacker_position_m": [
+     -50.0,
+     -20.238882064819336,
+     10.860787391662598
+    ]
+   },
+   "what_to_look_for": "Stage2-v2 REVIEW \u2014 NOT MASTERED / NON-CANONICAL\nEdge case: this is the narrowest successful pass; check that the margin to the 2.5 m interception sphere is real and the maneuver is deliberate.\n\nFacts (research analysis):\n- The defender is inside the 25 m information gate from step 0 (t = 0.0 s) \u2014 i.e. already at the start.\n- Closest defender approach at step 4 (t = 2.0 s), separation 2.70 m (A0: exactly 2.5 m = contact); passes right of the defender; max lateral deviation from the initial chord 3.9 m, vertical 3.1 m.\n- First >10\u00b0 departure from the Stage-1 BC direction at step 0 (defender distance 22.0 m).\n- After the closest approach the mean cosine toward the asset is 0.955; path-excess 1.041.\n\nWhat to look for:\n1. Before the defender becomes visible (inside the 25 m information gate), does A1 fly toward the asset normally (no early swerving)?\n2. Does it deviate only AFTER defender information becomes available?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m)?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours?",
+   "case_id": "6f35c00db5154550a1c0c116853914be",
+   "order": 8,
+   "url": "http://127.0.0.1:5173/?replay=bb706f8281df1e870a2739a326cd40ad",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=passive&attacker=A1-CUR2V2-202-REVIEW&seed=147061"
+  },
+  {
+   "attacker": "A1-CUR2V2-202-REVIEW",
+   "model_seed": 202,
+   "evaluation_seed": 147161,
+   "kind": "interception_failure",
+   "title": "Seed 202 \u2014 INTERCEPTION failure (largest attempted evasion)",
+   "priority": null,
+   "recording_name": "replay-147161-passive-analytical-A1-CUR2V2-202-REVIEW-C0",
+   "replay_id": "5f872d8d1d3ba6e8a2d34af6f30dfc68",
+   "replay_file": "visualizer/data/local/replay-147161-passive-analytical-A1-CUR2V2-202-REVIEW-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "trajectory_within_tolerance": true,
+     "defender_position_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "defender_position_difference_m": 0.0,
+    "replay_path_excess": 1.0785278407905698,
+    "research_path_excess": 1.0785278691127573,
+    "replay_sha256": "97a934bc2d115c4eec1a3b838fd754fd2dba93f57d91d84203aed9d7efb4d174",
+    "research_sha256": "97a934bc2d115c4eec1a3b838fd754fd2dba93f57d91d84203aed9d7efb4d174",
+    "manifest_sha256": "97a934bc2d115c4eec1a3b838fd754fd2dba93f57d91d84203aed9d7efb4d174"
+   },
+   "stats": {
+    "outcome": "intercepted",
+    "steps": 7,
+    "duration_s": 3.5,
+    "path_excess": 1.0785278407905698,
+    "closest_defender_separation_m": 2.5000006513911166,
+    "defender_first_visible_step": 2,
+    "defender_position_m": [
+     11.09687614440918,
+     18.717941284179688,
+     2.7666802406311035
+    ],
+    "initial_attacker_position_m": [
+     19.763578414916992,
+     50.0,
+     10.03302001953125
+    ]
+   },
+   "what_to_look_for": "Stage2-v2 REVIEW \u2014 NOT MASTERED / NON-CANONICAL\nFailure case: use it to understand how the remaining \u2248 10% of scenarios fail.\n\nFacts (research analysis):\n- The defender is inside the 25 m information gate from step 2 (t = 1.0 s); before that A1 sees no defender features.\n- Interception failure: the policy reacted (max displacement 5.7 m from its no-defender path) but still entered the 2.5 m interception radius. Look at whether the dodge was too late, too small, or in a direction that stays inside the radius.\n\nWhat to look for:\n1. Before the defender becomes visible (inside the 25 m information gate), does A1 fly toward the asset normally (no early swerving)?\n2. Does it deviate only AFTER defender information becomes available?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m)?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours?",
+   "case_id": "13520aa12b974ca298a4a9a19166f84b",
+   "order": 9,
+   "url": "http://127.0.0.1:5173/?replay=5f872d8d1d3ba6e8a2d34af6f30dfc68",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=passive&attacker=A1-CUR2V2-202-REVIEW&seed=147161"
+  },
+  {
+   "attacker": "A1-CUR2V2-202-REVIEW",
+   "model_seed": 202,
+   "evaluation_seed": 147050,
+   "kind": "largest_successful_detour",
+   "title": "Seed 202 \u2014 LARGEST successful detour",
+   "priority": null,
+   "recording_name": "replay-147050-passive-analytical-A1-CUR2V2-202-REVIEW-C0",
+   "replay_id": "0ed25a62acbec8b300b8471b475b035d",
+   "replay_file": "visualizer/data/local/replay-147050-passive-analytical-A1-CUR2V2-202-REVIEW-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "trajectory_within_tolerance": true,
+     "defender_position_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "defender_position_difference_m": 0.0,
+    "replay_path_excess": 1.2528403113519988,
+    "research_path_excess": 1.2528403064803635,
+    "replay_sha256": "97a934bc2d115c4eec1a3b838fd754fd2dba93f57d91d84203aed9d7efb4d174",
+    "research_sha256": "97a934bc2d115c4eec1a3b838fd754fd2dba93f57d91d84203aed9d7efb4d174",
+    "manifest_sha256": "97a934bc2d115c4eec1a3b838fd754fd2dba93f57d91d84203aed9d7efb4d174"
+   },
+   "stats": {
+    "outcome": "soldier_caught",
+    "steps": 13,
+    "duration_s": 6.5,
+    "path_excess": 1.2528403113519988,
+    "closest_defender_separation_m": 4.182476390590356,
+    "defender_first_visible_step": 3,
+    "defender_position_m": [
+     -18.968812942504883,
+     -24.091005325317383,
+     3.0907046794891357
+    ],
+    "initial_attacker_position_m": [
+     -50.0,
+     -21.20673179626465,
+     14.107381820678711
+    ]
+   },
+   "what_to_look_for": "Stage2-v2 REVIEW \u2014 NOT MASTERED / NON-CANONICAL\nEdge case: this is the widest successful detour; judge whether it is purposeful (clearing the defender, then returning) or an excessive/unnecessary arc.\n\nFacts (research analysis):\n- The defender is inside the 25 m information gate from step 3 (t = 1.5 s); before that A1 sees no defender features.\n- Closest defender approach at step 7 (t = 3.5 s), separation 4.18 m (A0: exactly 2.5 m = contact); passes under of the defender; max lateral deviation from the initial chord 17.9 m, vertical 8.4 m.\n- First >10\u00b0 departure from the Stage-1 BC direction at step 0 (defender distance 33.1 m).\n- After the closest approach the mean cosine toward the asset is 0.965; path-excess 1.253.\n\nWhat to look for:\n1. Before the defender becomes visible (inside the 25 m information gate), does A1 fly toward the asset normally (no early swerving)?\n2. Does it deviate only AFTER defender information becomes available?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m)?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours?",
+   "case_id": "c60e671318e047cebfa9f1dc0a0f7c72",
+   "order": 10,
+   "url": "http://127.0.0.1:5173/?replay=0ed25a62acbec8b300b8471b475b035d",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=passive&attacker=A1-CUR2V2-202-REVIEW&seed=147050"
+  },
+  {
+   "attacker": "A1-CUR2V2-202-REVIEW",
+   "model_seed": 202,
+   "evaluation_seed": 147171,
+   "kind": "representative_success",
+   "title": "Seed 202 \u2014 representative successful capture",
+   "priority": null,
+   "recording_name": "replay-147171-passive-analytical-A1-CUR2V2-202-REVIEW-C0",
+   "replay_id": "27025811823fdbd032eecd852e26fd34",
+   "replay_file": "visualizer/data/local/replay-147171-passive-analytical-A1-CUR2V2-202-REVIEW-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "trajectory_within_tolerance": true,
+     "defender_position_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "defender_position_difference_m": 0.0,
+    "replay_path_excess": 1.033731911298236,
+    "research_path_excess": 1.0337318929001966,
+    "replay_sha256": "97a934bc2d115c4eec1a3b838fd754fd2dba93f57d91d84203aed9d7efb4d174",
+    "research_sha256": "97a934bc2d115c4eec1a3b838fd754fd2dba93f57d91d84203aed9d7efb4d174",
+    "manifest_sha256": "97a934bc2d115c4eec1a3b838fd754fd2dba93f57d91d84203aed9d7efb4d174"
+   },
+   "stats": {
+    "outcome": "soldier_caught",
+    "steps": 9,
+    "duration_s": 4.5,
+    "path_excess": 1.033731911298236,
+    "closest_defender_separation_m": 5.37348412568884,
+    "defender_first_visible_step": 0,
+    "defender_position_m": [
+     -1.8636474609375,
+     -29.75557518005371,
+     9.831062316894531
+    ],
+    "initial_attacker_position_m": [
+     -2.8892154693603516,
+     -50.0,
+     16.04302978515625
+    ]
+   },
+   "what_to_look_for": "Stage2-v2 REVIEW \u2014 NOT MASTERED / NON-CANONICAL\nTypical case: nothing special selected; judge overall smoothness and efficiency.\n\nFacts (research analysis):\n- The defender is inside the 25 m information gate from step 0 (t = 0.0 s) \u2014 i.e. already at the start.\n- Closest defender approach at step 4 (t = 2.0 s), separation 5.37 m (A0: exactly 2.5 m = contact); passes left of the defender; max lateral deviation from the initial chord 5.2 m, vertical 3.5 m.\n- First >10\u00b0 departure from the Stage-1 BC direction at step 0 (defender distance 21.2 m).\n- After the closest approach the mean cosine toward the asset is 0.942; path-excess 1.034.\n\nWhat to look for:\n1. Before the defender becomes visible (inside the 25 m information gate), does A1 fly toward the asset normally (no early swerving)?\n2. Does it deviate only AFTER defender information becomes available?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m)?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours?",
+   "case_id": "e53703a454e34e4e82047fa9222bb28e",
+   "order": 11,
+   "url": "http://127.0.0.1:5173/?replay=27025811823fdbd032eecd852e26fd34",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=passive&attacker=A1-CUR2V2-202-REVIEW&seed=147171"
+  },
+  {
+   "attacker": "A1-CUR2V2-203-REVIEW",
+   "model_seed": 203,
+   "evaluation_seed": 147118,
+   "kind": "closest_successful_pass",
+   "title": "Seed 203 \u2014 CLOSEST successful defender pass",
+   "priority": null,
+   "recording_name": "replay-147118-passive-analytical-A1-CUR2V2-203-REVIEW-C0",
+   "replay_id": "1b8e093051610586c392905aa967c77d",
+   "replay_file": "visualizer/data/local/replay-147118-passive-analytical-A1-CUR2V2-203-REVIEW-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "trajectory_within_tolerance": true,
+     "defender_position_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "defender_position_difference_m": 0.0,
+    "replay_path_excess": 1.046201841759767,
+    "research_path_excess": 1.0462018526099242,
+    "replay_sha256": "06993dca67b59876c65afa956bcdace905482745b58cf39c9da87d713a578cac",
+    "research_sha256": "06993dca67b59876c65afa956bcdace905482745b58cf39c9da87d713a578cac",
+    "manifest_sha256": "06993dca67b59876c65afa956bcdace905482745b58cf39c9da87d713a578cac"
+   },
+   "stats": {
+    "outcome": "soldier_caught",
+    "steps": 11,
+    "duration_s": 5.5,
+    "path_excess": 1.046201841759767,
+    "closest_defender_separation_m": 2.7698454778996426,
+    "defender_first_visible_step": 3,
+    "defender_position_m": [
+     21.40875244140625,
+     -11.100887298583984,
+     2.6350760459899902
+    ],
+    "initial_attacker_position_m": [
+     50.0,
+     -35.21275329589844,
+     10.131650924682617
+    ]
+   },
+   "what_to_look_for": "Stage2-v2 REVIEW \u2014 NOT MASTERED / NON-CANONICAL\nEdge case: this is the narrowest successful pass; check that the margin to the 2.5 m interception sphere is real and the maneuver is deliberate.\n\nFacts (research analysis):\n- The defender is inside the 25 m information gate from step 3 (t = 1.5 s); before that A1 sees no defender features.\n- Closest defender approach at step 7 (t = 3.5 s), separation 2.77 m (A0: exactly 2.5 m = contact); passes right of the defender; max lateral deviation from the initial chord 7.1 m, vertical 2.7 m.\n- After the closest approach the mean cosine toward the asset is 0.996; path-excess 1.046.\n\nWhat to look for:\n1. Before the defender becomes visible (inside the 25 m information gate), does A1 fly toward the asset normally (no early swerving)?\n2. Does it deviate only AFTER defender information becomes available?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m)?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours?",
+   "case_id": "8ff0433b36114954b589845c97bdd649",
+   "order": 12,
+   "url": "http://127.0.0.1:5173/?replay=1b8e093051610586c392905aa967c77d",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=passive&attacker=A1-CUR2V2-203-REVIEW&seed=147118"
+  },
+  {
+   "attacker": "A1-CUR2V2-203-REVIEW",
+   "model_seed": 203,
+   "evaluation_seed": 147071,
+   "kind": "largest_successful_detour",
+   "title": "Seed 203 \u2014 LARGEST successful detour",
+   "priority": null,
+   "recording_name": "replay-147071-passive-analytical-A1-CUR2V2-203-REVIEW-C0",
+   "replay_id": "54faa848d99fa8940ef377e3ff2e87aa",
+   "replay_file": "visualizer/data/local/replay-147071-passive-analytical-A1-CUR2V2-203-REVIEW-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "trajectory_within_tolerance": true,
+     "defender_position_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "defender_position_difference_m": 0.0,
+    "replay_path_excess": 1.2106421351219916,
+    "research_path_excess": 1.2106421383676382,
+    "replay_sha256": "06993dca67b59876c65afa956bcdace905482745b58cf39c9da87d713a578cac",
+    "research_sha256": "06993dca67b59876c65afa956bcdace905482745b58cf39c9da87d713a578cac",
+    "manifest_sha256": "06993dca67b59876c65afa956bcdace905482745b58cf39c9da87d713a578cac"
+   },
+   "stats": {
+    "outcome": "soldier_caught",
+    "steps": 16,
+    "duration_s": 8.0,
+    "path_excess": 1.2106421351219916,
+    "closest_defender_separation_m": 9.308677239759591,
+    "defender_first_visible_step": 4,
+    "defender_position_m": [
+     15.240152359008789,
+     29.51527214050293,
+     8.356350898742676
+    ],
+    "initial_attacker_position_m": [
+     50.0,
+     44.7768669128418,
+     14.82667350769043
+    ]
+   },
+   "what_to_look_for": "Stage2-v2 REVIEW \u2014 NOT MASTERED / NON-CANONICAL\nEdge case: this is the widest successful detour; judge whether it is purposeful (clearing the defender, then returning) or an excessive/unnecessary arc.\n\nFacts (research analysis):\n- The defender is inside the 25 m information gate from step 4 (t = 2.0 s); before that A1 sees no defender features.\n- Closest defender approach at step 8 (t = 4.0 s), separation 9.31 m (A0: exactly 2.5 m = contact); passes over of the defender; max lateral deviation from the initial chord 17.9 m, vertical 10.2 m.\n- First >10\u00b0 departure from the Stage-1 BC direction at step 0 (defender distance 38.5 m).\n- After the closest approach the mean cosine toward the asset is 0.964; path-excess 1.211.\n\nWhat to look for:\n1. Before the defender becomes visible (inside the 25 m information gate), does A1 fly toward the asset normally (no early swerving)?\n2. Does it deviate only AFTER defender information becomes available?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m)?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours?",
+   "case_id": "d96dd914c8ad4d9aab3ec5b4d80ecda1",
+   "order": 13,
+   "url": "http://127.0.0.1:5173/?replay=54faa848d99fa8940ef377e3ff2e87aa",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=passive&attacker=A1-CUR2V2-203-REVIEW&seed=147071"
+  }
+ ],
+ "all_verified": true,
+ "tolerance_m": 0.001,
+ "checklist": [
+  "Before the defender becomes visible (inside the 25 m information gate), does A1 fly toward the asset normally (no early swerving)?",
+  "Does it deviate only AFTER defender information becomes available?",
+  "Is the evasion smooth rather than random or wandering?",
+  "Does it create enough separation to avoid the defender (interception radius 2.5 m)?",
+  "After clearing the defender, does it turn back toward the asset?",
+  "Does it capture on the first reasonable approach?",
+  "Any unnecessary loops, oscillations, fly-bys or excessive detours?"
+ ]
+}

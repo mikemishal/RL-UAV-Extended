@@ -354,3 +354,16 @@ own `experiments.journal_v2_a1_cur1v2.stage1v2_config()`, the initial heading/de
 handoff record `docs/journal_v2_a1_curriculum/stage1_v2/stage2_handoff.json`, which must declare a passed Stage 1 v2.
 Example: `?semantics=V2&clutter=C0&defender=passive&attacker=A1-BC1-203&seed=146009`; CLI:
 `--defender passive --clutter C0 --semantics V2 --attacker A1-BC1-203 --evaluation-seed 146009`.
+
+### Stage2-v2 REVIEW policies (`A1-CUR2V2-201/202/203-REVIEW`, `A0-CUR2V2-REFERENCE`) — for HUMAN INSPECTION ONLY
+
+Temporary, explicitly **non-canonical** review IDs for the Stage2-v2 rollout-16 models, labelled `Stage2-v2 REVIEW — NOT MASTERED / NON-CANONICAL`. They change no scientific status
+(Stage2-v2 mastered 0/3 seeds) and never alias another attacker id. Valid only with `semantics=V2`, `clutter=C0` and the passive defender slot, which here selects the **exact research Stage-2 scenario**:
+stationary asset, stationary ACTIVE defender (canonical 2.5 m interception, 25 m observation gate) placed on A0's noise-free nominal path, 37-D observation, continuous 3-D action. The configuration,
+Stage-1 initial heading and defender placement come from the research repository (`experiments.journal_v2_a1_cur2`: `stage2_config`, `nominal_a0_path`, `place_defender`). A checkpoint resolves only if the research seed manifest
+`docs/journal_v2_a1_curriculum/stage2_v2/seed_<s>_manifest.json` is the un-mastered rollout-16 record with the frozen protocol/versions, its model hash carries the pre-registered prefix (`d70b85a6…` / `97a934bc…` /
+`06993dca…`) and the file hash matches. `A0-CUR2V2-REFERENCE` replays canonical scripted A0 in the same scenario for matched comparison.
+
+`python -m visualizer.review.build_stage2v2_review [--cases]` selects the review recordings from the committed research results, replays each through the engine, **verifies it against an independent research run**
+(outcome, step count, attacker trajectory, defender position, checkpoint SHA-256) and writes `visualizer/review/stage2v2_review_shortlist.{json,md}`; `--cases` also creates research cases with the `what_to_look_for` notes and bookmarks.
+Open a recording with `?replay=<replay_id>` (ids in the shortlist).

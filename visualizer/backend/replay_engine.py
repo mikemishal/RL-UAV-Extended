@@ -29,6 +29,9 @@ from .replay_requests import (
     CLUTTER_ARCHITECTURES,
     CONFERENCE_ARCHITECTURES,
     CURRICULUM_ATTACKER_SEEDS,
+    REVIEW_A0_REFERENCE,
+    REVIEW_ATTACKER_SEEDS,
+    REVIEW_LABEL,
     V2_ATTACKER_SEEDS,
     ReplayRequest,
 )
@@ -72,6 +75,15 @@ CURRICULUM_MODE = "curriculum_basic_pursuit_no_defender_interaction"
 CURRICULUM_OBSERVATION_VERSION = "a1_v2_obs_v1"
 CURRICULUM_ACTION_VERSION = "a1_cur1_action_v1"
 CURRICULUM_REWARD_VERSION = "a1_v2_reward_v2"
+# Stage2-v2 human-review policies (NOT mastered, NON-CANONICAL): rollout-16 models of the research Stage2-v2 run. The research seed
+# manifests are the registry; the hashes below are the ones the user pre-registered for review and are enforced in addition.
+REVIEW_RESULTS_RELATIVE = "results/journal_v2_corrected_semantics/a1_curriculum/stage2_v2"
+REVIEW_DOCS_RELATIVE = "docs/journal_v2_a1_curriculum/stage2_v2"
+REVIEW_PROTOCOL = "a1_cur2_training_v1"
+REVIEW_PLACEMENT_PROTOCOL = "a1_cur2_static_defender_nominal_path_v1"
+REVIEW_VERSION = "a1_curriculum_stage2_v2"
+REVIEW_SHA_PREFIX = {201: "d70b85a6", 202: "97a934bc", 203: "06993dca"}
+REVIEW_ROLLOUT = 16
 SECTOR_FEATURE_DIM = 20
 LRPPO_MAX_ANGLE_DEG = 30.0
 HEADING_REVERSAL_THRESHOLD_DEG = 120.0
@@ -91,7 +103,7 @@ class _ResolvedCheckpoint:
     artifact_id: str
     relative_path: str
     sha256: str
-    role: Literal["d0_start", "final", "secondary_best", "conference_best", "attacker_best", "attacker_v2_final", "attacker_curriculum_bc"]
+    role: Literal["d0_start", "final", "secondary_best", "conference_best", "attacker_best", "attacker_v2_final", "attacker_curriculum_bc", "attacker_review_stage2v2"]
     training_seed: int
 
 
@@ -156,6 +168,7 @@ def _research_modules(root: Path) -> dict[str, object]:
         "experiments.journal_v2_a1",
         "experiments.journal_v2_a1_cur1",
         "experiments.journal_v2_a1_cur1v2",
+        "experiments.journal_v2_a1_cur2",
         "experiments.post_detection_diagnostic_protocol",
         "experiments.lead_residual_diagnostic_protocol",
         "experiments.clutter_benchmark_protocol",
@@ -398,6 +411,42 @@ def _resolve_curriculum_attacker_checkpoint(condition: str, store: ResearchDataS
     )
 
 
+def _resolve_review_attacker_checkpoint(condition: str, store: ResearchDataStore) -> _ResolvedCheckpoint:
+    """Stage2-v2 review model: the research seed manifest (status must be the un-mastered FAIL, rollout 16 of 16, frozen protocol/versions), the pre-registered review hash prefix and the file must all agree."""
+    seed = REVIEW_ATTACKER_SEEDS[condition]
+    try:
+        manifest = json.loads(store.read_bytes(f"{REVIEW_DOCS_RELATIVE}/seed_{seed}_manifest.json"))
+    except ApplicationError as exc:
+        raise _fail("CHECKPOINT_NOT_REGISTERED", f"The Stage2-v2 seed manifest is unavailable: {exc.message}", 404) from exc
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise _fail("INVALID_MODEL_REGISTRY", "The Stage2-v2 seed manifest is not valid JSON.", 409) from exc
+    sha = manifest.get("accepted_model_sha256")
+    relative = f"{REVIEW_RESULTS_RELATIVE}/seed_{seed}/checkpoints/accepted_model.zip"
+    if (
+        manifest.get("seed") != seed
+        or manifest.get("status") != "FAIL"
+        or manifest.get("mastery_rollout") is not None
+        or manifest.get("accepted_rollout") != REVIEW_ROLLOUT
+        or manifest.get("rollouts_trained") != REVIEW_ROLLOUT
+        or manifest.get("training_protocol") != REVIEW_PROTOCOL
+        or manifest.get("placement_protocol") != REVIEW_PLACEMENT_PROTOCOL
+        or manifest.get("observation_version") != CURRICULUM_OBSERVATION_VERSION
+        or manifest.get("action_version") != CURRICULUM_ACTION_VERSION
+        or manifest.get("reward_version") != CURRICULUM_REWARD_VERSION
+        or manifest.get("accepted_model") != "checkpoints/accepted_model.zip"
+    ):
+        raise _fail("INVALID_MODEL_REGISTRY", f"{condition}: the Stage2-v2 seed manifest is not the un-mastered rollout-16 record with the frozen versions.", 409)
+    if not isinstance(sha, str) or len(sha) != 64 or not sha.startswith(REVIEW_SHA_PREFIX[seed]):
+        raise _fail("CHECKPOINT_HASH_MISMATCH", f"{condition}: manifest hash does not match the pre-registered review hash {REVIEW_SHA_PREFIX[seed]}….", 409)
+    return _ResolvedCheckpoint(
+        artifact_id=f"a1_cur2v2_review:{seed}:rollout16",
+        relative_path=relative,
+        sha256=sha,
+        role="attacker_review_stage2v2",
+        training_seed=seed,
+    )
+
+
 def _resolve_attacker_checkpoint(
     condition: str, registry: dict, store: ResearchDataStore
 ) -> _ResolvedCheckpoint | None:
@@ -405,6 +454,10 @@ def _resolve_attacker_checkpoint(
         return _resolve_v2_attacker_checkpoint(condition, store)
     if condition in CURRICULUM_ATTACKER_SEEDS:
         return _resolve_curriculum_attacker_checkpoint(condition, store)
+    if condition in REVIEW_ATTACKER_SEEDS:
+        return _resolve_review_attacker_checkpoint(condition, store)
+    if condition == REVIEW_A0_REFERENCE:
+        return None
     seed = ATTACKER_SEEDS.get(condition)
     if seed is None:
         return None
@@ -528,7 +581,7 @@ def _load_attacker(
     model = modules["stable_baselines3"].PPO.load(str(path), device="cpu")
     _checkpoint_model_input(
         model,
-        (V2_A1_OBSERVATION_DIM,) if condition in V2_ATTACKER_SEEDS or condition in CURRICULUM_ATTACKER_SEEDS else (36,),
+        (V2_A1_OBSERVATION_DIM,) if condition in V2_ATTACKER_SEEDS or condition in CURRICULUM_ATTACKER_SEEDS or condition in REVIEW_ATTACKER_SEEDS else (36,),
         checkpoint.artifact_id,
     )
     if _sha256(path) != checkpoint.sha256:
@@ -544,7 +597,7 @@ def _build_attacker_observation(condition: str, modules: dict[str, object], env:
         detection_range = modules["experiments.journal_v2_a1_cur1v2"].MASKED_DETECTION_RANGE
         observation = modules["experiments.journal_v2_a1"].build_a1_v2_observation(env, detection_range)
         expected = V2_A1_OBSERVATION_DIM
-    elif condition in V2_ATTACKER_SEEDS:
+    elif condition in V2_ATTACKER_SEEDS or condition in REVIEW_ATTACKER_SEEDS:      # review policies: canonical 25 m defender gate (env.config.enemy_defender_detection_range)
         observation = modules["experiments.journal_v2_a1"].build_a1_v2_observation(env, detection_range)
         expected = V2_A1_OBSERVATION_DIM
     else:
@@ -960,7 +1013,7 @@ def _telemetry(
         unavailable["telemetry.desired_command"] = "The environment does not expose a current executed command for this transition."
     if velocity is not None and executed_velocity is None:
         raise _fail("INVALID_SIMULATION_STATE", "The simulator returned a non-finite defender velocity.", 500)
-    if attacker_command is None and request.attacker_condition == "A0":
+    if attacker_command is None and request.attacker_condition in ("A0", REVIEW_A0_REFERENCE):
         unavailable["telemetry.attacker_tactical_command"] = "A0 is the existing scripted attacker; no learned tactical override is injected."
 
     current_heading = _heading(velocity)
@@ -1012,7 +1065,7 @@ def _telemetry(
         ),
         attacker_tactical_command=_vector(attacker_command),
         attacker_command_source="a1_learned" if attacker_command is not None else (
-            "a0_scripted" if request.attacker_condition == "A0" else None
+            "a0_scripted" if request.attacker_condition in ("A0", REVIEW_A0_REFERENCE) else None
         ),
         attacker_mission_command=_vector(info.get("enemy_mission_command")),
         attacker_final_command=_vector(info.get("enemy_final_command")),
@@ -1234,14 +1287,20 @@ def run_replay_episode(request: ReplayRequest, settings: Settings | None = None)
         # parked defender is not synchronised onto the asset, so it can never pre-empt capture.
         config = dataclasses.replace(config, defender_standby_until_detection=False)
     is_curriculum = request.attacker_condition in CURRICULUM_ATTACKER_SEEDS
+    is_review = request.attacker_condition in REVIEW_ATTACKER_SEEDS
+    is_stage2 = is_review or request.attacker_condition == REVIEW_A0_REFERENCE
     if is_curriculum:
         # The research repository's own curriculum configuration (stationary asset, interception disabled).
         config = modules["experiments.journal_v2_a1_cur1v2"].stage1v2_config()
         builder_name = "experiments.journal_v2_a1_cur1v2.stage1v2_config"
+    elif is_stage2:
+        # The research repository's own Stage-2 configuration (stationary asset, ACTIVE defender with the canonical interception radius).
+        config = modules["experiments.journal_v2_a1_cur2"].stage2_config()
+        builder_name = "experiments.journal_v2_a1_cur2.stage2_config"
     adapter = _load_defender(request, config, store, registry, modules)
     attacker_checkpoint = _resolve_attacker_checkpoint(request.attacker_condition, registry, store)
     attacker_model = _load_attacker(request.attacker_condition, attacker_checkpoint, store, modules)
-    expected_attacker_model = request.attacker_condition != "A0"
+    expected_attacker_model = request.attacker_condition not in ("A0", REVIEW_A0_REFERENCE)
     if (attacker_model is not None) != expected_attacker_model:
         raise _fail("INVALID_ATTACKER_CONFIGURATION", "Attacker selection did not resolve to its expected policy.", 409)
     env = modules["uav_defend.envs.soldier_env"].SoldierEnv(config)
@@ -1267,9 +1326,9 @@ def run_replay_episode(request: ReplayRequest, settings: Settings | None = None)
     latest_info: dict | None = None
     completed_steps = 0
     try:
-        if request.attacker_condition == "A0":
+        if request.attacker_condition in ("A0", REVIEW_A0_REFERENCE):
             env.enemy_tactical_override = None
-        elif is_curriculum:
+        elif is_curriculum or is_review:
             cur1 = modules["experiments.journal_v2_a1_cur1"]
             pending = {"action": np.zeros(3, dtype=np.float32)}
             # a1_cur1_action_v1: desired flight direction; a zero action holds the current heading (never A0).
@@ -1289,6 +1348,29 @@ def run_replay_episode(request: ReplayRequest, settings: Settings | None = None)
             velocity = float(config.v_e) * heading
             velocity[2] = np.clip(velocity[2], -config.enemy_max_descent_rate, config.enemy_max_climb_rate)
             env._enemy_vel = velocity.astype(np.float32)
+            observation = env._get_obs()
+            info = env._get_info(
+                "ongoing",
+                float(np.linalg.norm(np.asarray(env._soldier_pos, dtype=np.float64) - np.asarray(env._enemy_pos, dtype=np.float64))),
+                float(np.linalg.norm(np.asarray(env._defender_pos, dtype=np.float64) - np.asarray(env._enemy_pos, dtype=np.float64))),
+                defender_standby=config.defender_standby_until_detection,
+                controller_action_executed=False,
+                just_detected=False,
+            )
+        elif is_stage2:
+            # Same scenario construction as the research Stage2Env.reset: Stage-1 initial heading, then the stationary ACTIVE defender
+            # placed on A0's noise-free nominal path (research functions; the visualizer defines no placement logic).
+            cur1 = modules["experiments.journal_v2_a1_cur1"]
+            cur2 = modules["experiments.journal_v2_a1_cur2"]
+            los = np.asarray(env._soldier_pos, dtype=np.float64) - np.asarray(env._enemy_pos, dtype=np.float64)
+            heading = cur1.initial_heading_direction(request.evaluation_seed, los)
+            velocity = float(config.v_e) * heading
+            velocity[2] = np.clip(velocity[2], -config.enemy_max_descent_rate, config.enemy_max_climb_rate)
+            env._enemy_vel = velocity.astype(np.float32)
+            nominal_path = cur2.nominal_a0_path(request.evaluation_seed)
+            placement = cur2.place_defender(request.evaluation_seed, nominal_path, arena_half=float(config.L), max_altitude=float(config.max_altitude))
+            env._defender_pos = np.asarray(placement["position"], dtype=np.float32).copy()
+            env._defender_vel = np.zeros(3, dtype=np.float32)
             observation = env._get_obs()
             info = env._get_info(
                 "ongoing",
@@ -1525,6 +1607,7 @@ def run_replay_episode(request: ReplayRequest, settings: Settings | None = None)
             architecture=(
                 "scripted_a0" if attacker_model is None
                 else "a1_cur1v2_bc_init" if is_curriculum
+                else "a1_cur2v2_review" if is_review
                 else "a1_v2_ppo" if is_v2_attacker else "adaptive_attacker_v1"
             ),
             generation=None,
@@ -1540,7 +1623,7 @@ def run_replay_episode(request: ReplayRequest, settings: Settings | None = None)
             ),
             observation_shape=(
                 None if attacker_model is None
-                else (V2_A1_OBSERVATION_DIM,) if (is_v2_attacker or is_curriculum) else (36,)
+                else (V2_A1_OBSERVATION_DIM,) if (is_v2_attacker or is_curriculum or is_review) else (36,)
             ),
             estimator="attacker_local" if attacker_model is not None else "scripted_ground_truth",
             parameters={
@@ -1550,18 +1633,26 @@ def run_replay_episode(request: ReplayRequest, settings: Settings | None = None)
                 "canonical_v2_attacker": is_v2_attacker,
                 "curriculum_initialization_checkpoint": is_curriculum,
                 "curriculum_mode": CURRICULUM_MODE if is_curriculum else None,
-                "action_version": CURRICULUM_ACTION_VERSION if is_curriculum else None,
+                "action_version": CURRICULUM_ACTION_VERSION if (is_curriculum or is_review) else None,
+                "stage2_v2_review_policy": is_review,
+                "stage2_v2_not_mastered": True if is_review else None,
+                "canonical": False if (is_review or is_curriculum) else None,
+                "stage2_scenario": "stage2_static_defender_nominal_path (C0, V2, stationary asset, stationary ACTIVE defender on A0's nominal path)" if is_stage2 else None,
+                "placement_protocol": REVIEW_PLACEMENT_PROTOCOL if is_stage2 else None,
                 "display_label": (
-                    f"Attacker: {request.attacker_condition} (curriculum BC initialization, not a final attacker)"
+                    f"Attacker: {request.attacker_condition} — {REVIEW_LABEL}"
+                    if is_review
+                    else "Attacker: A0 (canonical scripted) — Stage-2 scenario reference" if is_stage2
+                    else f"Attacker: {request.attacker_condition} (curriculum BC initialization, not a final attacker)"
                     if is_curriculum
                     else f"Attacker: {request.attacker_condition.replace('-V2', ' V2')}" if attacker_model is not None
                     else "Attacker: A0"
                 ),
                 "training_protocol": (
-                    "a1_cur1v2_bc_v1" if is_curriculum else V2_A1_PROTOCOL if is_v2_attacker else None
+                    "a1_cur1v2_bc_v1" if is_curriculum else REVIEW_PROTOCOL if is_review else V2_A1_PROTOCOL if is_v2_attacker else None
                 ),
                 "reward_version": (
-                    CURRICULUM_REWARD_VERSION if is_curriculum else V2_A1_REWARD_VERSION if is_v2_attacker else None
+                    CURRICULUM_REWARD_VERSION if (is_curriculum or is_review) else V2_A1_REWARD_VERSION if is_v2_attacker else None
                 ),
             },
         )

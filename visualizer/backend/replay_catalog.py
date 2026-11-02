@@ -12,6 +12,9 @@ from .replay_engine import (
     CLUTTER_ARCHITECTURES,
     CONFERENCE_ARCHITECTURES,
     CURRICULUM_ATTACKER_SEEDS,
+    REVIEW_A0_REFERENCE,
+    REVIEW_ATTACKER_SEEDS,
+    REVIEW_LABEL,
     EXPECTED_RESEARCH_COMMIT,
     REGISTRY_RELATIVE_PATH,
     SECTOR_FEATURE_DIM,
@@ -297,6 +300,45 @@ def build_replay_catalog(settings: Settings) -> dict[str, object]:
             "supported_scenarios": [{"clutter": "C0", "perception_modes": ["map_local"]}],
             "diagnostic_fields": ["attacker_observation", "tactical_command", "mission_command", "final_movement_command"],
         })
+
+    for attacker_id, seed in REVIEW_ATTACKER_SEEDS.items():
+        checkpoint = None
+        try:
+            checkpoint = _resolve_attacker_checkpoint(attacker_id, registry, store)
+            if checkpoint is None:
+                raise ApplicationError("CHECKPOINT_NOT_REGISTERED", "Attacker checkpoint is not registered.", 404)
+            _verify_artifact(store, checkpoint)
+            available, reason = True, None
+        except ApplicationError as exc:
+            available, reason = False, _checkpoint_reason(exc)
+        attackers.append({
+            "attacker_id": attacker_id,
+            "display_name": f"{attacker_id} — {REVIEW_LABEL} (rollout-16 model; Stage-2 scenario only)",
+            "classification": "learned",
+            "architecture": "a1_cur2v2_review",
+            "training_seed": seed,
+            "held_out": False,
+            "available": available,
+            "checkpoint_sha256": checkpoint.sha256 if checkpoint else None,
+            "unavailability_reason": reason,
+            "observation_shape": [37],
+            "supported_scenarios": [{"clutter": "C0", "perception_modes": ["map_local"]}],
+            "diagnostic_fields": ["attacker_observation", "tactical_command", "mission_command", "final_movement_command"],
+        })
+    attackers.append({
+        "attacker_id": REVIEW_A0_REFERENCE,
+        "display_name": f"{REVIEW_A0_REFERENCE} — canonical scripted A0 in the Stage-2 scenario (review reference)",
+        "classification": "scripted",
+        "architecture": "canonical_scripted",
+        "training_seed": None,
+        "held_out": False,
+        "available": True,
+        "checkpoint_sha256": None,
+        "unavailability_reason": None,
+        "observation_shape": None,
+        "supported_scenarios": [{"clutter": "C0", "perception_modes": ["map_local"]}],
+        "diagnostic_fields": ["scripted_mission_command", "final_movement_command"],
+    })
 
     return {
         "source_commit": source_commit,

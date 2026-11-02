@@ -21,11 +21,18 @@ V2_ATTACKER_SEEDS = {"A1-201-V2": 201, "A1-202-V2": 202, "A1-203-V2": 203}
 # Curriculum Stage-1-v2 behaviour-cloned initialization checkpoints (NOT final attackers). They only exist in the
 # curriculum environment (C0, stationary asset, parked/masked defender) and are never aliases of A1-*-V2.
 CURRICULUM_ATTACKER_SEEDS = {"A1-BC1-201": 201, "A1-BC1-202": 202, "A1-BC1-203": 203}
-ALL_ATTACKER_SEEDS = {**ATTACKER_SEEDS, **V2_ATTACKER_SEEDS, **CURRICULUM_ATTACKER_SEEDS}
-ATTACKER_CONDITIONS = ("A0", *ATTACKER_SEEDS, *V2_ATTACKER_SEEDS, *CURRICULUM_ATTACKER_SEEDS)
+# TEMPORARY human-review policies: the Stage2-v2 rollout-16 models. They are NOT mastered and NOT canonical, exist only in
+# the exact research Stage-2 environment (C0, V2, stationary asset, stationary ACTIVE defender placed on A0's nominal path)
+# and never alias any other attacker id. The A0 reference id replays canonical scripted A0 in that same scenario.
+REVIEW_ATTACKER_SEEDS = {"A1-CUR2V2-201-REVIEW": 201, "A1-CUR2V2-202-REVIEW": 202, "A1-CUR2V2-203-REVIEW": 203}
+REVIEW_A0_REFERENCE = "A0-CUR2V2-REFERENCE"
+REVIEW_LABEL = "Stage2-v2 REVIEW — NOT MASTERED / NON-CANONICAL"
+ALL_ATTACKER_SEEDS = {**ATTACKER_SEEDS, **V2_ATTACKER_SEEDS, **CURRICULUM_ATTACKER_SEEDS, **REVIEW_ATTACKER_SEEDS}
+ATTACKER_CONDITIONS = ("A0", *ATTACKER_SEEDS, *V2_ATTACKER_SEEDS, *CURRICULUM_ATTACKER_SEEDS, *REVIEW_ATTACKER_SEEDS, REVIEW_A0_REFERENCE)
 AttackerCondition = Literal[
     "A0", "A1-201", "A1-202", "A1-203", "A1-201-V2", "A1-202-V2", "A1-203-V2",
     "A1-BC1-201", "A1-BC1-202", "A1-BC1-203",
+    "A1-CUR2V2-201-REVIEW", "A1-CUR2V2-202-REVIEW", "A1-CUR2V2-203-REVIEW", "A0-CUR2V2-REFERENCE",
 ]
 # "passive" is the research validation harness's parked defender (see
 # experiments.journal_v2_validation_core: policy None, zero action every step); it is analytical
@@ -105,6 +112,13 @@ class ReplayRequest(BaseModel):
             raise ValueError(
                 f"{self.attacker_condition} is a curriculum Stage-1-v2 checkpoint (curriculum_basic_pursuit_no_defender_interaction) "
                 "and requires semantics='V2', clutter_level='C0' and the passive defender."
+            )
+        if (self.attacker_condition in REVIEW_ATTACKER_SEEDS or self.attacker_condition == REVIEW_A0_REFERENCE) and (
+            self.semantics != "V2" or self.clutter_level != "C0" or self.defender_policy_id != "passive"
+        ):
+            raise ValueError(
+                f"{self.attacker_condition} is a Stage2-v2 review/reference attacker (exact research Stage-2 environment: C0, V2, stationary asset, "
+                "stationary active defender placed on A0's nominal path) and requires semantics='V2', clutter_level='C0' and the passive defender slot."
             )
         expected_attacker_seed = ALL_ATTACKER_SEEDS.get(self.attacker_condition)
         if self.attacker_model_seed != expected_attacker_seed:
