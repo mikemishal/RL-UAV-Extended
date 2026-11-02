@@ -367,3 +367,20 @@ Stage-1 initial heading and defender placement come from the research repository
 `python -m visualizer.review.build_stage2v2_review [--cases]` selects the review recordings from the committed research results, replays each through the engine, **verifies it against an independent research run**
 (outcome, step count, attacker trajectory, defender position, checkpoint SHA-256) and writes `visualizer/review/stage2v2_review_shortlist.{json,md}`; `--cases` also creates research cases with the `what_to_look_for` notes and bookmarks.
 Open a recording with `?replay=<replay_id>` (ids in the shortlist).
+
+### Stage3-v2 REVIEW policies (`A1-CUR3V2-201/202/203`, `A0-CUR3V2-REFERENCE`) — for HUMAN INSPECTION, provisional curriculum checkpoints
+
+Review IDs for the three **accepted (mastered) Stage3-v2 checkpoints**, labelled `Stage3-v2 REVIEW — PROVISIONAL CURRICULUM CHECKPOINT / NON-FINAL / NON-CANONICAL`. They are **not final A1 models** (their parents are
+provisional Stage2-v2 checkpoints) and change no scientific status. Valid only with `semantics=V2`, `clutter=C0` and a scripted defender (`greedy` — the trained scenario — or `kalman_greedy`, `pn`, `lead` for the generalization
+diagnostic). The scenario is the **exact research Stage3-v2 environment**: stationary asset, scripted defender placed on A0's nominal path, **held stationary (zero velocity) until canonical detection (15 m), released the next step with
+the unmodified controller**, canonical 2.5 m interception and 25 m observation gate, 37-D observation, continuous 3-D action. The hold is a **curriculum scaffold**, not the final defender benchmark; it is replayed with the same
+semantics as the research `Stage3V2Env` (gated `_move_defender`; the controller is not consulted while held) and every recording is verified frame by frame against it. Configuration, initial heading and placement come from the
+research repository (`experiments.journal_v2_a1_cur3v2.stage3v2_config`, `experiments.journal_v2_a1_cur2.nominal_a0_path/place_defender`). A checkpoint resolves only if the research seed manifest
+`docs/journal_v2_a1_curriculum/stage3_v2/seed_<s>_manifest.json` is the MASTERED record at the registered rollout (3 / 5 / 7) with the frozen protocol / scenario protocol / versions and a provisional parent, its model hash
+carries the registered prefix (`c60ae85d…` / `3dfabf5c…` / `818338a5…`) and the file hash matches. The replay summary records `defender_release_step`; held frames carry `curriculum.defender_hold` in `unavailable_fields`.
+`A0-CUR3V2-REFERENCE` replays canonical scripted A0 in the same scenario.
+
+`python -m visualizer.review.build_stage3v2_review [--cases]` selects the review recordings (representative / closest pass / lateral / vertical / mixed / interception failure / matched A0 / generalization), replays each
+through the engine and **verifies it against an independent research run** (outcome, step count, attacker and defender trajectories over every frame, release step, checkpoint SHA-256), writing
+`visualizer/review/stage3v2_review_shortlist.{json,md}`; `--cases` also creates research cases with `what_to_look_for` notes and bookmarks (gate entry, release, closest approach, end).
+Example: `?semantics=V2&clutter=C0&defender=greedy&attacker=A1-CUR3V2-203&seed=154001`; open a recording with `?replay=<replay_id>`.

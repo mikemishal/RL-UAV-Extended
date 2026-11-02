@@ -27,12 +27,20 @@ CURRICULUM_ATTACKER_SEEDS = {"A1-BC1-201": 201, "A1-BC1-202": 202, "A1-BC1-203":
 REVIEW_ATTACKER_SEEDS = {"A1-CUR2V2-201-REVIEW": 201, "A1-CUR2V2-202-REVIEW": 202, "A1-CUR2V2-203-REVIEW": 203}
 REVIEW_A0_REFERENCE = "A0-CUR2V2-REFERENCE"
 REVIEW_LABEL = "Stage2-v2 REVIEW — NOT MASTERED / NON-CANONICAL"
-ALL_ATTACKER_SEEDS = {**ATTACKER_SEEDS, **V2_ATTACKER_SEEDS, **CURRICULUM_ATTACKER_SEEDS, **REVIEW_ATTACKER_SEEDS}
-ATTACKER_CONDITIONS = ("A0", *ATTACKER_SEEDS, *V2_ATTACKER_SEEDS, *CURRICULUM_ATTACKER_SEEDS, *REVIEW_ATTACKER_SEEDS, REVIEW_A0_REFERENCE)
+# TEMPORARY human-review policies for curriculum Stage3-v2: the accepted (mastered) Stage-3 checkpoints, still PROVISIONAL curriculum checkpoints - not final A1 models, never canonical. They exist only in the exact
+# research Stage3-v2 environment (C0, V2, stationary asset, scripted defender placed on A0's nominal path, HELD until canonical detection and then driven by the unchanged scripted controller) and never alias any
+# other attacker id. The A0 reference id replays canonical scripted A0 in that same scenario.
+REVIEW3_ATTACKER_SEEDS = {"A1-CUR3V2-201": 201, "A1-CUR3V2-202": 202, "A1-CUR3V2-203": 203}
+REVIEW3_A0_REFERENCE = "A0-CUR3V2-REFERENCE"
+REVIEW3_LABEL = "Stage3-v2 REVIEW — PROVISIONAL CURRICULUM CHECKPOINT / NON-FINAL / NON-CANONICAL"
+REVIEW3_DEFENDERS = ("greedy", "kalman_greedy", "pn", "lead")
+ALL_ATTACKER_SEEDS = {**ATTACKER_SEEDS, **V2_ATTACKER_SEEDS, **CURRICULUM_ATTACKER_SEEDS, **REVIEW_ATTACKER_SEEDS, **REVIEW3_ATTACKER_SEEDS}
+ATTACKER_CONDITIONS = ("A0", *ATTACKER_SEEDS, *V2_ATTACKER_SEEDS, *CURRICULUM_ATTACKER_SEEDS, *REVIEW_ATTACKER_SEEDS, REVIEW_A0_REFERENCE, *REVIEW3_ATTACKER_SEEDS, REVIEW3_A0_REFERENCE)
 AttackerCondition = Literal[
     "A0", "A1-201", "A1-202", "A1-203", "A1-201-V2", "A1-202-V2", "A1-203-V2",
     "A1-BC1-201", "A1-BC1-202", "A1-BC1-203",
     "A1-CUR2V2-201-REVIEW", "A1-CUR2V2-202-REVIEW", "A1-CUR2V2-203-REVIEW", "A0-CUR2V2-REFERENCE",
+    "A1-CUR3V2-201", "A1-CUR3V2-202", "A1-CUR3V2-203", "A0-CUR3V2-REFERENCE",
 ]
 # "passive" is the research validation harness's parked defender (see
 # experiments.journal_v2_validation_core: policy None, zero action every step); it is analytical
@@ -119,6 +127,13 @@ class ReplayRequest(BaseModel):
             raise ValueError(
                 f"{self.attacker_condition} is a Stage2-v2 review/reference attacker (exact research Stage-2 environment: C0, V2, stationary asset, "
                 "stationary active defender placed on A0's nominal path) and requires semantics='V2', clutter_level='C0' and the passive defender slot."
+            )
+        if (self.attacker_condition in REVIEW3_ATTACKER_SEEDS or self.attacker_condition == REVIEW3_A0_REFERENCE) and (
+            self.semantics != "V2" or self.clutter_level != "C0" or self.defender_policy_id not in REVIEW3_DEFENDERS
+        ):
+            raise ValueError(
+                f"{self.attacker_condition} is a Stage3-v2 review/reference attacker (exact research Stage3-v2 environment: C0, V2, stationary asset, scripted defender placed on A0's nominal path, "
+                "held until canonical detection) and requires semantics='V2', clutter_level='C0' and a scripted defender in " + ", ".join(REVIEW3_DEFENDERS) + "."
             )
         expected_attacker_seed = ALL_ATTACKER_SEEDS.get(self.attacker_condition)
         if self.attacker_model_seed != expected_attacker_seed:

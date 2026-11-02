@@ -27,7 +27,8 @@
             "attacker_best",
             "attacker_v2_final",
             "attacker_curriculum_bc",
-            "attacker_review_stage2v2"
+            "attacker_review_stage2v2",
+            "attacker_review_stage3v2"
           ],
           "title": "Role",
           "type": "string"
@@ -176,7 +177,8 @@
             "experiments.journal_clutter_protocol.build_canonical_env_config",
             "experiments.journal_v2_protocol.build_v2_env_config",
             "experiments.journal_v2_a1_cur1v2.stage1v2_config",
-            "experiments.journal_v2_a1_cur2.stage2_config"
+            "experiments.journal_v2_a1_cur2.stage2_config",
+            "experiments.journal_v2_a1_cur3v2.stage3v2_config"
           ],
           "title": "Builder",
           "type": "string"

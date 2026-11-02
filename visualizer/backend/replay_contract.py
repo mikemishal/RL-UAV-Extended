@@ -24,7 +24,7 @@ class Checkpoint(ContractModel):
     artifact_id: str = Field(min_length=1)
     research_relative_path: str = Field(min_length=1)
     sha256: Sha256
-    role: Literal["d0_start", "final", "secondary_best", "conference_best", "attacker_best", "attacker_v2_final", "attacker_curriculum_bc", "attacker_review_stage2v2"]
+    role: Literal["d0_start", "final", "secondary_best", "conference_best", "attacker_best", "attacker_v2_final", "attacker_curriculum_bc", "attacker_review_stage2v2", "attacker_review_stage3v2"]
 
 
 class PolicySelection(ContractModel):
@@ -49,6 +49,7 @@ class EnvironmentSpec(ContractModel):
         "experiments.journal_v2_protocol.build_v2_env_config",
         "experiments.journal_v2_a1_cur1v2.stage1v2_config",
         "experiments.journal_v2_a1_cur2.stage2_config",
+        "experiments.journal_v2_a1_cur3v2.stage3v2_config",
     ]
     # Replays written before the semantics selector existed contain neither the
     # field nor the V2 config switches; they are V1 by construction.

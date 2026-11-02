@@ -55,7 +55,7 @@ function queryPreset() {
     // A recorded replay (opaque 32-hex id) to open on load, e.g. ?replay=<id>; ignored unless it is in the validated replay list.
     replay: replay && /^[0-9a-f]{32}$/.test(replay) ? replay : null,
     // Attacker ids are validated against the catalog (available attackers only); unknown values are ignored.
-    attacker: attacker && /^(A0|A1-20[123](-V2)?|A1-BC1-20[123]|A1-CUR2V2-20[123]-REVIEW|A0-CUR2V2-REFERENCE)$/.test(attacker) ? attacker : null,
+    attacker: attacker && /^(A0|A1-20[123](-V2)?|A1-BC1-20[123]|A1-CUR2V2-20[123]-REVIEW|A0-CUR2V2-REFERENCE|A1-CUR3V2-20[123]|A0-CUR3V2-REFERENCE)$/.test(attacker) ? attacker : null,
     semantics: (semantics === 'V1' || semantics === 'V2' ? semantics : 'V1') as Semantics,
     clutter: clutter && ['C0', 'C1', 'C2', 'C3'].includes(clutter) ? clutter : 'C0',
     seed: seed && /^\d+$/.test(seed) ? seed : '0',

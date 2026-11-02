@@ -64,6 +64,8 @@ const BEHAVIOR_LABELS: Record<string, string> = {
 // Read-only view of recorded attacker state; never feeds back into the simulation.
 function attackerLabel(policyId: string, architecture: string | null | undefined): string {
   if (policyId.endsWith('-REVIEW')) return `Attacker: ${policyId} — Stage2-v2 REVIEW — NOT MASTERED / NON-CANONICAL`;
+  if (/^A1-CUR3V2-20[123]$/.test(policyId)) return `Attacker: ${policyId} — Stage3-v2 REVIEW — PROVISIONAL CURRICULUM CHECKPOINT / NON-FINAL / NON-CANONICAL`;
+  if (policyId === 'A0-CUR3V2-REFERENCE') return 'Attacker: A0 (canonical scripted) — Stage-3 scenario reference';
   if (policyId === 'A0-CUR2V2-REFERENCE') return 'Attacker: A0 (canonical scripted) — Stage-2 scenario reference';
   if (policyId.endsWith('-V2')) return `Attacker: ${policyId.replace('-V2', ' V2')}`;
   if (architecture === 'adaptive_attacker_v1') return `Attacker: ${policyId} (legacy V1-trained)`;

@@ -1,0 +1,941 @@
+{
+ "label": "Stage3-v2 REVIEW \u2014 PROVISIONAL CURRICULUM CHECKPOINT / NON-FINAL / NON-CANONICAL",
+ "scientific_status": "PROVISIONAL curriculum checkpoints (non-final, non-canonical); no scientific status changed",
+ "research_commit": "3a2b23f3d461490ab10cc9e1e9e032edf8b73eae",
+ "environment": "exact research Stage3-v2 scenario: V2, C0, stationary asset, scripted defender on A0's nominal path HELD until canonical detection then released (unchanged controller), 37-D observation, continuous 3-D action",
+ "recordings": [
+  {
+   "attacker": "A1-CUR3V2-203",
+   "model_seed": 203,
+   "defender": "greedy",
+   "evaluation_seed": 154129,
+   "kind": "representative_high_quality_success",
+   "title": "Seed 203 \u2014 representative HIGH-QUALITY successful evasion of the moving defender",
+   "high_quality": true,
+   "priority": 1,
+   "recording_name": "replay-154129-greedy-analytical-A1-CUR3V2-203-C0",
+   "replay_id": "553cbec4db3867c54f7b309ee95f7660",
+   "replay_file": "visualizer/data/local/replay-154129-greedy-analytical-A1-CUR3V2-203-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "attacker_trajectory_within_tolerance": true,
+     "defender_trajectory_within_tolerance": true,
+     "release_step_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_attacker_trajectory_difference_m": 0.0,
+    "max_defender_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "replay_path_excess": 1.035062444309921,
+    "research_path_excess": 1.0350624483951765,
+    "replay_release_step": 4,
+    "research_release_step": 4,
+    "replay_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "research_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "manifest_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "compared_frames": 12
+   },
+   "stats": {
+    "outcome": "soldier_caught",
+    "steps": 11,
+    "duration_s": 5.5,
+    "path_excess": 1.035062444309921,
+    "closest_defender_separation_m": 5.821439445056491,
+    "closest_step": 6,
+    "defender_first_visible_step": 2,
+    "release_step": 4,
+    "defender_initial_position_m": [
+     10.975019454956055,
+     -20.238798141479492,
+     7.510687351226807
+    ],
+    "initial_attacker_position_m": [
+     26.871950149536133,
+     -50.0,
+     15.324209213256836
+    ]
+   },
+   "what_to_look_for": "Stage3-v2 REVIEW \u2014 PROVISIONAL CURRICULUM CHECKPOINT / NON-FINAL / NON-CANONICAL\nShowcase case (no deviation before the gate, prompt reactive deviation, return to pursuit, efficient path, comfortable separation). Use it as the reference for what the policy does when it works.\n\nFacts (research analysis / verified replay):\n- Defender controller: greedy (unmodified research policy), HELD stationary until canonical detection (15 m), then released at step 4 (t = 2.0 s) \u2014 the held phase is a curriculum scaffold, not the final defender benchmark.\n- The defender is inside the 25 m information gate from step 2 (t = 1.0 s); before that A1 sees no defender features.\n- Closest defender approach at step 6 (t = 3.0 s), separation 5.82 m (A0: exactly 2.5 m = contact); defender speed there 7.7 m/s; class: lateral; max displacement from the same policy's no-defender path 2.7 m (lateral 2.5 m, vertical 0.8 m).\n- First >1 m deviation from the no-defender path 0.5 s before detection (= release) and 0.5 s after gate entry (the deviation starts as soon as defender information exists; the defender is detected, and released, once it is within 15 m); deviation before gate entry: no.\n- Passes in FRONT of the defender's velocity vector; post-encounter mean cosine toward the asset 0.997; reacquisition 0.0 s; path-excess 1.035.\n\nWhat to look for:\n1. Does A1 fly toward the asset normally before the defender becomes visible (inside the 25 m information gate) \u2014 no early swerving?\n2. Does it deviate only AFTER defender information becomes available (gate entry / detection), and does the deviation start promptly?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m) while the defender accelerates toward it after release?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours? (Note the defender keeps chasing after the pass \u2014 does the attacker stay ahead of it?)",
+   "case_id": "898f969e28ee48f8a52ed1b891307786",
+   "order": 1,
+   "url": "http://127.0.0.1:5173/?replay=553cbec4db3867c54f7b309ee95f7660",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=greedy&attacker=A1-CUR3V2-203&seed=154129"
+  },
+  {
+   "attacker": "A1-CUR3V2-203",
+   "model_seed": 203,
+   "defender": "greedy",
+   "evaluation_seed": 154140,
+   "kind": "closest_successful_pass",
+   "title": "Seed 203 \u2014 CLOSEST successful defender pass",
+   "priority": 2,
+   "recording_name": "replay-154140-greedy-analytical-A1-CUR3V2-203-C0",
+   "replay_id": "e7f9607bf6f2e9e7ee514417b63536ce",
+   "replay_file": "visualizer/data/local/replay-154140-greedy-analytical-A1-CUR3V2-203-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "attacker_trajectory_within_tolerance": true,
+     "defender_trajectory_within_tolerance": true,
+     "release_step_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_attacker_trajectory_difference_m": 0.0,
+    "max_defender_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "replay_path_excess": 1.0825338652653482,
+    "research_path_excess": 1.0825338583259156,
+    "replay_release_step": 4,
+    "research_release_step": 4,
+    "replay_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "research_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "manifest_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "compared_frames": 14
+   },
+   "stats": {
+    "outcome": "soldier_caught",
+    "steps": 13,
+    "duration_s": 6.5,
+    "path_excess": 1.0825338652653482,
+    "closest_defender_separation_m": 3.3113780011233245,
+    "closest_step": 6,
+    "defender_first_visible_step": 3,
+    "release_step": 4,
+    "defender_initial_position_m": [
+     -3.771446466445923,
+     18.475866317749023,
+     16.856563568115234
+    ],
+    "initial_attacker_position_m": [
+     -16.742956161499023,
+     50.0,
+     26.76294708251953
+    ]
+   },
+   "what_to_look_for": "Stage3-v2 REVIEW \u2014 PROVISIONAL CURRICULUM CHECKPOINT / NON-FINAL / NON-CANONICAL\nEdge case: the narrowest successful pass; check that the margin to the 2.5 m interception sphere is real and the maneuver deliberate.\n\nFacts (research analysis / verified replay):\n- Defender controller: greedy (unmodified research policy), HELD stationary until canonical detection (15 m), then released at step 4 (t = 2.0 s) \u2014 the held phase is a curriculum scaffold, not the final defender benchmark.\n- The defender is inside the 25 m information gate from step 3 (t = 1.5 s); before that A1 sees no defender features.\n- Closest defender approach at step 6 (t = 3.0 s), separation 3.31 m (A0: exactly 2.5 m = contact); defender speed there 7.9 m/s; class: timing_turn; max displacement from the same policy's no-defender path 1.1 m (lateral 0.5 m, vertical 0.4 m).\n- First >1 m deviation from the no-defender path 2.5 s after detection (= release) and 3.0 s after gate entry (the deviation starts as soon as defender information exists; the defender is detected, and released, once it is within 15 m); deviation before gate entry: no.\n- Passes BEHIND the defender's velocity vector; post-encounter mean cosine toward the asset 0.963; reacquisition n/a s; path-excess 1.083.\n\nWhat to look for:\n1. Does A1 fly toward the asset normally before the defender becomes visible (inside the 25 m information gate) \u2014 no early swerving?\n2. Does it deviate only AFTER defender information becomes available (gate entry / detection), and does the deviation start promptly?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m) while the defender accelerates toward it after release?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours? (Note the defender keeps chasing after the pass \u2014 does the attacker stay ahead of it?)",
+   "case_id": "79ac3e55ce8648c0ad9fdf520c11860b",
+   "order": 2,
+   "url": "http://127.0.0.1:5173/?replay=e7f9607bf6f2e9e7ee514417b63536ce",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=greedy&attacker=A1-CUR3V2-203&seed=154140"
+  },
+  {
+   "attacker": "A1-CUR3V2-203",
+   "model_seed": 203,
+   "defender": "greedy",
+   "evaluation_seed": 154087,
+   "kind": "interception_failure",
+   "title": "Seed 203 \u2014 INTERCEPTION failure (longest attempted evasion)",
+   "priority": 3,
+   "recording_name": "replay-154087-greedy-analytical-A1-CUR3V2-203-C0",
+   "replay_id": "0511b9a8e00ce623c3c613f1752c5627",
+   "replay_file": "visualizer/data/local/replay-154087-greedy-analytical-A1-CUR3V2-203-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "attacker_trajectory_within_tolerance": true,
+     "defender_trajectory_within_tolerance": true,
+     "release_step_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_attacker_trajectory_difference_m": 0.0,
+    "max_defender_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "replay_path_excess": 1.1185095371945897,
+    "research_path_excess": 1.118509555222207,
+    "replay_release_step": 6,
+    "research_release_step": 6,
+    "replay_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "research_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "manifest_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "compared_frames": 8
+   },
+   "stats": {
+    "outcome": "intercepted",
+    "steps": 7,
+    "duration_s": 3.5,
+    "path_excess": 1.1185095371945897,
+    "closest_defender_separation_m": 2.5000008768000326,
+    "closest_step": 7,
+    "defender_first_visible_step": 4,
+    "release_step": 6,
+    "defender_initial_position_m": [
+     -21.112384796142578,
+     -16.755155563354492,
+     8.953502655029297
+    ],
+    "initial_attacker_position_m": [
+     -39.74738693237305,
+     -50.0,
+     17.218116760253906
+    ]
+   },
+   "what_to_look_for": "Stage3-v2 REVIEW \u2014 PROVISIONAL CURRICULUM CHECKPOINT / NON-FINAL / NON-CANONICAL\nFailure case: the longest attempted evasion before interception; look at whether the dodge was too late, too small, or toward the side the defender was already steering.\n\nFacts (research analysis / verified replay):\n- Defender controller: greedy (unmodified research policy), HELD stationary until canonical detection (15 m), then released at step 6 (t = 3.0 s) \u2014 the held phase is a curriculum scaffold, not the final defender benchmark.\n- The defender is inside the 25 m information gate from step 4 (t = 2.0 s); before that A1 sees no defender features.\n- Interception failure after 7 steps (3.5 s): the policy survived the longest of this seed's failures but still entered the 2.5 m radius.\n\nWhat to look for:\n1. Does A1 fly toward the asset normally before the defender becomes visible (inside the 25 m information gate) \u2014 no early swerving?\n2. Does it deviate only AFTER defender information becomes available (gate entry / detection), and does the deviation start promptly?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m) while the defender accelerates toward it after release?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours? (Note the defender keeps chasing after the pass \u2014 does the attacker stay ahead of it?)",
+   "case_id": "21f2ff9f938c4d27b19aabcbec194304",
+   "order": 3,
+   "url": "http://127.0.0.1:5173/?replay=0511b9a8e00ce623c3c613f1752c5627",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=greedy&attacker=A1-CUR3V2-203&seed=154087"
+  },
+  {
+   "attacker": "A0-CUR3V2-REFERENCE",
+   "model_seed": null,
+   "defender": "greedy",
+   "evaluation_seed": 154129,
+   "kind": "matched_a0_reference",
+   "title": "Matched canonical A0 reference (same scenario as the seed-203 high-quality success, 154129)",
+   "priority": 4,
+   "recording_name": "replay-154129-greedy-analytical-A0-CUR3V2-REFERENCE-C0",
+   "replay_id": "352ebf2dc8f1a327a92aa252f572773c",
+   "replay_file": "visualizer/data/local/replay-154129-greedy-analytical-A0-CUR3V2-REFERENCE-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "attacker_trajectory_within_tolerance": true,
+     "defender_trajectory_within_tolerance": true,
+     "release_step_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_attacker_trajectory_difference_m": 0.0,
+    "max_defender_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "replay_path_excess": 1.0002940236614872,
+    "research_path_excess": 1.0002940071811228,
+    "replay_release_step": 4,
+    "research_release_step": 4,
+    "replay_sha256": null,
+    "research_sha256": null,
+    "manifest_sha256": null,
+    "compared_frames": 7
+   },
+   "stats": {
+    "outcome": "intercepted",
+    "steps": 6,
+    "duration_s": 3.0,
+    "path_excess": 1.0002940236614872,
+    "closest_defender_separation_m": 2.499999297086371,
+    "closest_step": 6,
+    "defender_first_visible_step": 2,
+    "release_step": 4,
+    "defender_initial_position_m": [
+     10.975019454956055,
+     -20.238798141479492,
+     7.510687351226807
+    ],
+    "initial_attacker_position_m": [
+     26.871950149536133,
+     -50.0,
+     15.324209213256836
+    ]
+   },
+   "what_to_look_for": "Stage3-v2 REVIEW \u2014 PROVISIONAL CURRICULUM CHECKPOINT / NON-FINAL / NON-CANONICAL\nReference: canonical scripted A0 in the SAME scenario \u2014 it flies straight at the asset and is intercepted. Compare its path with the A1 recording of the same scenario.\n\nFacts (research analysis / verified replay):\n- Defender controller: greedy (unmodified research policy), HELD stationary until canonical detection (15 m), then released at step 4 (t = 2.0 s) \u2014 the held phase is a curriculum scaffold, not the final defender benchmark.\n- The defender is inside the 25 m information gate from step 2 (t = 1.0 s); before that A1 sees no defender features.\n- Canonical A0 flies straight at the asset, ignores the defender and is INTERCEPTED (A0 captures 0/200 in this scenario family; contact separation 2.5 m).\n\nWhat to look for:\n1. Does A1 fly toward the asset normally before the defender becomes visible (inside the 25 m information gate) \u2014 no early swerving?\n2. Does it deviate only AFTER defender information becomes available (gate entry / detection), and does the deviation start promptly?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m) while the defender accelerates toward it after release?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours? (Note the defender keeps chasing after the pass \u2014 does the attacker stay ahead of it?)",
+   "case_id": "c3ef8b87d64f45709d18467213c401c2",
+   "order": 4,
+   "url": "http://127.0.0.1:5173/?replay=352ebf2dc8f1a327a92aa252f572773c",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=greedy&attacker=A0-CUR3V2-REFERENCE&seed=154129"
+  },
+  {
+   "attacker": "A1-CUR3V2-201",
+   "model_seed": 201,
+   "defender": "greedy",
+   "evaluation_seed": 154139,
+   "kind": "representative_high_quality_success",
+   "title": "Seed 201 \u2014 representative HIGH-QUALITY successful evasion of the moving defender",
+   "high_quality": true,
+   "priority": 5,
+   "recording_name": "replay-154139-greedy-analytical-A1-CUR3V2-201-C0",
+   "replay_id": "d8df7318de4b375d72fcd054fb435099",
+   "replay_file": "visualizer/data/local/replay-154139-greedy-analytical-A1-CUR3V2-201-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "attacker_trajectory_within_tolerance": true,
+     "defender_trajectory_within_tolerance": true,
+     "release_step_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_attacker_trajectory_difference_m": 0.0,
+    "max_defender_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "replay_path_excess": 1.0297891953107596,
+    "research_path_excess": 1.029789196412074,
+    "replay_release_step": 5,
+    "research_release_step": 5,
+    "replay_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+    "research_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+    "manifest_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+    "compared_frames": 13
+   },
+   "stats": {
+    "outcome": "soldier_caught",
+    "steps": 12,
+    "duration_s": 6.0,
+    "path_excess": 1.0297891953107596,
+    "closest_defender_separation_m": 7.132433395660518,
+    "closest_step": 7,
+    "defender_first_visible_step": 3,
+    "release_step": 5,
+    "defender_initial_position_m": [
+     -16.831336975097656,
+     19.24374771118164,
+     4.703061580657959
+    ],
+    "initial_attacker_position_m": [
+     -44.67497634887695,
+     50.0,
+     11.677404403686523
+    ]
+   },
+   "what_to_look_for": "Stage3-v2 REVIEW \u2014 PROVISIONAL CURRICULUM CHECKPOINT / NON-FINAL / NON-CANONICAL\nShowcase case (no deviation before the gate, prompt reactive deviation, return to pursuit, efficient path, comfortable separation). Use it as the reference for what the policy does when it works.\n\nFacts (research analysis / verified replay):\n- Defender controller: greedy (unmodified research policy), HELD stationary until canonical detection (15 m), then released at step 5 (t = 2.5 s) \u2014 the held phase is a curriculum scaffold, not the final defender benchmark.\n- The defender is inside the 25 m information gate from step 3 (t = 1.5 s); before that A1 sees no defender features.\n- Closest defender approach at step 7 (t = 3.5 s), separation 7.13 m (A0: exactly 2.5 m = contact); defender speed there 8.0 m/s; class: mixed; max displacement from the same policy's no-defender path 3.7 m (lateral 1.8 m, vertical 3.3 m).\n- First >1 m deviation from the no-defender path 0.0 s after detection (= release) and 1.0 s after gate entry (the deviation starts as soon as defender information exists; the defender is detected, and released, once it is within 15 m); deviation before gate entry: no.\n- Passes BEHIND the defender's velocity vector; post-encounter mean cosine toward the asset 0.958; reacquisition 0.5 s; path-excess 1.030.\n\nWhat to look for:\n1. Does A1 fly toward the asset normally before the defender becomes visible (inside the 25 m information gate) \u2014 no early swerving?\n2. Does it deviate only AFTER defender information becomes available (gate entry / detection), and does the deviation start promptly?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m) while the defender accelerates toward it after release?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours? (Note the defender keeps chasing after the pass \u2014 does the attacker stay ahead of it?)",
+   "case_id": "de7efd6eeb9c44429090570fe966feb8",
+   "order": 5,
+   "url": "http://127.0.0.1:5173/?replay=d8df7318de4b375d72fcd054fb435099",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=greedy&attacker=A1-CUR3V2-201&seed=154139"
+  },
+  {
+   "attacker": "A1-CUR3V2-201",
+   "model_seed": 201,
+   "defender": "greedy",
+   "evaluation_seed": 154142,
+   "kind": "closest_successful_pass",
+   "title": "Seed 201 \u2014 CLOSEST successful defender pass",
+   "priority": null,
+   "recording_name": "replay-154142-greedy-analytical-A1-CUR3V2-201-C0",
+   "replay_id": "d1b766eecf379d7174a77becc9287c0e",
+   "replay_file": "visualizer/data/local/replay-154142-greedy-analytical-A1-CUR3V2-201-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "attacker_trajectory_within_tolerance": true,
+     "defender_trajectory_within_tolerance": true,
+     "release_step_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_attacker_trajectory_difference_m": 0.0,
+    "max_defender_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "replay_path_excess": 1.1521602756967442,
+    "research_path_excess": 1.1521602666851454,
+    "replay_release_step": 6,
+    "research_release_step": 6,
+    "replay_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+    "research_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+    "manifest_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+    "compared_frames": 16
+   },
+   "stats": {
+    "outcome": "soldier_caught",
+    "steps": 15,
+    "duration_s": 7.5,
+    "path_excess": 1.1521602756967442,
+    "closest_defender_separation_m": 3.5517703204505087,
+    "closest_step": 8,
+    "defender_first_visible_step": 4,
+    "release_step": 6,
+    "defender_initial_position_m": [
+     17.864240646362305,
+     -29.424386978149414,
+     8.057640075683594
+    ],
+    "initial_attacker_position_m": [
+     50.0,
+     -42.35596466064453,
+     25.149826049804688
+    ]
+   },
+   "what_to_look_for": "Stage3-v2 REVIEW \u2014 PROVISIONAL CURRICULUM CHECKPOINT / NON-FINAL / NON-CANONICAL\nEdge case: the narrowest successful pass; check that the margin to the 2.5 m interception sphere is real and the maneuver deliberate.\n\nFacts (research analysis / verified replay):\n- Defender controller: greedy (unmodified research policy), HELD stationary until canonical detection (15 m), then released at step 6 (t = 3.0 s) \u2014 the held phase is a curriculum scaffold, not the final defender benchmark.\n- The defender is inside the 25 m information gate from step 4 (t = 2.0 s); before that A1 sees no defender features.\n- Closest defender approach at step 8 (t = 4.0 s), separation 3.55 m (A0: exactly 2.5 m = contact); defender speed there 7.9 m/s; class: unclear; max displacement from the same policy's no-defender path 0.9 m (lateral 0.8 m, vertical 0.1 m).\n- Passes BEHIND the defender's velocity vector; post-encounter mean cosine toward the asset 0.956; reacquisition n/a s; path-excess 1.152.\n\nWhat to look for:\n1. Does A1 fly toward the asset normally before the defender becomes visible (inside the 25 m information gate) \u2014 no early swerving?\n2. Does it deviate only AFTER defender information becomes available (gate entry / detection), and does the deviation start promptly?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m) while the defender accelerates toward it after release?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours? (Note the defender keeps chasing after the pass \u2014 does the attacker stay ahead of it?)",
+   "case_id": "28f825459f9049edae9ddb2c2699070e",
+   "order": 6,
+   "url": "http://127.0.0.1:5173/?replay=d1b766eecf379d7174a77becc9287c0e",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=greedy&attacker=A1-CUR3V2-201&seed=154142"
+  },
+  {
+   "attacker": "A1-CUR3V2-201",
+   "model_seed": 201,
+   "defender": "greedy",
+   "evaluation_seed": 154047,
+   "kind": "interception_failure",
+   "title": "Seed 201 \u2014 INTERCEPTION failure (longest attempted evasion)",
+   "priority": null,
+   "recording_name": "replay-154047-greedy-analytical-A1-CUR3V2-201-C0",
+   "replay_id": "4770861aa0d321428d12d8bdb2c1a49d",
+   "replay_file": "visualizer/data/local/replay-154047-greedy-analytical-A1-CUR3V2-201-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "attacker_trajectory_within_tolerance": true,
+     "defender_trajectory_within_tolerance": true,
+     "release_step_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_attacker_trajectory_difference_m": 0.0,
+    "max_defender_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "replay_path_excess": 1.0008757929055596,
+    "research_path_excess": 1.0008757899006453,
+    "replay_release_step": 6,
+    "research_release_step": 6,
+    "replay_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+    "research_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+    "manifest_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+    "compared_frames": 9
+   },
+   "stats": {
+    "outcome": "intercepted",
+    "steps": 8,
+    "duration_s": 4.0,
+    "path_excess": 1.0008757929055596,
+    "closest_defender_separation_m": 2.500000951554831,
+    "closest_step": 8,
+    "defender_first_visible_step": 4,
+    "release_step": 6,
+    "defender_initial_position_m": [
+     22.056310653686523,
+     -21.139713287353516,
+     12.464635848999023
+    ],
+    "initial_attacker_position_m": [
+     50.0,
+     -49.108787536621094,
+     29.87567901611328
+    ]
+   },
+   "what_to_look_for": "Stage3-v2 REVIEW \u2014 PROVISIONAL CURRICULUM CHECKPOINT / NON-FINAL / NON-CANONICAL\nFailure case: the longest attempted evasion before interception; look at whether the dodge was too late, too small, or toward the side the defender was already steering.\n\nFacts (research analysis / verified replay):\n- Defender controller: greedy (unmodified research policy), HELD stationary until canonical detection (15 m), then released at step 6 (t = 3.0 s) \u2014 the held phase is a curriculum scaffold, not the final defender benchmark.\n- The defender is inside the 25 m information gate from step 4 (t = 2.0 s); before that A1 sees no defender features.\n- Interception failure after 8 steps (4.0 s): the policy survived the longest of this seed's failures but still entered the 2.5 m radius.\n\nWhat to look for:\n1. Does A1 fly toward the asset normally before the defender becomes visible (inside the 25 m information gate) \u2014 no early swerving?\n2. Does it deviate only AFTER defender information becomes available (gate entry / detection), and does the deviation start promptly?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m) while the defender accelerates toward it after release?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours? (Note the defender keeps chasing after the pass \u2014 does the attacker stay ahead of it?)",
+   "case_id": "40cb9f280b134e20b3b5bc772ff35b22",
+   "order": 7,
+   "url": "http://127.0.0.1:5173/?replay=4770861aa0d321428d12d8bdb2c1a49d",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=greedy&attacker=A1-CUR3V2-201&seed=154047"
+  },
+  {
+   "attacker": "A1-CUR3V2-201",
+   "model_seed": 201,
+   "defender": "greedy",
+   "evaluation_seed": 154182,
+   "kind": "vertical_evasion",
+   "title": "Seed 201 \u2014 VERTICAL evasion (largest altitude change)",
+   "priority": null,
+   "recording_name": "replay-154182-greedy-analytical-A1-CUR3V2-201-C0",
+   "replay_id": "88a23680ae13deae3a574881770c7a22",
+   "replay_file": "visualizer/data/local/replay-154182-greedy-analytical-A1-CUR3V2-201-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "attacker_trajectory_within_tolerance": true,
+     "defender_trajectory_within_tolerance": true,
+     "release_step_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_attacker_trajectory_difference_m": 0.0,
+    "max_defender_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "replay_path_excess": 1.07595611125707,
+    "research_path_excess": 1.0759561052460611,
+    "replay_release_step": 4,
+    "research_release_step": 4,
+    "replay_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+    "research_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+    "manifest_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+    "compared_frames": 15
+   },
+   "stats": {
+    "outcome": "soldier_caught",
+    "steps": 14,
+    "duration_s": 7.0,
+    "path_excess": 1.07595611125707,
+    "closest_defender_separation_m": 6.437606452667355,
+    "closest_step": 5,
+    "defender_first_visible_step": 1,
+    "release_step": 4,
+    "defender_initial_position_m": [
+     -24.669750213623047,
+     34.32776641845703,
+     7.203983783721924
+    ],
+    "initial_attacker_position_m": [
+     -44.25724411010742,
+     50.0,
+     15.948951721191406
+    ]
+   },
+   "what_to_look_for": "Stage3-v2 REVIEW \u2014 PROVISIONAL CURRICULUM CHECKPOINT / NON-FINAL / NON-CANONICAL\nVertical example: the largest vertical displacement from the same policy's no-defender path (altitude change to clear the defender).\n\nFacts (research analysis / verified replay):\n- Defender controller: greedy (unmodified research policy), HELD stationary until canonical detection (15 m), then released at step 4 (t = 2.0 s) \u2014 the held phase is a curriculum scaffold, not the final defender benchmark.\n- The defender is inside the 25 m information gate from step 1 (t = 0.5 s); before that A1 sees no defender features.\n- Closest defender approach at step 5 (t = 2.5 s), separation 6.44 m (A0: exactly 2.5 m = contact); defender speed there 4.0 m/s; class: vertical; max displacement from the same policy's no-defender path 4.1 m (lateral 1.4 m, vertical 3.4 m).\n- First >1 m deviation from the no-defender path 0.0 s after detection (= release) and 1.5 s after gate entry (the deviation starts as soon as defender information exists; the defender is detected, and released, once it is within 15 m); deviation before gate entry: no.\n- Passes in FRONT of the defender's velocity vector; post-encounter mean cosine toward the asset 0.955; reacquisition 1.5 s; path-excess 1.076.\n\nWhat to look for:\n1. Does A1 fly toward the asset normally before the defender becomes visible (inside the 25 m information gate) \u2014 no early swerving?\n2. Does it deviate only AFTER defender information becomes available (gate entry / detection), and does the deviation start promptly?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m) while the defender accelerates toward it after release?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours? (Note the defender keeps chasing after the pass \u2014 does the attacker stay ahead of it?)",
+   "case_id": "d949e21f1c7b40d5b9e31b7f62d1c85e",
+   "order": 8,
+   "url": "http://127.0.0.1:5173/?replay=88a23680ae13deae3a574881770c7a22",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=greedy&attacker=A1-CUR3V2-201&seed=154182"
+  },
+  {
+   "attacker": "A1-CUR3V2-202",
+   "model_seed": 202,
+   "defender": "greedy",
+   "evaluation_seed": 154151,
+   "kind": "closest_successful_pass",
+   "title": "Seed 202 \u2014 CLOSEST successful defender pass",
+   "priority": null,
+   "recording_name": "replay-154151-greedy-analytical-A1-CUR3V2-202-C0",
+   "replay_id": "97fd28dc9bc9aa636c129c583f385a59",
+   "replay_file": "visualizer/data/local/replay-154151-greedy-analytical-A1-CUR3V2-202-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "attacker_trajectory_within_tolerance": true,
+     "defender_trajectory_within_tolerance": true,
+     "release_step_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_attacker_trajectory_difference_m": 0.0,
+    "max_defender_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "replay_path_excess": 1.134854917088439,
+    "research_path_excess": 1.134854918059273,
+    "replay_release_step": 1,
+    "research_release_step": 1,
+    "replay_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485",
+    "research_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485",
+    "manifest_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485",
+    "compared_frames": 13
+   },
+   "stats": {
+    "outcome": "soldier_caught",
+    "steps": 12,
+    "duration_s": 6.0,
+    "path_excess": 1.134854917088439,
+    "closest_defender_separation_m": 3.4216557680527613,
+    "closest_step": 3,
+    "defender_first_visible_step": 0,
+    "release_step": 1,
+    "defender_initial_position_m": [
+     30.386018753051758,
+     -22.539249420166016,
+     11.784122467041016
+    ],
+    "initial_attacker_position_m": [
+     50.0,
+     -18.826173782348633,
+     11.813801765441895
+    ]
+   },
+   "what_to_look_for": "Stage3-v2 REVIEW \u2014 PROVISIONAL CURRICULUM CHECKPOINT / NON-FINAL / NON-CANONICAL\nEdge case: the narrowest successful pass; check that the margin to the 2.5 m interception sphere is real and the maneuver deliberate.\n\nFacts (research analysis / verified replay):\n- Defender controller: greedy (unmodified research policy), HELD stationary until canonical detection (15 m), then released at step 1 (t = 0.5 s) \u2014 the held phase is a curriculum scaffold, not the final defender benchmark.\n- The defender is inside the 25 m information gate from step 0 (t = 0.0 s) \u2014 i.e. already at the start.\n- Closest defender approach at step 3 (t = 1.5 s), separation 3.42 m (A0: exactly 2.5 m = contact); defender speed there 8.0 m/s; class: unclear; max displacement from the same policy's no-defender path 0.5 m (lateral 0.1 m, vertical 0.3 m).\n- Passes BEHIND the defender's velocity vector; post-encounter mean cosine toward the asset 0.961; reacquisition 1.0 s; path-excess 1.135.\n\nWhat to look for:\n1. Does A1 fly toward the asset normally before the defender becomes visible (inside the 25 m information gate) \u2014 no early swerving?\n2. Does it deviate only AFTER defender information becomes available (gate entry / detection), and does the deviation start promptly?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m) while the defender accelerates toward it after release?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours? (Note the defender keeps chasing after the pass \u2014 does the attacker stay ahead of it?)",
+   "case_id": "6cb8bae374fc4d45a2e2802d7de1ebab",
+   "order": 9,
+   "url": "http://127.0.0.1:5173/?replay=97fd28dc9bc9aa636c129c583f385a59",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=greedy&attacker=A1-CUR3V2-202&seed=154151"
+  },
+  {
+   "attacker": "A1-CUR3V2-202",
+   "model_seed": 202,
+   "defender": "greedy",
+   "evaluation_seed": 154087,
+   "kind": "interception_failure",
+   "title": "Seed 202 \u2014 INTERCEPTION failure (longest attempted evasion)",
+   "priority": null,
+   "recording_name": "replay-154087-greedy-analytical-A1-CUR3V2-202-C0",
+   "replay_id": "f64b1e0fc9d8d663aa147c8e65be12bf",
+   "replay_file": "visualizer/data/local/replay-154087-greedy-analytical-A1-CUR3V2-202-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "attacker_trajectory_within_tolerance": true,
+     "defender_trajectory_within_tolerance": true,
+     "release_step_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_attacker_trajectory_difference_m": 0.0,
+    "max_defender_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "replay_path_excess": 1.1294814001348947,
+    "research_path_excess": 1.1294814205823864,
+    "replay_release_step": 6,
+    "research_release_step": 6,
+    "replay_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485",
+    "research_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485",
+    "manifest_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485",
+    "compared_frames": 9
+   },
+   "stats": {
+    "outcome": "intercepted",
+    "steps": 8,
+    "duration_s": 4.0,
+    "path_excess": 1.1294814001348947,
+    "closest_defender_separation_m": 2.4999996790436647,
+    "closest_step": 8,
+    "defender_first_visible_step": 4,
+    "release_step": 6,
+    "defender_initial_position_m": [
+     -21.112384796142578,
+     -16.755155563354492,
+     8.953502655029297
+    ],
+    "initial_attacker_position_m": [
+     -39.74738693237305,
+     -50.0,
+     17.218116760253906
+    ]
+   },
+   "what_to_look_for": "Stage3-v2 REVIEW \u2014 PROVISIONAL CURRICULUM CHECKPOINT / NON-FINAL / NON-CANONICAL\nFailure case: the longest attempted evasion before interception; look at whether the dodge was too late, too small, or toward the side the defender was already steering.\n\nFacts (research analysis / verified replay):\n- Defender controller: greedy (unmodified research policy), HELD stationary until canonical detection (15 m), then released at step 6 (t = 3.0 s) \u2014 the held phase is a curriculum scaffold, not the final defender benchmark.\n- The defender is inside the 25 m information gate from step 4 (t = 2.0 s); before that A1 sees no defender features.\n- Interception failure after 8 steps (4.0 s): the policy survived the longest of this seed's failures but still entered the 2.5 m radius.\n\nWhat to look for:\n1. Does A1 fly toward the asset normally before the defender becomes visible (inside the 25 m information gate) \u2014 no early swerving?\n2. Does it deviate only AFTER defender information becomes available (gate entry / detection), and does the deviation start promptly?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m) while the defender accelerates toward it after release?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours? (Note the defender keeps chasing after the pass \u2014 does the attacker stay ahead of it?)",
+   "case_id": "733c826593854cf583063e3a335d5f24",
+   "order": 10,
+   "url": "http://127.0.0.1:5173/?replay=f64b1e0fc9d8d663aa147c8e65be12bf",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=greedy&attacker=A1-CUR3V2-202&seed=154087"
+  },
+  {
+   "attacker": "A1-CUR3V2-202",
+   "model_seed": 202,
+   "defender": "greedy",
+   "evaluation_seed": 154014,
+   "kind": "representative_success",
+   "title": "Seed 202 \u2014 representative successful capture",
+   "priority": null,
+   "recording_name": "replay-154014-greedy-analytical-A1-CUR3V2-202-C0",
+   "replay_id": "286eb527f935725a41af2ce5bd80ec45",
+   "replay_file": "visualizer/data/local/replay-154014-greedy-analytical-A1-CUR3V2-202-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "attacker_trajectory_within_tolerance": true,
+     "defender_trajectory_within_tolerance": true,
+     "release_step_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_attacker_trajectory_difference_m": 0.0,
+    "max_defender_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "replay_path_excess": 1.0607754936415856,
+    "research_path_excess": 1.0607754957078979,
+    "replay_release_step": 3,
+    "research_release_step": 3,
+    "replay_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485",
+    "research_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485",
+    "manifest_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485",
+    "compared_frames": 15
+   },
+   "stats": {
+    "outcome": "soldier_caught",
+    "steps": 14,
+    "duration_s": 7.0,
+    "path_excess": 1.0607754936415856,
+    "closest_defender_separation_m": 6.059229381048291,
+    "closest_step": 4,
+    "defender_first_visible_step": 1,
+    "release_step": 3,
+    "defender_initial_position_m": [
+     28.497791290283203,
+     33.818687438964844,
+     10.362375259399414
+    ],
+    "initial_attacker_position_m": [
+     50.0,
+     48.41014862060547,
+     17.094539642333984
+    ]
+   },
+   "what_to_look_for": "Stage3-v2 REVIEW \u2014 PROVISIONAL CURRICULUM CHECKPOINT / NON-FINAL / NON-CANONICAL\nTypical case: nothing special selected; judge overall smoothness and efficiency.\n\nFacts (research analysis / verified replay):\n- Defender controller: greedy (unmodified research policy), HELD stationary until canonical detection (15 m), then released at step 3 (t = 1.5 s) \u2014 the held phase is a curriculum scaffold, not the final defender benchmark.\n- The defender is inside the 25 m information gate from step 1 (t = 0.5 s); before that A1 sees no defender features.\n- Closest defender approach at step 4 (t = 2.0 s), separation 6.06 m (A0: exactly 2.5 m = contact); defender speed there 4.0 m/s; class: mixed; max displacement from the same policy's no-defender path 1.5 m (lateral 1.0 m, vertical 1.0 m).\n- First >1 m deviation from the no-defender path 1.0 s after detection (= release) and 2.0 s after gate entry (the deviation starts as soon as defender information exists; the defender is detected, and released, once it is within 15 m); deviation before gate entry: no.\n- Passes in FRONT of the defender's velocity vector; post-encounter mean cosine toward the asset 0.963; reacquisition 2.0 s; path-excess 1.061.\n\nWhat to look for:\n1. Does A1 fly toward the asset normally before the defender becomes visible (inside the 25 m information gate) \u2014 no early swerving?\n2. Does it deviate only AFTER defender information becomes available (gate entry / detection), and does the deviation start promptly?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m) while the defender accelerates toward it after release?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours? (Note the defender keeps chasing after the pass \u2014 does the attacker stay ahead of it?)",
+   "case_id": "38a219105996426380d708649dd8d98a",
+   "order": 11,
+   "url": "http://127.0.0.1:5173/?replay=286eb527f935725a41af2ce5bd80ec45",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=greedy&attacker=A1-CUR3V2-202&seed=154014"
+  },
+  {
+   "attacker": "A1-CUR3V2-203",
+   "model_seed": 203,
+   "defender": "greedy",
+   "evaluation_seed": 154072,
+   "kind": "lateral_evasion",
+   "title": "Seed 203 \u2014 LATERAL evasion (largest horizontal detour)",
+   "priority": null,
+   "recording_name": "replay-154072-greedy-analytical-A1-CUR3V2-203-C0",
+   "replay_id": "62b4f97147bfe01d72e2cf61abec18d5",
+   "replay_file": "visualizer/data/local/replay-154072-greedy-analytical-A1-CUR3V2-203-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "attacker_trajectory_within_tolerance": true,
+     "defender_trajectory_within_tolerance": true,
+     "release_step_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_attacker_trajectory_difference_m": 0.0,
+    "max_defender_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "replay_path_excess": 1.0716031165529178,
+    "research_path_excess": 1.0716031129330987,
+    "replay_release_step": 3,
+    "research_release_step": 3,
+    "replay_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "research_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "manifest_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "compared_frames": 15
+   },
+   "stats": {
+    "outcome": "soldier_caught",
+    "steps": 14,
+    "duration_s": 7.0,
+    "path_excess": 1.0716031165529178,
+    "closest_defender_separation_m": 5.702482845578953,
+    "closest_step": 5,
+    "defender_first_visible_step": 1,
+    "release_step": 3,
+    "defender_initial_position_m": [
+     -27.415294647216797,
+     27.67071533203125,
+     17.496095657348633
+    ],
+    "initial_attacker_position_m": [
+     -50.0,
+     42.590782165527344,
+     27.190359115600586
+    ]
+   },
+   "what_to_look_for": "Stage3-v2 REVIEW \u2014 PROVISIONAL CURRICULUM CHECKPOINT / NON-FINAL / NON-CANONICAL\nLateral example: the largest horizontal displacement from the same policy's no-defender path.\n\nFacts (research analysis / verified replay):\n- Defender controller: greedy (unmodified research policy), HELD stationary until canonical detection (15 m), then released at step 3 (t = 1.5 s) \u2014 the held phase is a curriculum scaffold, not the final defender benchmark.\n- The defender is inside the 25 m information gate from step 1 (t = 0.5 s); before that A1 sees no defender features.\n- Closest defender approach at step 5 (t = 2.5 s), separation 5.70 m (A0: exactly 2.5 m = contact); defender speed there 7.5 m/s; class: lateral; max displacement from the same policy's no-defender path 3.9 m (lateral 3.6 m, vertical 0.8 m).\n- First >1 m deviation from the no-defender path 0.5 s before detection (= release) and 0.5 s after gate entry (the deviation starts as soon as defender information exists; the defender is detected, and released, once it is within 15 m); deviation before gate entry: no.\n- Passes BEHIND the defender's velocity vector; post-encounter mean cosine toward the asset 0.954; reacquisition 1.5 s; path-excess 1.072.\n\nWhat to look for:\n1. Does A1 fly toward the asset normally before the defender becomes visible (inside the 25 m information gate) \u2014 no early swerving?\n2. Does it deviate only AFTER defender information becomes available (gate entry / detection), and does the deviation start promptly?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m) while the defender accelerates toward it after release?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours? (Note the defender keeps chasing after the pass \u2014 does the attacker stay ahead of it?)",
+   "case_id": "9f97e6b9c0084c5a85a7343fd83ddd9b",
+   "order": 12,
+   "url": "http://127.0.0.1:5173/?replay=62b4f97147bfe01d72e2cf61abec18d5",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=greedy&attacker=A1-CUR3V2-203&seed=154072"
+  },
+  {
+   "attacker": "A1-CUR3V2-203",
+   "model_seed": 203,
+   "defender": "greedy",
+   "evaluation_seed": 154182,
+   "kind": "mixed_evasion",
+   "title": "Seed 203 \u2014 MIXED lateral + vertical evasion (largest displacement)",
+   "priority": null,
+   "recording_name": "replay-154182-greedy-analytical-A1-CUR3V2-203-C0",
+   "replay_id": "8c3ed1376a284185c0a0abadca70e992",
+   "replay_file": "visualizer/data/local/replay-154182-greedy-analytical-A1-CUR3V2-203-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "attacker_trajectory_within_tolerance": true,
+     "defender_trajectory_within_tolerance": true,
+     "release_step_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_attacker_trajectory_difference_m": 0.0,
+    "max_defender_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "replay_path_excess": 1.0861328938296377,
+    "research_path_excess": 1.0861329039574208,
+    "replay_release_step": 3,
+    "research_release_step": 3,
+    "replay_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "research_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "manifest_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "compared_frames": 14
+   },
+   "stats": {
+    "outcome": "soldier_caught",
+    "steps": 13,
+    "duration_s": 6.5,
+    "path_excess": 1.0861328938296377,
+    "closest_defender_separation_m": 5.259201206691885,
+    "closest_step": 5,
+    "defender_first_visible_step": 1,
+    "release_step": 3,
+    "defender_initial_position_m": [
+     -24.669750213623047,
+     34.32776641845703,
+     7.203983783721924
+    ],
+    "initial_attacker_position_m": [
+     -44.25724411010742,
+     50.0,
+     15.948951721191406
+    ]
+   },
+   "what_to_look_for": "Stage3-v2 REVIEW \u2014 PROVISIONAL CURRICULUM CHECKPOINT / NON-FINAL / NON-CANONICAL\nMixed example: a combined horizontal + vertical maneuver (the most common class).\n\nFacts (research analysis / verified replay):\n- Defender controller: greedy (unmodified research policy), HELD stationary until canonical detection (15 m), then released at step 3 (t = 1.5 s) \u2014 the held phase is a curriculum scaffold, not the final defender benchmark.\n- The defender is inside the 25 m information gate from step 1 (t = 0.5 s); before that A1 sees no defender features.\n- Closest defender approach at step 5 (t = 2.5 s), separation 5.26 m (A0: exactly 2.5 m = contact); defender speed there 7.8 m/s; class: mixed; max displacement from the same policy's no-defender path 6.1 m (lateral 4.7 m, vertical 3.8 m).\n- First >1 m deviation from the no-defender path 0.0 s after detection (= release) and 1.0 s after gate entry (the deviation starts as soon as defender information exists; the defender is detected, and released, once it is within 15 m); deviation before gate entry: no.\n- Passes BEHIND the defender's velocity vector; post-encounter mean cosine toward the asset 0.980; reacquisition 2.0 s; path-excess 1.086.\n\nWhat to look for:\n1. Does A1 fly toward the asset normally before the defender becomes visible (inside the 25 m information gate) \u2014 no early swerving?\n2. Does it deviate only AFTER defender information becomes available (gate entry / detection), and does the deviation start promptly?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m) while the defender accelerates toward it after release?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours? (Note the defender keeps chasing after the pass \u2014 does the attacker stay ahead of it?)",
+   "case_id": "bb43ca643fd243519d8f9525f9680188",
+   "order": 13,
+   "url": "http://127.0.0.1:5173/?replay=8c3ed1376a284185c0a0abadca70e992",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=greedy&attacker=A1-CUR3V2-203&seed=154182"
+  },
+  {
+   "attacker": "A1-CUR3V2-203",
+   "model_seed": 203,
+   "defender": "lead",
+   "evaluation_seed": 156018,
+   "kind": "generalization_capture",
+   "title": "Seed 203 vs LEAD (never trained against) \u2014 captures where the Stage2-v2 parent is intercepted",
+   "generalization": {
+    "scenario": 156018,
+    "wins_over_parent": 26,
+    "a1_capture": 0.84,
+    "parent_capture": 0.58
+   },
+   "diagnostic_block": [
+    156000,
+    156099
+   ],
+   "priority": null,
+   "recording_name": "replay-156018-lead-analytical-A1-CUR3V2-203-C0",
+   "replay_id": "531bdf15a56eb982cf9e6021a5a208d6",
+   "replay_file": "visualizer/data/local/replay-156018-lead-analytical-A1-CUR3V2-203-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "attacker_trajectory_within_tolerance": true,
+     "defender_trajectory_within_tolerance": true,
+     "release_step_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_attacker_trajectory_difference_m": 0.0,
+    "max_defender_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "replay_path_excess": 1.0304959696672005,
+    "research_path_excess": 1.030495969663034,
+    "replay_release_step": 3,
+    "research_release_step": 3,
+    "replay_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "research_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "manifest_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "compared_frames": 14
+   },
+   "stats": {
+    "outcome": "soldier_caught",
+    "steps": 13,
+    "duration_s": 6.5,
+    "path_excess": 1.0304959696672005,
+    "closest_defender_separation_m": 4.78985864462297,
+    "closest_step": 4,
+    "defender_first_visible_step": 1,
+    "release_step": 3,
+    "defender_initial_position_m": [
+     -28.052370071411133,
+     -21.898038864135742,
+     17.30445671081543
+    ],
+    "initial_attacker_position_m": [
+     -50.0,
+     -34.78928756713867,
+     27.9036922454834
+    ]
+   },
+   "what_to_look_for": "Stage3-v2 REVIEW \u2014 PROVISIONAL CURRICULUM CHECKPOINT / NON-FINAL / NON-CANONICAL\nGeneralization case: a controller the policy was NEVER trained against (same hold-until-detection semantics). The Stage2-v2 parent is intercepted in this scenario; check that the Stage-3 policy still shows the same evade-then-resume pattern.\n\nFacts (research analysis / verified replay):\n- Defender controller: lead (unmodified research policy), HELD stationary until canonical detection (15 m), then released at step 3 (t = 1.5 s) \u2014 the held phase is a curriculum scaffold, not the final defender benchmark.\n- The defender is inside the 25 m information gate from step 1 (t = 0.5 s); before that A1 sees no defender features.\n- Diagnostic block 156000\u2013156099: the seed-203 policy captures 84% against lead (Stage2-v2 parent 58%); this scenario is one of 26 the parent loses and the Stage-3 policy wins (closest approach nearest the median of those wins).\n\nWhat to look for:\n1. Does A1 fly toward the asset normally before the defender becomes visible (inside the 25 m information gate) \u2014 no early swerving?\n2. Does it deviate only AFTER defender information becomes available (gate entry / detection), and does the deviation start promptly?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m) while the defender accelerates toward it after release?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours? (Note the defender keeps chasing after the pass \u2014 does the attacker stay ahead of it?)",
+   "case_id": "3a7a65af3ef945c0a0cc024799c8af20",
+   "order": 14,
+   "url": "http://127.0.0.1:5173/?replay=531bdf15a56eb982cf9e6021a5a208d6",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=lead&attacker=A1-CUR3V2-203&seed=156018"
+  },
+  {
+   "attacker": "A1-CUR3V2-203",
+   "model_seed": 203,
+   "defender": "pn",
+   "evaluation_seed": 156095,
+   "kind": "generalization_capture",
+   "title": "Seed 203 vs PN (never trained against) \u2014 captures where the Stage2-v2 parent is intercepted",
+   "generalization": {
+    "scenario": 156095,
+    "wins_over_parent": 25,
+    "a1_capture": 0.84,
+    "parent_capture": 0.6
+   },
+   "diagnostic_block": [
+    156000,
+    156099
+   ],
+   "priority": null,
+   "recording_name": "replay-156095-pn-analytical-A1-CUR3V2-203-C0",
+   "replay_id": "39ca1dd0f48d5debeb0de1f7870b9b61",
+   "replay_file": "visualizer/data/local/replay-156095-pn-analytical-A1-CUR3V2-203-C0.json.gz",
+   "verification": {
+    "checks": {
+     "outcome_equal": true,
+     "steps_equal": true,
+     "attacker_trajectory_within_tolerance": true,
+     "defender_trajectory_within_tolerance": true,
+     "release_step_equal": true,
+     "path_excess_within_tolerance": true,
+     "checkpoint_sha_equal": true
+    },
+    "passed": true,
+    "max_attacker_trajectory_difference_m": 0.0,
+    "max_defender_trajectory_difference_m": 0.0,
+    "tolerance_m": 0.001,
+    "replay_path_excess": 1.0357873019930395,
+    "research_path_excess": 1.0357872944955013,
+    "replay_release_step": 2,
+    "research_release_step": 2,
+    "replay_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "research_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "manifest_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "compared_frames": 12
+   },
+   "stats": {
+    "outcome": "soldier_caught",
+    "steps": 11,
+    "duration_s": 5.5,
+    "path_excess": 1.0357873019930395,
+    "closest_defender_separation_m": 4.765446005296404,
+    "closest_step": 4,
+    "defender_first_visible_step": 0,
+    "release_step": 2,
+    "defender_initial_position_m": [
+     20.731548309326172,
+     -32.02755355834961,
+     12.120699882507324
+    ],
+    "initial_attacker_position_m": [
+     32.6271858215332,
+     -50.0,
+     19.460275650024414
+    ]
+   },
+   "what_to_look_for": "Stage3-v2 REVIEW \u2014 PROVISIONAL CURRICULUM CHECKPOINT / NON-FINAL / NON-CANONICAL\nGeneralization case: a controller the policy was NEVER trained against (same hold-until-detection semantics). The Stage2-v2 parent is intercepted in this scenario; check that the Stage-3 policy still shows the same evade-then-resume pattern.\n\nFacts (research analysis / verified replay):\n- Defender controller: pn (unmodified research policy), HELD stationary until canonical detection (15 m), then released at step 2 (t = 1.0 s) \u2014 the held phase is a curriculum scaffold, not the final defender benchmark.\n- The defender is inside the 25 m information gate from step 0 (t = 0.0 s) \u2014 i.e. already at the start.\n- Diagnostic block 156000\u2013156099: the seed-203 policy captures 84% against pn (Stage2-v2 parent 60%); this scenario is one of 25 the parent loses and the Stage-3 policy wins (closest approach nearest the median of those wins).\n\nWhat to look for:\n1. Does A1 fly toward the asset normally before the defender becomes visible (inside the 25 m information gate) \u2014 no early swerving?\n2. Does it deviate only AFTER defender information becomes available (gate entry / detection), and does the deviation start promptly?\n3. Is the evasion smooth rather than random or wandering?\n4. Does it create enough separation to avoid the defender (interception radius 2.5 m) while the defender accelerates toward it after release?\n5. After clearing the defender, does it turn back toward the asset?\n6. Does it capture on the first reasonable approach?\n7. Any unnecessary loops, oscillations, fly-bys or excessive detours? (Note the defender keeps chasing after the pass \u2014 does the attacker stay ahead of it?)",
+   "case_id": "10c1e052ce1541fda65b0b8fc749acd6",
+   "order": 15,
+   "url": "http://127.0.0.1:5173/?replay=39ca1dd0f48d5debeb0de1f7870b9b61",
+   "live_url": "http://127.0.0.1:5173/?semantics=V2&clutter=C0&defender=pn&attacker=A1-CUR3V2-203&seed=156095"
+  }
+ ],
+ "all_verified": true,
+ "tolerance_m": 0.001,
+ "checklist": [
+  "Does A1 fly toward the asset normally before the defender becomes visible (inside the 25 m information gate) \u2014 no early swerving?",
+  "Does it deviate only AFTER defender information becomes available (gate entry / detection), and does the deviation start promptly?",
+  "Is the evasion smooth rather than random or wandering?",
+  "Does it create enough separation to avoid the defender (interception radius 2.5 m) while the defender accelerates toward it after release?",
+  "After clearing the defender, does it turn back toward the asset?",
+  "Does it capture on the first reasonable approach?",
+  "Any unnecessary loops, oscillations, fly-bys or excessive detours? (Note the defender keeps chasing after the pass \u2014 does the attacker stay ahead of it?)"
+ ]
+}
