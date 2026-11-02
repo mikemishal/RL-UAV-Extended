@@ -466,13 +466,13 @@ export function App() {
   const presetReplayApplied = useRef(false);
   useEffect(() => {
     const id = queryPreset().replay;
-    if (!id || presetReplayApplied.current || !replays.some(item => item.replay_id === id)) return;
+    if (!id || presetReplayApplied.current || !catalog || !replays.some(item => item.replay_id === id)) return;
     presetReplayApplied.current = true;
     setRecordedReplayId(id);
     setViewMode('single');
     selectReplay(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [replays]);
+  }, [replays, catalog]);
 
   const availableDefenders = catalog?.defenders.filter(item => item.available) ?? [];
   const defender = availableDefenders.find(item => item.policy_id === defenderId) ?? availableDefenders[0];
