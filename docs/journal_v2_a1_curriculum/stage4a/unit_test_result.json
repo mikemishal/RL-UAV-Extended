@@ -1,0 +1,15 @@
+{
+ "file": "tests/test_journal_v2_a1_cur4a.py",
+ "passed": 25,
+ "failed": 0,
+ "covers": [
+  "no-defender curriculum masking: defender observation slots exactly 0 in every state (even 0.7 m from the defender), defender parked/stationary, interception impossible, observation/action/reward interface unchanged",
+  "canonical moving asset: config differs from canonical V2 only in intercept_radius and defender_standby_until_detection; legacy_gaussian_random_walk, v_s 1.5, sigma 0.75 m/axis/step; realized trajectory == the documented recurrence from SeedSequence(seed).spawn(4)[1]; increment scale",
+  "common random numbers: identical asset trajectories across A0 / random policies and identical to the failed Stage-4 environment on the same seed; same seed => same initial state; no future-information slots, observation asset slots == CURRENT asset position",
+  "deterministic evaluation/replay; closest-approach and miss-distance extraction; metrics (gt3, first-pass, repeated fly-bys); namespaces fresh/disjoint (suggested block documented as occupied); frozen gate + boundary cases; seed decision (mastery, any-anchor retention failure, ties)",
+  "retention: the three anchors are the unchanged earlier-stage tasks (stationary asset); baseline verdict = configuration validity only",
+  "parents: pre-registered full hashes, accepted Stage3-v2 (not the failed Stage-4 models); parent initialisation copies actor/critic/log_std with a fresh optimizer",
+  "protocol decomposition + stability; rollouts of another protocol never accepted; 15-stage task state + isolated output namespace",
+  "real-SB3: interrupted (injected crash between model write and manifest, dead-PID lock) == uninterrupted run (Stage4AEnv)"
+ ]
+}

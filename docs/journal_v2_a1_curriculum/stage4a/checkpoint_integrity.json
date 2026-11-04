@@ -1,0 +1,90 @@
+{
+ "all_ok": true,
+ "stage1_to_3": {
+  "stage2_v1_seed_201": {
+   "accepted_sha256_matches": true,
+   "status": "FAIL"
+  },
+  "stage2_v1_seed_202": {
+   "accepted_sha256_matches": true,
+   "status": "FAIL"
+  },
+  "stage2_v1_seed_203": {
+   "accepted_sha256_matches": true,
+   "status": "FAIL"
+  },
+  "stage2_v2_seed_201": {
+   "accepted_sha256_matches": true,
+   "status": "FAIL"
+  },
+  "stage2_v2_seed_202": {
+   "accepted_sha256_matches": true,
+   "status": "FAIL"
+  },
+  "stage2_v2_seed_203": {
+   "accepted_sha256_matches": true,
+   "status": "FAIL"
+  },
+  "stage3_v2_seed_201": {
+   "accepted_sha256_matches_preregistered": true,
+   "all_rollouts_match": true,
+   "status": "MASTERED"
+  },
+  "stage3_v2_seed_202": {
+   "accepted_sha256_matches_preregistered": true,
+   "all_rollouts_match": true,
+   "status": "MASTERED"
+  },
+  "stage3_v2_seed_203": {
+   "accepted_sha256_matches_preregistered": true,
+   "all_rollouts_match": true,
+   "status": "MASTERED"
+  }
+ },
+ "stage4_failed_evidence": {
+  "stage4_seed_201": {
+   "accepted_sha256": "e9f6f0c0c940101fee118ed8de83fcafaab9dc9e14025e706a0d57850f5d5a44",
+   "all_rollouts_match": true,
+   "matches_recorded_final_hash": true,
+   "status": "FAIL"
+  },
+  "stage4_seed_202": {
+   "accepted_sha256": "e768197ab908c39f16b92ac740a9ac57a1d1f868b40b89be5c246fb3cd550bb1",
+   "all_rollouts_match": true,
+   "matches_recorded_final_hash": true,
+   "status": "FAIL"
+  },
+  "stage4_seed_203": {
+   "accepted_sha256": "133302d45593c73040f4c821f10cb2c69f3b99e2a94facdb43cd1c1d77a5ffab",
+   "all_rollouts_match": true,
+   "matches_recorded_final_hash": true,
+   "status": "FAIL"
+  }
+ },
+ "stage4a": {
+  "seed_201": {
+   "accepted_sha256": "4b94fe90d05ecdfa8f894894447251b7c102f3a840a07b249e9ffdac304dde95",
+   "all_rollouts_match": true,
+   "matches_manifest": true,
+   "parent_matches_preregistered": true,
+   "parent_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+   "status": "FAIL"
+  },
+  "seed_202": {
+   "accepted_sha256": "26ed0b49b462b52ddc62509de7eca5f25441a4e1d7f1b4f5a9b488899904e343",
+   "all_rollouts_match": true,
+   "matches_manifest": true,
+   "parent_matches_preregistered": true,
+   "parent_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485",
+   "status": "FAIL"
+  },
+  "seed_203": {
+   "accepted_sha256": "bf2f5d97a90b6959e8e551f252a9c5a6f7dc92548d06a3a0492bc19a2bc77938",
+   "all_rollouts_match": true,
+   "matches_manifest": true,
+   "parent_matches_preregistered": true,
+   "parent_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+   "status": "FAIL"
+  }
+ }
+}

@@ -1,0 +1,275 @@
+{
+ "201": {
+  "minimums": {
+   "anchor1_basic_pursuit": 0.98,
+   "anchor2_static_defender": 0.8,
+   "anchor3_moving_defender": 0.75
+  },
+  "per_rollout": [
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.94,
+    "anchor3": 0.91,
+    "rollout": 1
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.93,
+    "anchor3": 0.89,
+    "rollout": 2
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.91,
+    "anchor3": 0.86,
+    "rollout": 3
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.92,
+    "anchor3": 0.85,
+    "rollout": 4
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.89,
+    "anchor3": 0.81,
+    "rollout": 5
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.9,
+    "anchor3": 0.81,
+    "rollout": 6
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.88,
+    "anchor3": 0.81,
+    "rollout": 7
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.88,
+    "anchor3": 0.81,
+    "rollout": 8
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.9,
+    "anchor3": 0.82,
+    "rollout": 9
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.88,
+    "anchor3": 0.8,
+    "rollout": 10
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.85,
+    "anchor3": 0.79,
+    "rollout": 11
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.85,
+    "anchor3": 0.79,
+    "rollout": 12
+   }
+  ],
+  "stage3_parent": {
+   "anchor1": 1.0,
+   "anchor2": 0.95,
+   "anchor3": 0.92
+  },
+  "stage4a_final": {
+   "anchor1": 1.0,
+   "anchor2": 0.85,
+   "anchor3": 0.79
+  }
+ },
+ "202": {
+  "minimums": {
+   "anchor1_basic_pursuit": 0.98,
+   "anchor2_static_defender": 0.8,
+   "anchor3_moving_defender": 0.75
+  },
+  "per_rollout": [
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.97,
+    "anchor3": 0.91,
+    "rollout": 1
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.97,
+    "anchor3": 0.86,
+    "rollout": 2
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.96,
+    "anchor3": 0.86,
+    "rollout": 3
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.96,
+    "anchor3": 0.82,
+    "rollout": 4
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.95,
+    "anchor3": 0.84,
+    "rollout": 5
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.96,
+    "anchor3": 0.85,
+    "rollout": 6
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.95,
+    "anchor3": 0.87,
+    "rollout": 7
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.96,
+    "anchor3": 0.84,
+    "rollout": 8
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.95,
+    "anchor3": 0.85,
+    "rollout": 9
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.94,
+    "anchor3": 0.84,
+    "rollout": 10
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.94,
+    "anchor3": 0.84,
+    "rollout": 11
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.93,
+    "anchor3": 0.8,
+    "rollout": 12
+   }
+  ],
+  "stage3_parent": {
+   "anchor1": 1.0,
+   "anchor2": 0.97,
+   "anchor3": 0.89
+  },
+  "stage4a_final": {
+   "anchor1": 1.0,
+   "anchor2": 0.93,
+   "anchor3": 0.8
+  }
+ },
+ "203": {
+  "minimums": {
+   "anchor1_basic_pursuit": 0.98,
+   "anchor2_static_defender": 0.8,
+   "anchor3_moving_defender": 0.75
+  },
+  "per_rollout": [
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.92,
+    "anchor3": 0.89,
+    "rollout": 1
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.92,
+    "anchor3": 0.9,
+    "rollout": 2
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.95,
+    "anchor3": 0.9,
+    "rollout": 3
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.94,
+    "anchor3": 0.9,
+    "rollout": 4
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.93,
+    "anchor3": 0.9,
+    "rollout": 5
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.92,
+    "anchor3": 0.87,
+    "rollout": 6
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.92,
+    "anchor3": 0.87,
+    "rollout": 7
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.91,
+    "anchor3": 0.84,
+    "rollout": 8
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.91,
+    "anchor3": 0.86,
+    "rollout": 9
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.9,
+    "anchor3": 0.86,
+    "rollout": 10
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.91,
+    "anchor3": 0.84,
+    "rollout": 11
+   },
+   {
+    "anchor1": 1.0,
+    "anchor2": 0.9,
+    "anchor3": 0.82,
+    "rollout": 12
+   }
+  ],
+  "stage3_parent": {
+   "anchor1": 1.0,
+   "anchor2": 0.93,
+   "anchor3": 0.9
+  },
+  "stage4a_final": {
+   "anchor1": 1.0,
+   "anchor2": 0.9,
+   "anchor3": 0.82
+  }
+ }
+}

@@ -1,0 +1,172 @@
+{
+ "201": {
+  "stage3_parent": {
+   "asset_to_attacker_sensitivity_ratio": 0.021935924887657166,
+   "first_layer_column_norm_asset_xyz": [
+    1.4142135381698608,
+    1.4142136573791504,
+    1.4142135381698608
+   ],
+   "first_layer_column_norm_attacker_xyz": [
+    11.059039115905762,
+    10.001843452453613,
+    8.070417404174805
+   ],
+   "jacobian_norm_asset_xy_mean": 0.08983822166919708,
+   "jacobian_norm_attacker_xy_mean": 4.095483779907227,
+   "orthogonal_init_column_norm": 1.4142135623730951,
+   "relative_alignment_mean": -0.19303525984287262,
+   "states": 1192
+  },
+  "stage4_failed": {
+   "asset_to_attacker_sensitivity_ratio": 0.14214181900024414,
+   "first_layer_column_norm_asset_xyz": [
+    2.8693923950195312,
+    2.0500845909118652,
+    1.4142135381698608
+   ],
+   "first_layer_column_norm_attacker_xyz": [
+    11.552641868591309,
+    10.639345169067383,
+    8.524993896484375
+   ],
+   "jacobian_norm_asset_xy_mean": 0.5276487469673157,
+   "jacobian_norm_attacker_xy_mean": 3.7121288776397705,
+   "orthogonal_init_column_norm": 1.4142135623730951,
+   "relative_alignment_mean": 0.8734174966812134,
+   "states": 1189
+  },
+  "stage4a": {
+   "asset_to_attacker_sensitivity_ratio": 0.10418348759412766,
+   "first_layer_column_norm_asset_xyz": [
+    2.2978124618530273,
+    1.677435040473938,
+    1.4142135381698608
+   ],
+   "first_layer_column_norm_attacker_xyz": [
+    11.581557273864746,
+    10.437066078186035,
+    8.536711692810059
+   ],
+   "jacobian_norm_asset_xy_mean": 0.4234507977962494,
+   "jacobian_norm_attacker_xy_mean": 4.064471244812012,
+   "orthogonal_init_column_norm": 1.4142135623730951,
+   "relative_alignment_mean": 0.8093861937522888,
+   "states": 1098
+  }
+ },
+ "202": {
+  "stage3_parent": {
+   "asset_to_attacker_sensitivity_ratio": 0.02484208345413208,
+   "first_layer_column_norm_asset_xyz": [
+    1.4142135381698608,
+    1.4142134189605713,
+    1.4142135381698608
+   ],
+   "first_layer_column_norm_attacker_xyz": [
+    10.98823356628418,
+    11.474447250366211,
+    9.992670059204102
+   ],
+   "jacobian_norm_asset_xy_mean": 0.09907562285661697,
+   "jacobian_norm_attacker_xy_mean": 3.9882171154022217,
+   "orthogonal_init_column_norm": 1.4142135623730951,
+   "relative_alignment_mean": 0.09889380633831024,
+   "states": 1118
+  },
+  "stage4_failed": {
+   "asset_to_attacker_sensitivity_ratio": 0.13953204452991486,
+   "first_layer_column_norm_asset_xyz": [
+    2.1950037479400635,
+    2.3654568195343018,
+    1.4142135381698608
+   ],
+   "first_layer_column_norm_attacker_xyz": [
+    11.519330978393555,
+    12.039834022521973,
+    10.780861854553223
+   ],
+   "jacobian_norm_asset_xy_mean": 0.6051173806190491,
+   "jacobian_norm_attacker_xy_mean": 4.33676290512085,
+   "orthogonal_init_column_norm": 1.4142135623730951,
+   "relative_alignment_mean": 0.9404032826423645,
+   "states": 1183
+  },
+  "stage4a": {
+   "asset_to_attacker_sensitivity_ratio": 0.09439370036125183,
+   "first_layer_column_norm_asset_xyz": [
+    1.798431634902954,
+    1.8537427186965942,
+    1.4142135381698608
+   ],
+   "first_layer_column_norm_attacker_xyz": [
+    11.389613151550293,
+    11.959263801574707,
+    10.393007278442383
+   ],
+   "jacobian_norm_asset_xy_mean": 0.3662208914756775,
+   "jacobian_norm_attacker_xy_mean": 3.8797173500061035,
+   "orthogonal_init_column_norm": 1.4142135623730951,
+   "relative_alignment_mean": 0.8628666400909424,
+   "states": 1121
+  }
+ },
+ "203": {
+  "stage3_parent": {
+   "asset_to_attacker_sensitivity_ratio": 0.02076159231364727,
+   "first_layer_column_norm_asset_xyz": [
+    1.41421377658844,
+    1.4142135381698608,
+    1.4142134189605713
+   ],
+   "first_layer_column_norm_attacker_xyz": [
+    10.688021659851074,
+    13.594273567199707,
+    9.658172607421875
+   ],
+   "jacobian_norm_asset_xy_mean": 0.09723585098981857,
+   "jacobian_norm_attacker_xy_mean": 4.683448791503906,
+   "orthogonal_init_column_norm": 1.4142135623730951,
+   "relative_alignment_mean": 0.2544330656528473,
+   "states": 1085
+  },
+  "stage4_failed": {
+   "asset_to_attacker_sensitivity_ratio": 0.13118062913417816,
+   "first_layer_column_norm_asset_xyz": [
+    2.6011409759521484,
+    2.174900531768799,
+    1.4142134189605713
+   ],
+   "first_layer_column_norm_attacker_xyz": [
+    11.283617973327637,
+    14.080217361450195,
+    10.487196922302246
+   ],
+   "jacobian_norm_asset_xy_mean": 0.6556780338287354,
+   "jacobian_norm_attacker_xy_mean": 4.998283863067627,
+   "orthogonal_init_column_norm": 1.4142135623730951,
+   "relative_alignment_mean": 0.8696312308311462,
+   "states": 1117
+  },
+  "stage4a": {
+   "asset_to_attacker_sensitivity_ratio": 0.0994114875793457,
+   "first_layer_column_norm_asset_xyz": [
+    2.0478157997131348,
+    1.841494083404541,
+    1.4142134189605713
+   ],
+   "first_layer_column_norm_attacker_xyz": [
+    11.08363151550293,
+    13.961036682128906,
+    10.219895362854004
+   ],
+   "jacobian_norm_asset_xy_mean": 0.428316593170166,
+   "jacobian_norm_attacker_xy_mean": 4.3085222244262695,
+   "orthogonal_init_column_norm": 1.4142135623730951,
+   "relative_alignment_mean": 0.8985472917556763,
+   "states": 1041
+  }
+ },
+ "definition": "Does the policy use the asset position? (i) first-layer weight norm of the asset slots vs the attacker slots; (ii) the Jacobian of the executed unit direction w.r.t. the asset xy slots vs the attacker xy slots.\nA perfect relative tracker has d(direction)/d(asset) = -d(direction)/d(attacker) (ratio ~1, alignment ~1); an absolute-coordinate aimer at a fixed point has ratio ~0.",
+ "states_from": "Stage-4A held-out scenarios, first 40 of 169000-169199, trajectories of each analysed policy"
+}

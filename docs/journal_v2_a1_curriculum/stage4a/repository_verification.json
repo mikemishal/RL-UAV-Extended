@@ -1,0 +1,294 @@
+{
+ "action_version": "a1_cur1_action_v1",
+ "asset_motion": {
+  "axes": "horizontal (x, y); z = 0",
+  "boundary": "reflecting at [-50.0, 50.0]^2",
+  "dt_s": 0.5,
+  "model": "legacy_gaussian_random_walk",
+  "obstacle_blocking": "inert in C0 (no obstacles)",
+  "rng_stream": "SeedSequence(seed).spawn(4)[1] (`_rng_soldier`), one normal(0, sigma, size=2) draw per step",
+  "sigma_m_per_axis_per_step": 0.75,
+  "start": "origin (0, 0, 0)",
+  "v_s_mps": 1.5,
+  "velocity_persistence": "none (i.i.d. displacements)"
+ },
+ "asset_motion_check_vs_canonical": {
+  "L": {
+   "canonical": 50.0,
+   "stage4a": 50.0
+  },
+  "asset_motion_model": {
+   "canonical": "legacy_gaussian_random_walk",
+   "stage4a": "legacy_gaussian_random_walk"
+  },
+  "asset_motion_tau_s": {
+   "canonical": 1.0,
+   "stage4a": 1.0
+  },
+  "dt": {
+   "canonical": 0.5,
+   "stage4a": 0.5
+  },
+  "identical": true,
+  "model_is_legacy_gaussian_random_walk": true,
+  "v_s": {
+   "canonical": 1.5,
+   "stage4a": 1.5
+  }
+ },
+ "branch": "research/journal-corrected-attacker-v2",
+ "config_differences_from_canonical": {
+  "defender_standby_until_detection": {
+   "canonical": true,
+   "stage4a": false
+  },
+  "intercept_radius": {
+   "canonical": 2.5,
+   "stage4a": 1e-06
+  }
+ },
+ "expected_start_head": "15faece",
+ "frozen_files": [
+  "experiments/journal_v2_a1.py",
+  "experiments/journal_v2_a1_r2.py",
+  "experiments/journal_v2_a1_cur1.py",
+  "experiments/journal_v2_a1_cur1v2.py",
+  "experiments/journal_v2_a1_cur1v2_bc.py",
+  "experiments/journal_v2_a1_cur2.py",
+  "experiments/journal_v2_a1_cur2_training.py",
+  "experiments/journal_v2_a1_cur2_final.py",
+  "experiments/journal_v2_a1_cur2_run.py",
+  "experiments/journal_v2_a1_cur2v2.py",
+  "experiments/journal_v2_validation_core.py",
+  "uav_defend",
+  "experiments/journal_v2_a1_cur3.py",
+  "experiments/journal_v2_a1_cur3v2.py",
+  "experiments/journal_v2_a1_cur3v2_training.py",
+  "experiments/journal_v2_a1_cur3v2_final.py",
+  "experiments/journal_v2_a1_cur3v2_run.py",
+  "experiments/journal_v2_a1_cur3v2_state.py",
+  "experiments/journal_v2_a1_cur4.py",
+  "experiments/journal_v2_a1_cur4_training.py",
+  "experiments/journal_v2_a1_cur4_final.py",
+  "experiments/journal_v2_a1_cur4_run.py",
+  "experiments/journal_v2_a1_cur4_state.py",
+  "tests/test_journal_v2_a1_cur4.py"
+ ],
+ "frozen_files_identical_to_start_head": true,
+ "head": "15faecea9c2161f61a7370716d5d435fc077eb0f",
+ "head_is_expected_or_descendant": true,
+ "integrity": {
+  "failed_a1_v1_checkpoints": 3,
+  "failed_a1_v1_mismatches": [],
+  "historical_mismatches": [],
+  "historical_registered_checkpoints": 30,
+  "stage1_v1_failed_curriculum_models": {
+   "201": {
+    "marker_present": true,
+    "sha256_matches": true,
+    "status": "FAIL"
+   },
+   "202": {
+    "marker_present": true,
+    "sha256_matches": true,
+    "status": "FAIL"
+   },
+   "203": {
+    "marker_present": true,
+    "sha256_matches": true,
+    "status": "FAIL"
+   }
+  },
+  "stage1_v2_bc_models": {
+   "201": {
+    "model_sha256": "4bc446afebbb95f308234399ec22a2a6f84b39338f85a0f109384a338eb2aee4",
+    "sha256_matches_handoff": true
+   },
+   "202": {
+    "model_sha256": "18da296243f10057868939c6b3d3bc07ff2de13e622241b9df10dc55ea30ab65",
+    "sha256_matches_handoff": true
+   },
+   "203": {
+    "model_sha256": "a3e34511d60170ea9ce329ece56f4e778fd01fdc6e22cb918df379675dab42c3",
+    "sha256_matches_handoff": true
+   }
+  }
+ },
+ "namespace_overlaps": {
+  "anchor1": [],
+  "anchor2": [],
+  "anchor3": [],
+  "baseline": [],
+  "mutual": [],
+  "suggested_block_166000_166199": [
+   "stage4_anchor1",
+   "stage4_anchor2"
+  ],
+  "training_overlap": [],
+  "training_stream": [
+   1000000,
+   2147483647
+  ],
+  "validation_A": [],
+  "validation_B": []
+ },
+ "observation_version": "a1_v2_obs_v1",
+ "parent_status": "quantitatively_accepted_curriculum_parent",
+ "ppo_hyperparameters": {
+  "batch_size": 64,
+  "clip_range": 0.2,
+  "ent_coef": 0.01,
+  "gae_lambda": 0.95,
+  "gamma": 0.99,
+  "learning_rate": 0.0003,
+  "max_grad_norm": 0.5,
+  "n_epochs": 10,
+  "n_steps": 2048,
+  "vf_coef": 0.5
+ },
+ "reward_version": "a1_v2_reward_v2",
+ "stage2_integrity": {
+  "stage2_v1_seed_201": {
+   "accepted_sha256_matches": true,
+   "status": "FAIL"
+  },
+  "stage2_v1_seed_202": {
+   "accepted_sha256_matches": true,
+   "status": "FAIL"
+  },
+  "stage2_v1_seed_203": {
+   "accepted_sha256_matches": true,
+   "status": "FAIL"
+  },
+  "stage2_v2_seed_201": {
+   "accepted_sha256_matches": true,
+   "status": "FAIL"
+  },
+  "stage2_v2_seed_202": {
+   "accepted_sha256_matches": true,
+   "status": "FAIL"
+  },
+  "stage2_v2_seed_203": {
+   "accepted_sha256_matches": true,
+   "status": "FAIL"
+  }
+ },
+ "stage3_integrity": {
+  "stage3_v2_seed_201": {
+   "accepted_sha256_matches_preregistered": true,
+   "all_rollouts_match": true,
+   "status": "MASTERED"
+  },
+  "stage3_v2_seed_202": {
+   "accepted_sha256_matches_preregistered": true,
+   "all_rollouts_match": true,
+   "status": "MASTERED"
+  },
+  "stage3_v2_seed_203": {
+   "accepted_sha256_matches_preregistered": true,
+   "all_rollouts_match": true,
+   "status": "MASTERED"
+  }
+ },
+ "stage3_v2_parents": {
+  "201": {
+   "attacker_id": "A1-CUR3V2-201",
+   "model_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+   "parent_status": "quantitatively_accepted_curriculum_parent",
+   "path": "C:\\Users\\mimishal\\OneDrive\\Documents\\UIC\\PhD\\Research\\RL-UAV-Extended-lrppo-clutter\\results\\journal_v2_corrected_semantics\\a1_curriculum\\stage3_v2\\seed_201\\checkpoints\\accepted_model.zip",
+   "rollout": 3,
+   "seed": 201,
+   "stage3_v2_commit": "3a2b23f",
+   "stage3_v2_protocol_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+   "stage3_v2_training_status": "MASTERED"
+  },
+  "202": {
+   "attacker_id": "A1-CUR3V2-202",
+   "model_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485",
+   "parent_status": "quantitatively_accepted_curriculum_parent",
+   "path": "C:\\Users\\mimishal\\OneDrive\\Documents\\UIC\\PhD\\Research\\RL-UAV-Extended-lrppo-clutter\\results\\journal_v2_corrected_semantics\\a1_curriculum\\stage3_v2\\seed_202\\checkpoints\\accepted_model.zip",
+   "rollout": 5,
+   "seed": 202,
+   "stage3_v2_commit": "3a2b23f",
+   "stage3_v2_protocol_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+   "stage3_v2_training_status": "MASTERED"
+  },
+  "203": {
+   "attacker_id": "A1-CUR3V2-203",
+   "model_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+   "parent_status": "quantitatively_accepted_curriculum_parent",
+   "path": "C:\\Users\\mimishal\\OneDrive\\Documents\\UIC\\PhD\\Research\\RL-UAV-Extended-lrppo-clutter\\results\\journal_v2_corrected_semantics\\a1_curriculum\\stage3_v2\\seed_203\\checkpoints\\accepted_model.zip",
+   "rollout": 7,
+   "seed": 203,
+   "stage3_v2_commit": "3a2b23f",
+   "stage3_v2_protocol_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+   "stage3_v2_training_status": "MASTERED"
+  }
+ },
+ "stage4": {
+  "decision": {
+   "all_three_mastered": false,
+   "common_structural_pathology": {},
+   "figures": [
+    "docs/journal_v2_a1_curriculum/stage4/figures/fig1_capture_vs_timesteps.png",
+    "docs/journal_v2_a1_curriculum/stage4/figures/fig1_capture_vs_timesteps.pdf",
+    "docs/journal_v2_a1_curriculum/stage4/figures/fig2_interception_vs_timesteps.png",
+    "docs/journal_v2_a1_curriculum/stage4/figures/fig2_interception_vs_timesteps.pdf",
+    "docs/journal_v2_a1_curriculum/stage4/figures/fig3_retention_anchors_vs_timesteps.png",
+    "docs/journal_v2_a1_curriculum/stage4/figures/fig3_retention_anchors_vs_timesteps.pdf",
+    "docs/journal_v2_a1_curriculum/stage4/figures/fig4_path_excess_vs_timesteps.png",
+    "docs/journal_v2_a1_curriculum/stage4/figures/fig4_path_excess_vs_timesteps.pdf",
+    "docs/journal_v2_a1_curriculum/stage4/figures/fig5_stage3_parent_vs_stage4_improvement.png",
+    "docs/journal_v2_a1_curriculum/stage4/figures/fig5_stage3_parent_vs_stage4_improvement.pdf",
+    "docs/journal_v2_a1_curriculum/stage4/figures/fig6_trajectory_a0_stage3_stage4_202.png",
+    "docs/journal_v2_a1_curriculum/stage4/figures/fig6_trajectory_a0_stage3_stage4_202.pdf"
+   ],
+   "promising_manual_review": false,
+   "rule": ">= 2/3 seeds master (two consecutive validation passes within 16 rollouts), mastered seeds retain all three anchors, no shared pathology; verdict B if not passed but >= 1 seed mastered or >= 2 seeds reach held-out capture >= 0.60 with a paired-CI lower bound above the Stage3-v2 parent",
+   "seeds_improving_over_parent_with_capture_ge_0.60": [
+    202
+   ],
+   "seeds_mastered": [],
+   "seeds_retaining_all_anchors": [],
+   "stage4_pass": false,
+   "training_status": {
+    "201": "FAIL",
+    "202": "FAIL",
+    "203": "FAIL"
+   },
+   "trajectory_figure_seed": 202
+  },
+  "status": "failed Stage 4 preserved as non-canonical evidence; its checkpoints are never used for Stage 4A"
+ },
+ "stage4_integrity": {
+  "stage4_seed_201": {
+   "accepted_sha256": "e9f6f0c0c940101fee118ed8de83fcafaab9dc9e14025e706a0d57850f5d5a44",
+   "all_rollouts_match": true,
+   "matches_recorded_final_hash": true,
+   "status": "FAIL"
+  },
+  "stage4_seed_202": {
+   "accepted_sha256": "e768197ab908c39f16b92ac740a9ac57a1d1f868b40b89be5c246fb3cd550bb1",
+   "all_rollouts_match": true,
+   "matches_recorded_final_hash": true,
+   "status": "FAIL"
+  },
+  "stage4_seed_203": {
+   "accepted_sha256": "133302d45593c73040f4c821f10cb2c69f3b99e2a94facdb43cd1c1d77a5ffab",
+   "all_rollouts_match": true,
+   "matches_recorded_final_hash": true,
+   "status": "FAIL"
+  }
+ },
+ "tracked_tree_clean": true,
+ "uav_defend_identical_to_a0_tag": true,
+ "untracked_at_start": [
+  "docs/journal_v2_a1_curriculum/stage4a/task_state.json",
+  "docs/journal_v2_a1_curriculum/stage4a/unit_test_result.json",
+  "experiments/journal_v2_a1_cur4a.py",
+  "experiments/journal_v2_a1_cur4a_run.py",
+  "experiments/journal_v2_a1_cur4a_state.py",
+  "experiments/journal_v2_a1_cur4a_training.py",
+  "tests/test_journal_v2_a1_cur4a.py"
+ ]
+}

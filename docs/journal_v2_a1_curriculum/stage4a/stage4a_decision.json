@@ -1,0 +1,47 @@
+{
+ "all_three_mastered": false,
+ "common_structural_pathology": {},
+ "figures": [
+  "docs/journal_v2_a1_curriculum/stage4a/figures/fig1_capture_vs_timesteps.png",
+  "docs/journal_v2_a1_curriculum/stage4a/figures/fig1_capture_vs_timesteps.pdf",
+  "docs/journal_v2_a1_curriculum/stage4a/figures/fig2_flyby_rate_vs_timesteps.png",
+  "docs/journal_v2_a1_curriculum/stage4a/figures/fig2_flyby_rate_vs_timesteps.pdf",
+  "docs/journal_v2_a1_curriculum/stage4a/figures/fig3_path_excess_vs_timesteps.png",
+  "docs/journal_v2_a1_curriculum/stage4a/figures/fig3_path_excess_vs_timesteps.pdf",
+  "docs/journal_v2_a1_curriculum/stage4a/figures/fig4_retention_anchors_vs_timesteps.png",
+  "docs/journal_v2_a1_curriculum/stage4a/figures/fig4_retention_anchors_vs_timesteps.pdf",
+  "docs/journal_v2_a1_curriculum/stage4a/figures/fig5_trajectory_a0_stage3_stage4a_203.png",
+  "docs/journal_v2_a1_curriculum/stage4a/figures/fig5_trajectory_a0_stage3_stage4a_203.pdf"
+ ],
+ "improves_needs_manual_review": false,
+ "mastered_seeds_with_improved_tracking": [],
+ "rule": ">= 2/3 seeds master (two consecutive validation passes within 12 rollouts), mastered seeds retain all three anchors, tracking improves (paired capture CI lower bound > 0 and a lower repeated fly-by rate than the parent), no shared pathology; verdict B if not passed but >= 1 seed mastered or >= 2 seeds reach held-out capture >= 0.90 with a paired-CI lower bound above the parent",
+ "seeds_improving_over_parent_with_capture_ge_0.90": [],
+ "seeds_mastered": [],
+ "seeds_retaining_all_anchors": [],
+ "stage4a_pass": false,
+ "tracking_improved": {
+  "201": {
+   "capture_ci_lower_bound_above_zero": true,
+   "improved": true,
+   "repeated_flyby_rate_below_parent": true
+  },
+  "202": {
+   "capture_ci_lower_bound_above_zero": false,
+   "improved": false,
+   "repeated_flyby_rate_below_parent": true
+  },
+  "203": {
+   "capture_ci_lower_bound_above_zero": false,
+   "improved": false,
+   "repeated_flyby_rate_below_parent": true
+  }
+ },
+ "training_status": {
+  "201": "FAIL",
+  "202": "FAIL",
+  "203": "FAIL"
+ },
+ "trajectory_figure_seed": 203,
+ "verdict": "C"
+}

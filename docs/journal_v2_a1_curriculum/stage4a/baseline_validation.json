@@ -1,0 +1,327 @@
+{
+ "asset_motion": {
+  "axes": "horizontal (x, y); z = 0",
+  "boundary": "reflecting at [-50.0, 50.0]^2",
+  "dt_s": 0.5,
+  "model": "legacy_gaussian_random_walk",
+  "obstacle_blocking": "inert in C0 (no obstacles)",
+  "rng_stream": "SeedSequence(seed).spawn(4)[1] (`_rng_soldier`), one normal(0, sigma, size=2) draw per step",
+  "sigma_m_per_axis_per_step": 0.75,
+  "start": "origin (0, 0, 0)",
+  "v_s_mps": 1.5,
+  "velocity_persistence": "none (i.i.d. displacements)"
+ },
+ "protocol_sha256": "402849afcdd6767bf0ffb78adbf6ed20f6feafc554597bae83779adcb58856a7",
+ "scenario_protocol": "a1_cur4a_moving_asset_no_defender_interaction_v1",
+ "seeds": [
+  171000,
+  171999
+ ],
+ "summary": {
+  "a0": {
+   "asset_displacement_max_m": {
+    "max": 15.907342581226557,
+    "mean": 3.696601239801331,
+    "median": 3.3771369789672345,
+    "min": 1.0748421170070632,
+    "p5": 1.7851598337192498,
+    "p95": 6.720606421808647
+   },
+   "asset_final_displacement_m": {
+    "max": 15.307796024578412,
+    "mean": 3.035341260259522,
+    "median": 2.746220183536489,
+    "min": 0.024062944378416214,
+    "p5": 0.7043228713869278,
+    "p95": 6.3084803489675
+   },
+   "capture": 0.987,
+   "closest_approaches_mean": 1.044,
+   "duration_s": {
+    "max": 31.0,
+    "mean": 5.9155,
+    "median": 5.5,
+    "min": 4.0,
+    "p5": 4.5,
+    "p95": 7.0
+   },
+   "endurance_exhaustion": 0.013,
+   "first_pass_capture": 0.985,
+   "first_pass_fraction_of_captures": 0.9979736575481256,
+   "flyby_episodes": 15,
+   "gt2": 0.015,
+   "gt3": 0.015,
+   "gt5": 0.005,
+   "interception": 0.0,
+   "median_path_excess": 1.014306829598996,
+   "miss_distance_count": 53,
+   "miss_distance_median_m": 6.945947563061761,
+   "nonfinite_episodes": 0,
+   "orbit_episodes": 0,
+   "outcomes": {
+    "enemy_endurance_exhausted": 13,
+    "soldier_caught": 987
+   },
+   "path_excess_p90": 1.1314181619139947,
+   "path_length_m": {
+    "max": 316.58931732177734,
+    "mean": 64.97754258541501,
+    "median": 61.361168785674664,
+    "min": 45.289121074502056,
+    "p5": 50.998971487710385,
+    "p95": 74.6334435604789
+   },
+   "repeated_flyby_episodes": 14,
+   "repeated_flyby_fraction": 0.014,
+   "scenarios": 1000,
+   "timeout": 0.0
+  },
+  "crn": {
+   "compared_asset_positions": 1752,
+   "identical": true,
+   "max_abs_difference_m": 0.0,
+   "policies": [
+    "a0",
+    "parent_201",
+    "parent_202",
+    "parent_203"
+   ],
+   "seeds": 50,
+   "terminal_bound_m": 4.5,
+   "terminal_event_state_max_difference_m": 1.288356900215149
+  },
+  "crn_vs_stage4_environment": {
+   "compared_asset_positions": 258,
+   "identical": true,
+   "max_abs_difference_m": 0.0,
+   "policies": [
+    "stage4a_a0",
+    "stage4_a0"
+   ],
+   "seeds": 50,
+   "terminal_bound_m": 4.5,
+   "terminal_event_state_max_difference_m": 1.7461740970611572
+  },
+  "deterministic_replay_first_50": true,
+  "masking": {
+   "decisions": 2222,
+   "defender_slots": [
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+   ],
+   "interception_outcomes": 0,
+   "max_abs_defender_observation": 0.0,
+   "scenarios": 30
+  },
+  "parents": {
+   "201": {
+    "asset_displacement_max_m": {
+     "max": 26.57651519920584,
+     "mean": 5.779834026700615,
+     "median": 4.308585188717294,
+     "min": 1.0748421170070632,
+     "p5": 1.87099953540072,
+     "p95": 13.629440196423708
+    },
+    "asset_final_displacement_m": {
+     "max": 26.07677589239858,
+     "mean": 4.30933688694362,
+     "median": 2.947183578662877,
+     "min": 0.022572924663922845,
+     "p5": 0.6475114387081563,
+     "p95": 11.994932032665602
+    },
+    "capture": 0.692,
+    "closest_approaches_mean": 2.208,
+    "duration_s": {
+     "max": 38.0,
+     "mean": 15.263,
+     "median": 7.0,
+     "min": 4.5,
+     "p5": 5.0,
+     "p95": 33.52499999999998
+    },
+    "endurance_exhaustion": 0.308,
+    "first_pass_capture": 0.562,
+    "first_pass_fraction_of_captures": 0.8121387283236994,
+    "flyby_episodes": 438,
+    "gt2": 0.433,
+    "gt3": 0.374,
+    "gt5": 0.143,
+    "interception": 0.0,
+    "median_path_excess": 1.1146637395821068,
+    "miss_distance_count": 1351,
+    "miss_distance_median_m": 5.816289897722113,
+    "nonfinite_episodes": 0,
+    "orbit_episodes": 3,
+    "outcomes": {
+     "enemy_endurance_exhausted": 308,
+     "soldier_caught": 692
+    },
+    "parent_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+    "path_excess_p90": 5.370539897956295,
+    "path_length_m": {
+     "max": 378.9282989501953,
+     "mean": 155.75532946721142,
+     "median": 71.6090394553539,
+     "min": 48.049237941981666,
+     "p5": 53.46830046895269,
+     "p95": 343.7233123779297
+    },
+    "repeated_flyby_episodes": 341,
+    "repeated_flyby_fraction": 0.341,
+    "scenarios": 1000,
+    "timeout": 0.0
+   },
+   "202": {
+    "asset_displacement_max_m": {
+     "max": 26.57651519920584,
+     "mean": 5.997226660900891,
+     "median": 4.496142839792356,
+     "min": 1.0748421170070632,
+     "p5": 1.9123319496325748,
+     "p95": 13.744045330251716
+    },
+    "asset_final_displacement_m": {
+     "max": 25.95426297916082,
+     "mean": 4.511661474862127,
+     "median": 3.1133580596449013,
+     "min": 0.02590404329378961,
+     "p5": 0.6843503037804844,
+     "p95": 12.423237701759106
+    },
+    "capture": 0.678,
+    "closest_approaches_mean": 2.261,
+    "duration_s": {
+     "max": 38.5,
+     "mean": 16.0985,
+     "median": 7.5,
+     "min": 4.5,
+     "p5": 5.0,
+     "p95": 34.5
+    },
+    "endurance_exhaustion": 0.322,
+    "first_pass_capture": 0.528,
+    "first_pass_fraction_of_captures": 0.7787610619469026,
+    "flyby_episodes": 472,
+    "gt2": 0.47,
+    "gt3": 0.403,
+    "gt5": 0.171,
+    "interception": 0.0,
+    "median_path_excess": 1.1908679610154698,
+    "miss_distance_count": 1416,
+    "miss_distance_median_m": 5.739522781275667,
+    "nonfinite_episodes": 0,
+    "orbit_episodes": 0,
+    "outcomes": {
+     "enemy_endurance_exhausted": 322,
+     "soldier_caught": 678
+    },
+    "parent_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485",
+    "path_excess_p90": 5.683615667963053,
+    "path_length_m": {
+     "max": 380.0551986694336,
+     "mean": 163.72242898405364,
+     "median": 74.87273657660492,
+     "min": 48.95091232598701,
+     "p5": 53.52805222380949,
+     "p95": 348.9915313720703
+    },
+    "repeated_flyby_episodes": 365,
+    "repeated_flyby_fraction": 0.365,
+    "scenarios": 1000,
+    "timeout": 0.0
+   },
+   "203": {
+    "asset_displacement_max_m": {
+     "max": 26.57651519920584,
+     "mean": 5.808636857415979,
+     "median": 4.496814956274301,
+     "min": 1.0748421170070632,
+     "p5": 1.8667925860282863,
+     "p95": 13.288826571334592
+    },
+    "asset_final_displacement_m": {
+     "max": 25.15057901107961,
+     "mean": 4.36479220977781,
+     "median": 3.181460196378331,
+     "min": 0.023699816062306724,
+     "p5": 0.654182661669129,
+     "p95": 12.098467559124112
+    },
+    "capture": 0.71,
+    "closest_approaches_mean": 2.106,
+    "duration_s": {
+     "max": 38.0,
+     "mean": 15.3575,
+     "median": 7.5,
+     "min": 4.5,
+     "p5": 5.0,
+     "p95": 33.02499999999998
+    },
+    "endurance_exhaustion": 0.29,
+    "first_pass_capture": 0.536,
+    "first_pass_fraction_of_captures": 0.7549295774647887,
+    "flyby_episodes": 464,
+    "gt2": 0.464,
+    "gt3": 0.398,
+    "gt5": 0.124,
+    "interception": 0.0,
+    "median_path_excess": 1.1753477001511734,
+    "miss_distance_count": 1247,
+    "miss_distance_median_m": 4.936881137597894,
+    "nonfinite_episodes": 0,
+    "orbit_episodes": 1,
+    "outcomes": {
+     "enemy_endurance_exhausted": 290,
+     "soldier_caught": 710
+    },
+    "parent_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "path_excess_p90": 5.2648529765143115,
+    "path_length_m": {
+     "max": 379.5657730102539,
+     "mean": 159.84398711366464,
+     "median": 74.32531616000573,
+     "min": 48.91477502889898,
+     "p5": 54.04647138325788,
+     "p95": 344.080904006958
+    },
+    "repeated_flyby_episodes": 341,
+    "repeated_flyby_fraction": 0.341,
+    "scenarios": 1000,
+    "timeout": 0.0
+   }
+  },
+  "scenarios": 1000
+ },
+ "verdict": {
+  "a0_capture": 0.987,
+  "checks": {
+   "asset_moves": true,
+   "canonical_asset_motion": true,
+   "crn_asset_trajectories_identical": true,
+   "crn_matches_stage4_asset_realisation": true,
+   "defender_masked_in_every_state": true,
+   "deterministic_replay": true,
+   "interception_impossible": true,
+   "no_nonfinite_state": true
+  },
+  "competence_gap_vs_gate": {
+   "201": 0.258,
+   "202": 0.272,
+   "203": 0.24
+  },
+  "parent_capture": {
+   "201": 0.692,
+   "202": 0.678,
+   "203": 0.71
+  },
+  "passed": true,
+  "rule": "configuration validity only; difficulty is reported, never used to change the environment"
+ }
+}
