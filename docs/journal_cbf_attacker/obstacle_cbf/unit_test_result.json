@@ -1,0 +1,30 @@
+{
+ "file": "tests/test_cbf_obstacle.py",
+ "passed": 25,
+ "failed": 0,
+ "covers": [
+  "1. AABB inflation (expands every face by clearance)",
+  "2. signed AABB distance (outside = Euclidean distance; inside = negative penetration depth)",
+  "3. face normal (single-axis-aligned, nearest-face case)",
+  "4. edge normal (diagonal between two axes)",
+  "5. corner normal (diagonal between three axes)",
+  "6. stopping-distance barrier accounts for inward speed (faster closing speed -> larger margin -> lower h)",
+  "7. static CBF inequality (n^T v_safe >= -alpha*h; v_e=0 for static obstacles)",
+  "8. multiple simultaneous obstacles (all within active_range are active together, never only the nearest)",
+  "9. 32-sided velocity polygon (inscribed in the true circle; conservatism ~0.058 m/s documented)",
+  "10. hard QP (succeeds when the constraint set is feasible)",
+  "11. soft QP fallback (engages with positive slack when the hard QP is infeasible)",
+  "12. emergency brake (both QPs forced to fail via a monkeypatched solver -> v_safe=0)",
+  "13. identity/no-constraint behavior (v_safe == v_nom, status identity_no_constraints)",
+  "14. route planner integration (routes around a blocking obstacle; direct shot when unblocked)",
+  "15. moving-goal replanning (replans when the asset moves past the 2.0 m trigger; no spurious replans)",
+  "16. no future target information (nominal velocity is a pure function of the CURRENT relative position)",
+  "17. C2 static-obstacle mapping (all map_known; static geometry bit-identical with dynamic obstacles disabled)",
+  "18. collision-free substep execution (ample-stopping-room scenario never penetrates the raw obstacle)",
+  "19. diagnostic fields (all Prompt-2 fields present, Prompt-1 fields preserved)",
+  "regression: route-planner-failure fallback keeps the previous waypoint, never the known-blocked direct target",
+  "regression: documents the diagnosed acceleration-lag collision (seed 500100) as a spawn-time physical infeasibility, not a bug",
+  "C0 identity: the obstacle-aware code path reproduces canonical foundation outcomes on C0 (no obstacles)"
+ ],
+ "note": "the full 1,000-episode C2 Monte Carlo acceptance evaluation, the C0 identity regression (1,000 seeds), and the legacy no-op check (1,000 fresh seeds) are run by experiments/journal_cbf_attacker_obstacle_run.py (restart-safe, chunked) and recorded under docs/journal_cbf_attacker/obstacle_cbf/; this suite uses smaller/direct scenarios for CI speed. Combined with tests/test_cbf_attacker.py (27 passed, Prompt-1 foundation, re-verified unaffected), total targeted tests for this repository's A1-CBF work: 52 passed, 0 failed."
+}

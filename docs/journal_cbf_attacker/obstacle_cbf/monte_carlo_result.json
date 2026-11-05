@@ -1,0 +1,142 @@
+{
+ "a0": {
+  "metrics": {
+   "barrier_violation_episodes": 0,
+   "capture": 0.991,
+   "cbf_h_min": Infinity,
+   "episodes": 1000,
+   "exhaustion": 0.006,
+   "first_pass_capture": 0.987,
+   "first_pass_fraction_of_captures": 0.9959636730575177,
+   "max_accel_mps2": 6.000000000000001,
+   "max_intervention_norm": 0.0,
+   "max_speed_mps": 12.000000953674316,
+   "mean_closest_approaches": 1.024,
+   "mean_duration_s": 5.477,
+   "mean_emergency_step_fraction": 0.0,
+   "mean_hard_step_fraction_of_active": null,
+   "mean_intervention_norm": 0.0,
+   "mean_intervention_step_fraction": 0.0,
+   "mean_path_excess": 1.0120310707322624,
+   "mean_path_length_m": 61.78448901174728,
+   "mean_route_replans": 0.0,
+   "mean_soft_step_fraction": 0.0,
+   "mean_speed_mps": 11.814273528664945,
+   "median_path_excess": 0.9726532121479601,
+   "min_inflated_obstacle_clearance": Infinity,
+   "min_physical_obstacle_clearance": Infinity,
+   "miss_distance_count": 29,
+   "miss_distance_median_m": 3.4280670208614685,
+   "nonfinite": 0,
+   "obstacle_collision": 3,
+   "obstacle_collision_rate": 0.003,
+   "orbit_episodes": 0,
+   "outcomes": {
+    "enemy_endurance_exhausted": 6,
+    "enemy_static_obstacle_collision": 3,
+    "soldier_caught": 991
+   },
+   "path_excess_5x_episodes": 6,
+   "path_excess_5x_fraction": 0.006,
+   "planner_failure_episodes": 0,
+   "qp_hard_or_soft_success_fraction": 1.0,
+   "repeated_flyby_episodes": 8,
+   "repeated_flyby_fraction": 0.008,
+   "timeout": 0.0,
+   "total_emergency_brake_events": 0,
+   "total_planner_failures": 0,
+   "total_route_replans": 0
+  }
+ },
+ "a1_cbf": {
+  "metrics": {
+   "barrier_violation_episodes": 36,
+   "capture": 0.999,
+   "cbf_h_min": -6.882809632421325,
+   "episodes": 1000,
+   "exhaustion": 0.0,
+   "first_pass_capture": 0.992,
+   "first_pass_fraction_of_captures": 0.992992992992993,
+   "max_accel_mps2": 6.000000000000003,
+   "max_intervention_norm": 14.364694379428304,
+   "max_speed_mps": 12.000000953674316,
+   "mean_closest_approaches": 1.023,
+   "mean_duration_s": 6.1695,
+   "mean_emergency_step_fraction": 0.0,
+   "mean_hard_step_fraction_of_active": 0.9674733912433622,
+   "mean_intervention_norm": 0.7959411483771511,
+   "mean_intervention_step_fraction": 0.3281648734842653,
+   "mean_path_excess": 0.9862292400551574,
+   "mean_path_length_m": 60.31241056537042,
+   "mean_route_replans": 0.927,
+   "mean_soft_step_fraction": 0.0,
+   "mean_speed_mps": 9.820525572224163,
+   "median_path_excess": 0.9830616200576551,
+   "min_inflated_obstacle_clearance": -2.2487106213679837,
+   "min_physical_obstacle_clearance": 0.13079977185216052,
+   "miss_distance_count": 23,
+   "miss_distance_median_m": 17.205719688863155,
+   "nonfinite": 0,
+   "obstacle_collision": 1,
+   "obstacle_collision_rate": 0.001,
+   "orbit_episodes": 0,
+   "outcomes": {
+    "enemy_static_obstacle_collision": 1,
+    "soldier_caught": 999
+   },
+   "path_excess_5x_episodes": 0,
+   "path_excess_5x_fraction": 0.0,
+   "planner_failure_episodes": 11,
+   "qp_hard_or_soft_success_fraction": 1.0,
+   "repeated_flyby_episodes": 0,
+   "repeated_flyby_fraction": 0.0,
+   "timeout": 0.0,
+   "total_emergency_brake_events": 0,
+   "total_planner_failures": 32,
+   "total_route_replans": 927
+  }
+ },
+ "decision": {
+  "constraint_verification_passed": true,
+  "gate": {
+   "checks": {
+    "capture": true,
+    "emergency_brake_fraction": true,
+    "exhaustion": true,
+    "nonfinite": true,
+    "obstacle_collision": false,
+    "orbit": true,
+    "path_excess_5x": true,
+    "planner_failure": false,
+    "qp_hard_or_soft_success": true,
+    "repeated_flyby": true,
+    "soft_fallback_fraction": true,
+    "timeout": true
+   },
+   "passed": false
+  },
+  "passed": false,
+  "verdict": "B"
+ },
+ "gate": {
+  "checks": {
+   "capture": true,
+   "emergency_brake_fraction": true,
+   "exhaustion": true,
+   "nonfinite": true,
+   "obstacle_collision": false,
+   "orbit": true,
+   "path_excess_5x": true,
+   "planner_failure": false,
+   "qp_hard_or_soft_success": true,
+   "repeated_flyby": true,
+   "soft_fallback_fraction": true,
+   "timeout": true
+  },
+  "passed": false
+ },
+ "scenarios": [
+  500000,
+  500999
+ ]
+}

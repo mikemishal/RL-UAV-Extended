@@ -103,24 +103,87 @@ class CBFAttackerController:
         return nominal_velocity_command(relative_position, kp=self.kp, max_speed=self.limits.max_horizontal_speed, eps=self.eps)
 
     def filter_velocity(self, v_nom: np.ndarray, *, state: dict | None = None, hazards: tuple = ()) -> tuple[np.ndarray, dict]:
-        """CBF/QP safety-filter INTERFACE (velocity safety-filter component). Prompt 1: identity filter -- `hazards`
-        is always empty and `v_safe = v_nom` exactly (bit-for-bit). A later prompt replaces only this method's body
-        with a QP solve over `hazards` (obstacle / defender avoidance constraints); the call signature, the empty
-        `hazards=()` default, and every OTHER component of this controller and of `SoldierEnv` are designed to need
-        no change when that happens. `state` is accepted (own position/velocity, etc.) for forward compatibility
-        with a future QP's current-state constraints; Prompt 1 does not read it.
+        """CBF/QP safety-filter component. Identity when `hazards` is empty (`v_safe = v_nom` exactly, bit-for-bit
+        -- this is the ENTIRE behavior for Prompt 1 / C0, and remains exactly this for any hazard-free step in any
+        clutter level, preserving the foundation stage's acceptance result unperturbed). When `hazards` is
+        non-empty (Prompt 2: static-obstacle CBF constraints, each a `uav_defend.attackers.cbf_obstacle.StaticHazard`),
+        solves `min_v 0.5*||v - v_nom||^2` subject to every active constraint via
+        `uav_defend.attackers.cbf_obstacle.solve_velocity_cbf_qp` (hard -> soft-slack -> emergency-brake fallback
+        chain; see that function's docstring). `state` is accepted (own position/velocity) for forward
+        compatibility with future hazard types (e.g. a moving defender) that may need it; the static-obstacle QP
+        does not read it (each hazard already carries its own precomputed normal/clearance/stopping-margin).
         """
         v_nom = np.asarray(v_nom, dtype=np.float64).reshape(3)
         constraint_count = len(hazards)
-        v_safe = v_nom.copy()
+        if constraint_count == 0:
+            v_safe = v_nom.copy()
+            diagnostics = {
+                "cbf_enabled": True, "cbf_constraint_count": 0, "cbf_qp_status": "identity_no_constraints",
+                "cbf_intervention_norm": 0.0, "qp_success": True, "qp_iterations": 0, "qp_objective": 0.0,
+                "qp_max_constraint_residual": 0.0, "soft_slack": 0.0,
+            }
+            return v_safe, diagnostics
+
+        from uav_defend.attackers.cbf_obstacle import CBF_ALPHA, solve_velocity_cbf_qp
+
+        v_safe, qp_diag = solve_velocity_cbf_qp(
+            v_nom, list(hazards), alpha=CBF_ALPHA, max_horizontal_speed=self.limits.max_horizontal_speed,
+            max_climb_rate=self.limits.max_climb_rate, max_descent_rate=self.limits.max_descent_rate,
+        )
         intervention_norm = float(np.linalg.norm(v_safe - v_nom))
         diagnostics = {
-            "cbf_enabled": True,
-            "cbf_constraint_count": int(constraint_count),
-            "cbf_qp_status": "identity_no_constraints" if constraint_count == 0 else "identity_constraints_ignored",
-            "cbf_intervention_norm": intervention_norm,
+            "cbf_enabled": True, "cbf_constraint_count": int(constraint_count), "cbf_intervention_norm": intervention_norm,
+            **qp_diag,
         }
         return v_safe, diagnostics
+
+
+def apply_one_substep(
+    position: np.ndarray, velocity: np.ndarray, v_cmd: np.ndarray, *, limits: CBFAttackerLimits, dt_sub: float,
+    L: float, max_altitude: float, eps: float = 1e-8,
+) -> tuple[np.ndarray, np.ndarray, dict]:
+    """ONE substep of the quadrotor velocity executor (the per-substep body factored out of
+    `integrate_quadrotor_substeps` so a safety filter that must be re-evaluated every substep -- see
+    `uav_defend.attackers.cbf_obstacle.integrate_obstacle_cbf_substeps` -- can reuse the EXACT SAME physical update,
+    never a second/duplicated implementation): (1) acceleration-limited step toward `v_cmd`; (2) hard horizontal-
+    speed cap; (3) hard climb/descent cap; (4) position update + `apply_boundary`. Returns
+    `(position, velocity, substep_diagnostics)` -- NOT yet aggregated across substeps (the caller's loop does that).
+    """
+    pos = np.asarray(position, dtype=np.float64).copy()
+    vel = np.asarray(velocity, dtype=np.float64).copy()
+    v_cmd = np.asarray(v_cmd, dtype=np.float64).reshape(3)
+
+    delta_v = v_cmd - vel
+    delta_v_norm = float(np.linalg.norm(delta_v))
+    max_delta_v = limits.max_accel * dt_sub
+    accel_saturated = delta_v_norm > max_delta_v
+    if accel_saturated and delta_v_norm > eps:
+        delta_v = delta_v / delta_v_norm * max_delta_v
+    vel = vel + delta_v
+    accel_used = float(np.linalg.norm(delta_v)) / dt_sub if dt_sub > 0 else 0.0
+
+    horiz = vel[:2]
+    horiz_speed = float(np.linalg.norm(horiz))
+    horizontal_saturated = horiz_speed > limits.max_horizontal_speed
+    if horizontal_saturated and horiz_speed > eps:
+        vel[:2] = horiz / horiz_speed * limits.max_horizontal_speed
+
+    vertical_saturated = False
+    if vel[2] > limits.max_climb_rate:
+        vertical_saturated = True
+        vel[2] = limits.max_climb_rate
+    elif vel[2] < -limits.max_descent_rate:
+        vertical_saturated = True
+        vel[2] = -limits.max_descent_rate
+
+    pos = pos + vel * dt_sub
+    pos, vel = apply_boundary(pos, vel, L=L, max_altitude=max_altitude)
+
+    diagnostics = {
+        "accel_used": accel_used, "accel_saturated": bool(accel_saturated),
+        "horizontal_speed_saturated": bool(horizontal_saturated), "vertical_rate_saturated": bool(vertical_saturated),
+    }
+    return pos, vel, diagnostics
 
 
 def integrate_quadrotor_substeps(
@@ -130,7 +193,10 @@ def integrate_quadrotor_substeps(
     """Velocity-executor component: integrates ONE external `dt` (default 0.5 s) as `substep_count(dt, dt_sub)`
     (default 5) internal substeps of duration `dt_sub` (default 0.1 s), with `v_cmd` HELD CONSTANT across all of
     them (computed once per external step by the caller, exactly like the legacy guidance -- see
-    `CBFAttackerController.nominal_velocity`).
+    `CBFAttackerController.nominal_velocity`). Appropriate when `v_cmd` is NOT safety-critical (Prompt 1's identity
+    safety filter, or any hazard-free step) -- for a safety-critical command that must react faster than once per
+    external step, see `uav_defend.attackers.cbf_obstacle.integrate_obstacle_cbf_substeps`, which re-solves the
+    safety filter every substep using this SAME per-substep physical update (`apply_one_substep`).
 
     Per substep, in order (frozen; matches the brief's `Delta v = v_cmd - v; ||Delta v|| <= a_max * dt_sub` contract
     exactly, with NO legacy heading/turn-rate limiting -- a quadrotor can accelerate laterally, decelerate, hover and
@@ -156,36 +222,16 @@ def integrate_quadrotor_substeps(
     """
     pos = np.asarray(position, dtype=np.float64).copy()
     vel = np.asarray(velocity, dtype=np.float64).copy()
+    v_cmd = np.asarray(v_cmd, dtype=np.float64).reshape(3)
     n = substep_count(dt, dt_sub)
     max_accel_used = 0.0
     accel_saturated = horizontal_saturated = vertical_saturated = False
     for _ in range(n):
-        delta_v = v_cmd - vel
-        delta_v_norm = float(np.linalg.norm(delta_v))
-        max_delta_v = limits.max_accel * dt_sub
-        if delta_v_norm > max_delta_v:
-            accel_saturated = True
-            if delta_v_norm > eps:
-                delta_v = delta_v / delta_v_norm * max_delta_v
-        vel = vel + delta_v
-        max_accel_used = max(max_accel_used, float(np.linalg.norm(delta_v)) / dt_sub if dt_sub > 0 else 0.0)
-
-        horiz = vel[:2]
-        horiz_speed = float(np.linalg.norm(horiz))
-        if horiz_speed > limits.max_horizontal_speed:
-            horizontal_saturated = True
-            if horiz_speed > eps:
-                vel[:2] = horiz / horiz_speed * limits.max_horizontal_speed
-
-        if vel[2] > limits.max_climb_rate:
-            vertical_saturated = True
-            vel[2] = limits.max_climb_rate
-        elif vel[2] < -limits.max_descent_rate:
-            vertical_saturated = True
-            vel[2] = -limits.max_descent_rate
-
-        pos = pos + vel * dt_sub
-        pos, vel = apply_boundary(pos, vel, L=L, max_altitude=max_altitude)
+        pos, vel, sub_diag = apply_one_substep(pos, vel, v_cmd, limits=limits, dt_sub=dt_sub, L=L, max_altitude=max_altitude, eps=eps)
+        max_accel_used = max(max_accel_used, sub_diag["accel_used"])
+        accel_saturated = accel_saturated or sub_diag["accel_saturated"]
+        horizontal_saturated = horizontal_saturated or sub_diag["horizontal_speed_saturated"]
+        vertical_saturated = vertical_saturated or sub_diag["vertical_rate_saturated"]
 
     diagnostics = {
         "accel_used": max_accel_used,

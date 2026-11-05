@@ -1,0 +1,132 @@
+{
+ "created_utc": "2026-11-05T16:58:08.918508+00:00",
+ "stages": {
+  "01_repository_verification": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/obstacle_cbf/repository_verification.json": "3376bdd9328b5bf077e5ba4715b57aeab2af1ff53113e0cf192fc0526fc54eb4"
+   },
+   "completed_utc": "2026-11-05T16:58:09.539258+00:00",
+   "config_sha256": null,
+   "input_commit": "2beaf772f5043cf3fc914147395f1a17c01feffc",
+   "note": "HEAD descendant of 2beaf77, tracked tree clean, namespaces disjoint",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/obstacle_cbf/repository_verification.json"
+   ],
+   "started_utc": "2026-11-05T16:58:08.998637+00:00",
+   "status": "complete"
+  },
+  "02_protocol_freeze": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/obstacle_cbf/protocol.json": "c00cf01adf459e6b7cec1125df2b2a98ee02310a9fa63a99f3518105c5e2dc70"
+   },
+   "completed_utc": "2026-11-05T16:58:09.630175+00:00",
+   "config_sha256": "043d8c7266cb75465a25ce5addbf1536408bf077b9b07c023bd26dd45034c153",
+   "input_commit": "2beaf772f5043cf3fc914147395f1a17c01feffc",
+   "note": "protocol sha 043d8c7266cb7546",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/obstacle_cbf/protocol.json"
+   ],
+   "started_utc": "2026-11-05T16:58:09.623291+00:00",
+   "status": "complete"
+  },
+  "03_static_obstacle_adapter": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/obstacle_cbf/c0_identity_result.json": "6118e8ac78be330b43876497788ae2d760cd666ddad5607861161c38bf74ce5a"
+   },
+   "completed_utc": "2026-11-05T16:58:13.700878+00:00",
+   "config_sha256": "043d8c7266cb75465a25ce5addbf1536408bf077b9b07c023bd26dd45034c153",
+   "input_commit": "2beaf772f5043cf3fc914147395f1a17c01feffc",
+   "note": "999 C0 seeds identical to Prompt-1 cached results",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/obstacle_cbf/c0_identity_result.json"
+   ],
+   "started_utc": "2026-11-05T16:58:09.709871+00:00",
+   "status": "complete"
+  },
+  "04_route_planner_integration": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/obstacle_cbf/legacy_noop_result.json": "cf20fa44110d4e4fb2069419ec1037733dc69c2240d49211811ba461b3fe5ca2"
+   },
+   "completed_utc": "2026-11-05T16:58:19.989951+00:00",
+   "config_sha256": "043d8c7266cb75465a25ce5addbf1536408bf077b9b07c023bd26dd45034c153",
+   "input_commit": "2beaf772f5043cf3fc914147395f1a17c01feffc",
+   "note": "1000 seeds identical to parent commit 2f45914",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/obstacle_cbf/legacy_noop_result.json"
+   ],
+   "started_utc": "2026-11-05T16:58:13.793468+00:00",
+   "status": "complete"
+  },
+  "05_cbf_qp_implementation": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/obstacle_cbf/unit_test_result.json": "1266e65bd170eb6f28acdb4748a8bc267ebbd7c112dc39a27c2b3a0f2001ae51"
+   },
+   "completed_utc": "2026-11-05T16:58:20.163022+00:00",
+   "config_sha256": "043d8c7266cb75465a25ce5addbf1536408bf077b9b07c023bd26dd45034c153",
+   "input_commit": "2beaf772f5043cf3fc914147395f1a17c01feffc",
+   "note": "targeted tests passed",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/obstacle_cbf/unit_test_result.json"
+   ],
+   "started_utc": "2026-11-05T16:58:20.158471+00:00",
+   "status": "complete"
+  },
+  "06_deterministic_unit_validation": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/obstacle_cbf/constraint_verification.json": "d818718ca2063896430e4fd76dee3f727820f842cba2c752a1aa7dc6302bc2a7"
+   },
+   "completed_utc": "2026-11-05T17:07:56.690883+00:00",
+   "config_sha256": "043d8c7266cb75465a25ce5addbf1536408bf077b9b07c023bd26dd45034c153",
+   "input_commit": "2beaf772f5043cf3fc914147395f1a17c01feffc",
+   "note": "passed=True",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/obstacle_cbf/constraint_verification.json"
+   ],
+   "started_utc": "2026-11-05T16:58:20.262959+00:00",
+   "status": "complete"
+  },
+  "07_monte_carlo_evaluation": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/obstacle_cbf/acceptance_decision.json": "2bd9a23d7211e17dcdf58937ec657f59b5e4b8632c3e39f4fe64083da8508c51",
+    "docs/journal_cbf_attacker/obstacle_cbf/monte_carlo_result.json": "83dd9f9f16e15e0bc6041be09a2279fcd15e825a1c1c785c51537318ec2e6210"
+   },
+   "completed_utc": "2026-11-05T17:08:42.343905+00:00",
+   "config_sha256": "043d8c7266cb75465a25ce5addbf1536408bf077b9b07c023bd26dd45034c153",
+   "input_commit": "2beaf772f5043cf3fc914147395f1a17c01feffc",
+   "note": "A0 capture 0.991; A1-CBF capture 0.999; collisions 1; verdict B",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/obstacle_cbf/monte_carlo_result.json",
+    "docs/journal_cbf_attacker/obstacle_cbf/acceptance_decision.json"
+   ],
+   "started_utc": "2026-11-05T17:07:56.762395+00:00",
+   "status": "complete"
+  },
+  "08_visual_inspection_package": {
+   "completed_utc": "2026-11-05T17:30:01.112080+00:00",
+   "input_commit": "2beaf772f5043cf3fc914147395f1a17c01feffc",
+   "reason": "Brief section 26: visual inspection recordings are added ONLY if the quantitative gate passes. The frozen acceptance gate FAILED (obstacle_collision=1/1000, planner_failure=11/1000 episodes; see docs/journal_cbf_attacker/obstacle_cbf/README.md section 11/12). No visualizer changes made this stage; publication figures (fig1-fig6, including a representative successful route) were still generated per section 27, which is unconditional.",
+   "status": "not_applicable"
+  },
+  "09_documentation": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/obstacle_cbf/README.md": "e6ba571491108ed7d69e485189e51c1d1861d214f05dc18d6b5d204a40fdef3f",
+    "docs/journal_cbf_attacker/obstacle_cbf/manuscript_notes.md": "3a535804ddc742c3c6d4c72c324e7662bd8b3c254183afe6d5e45d30575b98a3"
+   },
+   "completed_utc": "2026-11-05T17:30:01.172722+00:00",
+   "config_sha256": null,
+   "input_commit": "2beaf772f5043cf3fc914147395f1a17c01feffc",
+   "note": "README.md + manuscript_notes.md written: C0/C2 mapping, route/CBF division of responsibility, exact barrier, stopping-margin fix, QP/fallback semantics, Monte Carlo results, failure analysis, limitations",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/obstacle_cbf/README.md",
+    "docs/journal_cbf_attacker/obstacle_cbf/manuscript_notes.md"
+   ],
+   "started_utc": "2026-11-05T17:30:01.168797+00:00",
+   "status": "complete"
+  },
+  "10_commit_push": {
+   "status": "pending"
+  }
+ },
+ "task": "journal_cbf_attacker/obstacle_cbf",
+ "updated_utc": "2026-11-05T17:30:01.174481+00:00"
+}

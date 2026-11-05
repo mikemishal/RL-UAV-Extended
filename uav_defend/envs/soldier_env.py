@@ -25,7 +25,8 @@ from gymnasium import spaces
 from uav_defend.config.env_config import EnvConfig
 from uav_defend.tracking import EnemyKalmanFilter
 from uav_defend.dynamics.constrained_point_mass import advance_velocity, apply_boundary
-from uav_defend.attackers.cbf_attacker import CBFAttackerController, integrate_quadrotor_substeps
+from uav_defend.attackers.cbf_attacker import CBF_DT_SUB, CBFAttackerController, integrate_quadrotor_substeps
+from uav_defend.attackers.cbf_obstacle import CBF_ACTIVE_OBSTACLE_RANGE, CBF_ALPHA, CBF_OBSTACLE_CLEARANCE, CBFRouteNavigator, build_static_hazards, integrate_obstacle_cbf_substeps
 from uav_defend.obstacles.swept_contact import first_contact
 from uav_defend.obstacles import DynamicsLimits, ObstacleAvoidancePlanner, ObstacleLayout, generate_layout
 from uav_defend.obstacles.stateful_avoidance import StatefulAvoidanceController
@@ -466,6 +467,20 @@ class SoldierEnv(gym.Env):
         self._enemy_evasion_clear_streak: int = self.config.enemy_obstacle_release_steps
         self._enemy_route_was_suspended: bool = False
         self._enemy_route_suspended: bool = False
+        # A1-CBF attacker (journal_cbf_attacker extension): constructed unconditionally (stateless; holds only the
+        # frozen kp/limits), but used ONLY when self._enemy_control_mode == "cbf_velocity" -- see
+        # _move_enemy_cbf_velocity(). A SEPARATE, DIFFERENT hook from enemy_tactical_override below: that hook
+        # supplies a unit DIRECTION consumed by the legacy turn-rate-limited dynamics at fixed speed v_e; this
+        # controller supplies a true velocity command (m/s) consumed by the quadrotor executor instead. Constructed
+        # BEFORE _reset_v2_episode_state() below, which resets self._cbf_route_nav/_cbf_last_diagnostics.
+        self._cbf_controller = CBFAttackerController()
+        self._cbf_last_diagnostics: dict = {}
+        # A1-CBF static-obstacle route navigator (journal_cbf_attacker, Prompt 2): persistent ACROSS steps within
+        # one episode (route waypoints/replan count), reset in _reset_v2_episode_state(). Entirely self-contained
+        # (see uav_defend/attackers/cbf_obstacle.py) -- reuses the EXISTING visibility-graph + A* planner, never a
+        # second independent one. Only ever consulted when _enemy_control_mode == "cbf_velocity".
+        self._cbf_route_nav = CBFRouteNavigator(max_altitude=self.config.max_altitude)
+        self._cbf_emergency_brake_count: int = 0
         self._reset_v2_episode_state(0.0)
         # Adaptive Attacker v1 hook (learned tactical policy, journal
         # extension): when set (by an external training wrapper, NEVER by
@@ -479,13 +494,6 @@ class SoldierEnv(gym.Env):
         # attribute does not exist anywhere else in the codebase yet, so no
         # other caller can be affected.
         self.enemy_tactical_override: Callable[[], np.ndarray] | None = None
-        # A1-CBF attacker (journal_cbf_attacker extension): constructed unconditionally (stateless; holds only the
-        # frozen kp/limits), but used ONLY when self._enemy_control_mode == "cbf_velocity" -- see
-        # _move_enemy_cbf_velocity(). A SEPARATE, DIFFERENT hook from enemy_tactical_override above: that hook
-        # supplies a unit DIRECTION consumed by the legacy turn-rate-limited dynamics at fixed speed v_e; this
-        # controller supplies a true velocity command (m/s) consumed by the quadrotor executor instead.
-        self._cbf_controller = CBFAttackerController()
-        self._cbf_last_diagnostics: dict = {}
         # Hostile obstacle-navigation diagnostics (Phase 3B). Deterministic
         # and RNG-free -- see _move_enemy()/ObstacleAvoidancePlanner.plan().
         self._enemy_obstacle_avoidance_active: bool = False
@@ -871,6 +879,8 @@ class SoldierEnv(gym.Env):
         termination."""
         self._contact_info = self._empty_contact_info()
         self._cbf_last_diagnostics = {}
+        self._cbf_route_nav.reset()
+        self._cbf_emergency_brake_count = 0
         self._attacker_initial_range = float(initial_range)
         self._attacker_path_length = 0.0
         self._attacker_heading_change_deg = 0.0
@@ -2510,66 +2520,138 @@ class SoldierEnv(gym.Env):
     def _move_enemy_cbf_velocity(self) -> None:
         """A1-CBF (journal_cbf_attacker extension) control mode, selected ONLY via the enemy_control_mode
         constructor argument == "cbf_velocity" (default remains "legacy", bit-for-bit unchanged -- see
-        _move_enemy()). Replaces the ENTIRE
-        hand-designed guidance+dynamics pipeline (pursuit+weave+noise+evasion+obstacle-avoidance+route-planning+
-        turn-rate-limited dynamics) with:
-          1. Target-relative nominal guidance (CBFAttackerController.nominal_velocity): a proportional law on the
-             CURRENT relative position r = soldier_pos - enemy_pos, computed ONCE per external 0.5 s step (exactly
-             like the legacy model's r_hat, which is also computed once per step) -- never the initial/obsolete
-             asset location, and uses no learned prediction.
-          2. An (identity, Prompt 1) CBF/QP safety-filter interface (CBFAttackerController.filter_velocity):
-             v_safe = v_nom exactly, hazards=() (obstacle-avoidance/defender-avoidance constraints are added by a
-             LATER prompt; this is NOT implemented here).
-          3. A quadrotor velocity executor (integrate_quadrotor_substeps): acceleration-limited (NOT turn-rate-
-             limited) 3-D integration, substepped at CBF_DT_SUB=0.1 s (5 substeps per 0.5 s step), v_safe held
-             constant across all 5 substeps, followed by the SAME `_apply_boundary` boundary handling used
-             everywhere else.
+        _move_enemy()). Replaces the ENTIRE hand-designed guidance+dynamics pipeline
+        (pursuit+weave+noise+evasion+obstacle-avoidance+route-planning+turn-rate-limited dynamics) with:
+          1. Static-obstacle route navigation (Prompt 2, uav_defend/attackers/cbf_obstacle.py
+             `CBFRouteNavigator`): reuses the EXISTING visibility-graph + A* planner to pick a guidance target --
+             the CURRENT asset position directly when the line is clear, or the next locally-planned waypoint
+             around a perceived static-obstacle cluster when blocked. The route planner solves GLOBAL/local-minimum
+             deadlock only; it has no notion of safety margins (that is the CBF-QP's job, entirely downstream).
+          2. Target-relative nominal guidance (CBFAttackerController.nominal_velocity): a proportional law on the
+             relative position to the route's guidance target r_g = p_g - p_A. For C0 (no obstacles) p_g IS the
+             asset position, making this IDENTICAL to Prompt 1's r = soldier_pos - enemy_pos.
+          3. The CBF/QP safety-filter (CBFAttackerController.filter_velocity): identity when no static-obstacle
+             hazards are active; otherwise the hard -> soft-slack -> emergency-brake fallback chain over every
+             inflated static AABB within 20 m (uav_defend/attackers/cbf_obstacle.py
+             `build_static_hazards`/`solve_velocity_cbf_qp`).
+          4. The quadrotor velocity executor. TWO variants, selected by whether ANY hazard is active at the START
+             of this external step:
+               - No hazards (always true for C0): `integrate_quadrotor_substeps` -- v_nom/v_safe computed ONCE per
+                 external 0.5 s step and HELD CONSTANT across all 5 substeps, exactly as Prompt 1. This reproduces
+                 Prompt 1 bit-for-bit whenever `self._obstacle_layout` is empty (verified by a dedicated
+                 >=500-seed regression), since both the route target (trivially the asset) and the filter (identity)
+                 are then identical to Prompt 1's computation.
+               - >=1 hazard active: `integrate_obstacle_cbf_substeps` -- the nominal guidance AND the CBF-QP are
+                 BOTH re-solved every substep (dt_sub=0.1 s), not held constant for the full external step. This is
+                 REQUIRED for safety: the stopping-margin barrier's `d_stop_i` term assumes the velocity can be
+                 corrected again within `dt_sub` (brief section 10), which is only true if the filter is actually
+                 re-evaluated at that cadence -- holding a safety-critical `v_safe` fixed for a full 0.5 s let a
+                 high-closing-speed attacker's REQUIRED deceleration exceed what 5 substeps of the 6 m/s^2 limit
+                 could deliver before reaching an obstacle (found empirically: a 200-episode C2 smoke test produced
+                 one static-obstacle collision before this fix; see docs/journal_cbf_attacker/obstacle_cbf/README.md
+                 section "stopping-margin implementation" and the dedicated regression test replaying that exact
+                 seed). This switch introduces no inconsistency within one episode: max travel per external step
+                 (v_e*dt = 6 m) is far smaller than the 20 m active-obstacle range, so an obstacle that is NOT
+                 active at a step's start cannot become a physical hazard before the NEXT step's (correctly
+                 re-evaluated) hazard check.
 
-        Draws NO randomness (no weave bias / heading noise; `_rng_enemy_motion` is never touched in this mode) and
-        does NOT consult enemy_tactical_override (a DIFFERENT, direction-only hook used by the learned-attacker-v1
-        family -- see that attribute's docstring), enemy_evasion_*, or enemy_obstacle_avoidance_enabled: this is
-        Prompt 1's pursuit/dynamics foundation only. Mission-command / evasion / route / obstacle-avoidance
-        diagnostic attributes are left at their reset() defaults (inactive) except for `_enemy_pursuit_direction`,
-        `_enemy_mission_command` and `_enemy_final_command`, which are updated below for continuity with existing
-        consumers of those fields. Swept mission-contact detection in step() is COMPLETELY UNCHANGED (a single
-        linear segment from the pre-step to the post-step position over the full 0.5 s step); this method only
-        changes how the post-step position/velocity are produced, so no contact event can be double-counted (see
-        integrate_quadrotor_substeps()'s docstring for the full argument).
+        Draws NO randomness and does NOT consult enemy_tactical_override, enemy_evasion_*, or
+        enemy_obstacle_avoidance_enabled (the legacy obstacle-avoidance machinery is entirely separate from this
+        attacker's own CBF obstacle handling). Mission-command diagnostic attributes (`_enemy_pursuit_direction`,
+        `_enemy_mission_command`, `_enemy_final_command`) are kept relative to the TRUE asset position (not the
+        route target) for continuity with existing consumers and with Prompt-1 diagnostics. Swept mission-contact
+        detection in step() is COMPLETELY UNCHANGED (a single linear segment over the full 0.5 s step, same as
+        Prompt 1); this method only changes how the post-step position/velocity are produced.
         """
         eps = self.config.eps
-        r = (self._soldier_pos.astype(np.float64) - self._enemy_pos.astype(np.float64))
-        r_norm = float(np.linalg.norm(r))
-        unit_r = (r / r_norm) if r_norm > eps else np.array([1.0, 0.0, 0.0])
+        r_asset = (self._soldier_pos.astype(np.float64) - self._enemy_pos.astype(np.float64))
+        r_asset_norm = float(np.linalg.norm(r_asset))
+        unit_r = (r_asset / r_asset_norm) if r_asset_norm > eps else np.array([1.0, 0.0, 0.0])
         self._enemy_pursuit_direction = unit_r.astype(np.float32)
         self._enemy_mission_command = unit_r.astype(np.float32)
 
-        v_nom = self._cbf_controller.nominal_velocity(r)
-        v_safe, cbf_diag = self._cbf_controller.filter_velocity(
-            v_nom, state={"position": self._enemy_pos.copy(), "velocity": self._enemy_vel.copy()}, hazards=(),
+        enemy_pos_before = self._enemy_pos.astype(np.float64).copy()
+        enemy_vel_before = self._enemy_vel.astype(np.float64).copy()
+
+        # Route navigation (Prompt 2, section 6/7): picks the guidance target. For C0 (self._obstacle_layout empty)
+        # this is ALWAYS a trivial direct shot at the asset (no obstacles to route around), so r_g == r_asset.
+        self._cbf_route_nav.max_altitude = self.config.max_altitude
+        elapsed_time_s = self._step_count * self.config.dt
+        target, route_diag = self._cbf_route_nav.update(
+            enemy_pos_before, self._soldier_pos.astype(np.float64), self._obstacle_layout.obstacles, elapsed_time_s=elapsed_time_s,
         )
 
-        new_pos, new_vel, exec_diag = integrate_quadrotor_substeps(
-            position=self._enemy_pos, velocity=self._enemy_vel, v_cmd=v_safe,
-            limits=self._cbf_controller.limits, dt=self.config.dt,
-            L=self.config.L, max_altitude=self.config.max_altitude, eps=eps,
+        hazards_at_start = build_static_hazards(
+            enemy_pos_before, enemy_vel_before, self._obstacle_layout.obstacles,
+            clearance=CBF_OBSTACLE_CLEARANCE, active_range=CBF_ACTIVE_OBSTACLE_RANGE,
+            max_accel=self._cbf_controller.limits.max_accel, dt_sub=CBF_DT_SUB, alpha=CBF_ALPHA,
         )
+
+        if not hazards_at_start:
+            # Hazard-free this step (ALWAYS true for C0): bit-for-bit Prompt-1 computation.
+            r_goal = np.asarray(target, dtype=np.float64) - enemy_pos_before
+            v_nom = self._cbf_controller.nominal_velocity(r_goal)
+            v_safe, cbf_diag = self._cbf_controller.filter_velocity(
+                v_nom, state={"position": enemy_pos_before.copy(), "velocity": enemy_vel_before.copy()}, hazards=(),
+            )
+            new_pos, new_vel, exec_diag = integrate_quadrotor_substeps(
+                position=enemy_pos_before, velocity=enemy_vel_before, v_cmd=v_safe,
+                limits=self._cbf_controller.limits, dt=self.config.dt,
+                L=self.config.L, max_altitude=self.config.max_altitude, eps=eps,
+            )
+            min_inflated_clearance = min_h = float("inf")
+            max_active_obstacle_count = 0
+            emergency_brake_this_step = cbf_diag["cbf_qp_status"] == "emergency_brake"
+        else:
+            # >=1 active hazard: safety-critical re-solve-every-substep executor (see docstring above).
+            new_pos, new_vel, exec_diag, cbf_diag = integrate_obstacle_cbf_substeps(
+                position=enemy_pos_before, velocity=enemy_vel_before, route_target=target, controller=self._cbf_controller,
+                obstacles=self._obstacle_layout.obstacles, dt=self.config.dt, L=self.config.L,
+                max_altitude=self.config.max_altitude, eps=eps, clearance=CBF_OBSTACLE_CLEARANCE,
+                active_range=CBF_ACTIVE_OBSTACLE_RANGE, alpha=CBF_ALPHA,
+            )
+            v_safe = cbf_diag["v_safe_last_substep"]
+            min_inflated_clearance = cbf_diag["min_d_over_substeps"]
+            min_h = cbf_diag["min_h_over_substeps"]
+            max_active_obstacle_count = cbf_diag["max_active_obstacle_count"]
+            emergency_brake_this_step = cbf_diag["emergency_brake_substeps"] > 0
+
+        if emergency_brake_this_step:
+            self._cbf_emergency_brake_count += 1
+
         self._enemy_dynamics_info = exec_diag
         self._enemy_pos = new_pos
         self._enemy_vel = new_vel
 
         v_safe_norm = float(np.linalg.norm(v_safe))
         self._enemy_final_command = ((v_safe / v_safe_norm) if v_safe_norm > eps else unit_r).astype(np.float32)
+
+        min_physical_clearance = float(self._obstacle_layout.min_clearance(enemy_pos_before)) if len(self._obstacle_layout) else float("inf")
+
         self._cbf_last_diagnostics = {
             "cbf_enabled": cbf_diag["cbf_enabled"],
-            "cbf_constraint_count": cbf_diag["cbf_constraint_count"],
+            "cbf_constraint_count": max_active_obstacle_count,
             "cbf_qp_status": cbf_diag["cbf_qp_status"],
             "cbf_intervention_norm": cbf_diag["cbf_intervention_norm"],
-            "attacker_velocity_command": v_safe.astype(np.float32),
+            "attacker_velocity_command": np.asarray(v_safe, dtype=np.float32),
             "attacker_actual_velocity": new_vel.copy(),
             "attacker_speed": float(np.linalg.norm(new_vel)),
-            "asset_relative_position": r.astype(np.float32),
-            "asset_distance": r_norm,
+            "asset_relative_position": r_asset.astype(np.float32),
+            "asset_distance": r_asset_norm,
             "velocity_tracking_error": float(np.linalg.norm(new_vel.astype(np.float64) - v_safe)),
+            "route_planner_status": route_diag["route_planner_status"],
+            "route_waypoint": np.asarray(target, dtype=np.float32),
+            "route_replan_count": int(route_diag["route_replan_count"]),
+            "route_planner_failures": int(route_diag["route_planner_failures"]),
+            "active_obstacle_count": max_active_obstacle_count,
+            "min_inflated_obstacle_clearance": min_inflated_clearance,
+            "min_physical_obstacle_clearance": min_physical_clearance,
+            "cbf_h_min": min_h,
+            "qp_success": bool(cbf_diag.get("qp_success", True)),
+            "qp_iterations": int(cbf_diag.get("qp_iterations", 0)),
+            "qp_max_constraint_residual": float(cbf_diag.get("qp_max_constraint_residual", 0.0)),
+            "soft_slack": float(cbf_diag.get("soft_slack", 0.0)),
+            "emergency_brake_count": self._cbf_emergency_brake_count,
         }
 
     def _cbf_info(self) -> dict:
@@ -2589,6 +2671,19 @@ class SoldierEnv(gym.Env):
             "asset_relative_position": d.get("asset_relative_position", zero3),
             "asset_distance": d.get("asset_distance", 0.0),
             "velocity_tracking_error": d.get("velocity_tracking_error", 0.0),
+            "route_planner_status": d.get("route_planner_status", "inactive"),
+            "route_waypoint": d.get("route_waypoint", zero3),
+            "route_replan_count": d.get("route_replan_count", 0),
+            "route_planner_failures": d.get("route_planner_failures", 0),
+            "active_obstacle_count": d.get("active_obstacle_count", 0),
+            "min_inflated_obstacle_clearance": d.get("min_inflated_obstacle_clearance", float("inf")),
+            "min_physical_obstacle_clearance": d.get("min_physical_obstacle_clearance", float("inf")),
+            "cbf_h_min": d.get("cbf_h_min", float("inf")),
+            "qp_success": d.get("qp_success", True),
+            "qp_iterations": d.get("qp_iterations", 0),
+            "qp_max_constraint_residual": d.get("qp_max_constraint_residual", 0.0),
+            "soft_slack": d.get("soft_slack", 0.0),
+            "emergency_brake_count": d.get("emergency_brake_count", 0),
         }
 
     def _enemy_dynamics_limits(self) -> DynamicsLimits:

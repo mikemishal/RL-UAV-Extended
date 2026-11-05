@@ -1,0 +1,41 @@
+{
+ "branch": "research/cbf-attacker",
+ "expected_modified_tracked_files": [
+  "uav_defend/attackers/cbf_attacker.py",
+  "uav_defend/envs/soldier_env.py"
+ ],
+ "expected_start_head": "2beaf77",
+ "head": "2beaf772f5043cf3fc914147395f1a17c01feffc",
+ "head_is_expected_or_descendant": true,
+ "modified_tracked_files": [
+  "uav_defend/attackers/cbf_attacker.py",
+  "uav_defend/envs/soldier_env.py"
+ ],
+ "namespace_overlaps": {
+  "curriculum_known_max_evaluation_seed": 192199,
+  "gap_to_curriculum_m": 307801,
+  "legacy_noop_seeds": [
+   520000,
+   520999
+  ],
+  "obstacle_seeds": [
+   500000,
+   500999
+  ],
+  "obstacle_vs_foundation_legacy_noop_overlap": false,
+  "obstacle_vs_legacy_noop_overlap": false
+ },
+ "scope": "static-obstacle navigation only; no defender CBF, no dynamic-obstacle CBF, no RL training",
+ "tracked_tree_clean_except_expected_cbf_files": true,
+ "uav_defend_diff_stat_vs_a0_tag": "uav_defend/attackers/__init__.py     |  21 +++\n uav_defend/attackers/cbf_attacker.py | 245 +++++++++++++++++++++++++++++++++++\n uav_defend/envs/soldier_env.py       | 223 ++++++++++++++++++++++++++++++-\n 3 files changed, 488 insertions(+), 1 deletion(-)",
+ "unexpected_modifications": [],
+ "untracked_at_start": [
+  "docs/journal_cbf_attacker/obstacle_cbf/task_state.json",
+  "docs/journal_cbf_attacker/obstacle_cbf/unit_test_result.json",
+  "experiments/journal_cbf_attacker_obstacle_foundation.py",
+  "experiments/journal_cbf_attacker_obstacle_run.py",
+  "experiments/journal_cbf_attacker_obstacle_state.py",
+  "tests/test_cbf_obstacle.py",
+  "uav_defend/attackers/cbf_obstacle.py"
+ ]
+}

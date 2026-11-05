@@ -1,0 +1,72 @@
+{
+ "architecture": "moving asset -> static route waypoint -> v_nom -> CBF-QP -> v_safe -> velocity executor",
+ "benchmark_simplification": {
+  "clutter": "C2",
+  "no_clutter": "C0",
+  "note": "canonical, unchanged; no new clutter generator"
+ },
+ "cbf_qp": {
+  "active_obstacle_range_m": 20.0,
+  "alpha_per_s": 1.0,
+  "fallback_chain": "hard -> soft-slack (1e4*delta^2 penalty) -> emergency_brake (v_safe=0)",
+  "obstacle_clearance_m": 2.0,
+  "solver": "scipy.optimize.minimize(method='SLSQP')",
+  "substep_recomputation": "re-solved every dt_sub=0.1s substep when >=1 hazard is active at a step's start (NOT held constant across the full 0.5s external step, unlike Prompt 1's identity path) -- required so the stopping-margin formula's own dt_sub reaction-time assumption is actually realized; see README.md",
+  "velocity_polygon_sides": 32
+ },
+ "config_sha256": "cef44762094a57bd639e27b21df3172be3daf0e67dea814376960535f9670170",
+ "environment": {
+  "asset": "canonical V2 motion (v_s=1.5, legacy_gaussian_random_walk)",
+  "capture_radius_m": 2.0,
+  "clutter": "C2",
+  "defender": "structurally present, cannot terminate the episode (intercept_radius=1e-6, reused unchanged from Prompt 1)",
+  "dynamic_obstacles_enabled": false,
+  "enemy_endurance_enabled": true,
+  "mission_contact_mode": "swept"
+ },
+ "freeze_rule": "clearance, alpha, active_range, kp, physical limits, polygon sides, replan period/triggers are frozen BEFORE the acceptance run and never tuned afterward",
+ "gate": {
+  "capture_min": 0.95,
+  "emergency_brake_step_fraction_max": 0.01,
+  "exhaustion_max": 0.04,
+  "nonfinite_max": 0,
+  "obstacle_collision_max": 0,
+  "orbit_episodes_max": 0,
+  "path_excess_5x_max": 0.01,
+  "planner_failure_episodes_max": 0,
+  "qp_hard_or_soft_success_min": 1.0,
+  "repeated_flyby_max": 0.02,
+  "soft_fallback_step_fraction_max": 0.01,
+  "timeout_max": 0.01
+ },
+ "hypothesis": "A route planner (reused, unmodified visibility-graph + A*) for global deadlock avoidance, combined with a per-instant CBF-QP safety filter over inflated static-obstacle AABBs, lets A1-CBF navigate canonical C2 static clutter while pursuing the moving asset, without any RL.",
+ "protocol_sha256": "043d8c7266cb75465a25ce5addbf1536408bf077b9b07c023bd26dd45034c153",
+ "route_planner": {
+  "asset_move_trigger_m": 2.0,
+  "clearance_m": 2.0,
+  "max_graph_nodes": 150,
+  "planning_range_m": 40.0,
+  "replan_period_s": 1.0,
+  "reused_unmodified_function": "uav_defend.obstacles.route_planner.build_and_search_route",
+  "role": "global/local-minimum deadlock avoidance ONLY -- never safety margins",
+  "waypoint_tolerance_m": 2.0
+ },
+ "scope": "static-obstacle navigation ONLY; no defender CBF, no dynamic-obstacle CBF, no RL training",
+ "validation": {
+  "c0_identity_seeds": [
+   500000,
+   500999
+  ],
+  "chunk_size": 100,
+  "legacy_noop_seeds": [
+   520000,
+   520999
+  ],
+  "obstacle_seeds": [
+   500000,
+   500999
+  ],
+  "parent_commit": "2f45914"
+ },
+ "version": "a1_cbf_obstacle_v1"
+}

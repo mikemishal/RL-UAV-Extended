@@ -1,0 +1,12 @@
+{
+  "command": "pytest tests -q -p no:cacheprovider --ignore=tests/test_defender_adaptation_training_runner.py --ignore=tests/test_vectorized_clutter_training.py --ignore=tests/test_journal_v2_a1_r2_training_runner.py",
+  "passed": 1172,
+  "failed": 0,
+  "warnings": 1,
+  "duration_s": 1102.31,
+  "baseline_before_obstacle_cbf": 1147,
+  "new_obstacle_cbf_tests": 25,
+  "ignored_modules_reason": "same long-running training-runner modules excluded in earlier stage regressions (unchanged)",
+  "research_head_at_run": "2beaf77 (obstacle-cbf files uncommitted at run time)",
+  "note": "0 failures. Confirms the uav_defend/attackers/cbf_attacker.py refactor (extracting apply_one_substep) and the soldier_env.py obstacle-aware CBF wiring do not regress any existing test, including every pre-existing config/protocol-hash guard test and the full PPO/BC curriculum suite."
+}
