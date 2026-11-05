@@ -1,0 +1,83 @@
+{
+ "architecture": "current relative target state -> nominal velocity guidance -> CBF/QP safety filter (identity, Prompt 1) -> quadrotor velocity executor",
+ "capture_semantics_unchanged": {
+  "capture_radius_m": 2.0,
+  "first_event_wins": true,
+  "swept": true
+ },
+ "control_mode_switch": {
+  "config_differences_from_canonical": {
+   "defender_standby_until_detection": {
+    "canonical": true,
+    "foundation": false
+   },
+   "intercept_radius": {
+    "canonical": 2.5,
+    "foundation": 1e-06
+   }
+  },
+  "config_sha256": "88213817ecd8754ad36aec0492e8213ae26efcf6d74bdb9471c21a6d33d8e40b",
+  "default": "legacy (bit-for-bit unchanged)",
+  "field": "enemy_control_mode",
+  "location": "SoldierEnv.__init__ constructor argument (deliberately NOT an EnvConfig field, so it can never perturb dataclasses.asdict(config) used by every prior curriculum stage's frozen protocol/handoff hashes)",
+  "new": "cbf_velocity"
+ },
+ "environment": {
+  "asset": "canonical V2 motion (v_s=1.5, legacy_gaussian_random_walk)",
+  "capture_radius_m": 2.0,
+  "clutter": "C0",
+  "defender": "structurally present, cannot terminate the episode (intercept_radius=1e-6, the established no-defender-interaction curriculum mechanism, reused unchanged)",
+  "enemy_endurance_enabled": true,
+  "mission_contact_mode": "swept"
+ },
+ "executor": {
+  "command_held_constant_across_substeps": true,
+  "dt_external_s": 0.5,
+  "dt_sub_s": 0.1,
+  "max_accel_mps2": 6.0,
+  "max_climb_rate_mps": 5.0,
+  "max_descent_rate_mps": 5.0,
+  "max_horizontal_speed_mps": 12.0,
+  "model": "acceleration-limited (no heading/turn-rate limit) 3-D quadrotor point mass",
+  "substeps_per_step": 5,
+  "swept_mission_contact": "unchanged single linear segment over the full 0.5s external step; no new/parallel contact test"
+ },
+ "freeze_rule": "kp, speed/accel/climb/descent limits, substep, capture radius are frozen BEFORE the acceptance run and never tuned afterward",
+ "gate": {
+  "capture_min": 0.98,
+  "exhaustion_max": 0.02,
+  "first_pass_capture_min": 0.97,
+  "nonfinite_max": 0,
+  "orbit_episodes_max": 0,
+  "repeated_flyby_max": 0.02,
+  "timeout_max": 0.0
+ },
+ "hypothesis": "An analytical, literature-motivated relative-target pursuit law combined with an acceleration-limited quadrotor velocity executor (no legacy heading/turn-rate limit) fixes the repeated-fly-by failure mode observed throughout the PPO/BC A1 curriculum (Stages 4, 4A, 4A-1) under the existing canonical moving-asset benchmark, with no RL training.",
+ "nominal_guidance": {
+  "frozen_before_acceptance_run": true,
+  "kp_per_s": 1.0,
+  "law": "v_nom = min(max_speed, kp * ||r||) * r_hat, r = asset_pos - attacker_pos (CURRENT, never initial/predicted)",
+  "max_speed_mps": 12.0,
+  "no_minimum_forward_speed": true,
+  "no_target_velocity_feedforward": true
+ },
+ "protocol_sha256": "dbe29eaa41c24b4b27907d88c22b7410bd612c6d2bbcdb77daa85e9287c2f301",
+ "safety_filter": {
+  "future_stage": "CBF/QP obstacle + defender avoidance (NOT implemented here)",
+  "stage": "Prompt 1: identity (v_safe = v_nom, hazards=())"
+ },
+ "scope": "pursuit + dynamics foundation ONLY; no obstacle CBF, no defender CBF, no RL training -- research focus beyond this stage is the counter-UAS defender",
+ "validation": {
+  "chunk_size": 100,
+  "foundation_seeds": [
+   500000,
+   500999
+  ],
+  "legacy_noop_seeds": [
+   510000,
+   510999
+  ],
+  "parent_commit": "2f45914"
+ },
+ "version": "a1_cbf_foundation_v1"
+}

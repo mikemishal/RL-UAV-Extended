@@ -25,6 +25,7 @@ from gymnasium import spaces
 from uav_defend.config.env_config import EnvConfig
 from uav_defend.tracking import EnemyKalmanFilter
 from uav_defend.dynamics.constrained_point_mass import advance_velocity, apply_boundary
+from uav_defend.attackers.cbf_attacker import CBFAttackerController, integrate_quadrotor_substeps
 from uav_defend.obstacles.swept_contact import first_contact
 from uav_defend.obstacles import DynamicsLimits, ObstacleAvoidancePlanner, ObstacleLayout, generate_layout
 from uav_defend.obstacles.stateful_avoidance import StatefulAvoidanceController
@@ -199,6 +200,7 @@ class SoldierEnv(gym.Env):
         self,
         config: EnvConfig | None = None,
         render_mode: str | None = None,
+        enemy_control_mode: str = "legacy",
     ):
         """
         Initialize the SoldierEnv.
@@ -217,6 +219,25 @@ class SoldierEnv(gym.Env):
                     - If config.use_kalman_tracking=False: observation contains
                       raw measurement + finite-difference velocity - Direct track
             render_mode: One of "human", "rgb_array", or None.
+            enemy_control_mode: A1-CBF attacker-control-mode switch (journal_cbf_attacker
+                    extension; see uav_defend/attackers/cbf_attacker.py and
+                    docs/journal_cbf_attacker/foundation/README.md). Deliberately kept OUT of
+                    EnvConfig (like render_mode) so it never perturbs the dataclasses.asdict(config)
+                    fingerprint that every prior PPO/BC curriculum stage's frozen protocol/handoff
+                    artifacts pin for reproducibility -- adding it as an EnvConfig field would
+                    retroactively change config_sha256()/canonical_v2_config_sha256() for every
+                    historical stage, even though none of their actual behavior changes.
+                    "legacy" (default): the existing hand-designed guidance (pursuit + weave +
+                        noise + evasion + obstacle avoidance) and the existing turn-rate-limited
+                        constrained-point-mass dynamics. BIT-FOR-BIT unchanged -- this switch's
+                        mere existence must not alter any prior behavior when left at its default
+                        (verified by a dedicated 1,000-episode legacy no-op regression test).
+                    "cbf_velocity": replaces the ENTIRE hostile guidance+dynamics pipeline with
+                        CBFAttackerController's analytical relative-target pursuit, an (currently
+                        identity) CBF/QP safety filter, and an acceleration-limited (not
+                        turn-rate-limited) quadrotor velocity executor, substepped internally at
+                        dt_sub=0.1 s. Draws no randomness, ignores enemy_evasion_*/enemy_obstacle_*
+                        config (Prompt 1 scope: pursuit + dynamics foundation only).
         
         Example:
             # Direct track (noisy measurement + finite-difference velocity)
@@ -228,7 +249,13 @@ class SoldierEnv(gym.Env):
             env = SoldierEnv(config=config)
         """
         super().__init__()
-        
+
+        if enemy_control_mode not in ("legacy", "cbf_velocity"):
+            raise ValueError(
+                f"enemy_control_mode must be 'legacy' or 'cbf_velocity', got {enemy_control_mode!r}"
+            )
+        self._enemy_control_mode = enemy_control_mode
+
         self.config = config if config is not None else EnvConfig()
         self.render_mode = render_mode
         
@@ -452,6 +479,13 @@ class SoldierEnv(gym.Env):
         # attribute does not exist anywhere else in the codebase yet, so no
         # other caller can be affected.
         self.enemy_tactical_override: Callable[[], np.ndarray] | None = None
+        # A1-CBF attacker (journal_cbf_attacker extension): constructed unconditionally (stateless; holds only the
+        # frozen kp/limits), but used ONLY when self._enemy_control_mode == "cbf_velocity" -- see
+        # _move_enemy_cbf_velocity(). A SEPARATE, DIFFERENT hook from enemy_tactical_override above: that hook
+        # supplies a unit DIRECTION consumed by the legacy turn-rate-limited dynamics at fixed speed v_e; this
+        # controller supplies a true velocity command (m/s) consumed by the quadrotor executor instead.
+        self._cbf_controller = CBFAttackerController()
+        self._cbf_last_diagnostics: dict = {}
         # Hostile obstacle-navigation diagnostics (Phase 3B). Deterministic
         # and RNG-free -- see _move_enemy()/ObstacleAvoidancePlanner.plan().
         self._enemy_obstacle_avoidance_active: bool = False
@@ -836,6 +870,7 @@ class SoldierEnv(gym.Env):
         counters. Observational only: never read by guidance, reward or
         termination."""
         self._contact_info = self._empty_contact_info()
+        self._cbf_last_diagnostics = {}
         self._attacker_initial_range = float(initial_range)
         self._attacker_path_length = 0.0
         self._attacker_heading_change_deg = 0.0
@@ -2134,6 +2169,12 @@ class SoldierEnv(gym.Env):
         evasive maneuvering. Proportional navigation and lead pursuit are
         NOT modeled here (deferred to a later task).
         """
+        if self._enemy_control_mode == "cbf_velocity":
+            # A1-CBF (journal_cbf_attacker extension): replaces this ENTIRE method body with a different, opt-in
+            # control pipeline -- see _move_enemy_cbf_velocity(). The check above is the ONLY change on the
+            # enemy_control_mode == "legacy" (default) path; every line below is untouched.
+            self._move_enemy_cbf_velocity()
+            return
         eps = self.config.eps
         
         # Vector from enemy to soldier (full 3D)
@@ -2465,6 +2506,90 @@ class SoldierEnv(gym.Env):
         
         self._enemy_pos = new_pos.astype(np.float32)
         self._enemy_vel = next_vel.astype(np.float32)
+
+    def _move_enemy_cbf_velocity(self) -> None:
+        """A1-CBF (journal_cbf_attacker extension) control mode, selected ONLY via the enemy_control_mode
+        constructor argument == "cbf_velocity" (default remains "legacy", bit-for-bit unchanged -- see
+        _move_enemy()). Replaces the ENTIRE
+        hand-designed guidance+dynamics pipeline (pursuit+weave+noise+evasion+obstacle-avoidance+route-planning+
+        turn-rate-limited dynamics) with:
+          1. Target-relative nominal guidance (CBFAttackerController.nominal_velocity): a proportional law on the
+             CURRENT relative position r = soldier_pos - enemy_pos, computed ONCE per external 0.5 s step (exactly
+             like the legacy model's r_hat, which is also computed once per step) -- never the initial/obsolete
+             asset location, and uses no learned prediction.
+          2. An (identity, Prompt 1) CBF/QP safety-filter interface (CBFAttackerController.filter_velocity):
+             v_safe = v_nom exactly, hazards=() (obstacle-avoidance/defender-avoidance constraints are added by a
+             LATER prompt; this is NOT implemented here).
+          3. A quadrotor velocity executor (integrate_quadrotor_substeps): acceleration-limited (NOT turn-rate-
+             limited) 3-D integration, substepped at CBF_DT_SUB=0.1 s (5 substeps per 0.5 s step), v_safe held
+             constant across all 5 substeps, followed by the SAME `_apply_boundary` boundary handling used
+             everywhere else.
+
+        Draws NO randomness (no weave bias / heading noise; `_rng_enemy_motion` is never touched in this mode) and
+        does NOT consult enemy_tactical_override (a DIFFERENT, direction-only hook used by the learned-attacker-v1
+        family -- see that attribute's docstring), enemy_evasion_*, or enemy_obstacle_avoidance_enabled: this is
+        Prompt 1's pursuit/dynamics foundation only. Mission-command / evasion / route / obstacle-avoidance
+        diagnostic attributes are left at their reset() defaults (inactive) except for `_enemy_pursuit_direction`,
+        `_enemy_mission_command` and `_enemy_final_command`, which are updated below for continuity with existing
+        consumers of those fields. Swept mission-contact detection in step() is COMPLETELY UNCHANGED (a single
+        linear segment from the pre-step to the post-step position over the full 0.5 s step); this method only
+        changes how the post-step position/velocity are produced, so no contact event can be double-counted (see
+        integrate_quadrotor_substeps()'s docstring for the full argument).
+        """
+        eps = self.config.eps
+        r = (self._soldier_pos.astype(np.float64) - self._enemy_pos.astype(np.float64))
+        r_norm = float(np.linalg.norm(r))
+        unit_r = (r / r_norm) if r_norm > eps else np.array([1.0, 0.0, 0.0])
+        self._enemy_pursuit_direction = unit_r.astype(np.float32)
+        self._enemy_mission_command = unit_r.astype(np.float32)
+
+        v_nom = self._cbf_controller.nominal_velocity(r)
+        v_safe, cbf_diag = self._cbf_controller.filter_velocity(
+            v_nom, state={"position": self._enemy_pos.copy(), "velocity": self._enemy_vel.copy()}, hazards=(),
+        )
+
+        new_pos, new_vel, exec_diag = integrate_quadrotor_substeps(
+            position=self._enemy_pos, velocity=self._enemy_vel, v_cmd=v_safe,
+            limits=self._cbf_controller.limits, dt=self.config.dt,
+            L=self.config.L, max_altitude=self.config.max_altitude, eps=eps,
+        )
+        self._enemy_dynamics_info = exec_diag
+        self._enemy_pos = new_pos
+        self._enemy_vel = new_vel
+
+        v_safe_norm = float(np.linalg.norm(v_safe))
+        self._enemy_final_command = ((v_safe / v_safe_norm) if v_safe_norm > eps else unit_r).astype(np.float32)
+        self._cbf_last_diagnostics = {
+            "cbf_enabled": cbf_diag["cbf_enabled"],
+            "cbf_constraint_count": cbf_diag["cbf_constraint_count"],
+            "cbf_qp_status": cbf_diag["cbf_qp_status"],
+            "cbf_intervention_norm": cbf_diag["cbf_intervention_norm"],
+            "attacker_velocity_command": v_safe.astype(np.float32),
+            "attacker_actual_velocity": new_vel.copy(),
+            "attacker_speed": float(np.linalg.norm(new_vel)),
+            "asset_relative_position": r.astype(np.float32),
+            "asset_distance": r_norm,
+            "velocity_tracking_error": float(np.linalg.norm(new_vel.astype(np.float64) - v_safe)),
+        }
+
+    def _cbf_info(self) -> dict:
+        """CBF-attacker diagnostic fields for _get_info(). Neutral defaults (cbf_enabled=False, zero vectors) when
+        self._enemy_control_mode != "cbf_velocity" (including every legacy episode), so the info-dict SCHEMA is
+        stable across modes without affecting legacy behavior or values."""
+        d = self._cbf_last_diagnostics
+        zero3 = np.zeros(3, dtype=np.float32)
+        return {
+            "cbf_enabled": d.get("cbf_enabled", False),
+            "cbf_constraint_count": d.get("cbf_constraint_count", 0),
+            "cbf_qp_status": d.get("cbf_qp_status", "inactive"),
+            "cbf_intervention_norm": d.get("cbf_intervention_norm", 0.0),
+            "attacker_velocity_command": d.get("attacker_velocity_command", zero3),
+            "attacker_actual_velocity": d.get("attacker_actual_velocity", zero3),
+            "attacker_speed": d.get("attacker_speed", 0.0),
+            "asset_relative_position": d.get("asset_relative_position", zero3),
+            "asset_distance": d.get("asset_distance", 0.0),
+            "velocity_tracking_error": d.get("velocity_tracking_error", 0.0),
+        }
 
     def _enemy_dynamics_limits(self) -> DynamicsLimits:
         """Bundles the hostile's constrained-dynamics parameters for reuse
@@ -2910,6 +3035,7 @@ class SoldierEnv(gym.Env):
             "enemy_nominal_guidance_mode": self.config.enemy_nominal_guidance_mode,
             **self._contact_info,
             **self._attacker_efficiency_info(),
+            **self._cbf_info(),
         }
     
     def render(self) -> np.ndarray | None:

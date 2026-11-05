@@ -1,0 +1,48 @@
+{
+ "branch": "research/cbf-attacker",
+ "expected_modified_tracked_files": [
+  "uav_defend/envs/soldier_env.py"
+ ],
+ "expected_start_head": "2f45914",
+ "head": "2f45914ca9d4fe2521c2fdbe3e11f62c1ebfaa6b",
+ "head_is_expected_or_descendant": true,
+ "modified_tracked_files": [
+  "uav_defend/envs/soldier_env.py"
+ ],
+ "namespace_overlaps": {
+  "curriculum_known_max_evaluation_seed": 192199,
+  "foundation_seeds": [
+   500000,
+   500999
+  ],
+  "foundation_vs_legacy_noop_overlap": false,
+  "gap_to_curriculum_m": 307801,
+  "legacy_noop_seeds": [
+   510000,
+   510999
+  ]
+ },
+ "scope": "pursuit/dynamics foundation only; no obstacle CBF, no defender CBF, no RL training",
+ "tracked_tree_clean_except_expected_cbf_files": true,
+ "uav_defend_diff_stat_vs_a0_tag": "uav_defend/envs/soldier_env.py | 128 ++++++++++++++++++++++++++++++++++++++++-\n 1 file changed, 127 insertions(+), 1 deletion(-)",
+ "unexpected_modifications": [],
+ "untracked_at_start": [
+  "docs/journal_cbf_attacker/foundation/README.md",
+  "docs/journal_cbf_attacker/foundation/acceptance_decision.json",
+  "docs/journal_cbf_attacker/foundation/constraint_verification.json",
+  "docs/journal_cbf_attacker/foundation/foundation_validation.json",
+  "docs/journal_cbf_attacker/foundation/legacy_noop_result.json",
+  "docs/journal_cbf_attacker/foundation/manuscript_notes.md",
+  "docs/journal_cbf_attacker/foundation/protocol.json",
+  "docs/journal_cbf_attacker/foundation/repository_verification.json",
+  "docs/journal_cbf_attacker/foundation/task_state.json",
+  "docs/journal_cbf_attacker/foundation/unit_test_result.json",
+  "experiments/journal_cbf_attacker_figures.py",
+  "experiments/journal_cbf_attacker_foundation.py",
+  "experiments/journal_cbf_attacker_run.py",
+  "experiments/journal_cbf_attacker_state.py",
+  "tests/test_cbf_attacker.py",
+  "uav_defend/attackers/__init__.py",
+  "uav_defend/attackers/cbf_attacker.py"
+ ]
+}

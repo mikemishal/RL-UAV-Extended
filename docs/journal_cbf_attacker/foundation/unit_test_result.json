@@ -1,0 +1,28 @@
+{
+ "file": "tests/test_cbf_attacker.py",
+ "passed": 27,
+ "failed": 0,
+ "covers": [
+  "1. relative-target nominal command direction and magnitude",
+  "2. zero-distance command (hover, not random)",
+  "3. speed saturation far away (capped at max_speed)",
+  "4. low-speed command near asset (proportional scaling at 12/6/3/2/1 m)",
+  "5. hover command via the controller (filter_velocity identity on zero input)",
+  "6. acceleration limiting (single substep from rest, capped at a_max*dt_sub)",
+  "7. horizontal-speed limiting (command far beyond 12 m/s capped)",
+  "8. climb limiting (command far beyond 5 m/s climb capped)",
+  "9. descent limiting (command far beyond 5 m/s descent capped)",
+  "10. velocity reversal with no legacy heading/turn-rate limit (passes through near-zero speed, no forced curve)",
+  "11. 0.1s substep count (5 per 0.5s) and misconfigured-dt rejection",
+  "12. deterministic execution (two independent envs, same seed, identical trajectory)",
+  "13. identity safety-filter behavior (v_safe == v_nom bit-for-bit, zero constraints)",
+  "14. diagnostic fields present/correct in cbf_velocity mode, and neutral defaults in legacy mode",
+  "15. no-defender test configuration (intercept_radius=1e-6; no interception outcomes over 20 episodes)",
+  "16. common-random-number asset trajectory across control modes (identical soldier_pos every step)",
+  "17. canonical endurance budget (= path_factor * initial 3-D distance)",
+  "18. swept capture detected under substepped motion (captures terminate within the 2 m radius)",
+  "19. bit-for-bit legacy A0 no-op vs the parent commit (git-show-based dynamic module comparison, 30 seeds)",
+  "gate boundary cases; namespace disjointness + protocol stability; constraint verification on a 30-episode sample"
+ ],
+ "note": "the full 1,000-episode foundation validation and 1,000-seed legacy no-op check are run by experiments/journal_cbf_attacker_run.py (restart-safe, chunked) and recorded under docs/journal_cbf_attacker/foundation/; this suite uses smaller seed counts for CI speed."
+}

@@ -1,0 +1,17 @@
+{
+ "constraint_verification_passed": true,
+ "gate": {
+  "checks": {
+   "capture": true,
+   "exhaustion": true,
+   "first_pass_capture": true,
+   "nonfinite": true,
+   "orbit": true,
+   "repeated_flyby": true,
+   "timeout": true
+  },
+  "passed": true
+ },
+ "passed": true,
+ "verdict": "A"
+}

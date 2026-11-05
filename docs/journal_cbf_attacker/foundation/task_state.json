@@ -1,0 +1,130 @@
+{
+ "created_utc": "2026-11-05T15:26:47.852123+00:00",
+ "stages": {
+  "01_repository_verification": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/foundation/repository_verification.json": "009d6121ef198a26e5fcbeb6716d91cc3360d56eca1255d4df1672d448e9ce7b"
+   },
+   "completed_utc": "2026-11-05T16:02:18.101712+00:00",
+   "config_sha256": null,
+   "input_commit": "2f45914ca9d4fe2521c2fdbe3e11f62c1ebfaa6b",
+   "note": "HEAD descendant of 2f45914, tracked tree clean, namespaces disjoint",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/foundation/repository_verification.json"
+   ],
+   "started_utc": "2026-11-05T16:02:17.610248+00:00",
+   "status": "complete"
+  },
+  "02_protocol_freeze": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/foundation/protocol.json": "d7a79a37476fe141b06795b82cef383567d97cc3bf0250a387c7b7d4e4c179ae"
+   },
+   "completed_utc": "2026-11-05T15:59:18.897476+00:00",
+   "config_sha256": "dbe29eaa41c24b4b27907d88c22b7410bd612c6d2bbcdb77daa85e9287c2f301",
+   "input_commit": "2f45914ca9d4fe2521c2fdbe3e11f62c1ebfaa6b",
+   "note": "protocol sha dbe29eaa41c24b4b",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/foundation/protocol.json"
+   ],
+   "started_utc": "2026-11-05T15:59:18.889089+00:00",
+   "status": "complete"
+  },
+  "03_legacy_noop_validation": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/foundation/legacy_noop_result.json": "cf20fa44110d4e4fb2069419ec1037733dc69c2240d49211811ba461b3fe5ca2"
+   },
+   "completed_utc": "2026-11-05T15:59:27.626741+00:00",
+   "config_sha256": "dbe29eaa41c24b4b27907d88c22b7410bd612c6d2bbcdb77daa85e9287c2f301",
+   "input_commit": "2f45914ca9d4fe2521c2fdbe3e11f62c1ebfaa6b",
+   "note": "1000 seeds identical to parent commit 2f45914",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/foundation/legacy_noop_result.json"
+   ],
+   "started_utc": "2026-11-05T15:59:18.985870+00:00",
+   "status": "complete"
+  },
+  "04_targeted_tests": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/foundation/unit_test_result.json": "614e7e42a99dcef9d4a87db096f5a9a285b6a463a0c0e1552da5a665523c6a12"
+   },
+   "completed_utc": "2026-11-05T15:59:27.740803+00:00",
+   "config_sha256": "dbe29eaa41c24b4b27907d88c22b7410bd612c6d2bbcdb77daa85e9287c2f301",
+   "input_commit": "2f45914ca9d4fe2521c2fdbe3e11f62c1ebfaa6b",
+   "note": "targeted tests passed",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/foundation/unit_test_result.json"
+   ],
+   "started_utc": "2026-11-05T15:59:27.735309+00:00",
+   "status": "complete"
+  },
+  "05_foundation_validation": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/foundation/foundation_validation.json": "1fbe7761c64990fd9aedf0e5f34f1ac0d4ca98f546a46f9e4b89e6ce5d1ee70e"
+   },
+   "completed_utc": "2026-11-05T15:59:37.594274+00:00",
+   "config_sha256": "dbe29eaa41c24b4b27907d88c22b7410bd612c6d2bbcdb77daa85e9287c2f301",
+   "input_commit": "2f45914ca9d4fe2521c2fdbe3e11f62c1ebfaa6b",
+   "note": "A0 capture 0.993; A1-CBF capture 1.000",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/foundation/foundation_validation.json"
+   ],
+   "started_utc": "2026-11-05T15:59:27.820049+00:00",
+   "status": "complete"
+  },
+  "06_constraint_verification": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/foundation/constraint_verification.json": "d818718ca2063896430e4fd76dee3f727820f842cba2c752a1aa7dc6302bc2a7"
+   },
+   "completed_utc": "2026-11-05T15:59:37.744170+00:00",
+   "config_sha256": "dbe29eaa41c24b4b27907d88c22b7410bd612c6d2bbcdb77daa85e9287c2f301",
+   "input_commit": "2f45914ca9d4fe2521c2fdbe3e11f62c1ebfaa6b",
+   "note": "passed=True",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/foundation/constraint_verification.json"
+   ],
+   "started_utc": "2026-11-05T15:59:37.670993+00:00",
+   "status": "complete"
+  },
+  "07_acceptance_decision": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/foundation/acceptance_decision.json": "076294202c6e1e6c01b681543dfefdb9870b8d5bee6db54d2b93262b2606200f"
+   },
+   "completed_utc": "2026-11-05T15:59:37.922150+00:00",
+   "config_sha256": "dbe29eaa41c24b4b27907d88c22b7410bd612c6d2bbcdb77daa85e9287c2f301",
+   "input_commit": "2f45914ca9d4fe2521c2fdbe3e11f62c1ebfaa6b",
+   "note": "verdict A",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/foundation/acceptance_decision.json"
+   ],
+   "started_utc": "2026-11-05T15:59:37.842657+00:00",
+   "status": "complete"
+  },
+  "08_visualizer_package": {
+   "completed_utc": "2026-11-05T16:15:46.998464+00:00",
+   "input_commit": "2f45914ca9d4fe2521c2fdbe3e11f62c1ebfaa6b",
+   "reason": "A1-CBF is a scripted/deterministic controller (no SB3 .zip checkpoint); the existing visualizer replay backend is built around loading PPO-policy artifacts tagged A1-CUR*. Building the minimum hook to replay a raw enemy_control_mode=cbf_velocity env run would require backend changes beyond no-broader-UI-work-in-this-prompt (brief section 20). No visualizer changes made this stage; the temporary label A1-CBF-FOUNDATION / development-non-canonical is documented in README.md/manuscript_notes.md only.",
+   "status": "not_applicable"
+  },
+  "09_manuscript_documentation": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/foundation/README.md": "5e055ba51e90d71072cf8334289e36f3049b93cc88e9fd5f8c4ddd8f0b8908b1",
+    "docs/journal_cbf_attacker/foundation/manuscript_notes.md": "a633e378968c50be449bf52d38e433b4f57536f92ad7203efc365caf59b21825"
+   },
+   "completed_utc": "2026-11-05T16:15:47.088624+00:00",
+   "config_sha256": null,
+   "input_commit": "2f45914ca9d4fe2521c2fdbe3e11f62c1ebfaa6b",
+   "note": "README.md + manuscript_notes.md written: motivation, architecture, equations, limits, results, limitations",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/foundation/README.md",
+    "docs/journal_cbf_attacker/foundation/manuscript_notes.md"
+   ],
+   "started_utc": "2026-11-05T16:15:47.084278+00:00",
+   "status": "complete"
+  },
+  "10_commit_push": {
+   "status": "pending"
+  }
+ },
+ "task": "journal_cbf_attacker/foundation",
+ "updated_utc": "2026-11-05T16:15:47.101283+00:00"
+}
