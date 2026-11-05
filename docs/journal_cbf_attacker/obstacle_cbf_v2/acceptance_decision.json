@@ -1,0 +1,23 @@
+{
+ "constraint_verification_passed": true,
+ "gate": {
+  "checks": {
+   "capture": true,
+   "emergency_brake_fraction": true,
+   "exhaustion": true,
+   "nonfinite": true,
+   "obstacle_collision": true,
+   "orbit": true,
+   "path_excess_5x": true,
+   "qp_hard_or_soft_success": true,
+   "repeated_flyby": true,
+   "route_errors": true,
+   "scenario_generation_failures": true,
+   "soft_fallback_fraction": true,
+   "timeout": true
+  },
+  "passed": true
+ },
+ "passed": true,
+ "verdict": "A"
+}

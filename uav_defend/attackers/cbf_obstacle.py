@@ -138,6 +138,30 @@ def build_static_hazards(
     return hazards
 
 
+# ========================================================================================= initial-state viability (Prompt 3)
+def initial_state_dynamically_viable(
+    position: np.ndarray, velocity: np.ndarray, obstacles: tuple[AABBObstacle, ...], *,
+    clearance: float = CBF_OBSTACLE_CLEARANCE, max_accel: float, dt_sub: float = CBF_DT_SUB,
+) -> dict:
+    """Initial-state viability test (journal_cbf_attacker, obstacle_cbf_v2 / Prompt 3): is `(position, velocity)`
+    dynamically reachable WITHOUT a guaranteed collision, given the frozen acceleration limit alone?
+
+    Tests the SAME stopping-margin barrier used by the live CBF (`build_static_hazards`) against EVERY static
+    obstacle (brief section 4: no active-range cutoff here -- unlike in-flight hazard selection, the initial-state
+    check must consider every obstacle in the layout, since the attacker has not yet had any chance to react to
+    anything). The state is dynamically viable iff `d_i >= d_req,i` for EVERY obstacle, i.e. `h_i >= 0` for every
+    hazard (no additional arbitrary buffer, per the brief's explicit instruction) -- `alpha` never enters this
+    computation (`h_i = d_i - d_req,i` is alpha-independent; the CBF-QP's `alpha` only shapes how aggressively a
+    LIVE, in-flight constraint is enforced, not whether the STARTING state is physically reachable at all).
+
+    Returns `{"viable": bool, "min_margin": float (min h_i across all obstacles, or +inf if none), "hazards": [...]}`.
+    """
+    hazards = build_static_hazards(position, velocity, obstacles, clearance=clearance, active_range=float("inf"), max_accel=max_accel, dt_sub=dt_sub)
+    viable = all(h.h >= 0.0 for h in hazards)
+    min_margin = min((h.h for h in hazards), default=float("inf"))
+    return {"viable": bool(viable), "min_margin": float(min_margin), "hazards": hazards}
+
+
 # ========================================================================================= velocity-bound polygon
 def velocity_polygon_halfplanes(radius: float, n_sides: int = VELOCITY_POLYGON_SIDES) -> tuple[np.ndarray, float]:
     """A fixed `n_sides`-sided polygon INSCRIBED in the horizontal speed-bound circle of radius `radius` (i.e. the
@@ -272,7 +296,7 @@ def solve_velocity_cbf_qp(
 
 # ========================================================================================= safety-critical executor
 def integrate_obstacle_cbf_substeps(
-    position: np.ndarray, velocity: np.ndarray, *, route_target: np.ndarray, controller: CBFAttackerController,
+    position: np.ndarray, velocity: np.ndarray, *, route_target: np.ndarray | None, controller: CBFAttackerController,
     obstacles: tuple[AABBObstacle, ...], dt: float, dt_sub: float = CBF_DT_SUB, L: float, max_altitude: float,
     eps: float = 1e-8, clearance: float = CBF_OBSTACLE_CLEARANCE, active_range: float = CBF_ACTIVE_OBSTACLE_RANGE,
     alpha: float = CBF_ALPHA,
@@ -296,7 +320,10 @@ def integrate_obstacle_cbf_substeps(
 
     The guidance TARGET (`route_target`) itself is NOT recomputed here -- it is supplied once per external step by
     the (slower-cadence, brief section 7) route planner, matching the division of responsibility in brief section
-    3: the route planner solves global deadlock; the CBF-QP provides only local, per-instant safety.
+    3: the route planner solves global deadlock; the CBF-QP provides only local, per-instant safety. `route_target`
+    may be `None` (journal_cbf_attacker, obstacle_cbf_v2 / Prompt 3, brief section 9: `ROUTE_TEMPORARILY_UNAVAILABLE`
+    with no previously retained waypoint) -- in that case the nominal command is `v_nom = 0` every substep (hover/
+    brake), never an invented escape direction; the CBF-QP may still intervene if a hazard demands outward motion.
 
     Returns `(position, velocity, exec_diagnostics, cbf_diagnostics)` where `exec_diagnostics` has the SAME schema
     as `integrate_quadrotor_substeps` (accel/speed/climb saturation flags) and `cbf_diagnostics` holds the LAST
@@ -305,7 +332,7 @@ def integrate_obstacle_cbf_substeps(
     """
     pos = np.asarray(position, dtype=np.float64).copy()
     vel = np.asarray(velocity, dtype=np.float64).copy()
-    route_target = np.asarray(route_target, dtype=np.float64).reshape(3)
+    route_target = np.asarray(route_target, dtype=np.float64).reshape(3) if route_target is not None else None
     n = substep_count(dt, dt_sub)
     limits = controller.limits
 
@@ -320,8 +347,11 @@ def integrate_obstacle_cbf_substeps(
     last_v_safe = np.zeros(3)
 
     for _ in range(n):
-        r_g = route_target - pos
-        v_nom = controller.nominal_velocity(r_g)
+        if route_target is None:
+            v_nom = np.zeros(3, dtype=np.float64)   # hover/brake (brief section 9): no target available this step
+        else:
+            r_g = route_target - pos
+            v_nom = controller.nominal_velocity(r_g)
         hazards = build_static_hazards(
             pos, vel, obstacles, clearance=clearance, active_range=active_range, max_accel=limits.max_accel,
             dt_sub=dt_sub, alpha=alpha,
@@ -374,12 +404,30 @@ def _direct_path_clear(position: np.ndarray, goal: np.ndarray, inflated_obstacle
     return True
 
 
+# Route-status vocabulary (journal_cbf_attacker, obstacle_cbf_v2 / Prompt 3, brief section 8):
+#   ROUTE_OK                     -- a valid route/direct-shot target is available this step.
+#   ROUTE_TEMPORARILY_UNAVAILABLE -- the planner executed correctly (no exception, finite output) but found no
+#       safe path at this instant (e.g. start or goal transiently inside/overlapping an inflated clearance zone --
+#       see docs/journal_cbf_attacker/obstacle_cbf_v2/planner_failure_audit.json). NOT an implementation failure.
+#   ROUTE_ERROR                  -- an exception, non-finite/invalid waypoint output, or a planner-contract
+#       violation (e.g. a returned waypoint whose segment from the current position is STILL blocked). Acceptance
+#       requires this to be exactly 0; the audit found zero such cases across all 32 Prompt-2 failure events.
+ROUTE_OK = "route_ok"
+ROUTE_TEMPORARILY_UNAVAILABLE = "route_temporarily_unavailable"
+ROUTE_ERROR = "route_error"
+
+
+def _waypoints_valid(waypoints: tuple[np.ndarray, ...]) -> bool:
+    """Contract check (brief section 8/10): every returned waypoint must be a finite, well-formed 3-vector."""
+    return all(np.asarray(w, dtype=np.float64).shape == (3,) and np.all(np.isfinite(w)) for w in waypoints)
+
+
 @dataclass
 class CBFRouteNavigator:
     """Stateful route-target selector (brief sections 3/4/6/7). Reuses the EXISTING tested visibility-graph + A*
     static-obstacle planner (`uav_defend.obstacles.route_planner.build_and_search_route`) for the actual geometric
-    search -- this class owns only route PERSISTENCE and the replanning triggers specified in the brief, never a
-    second independent planning algorithm.
+    search -- this class owns only route PERSISTENCE, the replanning triggers, and the route-status
+    classification/fallback behavior (brief sections 8/9), never a second independent planning algorithm.
 
     Role separation (brief section 3): this navigator handles GLOBAL/local-minimum deadlock around obstacle
     clusters by choosing which waypoint to steer toward; it has no notion of safety margins or velocity -- that is
@@ -396,14 +444,24 @@ class CBFRouteNavigator:
 
     _route: _RouteState | None = field(default=None, init=False)
     _replan_count: int = field(default=0, init=False)
-    _planner_failure_count: int = field(default=0, init=False)
+    _planner_failure_count: int = field(default=0, init=False)   # ROUTE_TEMPORARILY_UNAVAILABLE events
+    _route_error_count: int = field(default=0, init=False)       # ROUTE_ERROR events (must stay 0)
     _last_status: str = field(default="direct", init=False)
+    _last_route_status: str = field(default=ROUTE_OK, init=False)
+    _consecutive_unavailable_steps: int = field(default=0, init=False)
+    _longest_unavailable_streak: int = field(default=0, init=False)
+    _hover_fallback_count: int = field(default=0, init=False)
 
     def reset(self) -> None:
         self._route = None
         self._replan_count = 0
         self._planner_failure_count = 0
+        self._route_error_count = 0
         self._last_status = "direct"
+        self._last_route_status = ROUTE_OK
+        self._consecutive_unavailable_steps = 0
+        self._longest_unavailable_streak = 0
+        self._hover_fallback_count = 0
 
     @property
     def replan_count(self) -> int:
@@ -413,50 +471,88 @@ class CBFRouteNavigator:
     def planner_failure_count(self) -> int:
         return self._planner_failure_count
 
-    def update(self, position: np.ndarray, asset_position: np.ndarray, obstacles: tuple[AABBObstacle, ...], elapsed_time_s: float) -> tuple[np.ndarray, dict]:
-        """Returns `(guidance_target, diagnostics)`. `guidance_target` is ALWAYS either the current asset position
-        (direct line clear, or route exhausted) or the next route waypoint (blocked) -- the final route goal is
-        ALWAYS the CURRENT asset position (brief section 6: never the initial/stale target)."""
+    @property
+    def route_error_count(self) -> int:
+        return self._route_error_count
+
+    @property
+    def longest_unavailable_streak(self) -> int:
+        return self._longest_unavailable_streak
+
+    @property
+    def hover_fallback_count(self) -> int:
+        return self._hover_fallback_count
+
+    def update(self, position: np.ndarray, asset_position: np.ndarray, obstacles: tuple[AABBObstacle, ...], elapsed_time_s: float) -> tuple[np.ndarray | None, dict]:
+        """Returns `(guidance_target, diagnostics)`. `guidance_target` is the current asset position (direct line
+        clear), the next/previous route waypoint (blocked but a target is available), or `None` -- meaning "hover/
+        brake" (brief section 9: command zero velocity; NEVER aim at a known-blocked target, NEVER an invented
+        escape direction) -- which occurs only when the route is `ROUTE_TEMPORARILY_UNAVAILABLE` or `ROUTE_ERROR`
+        AND there is no previously retained waypoint to fall back on."""
         position = np.asarray(position, dtype=np.float64).reshape(3)
         asset_position = np.asarray(asset_position, dtype=np.float64).reshape(3)
         inflated = [inflate_aabb(o, self.clearance) for o in obstacles]
+        waypoint_retained = False
 
         if _direct_path_clear(position, asset_position, inflated):
             self._route = None
             self._last_status = "direct"
-            return asset_position, self._diagnostics(route_length=0.0)
+            self._last_route_status = ROUTE_OK
+            self._consecutive_unavailable_steps = 0
+            return asset_position, self._diagnostics(route_length=0.0, waypoint_retained=False, hover=False)
 
         replan_reason = self._replan_reason(position, asset_position, inflated, elapsed_time_s)
         if replan_reason is not None:
-            perceived = PerceivedObstacleSet(static=tuple(
-                PerceivedStaticObstacle(id=i, min_corner=o.min_corner, max_corner=o.max_corner, source="map")
-                for i, o in enumerate(obstacles)
-            ))
-            waypoints = build_and_search_route(
-                position, asset_position, perceived, clearance=self.clearance, max_altitude=self.max_altitude,
-                planning_range=self.planning_range, max_graph_nodes=self.max_graph_nodes,
-            )
+            route_status = ROUTE_OK
+            try:
+                perceived = PerceivedObstacleSet(static=tuple(
+                    PerceivedStaticObstacle(id=i, min_corner=o.min_corner, max_corner=o.max_corner, source="map")
+                    for i, o in enumerate(obstacles)
+                ))
+                waypoints = build_and_search_route(
+                    position, asset_position, perceived, clearance=self.clearance, max_altitude=self.max_altitude,
+                    planning_range=self.planning_range, max_graph_nodes=self.max_graph_nodes,
+                )
+            except Exception:
+                waypoints = None
+                route_status = ROUTE_ERROR
+            else:
+                if waypoints is not None and not _waypoints_valid(waypoints):
+                    # Planner-contract violation (brief section 8): non-finite/malformed output. A genuine
+                    # implementation bug, NOT a geometric search failure -- never seen in the 32-event audit, but
+                    # detected explicitly here rather than silently relabeled.
+                    waypoints = None
+                    route_status = ROUTE_ERROR
             self._replan_count += 1
+
             if waypoints is None:
-                self._planner_failure_count += 1
-                self._last_status = "planner_failed"
-                # Geometric search failure (e.g. the position is already inside/overlapping the inflated clearance
-                # zone, so every candidate edge from "start" registers as blocked -- see
-                # build_and_search_route's docstring, "Phase 24"). NEVER fall back to the raw asset position here:
-                # the direct line is, by construction, still blocked (that is WHY a replan was attempted at all);
-                # reverting to it would aim the nominal guidance straight back through the obstacle. Instead, KEEP
-                # following the previous route's current waypoint if one exists (a stale-but-still-geometrically-
-                # valid target is always safer than a known-blocked one); only fall back to the asset position if
-                # there was no previous route to fall back on.
+                if route_status == ROUTE_ERROR:
+                    self._route_error_count += 1
+                else:
+                    route_status = ROUTE_TEMPORARILY_UNAVAILABLE
+                    self._planner_failure_count += 1
+                self._last_status = "planner_failed" if route_status == ROUTE_TEMPORARILY_UNAVAILABLE else "route_error"
+                self._last_route_status = route_status
+                self._consecutive_unavailable_steps += 1
+                self._longest_unavailable_streak = max(self._longest_unavailable_streak, self._consecutive_unavailable_steps)
+                # Brief section 9: retain the previous waypoint if one remains; otherwise hover/brake -- NEVER fall
+                # back to the (by construction, still-blocked) direct asset target, and NEVER an invented escape.
                 if self._route is not None and self._route.waypoints:
                     target = self._route.waypoints[self._route.index]
+                    waypoint_retained = True
                     route_length = float(np.linalg.norm(target - position))
-                    return target, self._diagnostics(route_length=route_length)
-                return asset_position, self._diagnostics(route_length=0.0)
+                    return target, self._diagnostics(route_length=route_length, waypoint_retained=True, hover=False)
+                self._hover_fallback_count += 1
+                return None, self._diagnostics(route_length=0.0, waypoint_retained=False, hover=True)
+
             self._route = _RouteState(waypoints=waypoints, index=0, goal_at_creation=asset_position.copy(), created_time_s=elapsed_time_s)
             self._last_status = "replanned"
+            self._last_route_status = ROUTE_OK
+            self._consecutive_unavailable_steps = 0
         else:
             self._last_status = "following"
+            self._last_route_status = ROUTE_OK
+            self._consecutive_unavailable_steps = 0
 
         route = self._route
         # Advance past any waypoint already reached (defensive -- normally index==0 right after a replan).
@@ -466,7 +562,7 @@ class CBFRouteNavigator:
         route_length = float(sum(
             np.linalg.norm(route.waypoints[i + 1] - route.waypoints[i]) for i in range(len(route.waypoints) - 1)
         )) + float(np.linalg.norm(route.waypoints[0] - position))
-        return target, self._diagnostics(route_length=route_length)
+        return target, self._diagnostics(route_length=route_length, waypoint_retained=waypoint_retained, hover=False)
 
     def _replan_reason(self, position: np.ndarray, asset_position: np.ndarray, inflated, elapsed_time_s: float) -> str | None:
         route = self._route
@@ -483,9 +579,15 @@ class CBFRouteNavigator:
             return "periodic"
         return None
 
-    def _diagnostics(self, *, route_length: float) -> dict:
+    def _diagnostics(self, *, route_length: float, waypoint_retained: bool, hover: bool) -> dict:
         target = self._route.waypoints[self._route.index] if self._route is not None else None
         return {
-            "route_planner_status": self._last_status, "route_waypoint": target, "route_replan_count": self._replan_count,
-            "route_planner_failures": self._planner_failure_count, "route_length_m": route_length,
+            "route_planner_status": self._last_status, "route_status": self._last_route_status,
+            "route_waypoint": target, "route_replan_count": self._replan_count,
+            "route_planner_failures": self._planner_failure_count, "route_errors": self._route_error_count,
+            "route_length_m": route_length, "route_unavailable_streak": self._consecutive_unavailable_steps,
+            "route_longest_unavailable_streak": self._longest_unavailable_streak,
+            "route_waypoint_retained": waypoint_retained, "route_hover_fallback": hover,
+            "route_hover_fallback_count": self._hover_fallback_count,
         }
+

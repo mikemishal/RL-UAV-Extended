@@ -26,7 +26,7 @@ from uav_defend.config.env_config import EnvConfig
 from uav_defend.tracking import EnemyKalmanFilter
 from uav_defend.dynamics.constrained_point_mass import advance_velocity, apply_boundary
 from uav_defend.attackers.cbf_attacker import CBF_DT_SUB, CBFAttackerController, integrate_quadrotor_substeps
-from uav_defend.attackers.cbf_obstacle import CBF_ACTIVE_OBSTACLE_RANGE, CBF_ALPHA, CBF_OBSTACLE_CLEARANCE, CBFRouteNavigator, build_static_hazards, integrate_obstacle_cbf_substeps
+from uav_defend.attackers.cbf_obstacle import CBF_ACTIVE_OBSTACLE_RANGE, CBF_ALPHA, CBF_OBSTACLE_CLEARANCE, CBFRouteNavigator, build_static_hazards, initial_state_dynamically_viable, integrate_obstacle_cbf_substeps
 from uav_defend.obstacles.swept_contact import first_contact
 from uav_defend.obstacles import DynamicsLimits, ObstacleAvoidancePlanner, ObstacleLayout, generate_layout
 from uav_defend.obstacles.stateful_avoidance import StatefulAvoidanceController
@@ -202,6 +202,7 @@ class SoldierEnv(gym.Env):
         config: EnvConfig | None = None,
         render_mode: str | None = None,
         enemy_control_mode: str = "legacy",
+        viability_conditioned_init: bool = False,
     ):
         """
         Initialize the SoldierEnv.
@@ -239,6 +240,16 @@ class SoldierEnv(gym.Env):
                         turn-rate-limited) quadrotor velocity executor, substepped internally at
                         dt_sub=0.1 s. Draws no randomness, ignores enemy_evasion_*/enemy_obstacle_*
                         config (Prompt 1 scope: pursuit + dynamics foundation only).
+            viability_conditioned_init: A1-CBF obstacle_cbf_v2 extension (journal_cbf_attacker, Prompt 3; see
+                    uav_defend/attackers/cbf_obstacle.py:initial_state_dynamically_viable and
+                    docs/journal_cbf_attacker/obstacle_cbf_v2/README.md). OFF by default (bit-for-bit unchanged --
+                    this is why it is a constructor argument, not an EnvConfig field, exactly like
+                    enemy_control_mode above). When True, reset() tests the attacker's initial (position, velocity)
+                    against every static obstacle's stopping-margin barrier and, if infeasible, RESAMPLES ONLY the
+                    attacker spawn/heading (via the existing canonical _spawn_enemy_at_edge mechanism) up to 100
+                    times -- the obstacle field and asset initialization are generated ONCE and never regenerated.
+                    If no viable draw is found within 100 attempts, the episode is marked
+                    `scenario_generation_failure` in info and should be excluded from rate metrics by the caller.
         
         Example:
             # Direct track (noisy measurement + finite-difference velocity)
@@ -256,6 +267,7 @@ class SoldierEnv(gym.Env):
                 f"enemy_control_mode must be 'legacy' or 'cbf_velocity', got {enemy_control_mode!r}"
             )
         self._enemy_control_mode = enemy_control_mode
+        self._viability_conditioned_init = bool(viability_conditioned_init)
 
         self.config = config if config is not None else EnvConfig()
         self.render_mode = render_mode
@@ -481,6 +493,12 @@ class SoldierEnv(gym.Env):
         # second independent one. Only ever consulted when _enemy_control_mode == "cbf_velocity".
         self._cbf_route_nav = CBFRouteNavigator(max_altitude=self.config.max_altitude)
         self._cbf_emergency_brake_count: int = 0
+        # Initial-state viability conditioning (journal_cbf_attacker, obstacle_cbf_v2 / Prompt 3), reset per
+        # episode in reset() itself (NOT _reset_v2_episode_state, since these describe the SPAWN draw, not
+        # ongoing-episode CBF state).
+        self._viability_resample_count: int = 0
+        self._scenario_generation_failed: bool = False
+        self._initial_viability_margin: float = float("inf")
         self._reset_v2_episode_state(0.0)
         # Adaptive Attacker v1 hook (learned tactical policy, journal
         # extension): when set (by an external training wrapper, NEVER by
@@ -657,8 +675,7 @@ class SoldierEnv(gym.Env):
         # engagement volume: initialize its velocity approximately toward
         # the soldier at its maximum speed, rather than from rest, to avoid
         # an artificial launch-from-rest transient.
-        pursuit_dir = self._soldier_pos - self._enemy_pos
-        pursuit_norm = np.linalg.norm(pursuit_dir)
+        pursuit_dir, initial_enemy_vel, pursuit_norm = self._compute_enemy_initial_motion(self._enemy_pos)
         # Finite mission endurance (journal extension): the traveled-distance budget is fixed at
         # reset, from the initial 3D attacker-to-asset distance d0 -- never recomputed later, so
         # neither the asset's own motion nor the attacker's path shape can change the budget itself.
@@ -667,21 +684,7 @@ class SoldierEnv(gym.Env):
         else:
             self._enemy_endurance_budget = None
         self._enemy_endurance_traveled = 0.0
-        if pursuit_norm > self.config.eps:
-            pursuit_dir = pursuit_dir / pursuit_norm
-        else:
-            pursuit_dir = np.array([1.0, 0.0, 0.0])  # Safe fallback (numerically degenerate case)
         self._enemy_pursuit_direction = pursuit_dir.astype(np.float32)
-        initial_enemy_vel = self.config.v_e * pursuit_dir
-        # Respect the vertical-rate invariant maintained everywhere else:
-        # clip the initial vertical component to [-max_descent, max_climb]
-        # (this can only reduce the total initial speed slightly below v_e,
-        # never increase it, so the max-speed bound also remains satisfied).
-        initial_enemy_vel[2] = np.clip(
-            initial_enemy_vel[2],
-            -self.config.enemy_max_descent_rate,
-            self.config.enemy_max_climb_rate,
-        )
         self._enemy_vel = initial_enemy_vel.astype(np.float32)
         
         # Obstacle layout (journal extension): DATA ONLY in this phase --
@@ -696,6 +699,35 @@ class SoldierEnv(gym.Env):
             defender_position=self._defender_pos,
             enemy_spawn_position=self._enemy_pos,
         )
+
+        # Initial-state viability conditioning (journal_cbf_attacker, obstacle_cbf_v2 / Prompt 3; see
+        # uav_defend/attackers/cbf_obstacle.py:initial_state_dynamically_viable). OFF by default
+        # (self._viability_conditioned_init=False): zero extra _rng_spawn draws, bit-for-bit unchanged from
+        # Prompt 1/2. When enabled: the obstacle field above is NEVER regenerated -- only the attacker
+        # spawn/heading is resampled (via the SAME canonical _spawn_enemy_at_edge mechanism, consuming MORE
+        # draws from the SAME _rng_spawn stream) until the initial (position, velocity) clears the stopping-margin
+        # barrier against EVERY static obstacle, or 100 attempts are exhausted.
+        self._viability_resample_count = 0
+        self._scenario_generation_failed = False
+        self._initial_viability_margin = float("inf")
+        if self._viability_conditioned_init:
+            max_accel = self._cbf_controller.limits.max_accel
+            viability = initial_state_dynamically_viable(self._enemy_pos, self._enemy_vel, self._obstacle_layout.obstacles, max_accel=max_accel)
+            self._initial_viability_margin = viability["min_margin"]
+            attempt = 1
+            while not viability["viable"] and attempt < 100:
+                self._enemy_pos = self._spawn_enemy_at_edge()
+                pursuit_dir, initial_enemy_vel, pursuit_norm = self._compute_enemy_initial_motion(self._enemy_pos)
+                if self.config.enemy_endurance_enabled:
+                    self._enemy_endurance_budget = self.config.enemy_endurance_path_factor * float(pursuit_norm)
+                self._enemy_pursuit_direction = pursuit_dir.astype(np.float32)
+                self._enemy_vel = initial_enemy_vel.astype(np.float32)
+                viability = initial_state_dynamically_viable(self._enemy_pos, self._enemy_vel, self._obstacle_layout.obstacles, max_accel=max_accel)
+                self._initial_viability_margin = viability["min_margin"]
+                attempt += 1
+            self._viability_resample_count = attempt - 1
+            if not viability["viable"]:
+                self._scenario_generation_failed = True
 
         # Dynamic obstacles (journal extension): DATA ONLY unless
         # `dynamic_obstacles_enabled` -- generated from their own dedicated
@@ -967,6 +999,32 @@ class SoldierEnv(gym.Env):
             return np.array([-L, coord, z], dtype=np.float32)
         else:  # Right edge: x = L
             return np.array([L, coord, z], dtype=np.float32)
+
+    def _compute_enemy_initial_motion(self, enemy_pos: np.ndarray) -> tuple[np.ndarray, np.ndarray, float]:
+        """Derives the attacker's initial pursuit direction, initial velocity (approximately toward the asset at
+        v_e, vertical-rate-clipped), and the initial 3-D attacker-to-asset distance from a given spawn position --
+        factored out of reset() (journal_cbf_attacker, obstacle_cbf_v2 / Prompt 3) so the SAME deterministic
+        computation can be reused both for the initial draw and for every viability-conditioned resample attempt
+        (brief section 5: only the attacker spawn/heading is resampled; this helper never touches the obstacle
+        layout, the asset, or any RNG stream itself -- it is a pure function of `enemy_pos` and `self._soldier_pos`).
+        Returns `(pursuit_dir (unit, float32), initial_vel (float32), pursuit_norm (float))`."""
+        pursuit_dir = self._soldier_pos - enemy_pos
+        pursuit_norm = float(np.linalg.norm(pursuit_dir))
+        if pursuit_norm > self.config.eps:
+            pursuit_dir = pursuit_dir / pursuit_norm
+        else:
+            pursuit_dir = np.array([1.0, 0.0, 0.0])  # Safe fallback (numerically degenerate case)
+        initial_enemy_vel = self.config.v_e * pursuit_dir
+        # Respect the vertical-rate invariant maintained everywhere else:
+        # clip the initial vertical component to [-max_descent, max_climb]
+        # (this can only reduce the total initial speed slightly below v_e,
+        # never increase it, so the max-speed bound also remains satisfied).
+        initial_enemy_vel[2] = np.clip(
+            initial_enemy_vel[2],
+            -self.config.enemy_max_descent_rate,
+            self.config.enemy_max_climb_rate,
+        )
+        return pursuit_dir, initial_enemy_vel, pursuit_norm
 
     def _dynamic_min_clearance(self, point: np.ndarray) -> float:
         """Minimum (surface-to-point) clearance from `point` to any current
@@ -2588,9 +2646,15 @@ class SoldierEnv(gym.Env):
         )
 
         if not hazards_at_start:
-            # Hazard-free this step (ALWAYS true for C0): bit-for-bit Prompt-1 computation.
-            r_goal = np.asarray(target, dtype=np.float64) - enemy_pos_before
-            v_nom = self._cbf_controller.nominal_velocity(r_goal)
+            # Hazard-free this step (ALWAYS true for C0): bit-for-bit Prompt-1 computation when a target is
+            # available. `target` can still be None here (route temporarily unavailable with no retained waypoint,
+            # e.g. the moving asset itself is transiently inside an obstacle's inflated zone -- brief section 9) --
+            # command hover/brake (v_nom=0) rather than crashing on `None - position`.
+            if target is None:
+                v_nom = np.zeros(3, dtype=np.float64)
+            else:
+                r_goal = np.asarray(target, dtype=np.float64) - enemy_pos_before
+                v_nom = self._cbf_controller.nominal_velocity(r_goal)
             v_safe, cbf_diag = self._cbf_controller.filter_velocity(
                 v_nom, state={"position": enemy_pos_before.copy(), "velocity": enemy_vel_before.copy()}, hazards=(),
             )
@@ -2640,9 +2704,16 @@ class SoldierEnv(gym.Env):
             "asset_distance": r_asset_norm,
             "velocity_tracking_error": float(np.linalg.norm(new_vel.astype(np.float64) - v_safe)),
             "route_planner_status": route_diag["route_planner_status"],
-            "route_waypoint": np.asarray(target, dtype=np.float32),
+            "route_status": route_diag["route_status"],
+            "route_waypoint": (np.asarray(target, dtype=np.float32) if target is not None else np.full(3, np.nan, dtype=np.float32)),
             "route_replan_count": int(route_diag["route_replan_count"]),
             "route_planner_failures": int(route_diag["route_planner_failures"]),
+            "route_errors": int(route_diag["route_errors"]),
+            "route_unavailable_streak": int(route_diag["route_unavailable_streak"]),
+            "route_longest_unavailable_streak": int(route_diag["route_longest_unavailable_streak"]),
+            "route_waypoint_retained": bool(route_diag["route_waypoint_retained"]),
+            "route_hover_fallback": bool(route_diag["route_hover_fallback"]),
+            "route_hover_fallback_count": int(route_diag["route_hover_fallback_count"]),
             "active_obstacle_count": max_active_obstacle_count,
             "min_inflated_obstacle_clearance": min_inflated_clearance,
             "min_physical_obstacle_clearance": min_physical_clearance,
@@ -2672,9 +2743,16 @@ class SoldierEnv(gym.Env):
             "asset_distance": d.get("asset_distance", 0.0),
             "velocity_tracking_error": d.get("velocity_tracking_error", 0.0),
             "route_planner_status": d.get("route_planner_status", "inactive"),
+            "route_status": d.get("route_status", "inactive"),
             "route_waypoint": d.get("route_waypoint", zero3),
             "route_replan_count": d.get("route_replan_count", 0),
             "route_planner_failures": d.get("route_planner_failures", 0),
+            "route_errors": d.get("route_errors", 0),
+            "route_unavailable_streak": d.get("route_unavailable_streak", 0),
+            "route_longest_unavailable_streak": d.get("route_longest_unavailable_streak", 0),
+            "route_waypoint_retained": d.get("route_waypoint_retained", False),
+            "route_hover_fallback": d.get("route_hover_fallback", False),
+            "route_hover_fallback_count": d.get("route_hover_fallback_count", 0),
             "active_obstacle_count": d.get("active_obstacle_count", 0),
             "min_inflated_obstacle_clearance": d.get("min_inflated_obstacle_clearance", float("inf")),
             "min_physical_obstacle_clearance": d.get("min_physical_obstacle_clearance", float("inf")),
@@ -3131,6 +3209,10 @@ class SoldierEnv(gym.Env):
             **self._contact_info,
             **self._attacker_efficiency_info(),
             **self._cbf_info(),
+            "viability_conditioned_init": self._viability_conditioned_init,
+            "viability_resample_count": self._viability_resample_count,
+            "initial_viability_margin": self._initial_viability_margin,
+            "scenario_generation_failure": self._scenario_generation_failed,
         }
     
     def render(self) -> np.ndarray | None:

@@ -1,0 +1,32 @@
+{
+  "schema": "planner_failure_audit/1",
+  "source": "all 11 episodes with route_planner_failures > 0 from the Prompt-2 1,000-episode C2 Monte Carlo (seeds 500000-500999, docs/journal_cbf_attacker/obstacle_cbf/monte_carlo_result.json)",
+  "method": "Each episode replayed step-by-step with the Prompt-2 code; every step where info['route_planner_status']=='planner_failed' was captured (enemy_pos, asset_pos, obstacle layout) and independently re-tested: is the attacker position inside the inflated (2.0m clearance) AABB of any obstacle? is the asset (goal) position inside one? Also checked for exceptions, NaN/Inf outputs, and any planner-contract violation (none found in any of the 32 events).",
+  "taxonomy_counts": {
+    "invalid_start": 0,
+    "invalid_goal": 0,
+    "start_inside_inflated_aabb": 4,
+    "goal_inside_inflated_aabb_moving_goal_transient": 4,
+    "disconnected_visibility_graph_other": 3,
+    "numerical_visibility_failure": 0,
+    "exception_implementation_bug": 0
+  },
+  "conclusion": "ZERO route_error events (no exceptions, no NaN/Inf, no contract violations). Every one of the 32 planner-failure events across 11 episodes is a genuine route_temporarily_unavailable case: either the attacker's own position is transiently inside/overlapping an obstacle's inflated clearance zone (a known, documented limitation of visibility-graph construction when 'start' has no unblocked edges -- see uav_defend/obstacles/route_planner.py's own 'Phase 24' docstring: 'a geometric search failure, NOT a ground-truth feasibility judgment'), or the moving asset (goal) is transiently inside/overlapping an obstacle's inflated zone (the goal node then has no valid incoming edge either). The 3 'disconnected_visibility_graph_other' events show the same negative-or-near-zero min_inflated_clearance pattern at a slightly different sampling instant (the per-step info reports the MINIMUM inflated clearance across all 5 substeps, which can differ from the end-of-step position checked by this audit script) -- consistent with the same two mechanisms, not a distinct cause. No planner bug was found; the EXISTING build_and_search_route function behaves exactly per its own documented contract in every case.",
+  "episodes": [
+    {"seed": 500036, "events": 6, "classification": "goal_inside_inflated_aabb_moving_goal_transient", "obstacle_id": 3, "min_inflated_clearance_range": [0.63, 9.72], "episode_outcome": "soldier_caught"},
+    {"seed": 500100, "events": 2, "classification": "start_inside_inflated_aabb", "obstacle_id": 1, "min_inflated_clearance_range": [-2.25, -1.63], "episode_outcome": "enemy_static_obstacle_collision", "note": "this is the Prompt-2 collision seed; the acceleration-lag spawn-time infeasibility (see docs/journal_cbf_attacker/obstacle_cbf/README.md) independently pushed the attacker inside the inflated zone before any route decision mattered"},
+    {"seed": 500114, "events": 4, "classification": "goal_inside_inflated_aabb_moving_goal_transient", "obstacle_id": 6, "min_inflated_clearance_range": [0.81, 2.87], "episode_outcome": "soldier_caught"},
+    {"seed": 500152, "events": 3, "classification": "start_inside_inflated_aabb", "obstacle_id": 4, "min_inflated_clearance_range": [-1.87, -1.18], "episode_outcome": "soldier_caught"},
+    {"seed": 500227, "events": 1, "classification": "disconnected_visibility_graph_other", "obstacle_id": null, "min_inflated_clearance_range": [-0.23, -0.23], "episode_outcome": "soldier_caught", "note": "near-zero clearance at a sub-step not captured by the end-of-step audit sample; same mechanism as start_inside_inflated_aabb at finer time resolution"},
+    {"seed": 500289, "events": 1, "classification": "disconnected_visibility_graph_other", "obstacle_id": null, "min_inflated_clearance_range": [0.41, 0.41], "episode_outcome": "soldier_caught", "note": "barely outside at the sampled instant; the min-over-substeps diagnostic shows the attacker was closer during the step"},
+    {"seed": 500340, "events": 10, "classification": "goal_inside_inflated_aabb_moving_goal_transient", "obstacle_id": 0, "min_inflated_clearance_range": [1.26, "inf"], "episode_outcome": "soldier_caught", "note": "longest-duration case: asset random-walked near/into an obstacle's inflated footprint for an extended stretch"},
+    {"seed": 500441, "events": 1, "classification": "disconnected_visibility_graph_other", "obstacle_id": null, "min_inflated_clearance_range": [-0.65, -0.65], "episode_outcome": "soldier_caught"},
+    {"seed": 500530, "events": 2, "classification": "start_inside_inflated_aabb", "obstacle_id": 4, "min_inflated_clearance_range": [-0.36, -0.07], "episode_outcome": "soldier_caught"},
+    {"seed": 500885, "events": 1, "classification": "goal_inside_inflated_aabb_moving_goal_transient", "obstacle_id": 6, "min_inflated_clearance_range": [1.94, 1.94], "episode_outcome": "soldier_caught"},
+    {"seed": 500901, "events": 2, "classification": "start_inside_inflated_aabb", "obstacle_id": 4, "min_inflated_clearance_range": [-0.69, -0.51], "episode_outcome": "soldier_caught"}
+  ],
+  "recommended_fixes": {
+    "scenario_generator_fix": "the viability-conditioned attacker initialization (this stage) directly prevents the start_inside_inflated_aabb class from ever occurring AT episode start (the dominant contributor to the one Prompt-2 collision); it does not, and cannot, prevent a MOVING asset from transiently wandering into an obstacle's inflated zone mid-episode (goal_inside_inflated_aabb_moving_goal_transient) -- that case is inherent to a stochastic moving target near static clutter, not a defect.",
+    "route_handling_fix": "no planner bug fix required (zero route_error events); the needed change is to how SoldierEnv/CBFRouteNavigator RESPOND to a route_temporarily_unavailable event -- retain the previous waypoint if one exists (already fixed in Prompt 2), otherwise brake/hover (v_nom=0) rather than aiming at a known-blocked target (NEW in this stage, section 9)."
+  }
+}

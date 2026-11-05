@@ -1,0 +1,46 @@
+{
+ "branch": "research/cbf-attacker",
+ "expected_modified_tracked_files": [
+  "uav_defend/attackers/cbf_obstacle.py",
+  "uav_defend/envs/soldier_env.py"
+ ],
+ "expected_start_head": "1de4228",
+ "head": "1de4228cd7834cca56bda2721fe73db0c6167db5",
+ "head_is_expected_or_descendant": true,
+ "modified_tracked_files": [
+  "uav_defend/attackers/cbf_obstacle.py",
+  "uav_defend/envs/soldier_env.py"
+ ],
+ "namespace_overlaps": {
+  "clutter_v2_seeds": [
+   530000,
+   530999
+  ],
+  "clutter_v2_vs_legacy_noop_overlap": false,
+  "clutter_v2_vs_prior_blocks_overlap": false,
+  "curriculum_known_max_evaluation_seed": 192199,
+  "gap_to_curriculum_m": 337801,
+  "legacy_noop_seeds": [
+   540000,
+   540999
+  ],
+  "legacy_noop_vs_prior_blocks_overlap": false
+ },
+ "scope": "viability-conditioned static-obstacle navigation only; no defender CBF, no RL training",
+ "tracked_tree_clean_except_expected_cbf_files": true,
+ "uav_defend_diff_stat_vs_a0_tag": "uav_defend/attackers/__init__.py     |  21 ++\n uav_defend/attackers/cbf_attacker.py | 245 +++++++++++++++\n uav_defend/attackers/cbf_obstacle.py | 593 +++++++++++++++++++++++++++++++++++\n uav_defend/envs/soldier_env.py       | 337 +++++++++++++++++++-\n 4 files changed, 1179 insertions(+), 17 deletions(-)",
+ "unexpected_modifications": [],
+ "untracked_at_start": [
+  "docs/journal_cbf_attacker/obstacle_cbf_v2/bias_audit.json",
+  "docs/journal_cbf_attacker/obstacle_cbf_v2/planner_failure_audit.json",
+  "docs/journal_cbf_attacker/obstacle_cbf_v2/stress_test_result.json",
+  "docs/journal_cbf_attacker/obstacle_cbf_v2/task_state.json",
+  "docs/journal_cbf_attacker/obstacle_cbf_v2/unit_test_result.json",
+  "experiments/journal_cbf_attacker_clutter_v2_bias_audit.py",
+  "experiments/journal_cbf_attacker_clutter_v2_foundation.py",
+  "experiments/journal_cbf_attacker_clutter_v2_run.py",
+  "experiments/journal_cbf_attacker_clutter_v2_state.py",
+  "experiments/journal_cbf_attacker_clutter_v2_stress.py",
+  "tests/test_cbf_clutter_v2.py"
+ ]
+}

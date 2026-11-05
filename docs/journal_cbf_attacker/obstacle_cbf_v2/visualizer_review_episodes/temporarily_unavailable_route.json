@@ -1,0 +1,791 @@
+{
+ "label": "A1-CBF-CLUTTER-DEV",
+ "status": "development / non-canonical",
+ "seed": 530306,
+ "outcome": "soldier_caught",
+ "what_to_look_for": "The route briefly becomes route_temporarily_unavailable (asset transiently inside an inflated obstacle zone or a transient visibility-graph gap); watch for hover/brake steps (v_nom=0) rather than any blocked-direction or random-escape motion.",
+ "obstacles": [
+  {
+   "min_corner": [
+    -21.835918875950647,
+    -11.456969673586897,
+    0.0
+   ],
+   "max_corner": [
+    -15.892364179615619,
+    -5.719887898710581,
+    7.622788841044186
+   ]
+  },
+  {
+   "min_corner": [
+    6.771680910840411,
+    4.8224808170924245,
+    0.0
+   ],
+   "max_corner": [
+    11.33853367068547,
+    10.412017603276526,
+    4.595002598930595
+   ]
+  },
+  {
+   "min_corner": [
+    -3.83052360514583,
+    -15.278566549972119,
+    0.0
+   ],
+   "max_corner": [
+    1.4034348884295742,
+    -10.693016574493576,
+    6.733645514859626
+   ]
+  },
+  {
+   "min_corner": [
+    -42.622343607648894,
+    34.31222719131897,
+    0.0
+   ],
+   "max_corner": [
+    -37.90395507104265,
+    38.288855420143335,
+    7.615376063278518
+   ]
+  },
+  {
+   "min_corner": [
+    7.360900361985529,
+    38.26226094072919,
+    0.0
+   ],
+   "max_corner": [
+    11.003941448711672,
+    41.31438662229178,
+    8.027035566489706
+   ]
+  },
+  {
+   "min_corner": [
+    20.411143688432414,
+    15.183591835037863,
+    0.0
+   ],
+   "max_corner": [
+    26.292643241051582,
+    21.021506607267096,
+    7.830000330454139
+   ]
+  },
+  {
+   "min_corner": [
+    -4.37403746795723,
+    34.829303700625786,
+    0.0
+   ],
+   "max_corner": [
+    0.32711643614161545,
+    39.54244584741326,
+    7.930840271547759
+   ]
+  },
+  {
+   "min_corner": [
+    -23.398280746830387,
+    1.351973052740525,
+    0.0
+   ],
+   "max_corner": [
+    -20.12566135135561,
+    4.465287734272118,
+    7.66111592094961
+   ]
+  }
+ ],
+ "frames": [
+  {
+   "t": 0.0,
+   "enemy_pos": [
+    -50.0,
+    -39.0972785949707,
+    22.44485855102539
+   ],
+   "enemy_vel": [
+    8.912276268005371,
+    6.968914985656738,
+    -4.000695705413818
+   ],
+   "soldier_pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "route_status": "inactive",
+   "route_waypoint": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "cbf_qp_status": "inactive",
+   "cbf_intervention_norm": 0.0,
+   "active_obstacle_count": 0,
+   "min_physical_obstacle_clearance": Infinity
+  },
+  {
+   "t": 0.5,
+   "enemy_pos": [
+    -45.5312385559082,
+    -35.64522171020508,
+    20.41669273376465
+   ],
+   "enemy_vel": [
+    8.937524795532227,
+    6.904116153717041,
+    -4.056332111358643
+   ],
+   "soldier_pos": [
+    -0.5460940599441528,
+    -0.8948087096214294,
+    0.0
+   ],
+   "route_status": "route_ok",
+   "route_waypoint": [
+    -0.5460940599441528,
+    -0.8948087096214294,
+    0.0
+   ],
+   "cbf_qp_status": "identity_no_constraints",
+   "cbf_intervention_norm": 0.0,
+   "active_obstacle_count": 0,
+   "min_physical_obstacle_clearance": 42.15324297511527
+  },
+  {
+   "t": 1.0,
+   "enemy_pos": [
+    -40.96268081665039,
+    -32.5368766784668,
+    18.08293914794922
+   ],
+   "enemy_vel": [
+    9.155204772949219,
+    6.154382228851318,
+    -4.722902297973633
+   ],
+   "soldier_pos": [
+    0.48735618591308594,
+    -0.6733470559120178,
+    0.0
+   ],
+   "route_status": "route_ok",
+   "route_waypoint": [
+    -13.342364311218262,
+    -14.006969451904297,
+    3.811394453048706
+   ],
+   "cbf_qp_status": "identity_no_constraints",
+   "cbf_intervention_norm": 0.0,
+   "active_obstacle_count": 0,
+   "min_physical_obstacle_clearance": 36.19701214380153
+  },
+  {
+   "t": 1.5,
+   "enemy_pos": [
+    -36.383811950683594,
+    -29.465007781982422,
+    15.71701717376709
+   ],
+   "enemy_vel": [
+    9.157735824584961,
+    6.143738269805908,
+    -4.731844425201416
+   ],
+   "soldier_pos": [
+    1.2702062129974365,
+    -0.9519398212432861,
+    0.0
+   ],
+   "route_status": "route_ok",
+   "route_waypoint": [
+    -13.342364311218262,
+    -14.006969451904297,
+    3.811394453048706
+   ],
+   "cbf_qp_status": "identity_no_constraints",
+   "cbf_intervention_norm": 0.0,
+   "active_obstacle_count": 0,
+   "min_physical_obstacle_clearance": 30.32507619303916
+  },
+  {
+   "t": 2.0,
+   "enemy_pos": [
+    -31.751867294311523,
+    -26.18838119506836,
+    13.770515441894531
+   ],
+   "enemy_vel": [
+    9.273480415344238,
+    6.590246677398682,
+    -3.8172245025634766
+   ],
+   "soldier_pos": [
+    1.8555868864059448,
+    -1.1702871322631836,
+    0.0
+   ],
+   "route_status": "route_ok",
+   "route_waypoint": [
+    -6.380523681640625,
+    -8.143016815185547,
+    3.3668227195739746
+   ],
+   "cbf_qp_status": "identity_no_constraints",
+   "cbf_intervention_norm": 0.0,
+   "active_obstacle_count": 0,
+   "min_physical_obstacle_clearance": 24.524419702197694
+  },
+  {
+   "t": 2.5,
+   "enemy_pos": [
+    -27.531532287597656,
+    -23.65463638305664,
+    12.094057083129883
+   ],
+   "enemy_vel": [
+    7.976774215698242,
+    4.001897811889648,
+    -3.0651333332061768
+   ],
+   "soldier_pos": [
+    2.115013837814331,
+    -0.9747542142868042,
+    0.0
+   ],
+   "route_status": "route_ok",
+   "route_waypoint": [
+    -6.380523681640625,
+    -8.143016815185547,
+    3.3668227195739746
+   ],
+   "cbf_qp_status": "hard",
+   "cbf_intervention_norm": 4.554346853987596,
+   "active_obstacle_count": 1,
+   "min_physical_obstacle_clearance": 18.791888165100207
+  },
+  {
+   "t": 3.0,
+   "enemy_pos": [
+    -23.31679916381836,
+    -21.562841415405273,
+    10.576170921325684
+   ],
+   "enemy_vel": [
+    8.628229141235352,
+    5.062490463256836,
+    -3.2643589973449707
+   ],
+   "soldier_pos": [
+    3.452186346054077,
+    -0.8604403138160706,
+    0.0
+   ],
+   "route_status": "route_ok",
+   "route_waypoint": [
+    3.452186346054077,
+    -0.8604403138160706,
+    0.0
+   ],
+   "cbf_qp_status": "hard",
+   "cbf_intervention_norm": 1.9189770284602328,
+   "active_obstacle_count": 2,
+   "min_physical_obstacle_clearance": 14.185038772697233
+  },
+  {
+   "t": 3.5,
+   "enemy_pos": [
+    -19.449710845947266,
+    -19.27565574645996,
+    8.934847831726074
+   ],
+   "enemy_vel": [
+    7.185298919677734,
+    4.238041400909424,
+    -3.3695871829986572
+   ],
+   "soldier_pos": [
+    3.834301471710205,
+    -0.0016736984252929688,
+    0.0
+   ],
+   "route_status": "route_ok",
+   "route_waypoint": [
+    3.834301471710205,
+    -0.0016736984252929688,
+    0.0
+   ],
+   "cbf_qp_status": "hard",
+   "cbf_intervention_norm": 3.678579273584119,
+   "active_obstacle_count": 3,
+   "min_physical_obstacle_clearance": 10.632220642989225
+  },
+  {
+   "t": 4.0,
+   "enemy_pos": [
+    -16.04125213623047,
+    -17.514129638671875,
+    7.242016315460205
+   ],
+   "enemy_vel": [
+    6.550592422485352,
+    3.0836126804351807,
+    -3.2928738594055176
+   ],
+   "soldier_pos": [
+    3.020909309387207,
+    -0.06854068487882614,
+    0.0
+   ],
+   "route_status": "route_ok",
+   "route_waypoint": [
+    3.020909309387207,
+    -0.06854068487882614,
+    0.0
+   ],
+   "cbf_qp_status": "hard",
+   "cbf_intervention_norm": 5.0605465610201215,
+   "active_obstacle_count": 3,
+   "min_physical_obstacle_clearance": 7.92801051343705
+  },
+  {
+   "t": 4.5,
+   "enemy_pos": [
+    -13.257498741149902,
+    -16.179462432861328,
+    5.645378589630127
+   ],
+   "enemy_vel": [
+    4.927511692047119,
+    2.6350579261779785,
+    -3.0446584224700928
+   ],
+   "soldier_pos": [
+    2.1828153133392334,
+    -0.2982158064842224,
+    0.0
+   ],
+   "route_status": "route_ok",
+   "route_waypoint": [
+    2.1828153133392334,
+    -0.2982158064842224,
+    0.0
+   ],
+   "cbf_qp_status": "hard",
+   "cbf_intervention_norm": 6.4856452267352624,
+   "active_obstacle_count": 3,
+   "min_physical_obstacle_clearance": 6.057159965084978
+  },
+  {
+   "t": 5.0,
+   "enemy_pos": [
+    -10.945732116699219,
+    -13.987984657287598,
+    4.22313928604126
+   ],
+   "enemy_vel": [
+    4.342024326324463,
+    5.546074390411377,
+    -2.7710444927215576
+   ],
+   "soldier_pos": [
+    2.022812604904175,
+    1.2035844326019287,
+    0.0
+   ],
+   "route_status": "route_ok",
+   "route_waypoint": [
+    2.022812604904175,
+    1.2035844326019287,
+    0.0
+   ],
+   "cbf_qp_status": "hard",
+   "cbf_intervention_norm": 4.188959379026262,
+   "active_obstacle_count": 3,
+   "min_physical_obstacle_clearance": 5.407814136989229
+  },
+  {
+   "t": 5.5,
+   "enemy_pos": [
+    -9.203472137451172,
+    -10.439739227294922,
+    2.9433176517486572
+   ],
+   "enemy_vel": [
+    2.747584104537964,
+    8.002168655395508,
+    -2.3352904319763184
+   ],
+   "soldier_pos": [
+    2.448108196258545,
+    0.4189414978027344,
+    0.0
+   ],
+   "route_status": "route_ok",
+   "route_waypoint": [
+    2.448108196258545,
+    0.4189414978027344,
+    0.0
+   ],
+   "cbf_qp_status": "hard",
+   "cbf_intervention_norm": 5.938165854903195,
+   "active_obstacle_count": 3,
+   "min_physical_obstacle_clearance": 5.556546194677951
+  },
+  {
+   "t": 6.0,
+   "enemy_pos": [
+    -7.890407085418701,
+    -6.555227279663086,
+    1.8792812824249268
+   ],
+   "enemy_vel": [
+    3.3529791831970215,
+    7.7524027824401855,
+    -2.059617042541504
+   ],
+   "soldier_pos": [
+    2.143627166748047,
+    0.13835197687149048,
+    0.0
+   ],
+   "route_status": "route_ok",
+   "route_waypoint": [
+    2.143627166748047,
+    0.13835197687149048,
+    0.0
+   ],
+   "cbf_qp_status": "hard",
+   "cbf_intervention_norm": 2.17478517225279,
+   "active_obstacle_count": 4,
+   "min_physical_obstacle_clearance": 5.378914885495598
+  },
+  {
+   "t": 6.5,
+   "enemy_pos": [
+    -5.520485877990723,
+    -3.1879923343658447,
+    0.9346373677253723
+   ],
+   "enemy_vel": [
+    5.357443332672119,
+    5.755814075469971,
+    -1.7037694454193115
+   ],
+   "soldier_pos": [
+    2.7183942794799805,
+    0.5712563395500183,
+    0.0
+   ],
+   "route_status": "route_ok",
+   "route_waypoint": [
+    2.7183942794799805,
+    0.5712563395500183,
+    0.0
+   ],
+   "cbf_qp_status": "hard",
+   "cbf_intervention_norm": 2.7591929470748346,
+   "active_obstacle_count": 4,
+   "min_physical_obstacle_clearance": 5.796891763851242
+  },
+  {
+   "t": 7.0,
+   "enemy_pos": [
+    -2.7641398906707764,
+    -1.1741832494735718,
+    0.2908477187156677
+   ],
+   "enemy_vel": [
+    5.420206546783447,
+    2.8812499046325684,
+    -0.9633851051330566
+   ],
+   "soldier_pos": [
+    3.0275607109069824,
+    0.2154768705368042,
+    0.0
+   ],
+   "route_status": "route_ok",
+   "route_waypoint": [
+    3.0275607109069824,
+    0.2154768705368042,
+    0.0
+   ],
+   "cbf_qp_status": "hard",
+   "cbf_intervention_norm": 1.3958276166853032,
+   "active_obstacle_count": 4,
+   "min_physical_obstacle_clearance": 7.692942306331428
+  },
+  {
+   "t": 7.5,
+   "enemy_pos": [
+    -0.5703892111778259,
+    -0.10457029193639755,
+    0.13174155354499817
+   ],
+   "enemy_vel": [
+    3.8848025798797607,
+    1.8683443069458008,
+    -0.1463795155286789
+   ],
+   "soldier_pos": [
+    3.1420328617095947,
+    1.6943645477294922,
+    0.0
+   ],
+   "route_status": "route_ok",
+   "route_waypoint": [
+    3.1420328617095947,
+    1.6943645477294922,
+    0.0
+   ],
+   "cbf_qp_status": "hard",
+   "cbf_intervention_norm": 0.24594243922463083,
+   "active_obstacle_count": 4,
+   "min_physical_obstacle_clearance": 9.518833325020005
+  },
+  {
+   "t": 8.0,
+   "enemy_pos": [
+    0.9501146078109741,
+    0.9485540986061096,
+    0.07762110978364944
+   ],
+   "enemy_vel": [
+    2.714270830154419,
+    1.8758466243743896,
+    -0.08624568581581116
+   ],
+   "soldier_pos": [
+    3.978586435317993,
+    2.9317784309387207,
+    0.0
+   ],
+   "route_status": "route_ok",
+   "route_waypoint": [
+    3.978586435317993,
+    2.9317784309387207,
+    0.0
+   ],
+   "cbf_qp_status": "hard",
+   "cbf_intervention_norm": 0.6557156454535906,
+   "active_obstacle_count": 4,
+   "min_physical_obstacle_clearance": 8.842048761888561
+  },
+  {
+   "t": 8.5,
+   "enemy_pos": [
+    1.5671133995056152,
+    1.3749651908874512,
+    0.058016031980514526
+   ],
+   "enemy_vel": [
+    0.24714888632297516,
+    0.17080587148666382,
+    -0.007853131741285324
+   ],
+   "soldier_pos": [
+    4.9556169509887695,
+    4.596020698547363,
+    0.0
+   ],
+   "route_status": "route_temporarily_unavailable",
+   "route_waypoint": null,
+   "cbf_qp_status": "hard",
+   "cbf_intervention_norm": 0.0,
+   "active_obstacle_count": 4,
+   "min_physical_obstacle_clearance": 6.992706374556991
+  },
+  {
+   "t": 9.0,
+   "enemy_pos": [
+    2.287264108657837,
+    1.9742659330368042,
+    0.040251296013593674
+   ],
+   "enemy_vel": [
+    1.632860541343689,
+    1.4783687591552734,
+    -0.044723670929670334
+   ],
+   "soldier_pos": [
+    4.143782615661621,
+    3.450364112854004,
+    0.0
+   ],
+   "route_status": "route_ok",
+   "route_waypoint": [
+    4.143782615661621,
+    3.450364112854004,
+    0.0
+   ],
+   "cbf_qp_status": "hard",
+   "cbf_intervention_norm": 0.41341900862674547,
+   "active_obstacle_count": 4,
+   "min_physical_obstacle_clearance": 6.242826841501303
+  },
+  {
+   "t": 9.5,
+   "enemy_pos": [
+    2.5103073120117188,
+    2.176206111907959,
+    0.03414219617843628
+   ],
+   "enemy_vel": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soldier_pos": [
+    4.841049671173096,
+    3.418849468231201,
+    0.0
+   ],
+   "route_status": "route_temporarily_unavailable",
+   "route_waypoint": null,
+   "cbf_qp_status": "hard",
+   "cbf_intervention_norm": 0.0,
+   "active_obstacle_count": 4,
+   "min_physical_obstacle_clearance": 5.312468548749569
+  },
+  {
+   "t": 10.0,
+   "enemy_pos": [
+    2.5103073120117188,
+    2.176206111907959,
+    0.03414219617843628
+   ],
+   "enemy_vel": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soldier_pos": [
+    5.947893142700195,
+    3.6312255859375,
+    0.0
+   ],
+   "route_status": "route_temporarily_unavailable",
+   "route_waypoint": null,
+   "cbf_qp_status": "hard",
+   "cbf_intervention_norm": 0.0,
+   "active_obstacle_count": 4,
+   "min_physical_obstacle_clearance": 5.016181292985067
+  },
+  {
+   "t": 10.5,
+   "enemy_pos": [
+    3.2419705390930176,
+    2.0411407947540283,
+    0.023597868159413338
+   ],
+   "enemy_vel": [
+    1.828683614730835,
+    -0.48110565543174744,
+    -0.026219861581921577
+   ],
+   "soldier_pos": [
+    6.894717693328857,
+    2.467400550842285,
+    0.0
+   ],
+   "route_status": "route_ok",
+   "route_waypoint": [
+    6.894717693328857,
+    2.467400550842285,
+    0.0
+   ],
+   "cbf_qp_status": "hard",
+   "cbf_intervention_norm": 2.183138782550335,
+   "active_obstacle_count": 4,
+   "min_physical_obstacle_clearance": 5.016181292985067
+  },
+  {
+   "t": 11.0,
+   "enemy_pos": [
+    4.5202507972717285,
+    1.664392352104187,
+    0.013934302143752575
+   ],
+   "enemy_vel": [
+    3.1031155586242676,
+    -0.23214846849441528,
+    -0.015482566319406033
+   ],
+   "soldier_pos": [
+    7.738043308258057,
+    2.3140530586242676,
+    0.0
+   ],
+   "route_status": "route_ok",
+   "route_waypoint": [
+    7.738043308258057,
+    2.3140530586242676,
+    0.0
+   ],
+   "cbf_qp_status": "hard",
+   "cbf_intervention_norm": 0.9580185071320967,
+   "active_obstacle_count": 4,
+   "min_physical_obstacle_clearance": 4.493852203653617
+  },
+  {
+   "t": 11.5,
+   "enemy_pos": [
+    5.925580024719238,
+    1.938140630722046,
+    0.008212623186409473
+   ],
+   "enemy_vel": [
+    2.2713027000427246,
+    0.512520432472229,
+    -0.009125136770308018
+   ],
+   "soldier_pos": [
+    7.969752311706543,
+    2.399409055709839,
+    0.0
+   ],
+   "route_status": "route_ok",
+   "route_waypoint": [
+    7.969752311706543,
+    2.399409055709839,
+    0.0
+   ],
+   "cbf_qp_status": "hard",
+   "cbf_intervention_norm": 0.0,
+   "active_obstacle_count": 4,
+   "min_physical_obstacle_clearance": 3.878461074830538
+  },
+  {
+   "t": 12.0,
+   "enemy_pos": [
+    5.967100143432617,
+    1.9475096464157104,
+    0.008045814000070095
+   ],
+   "enemy_vel": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soldier_pos": [
+    7.875763416290283,
+    2.5449533462524414,
+    0.0
+   ],
+   "route_status": "route_temporarily_unavailable",
+   "route_waypoint": null,
+   "cbf_qp_status": "hard",
+   "cbf_intervention_norm": 0.0,
+   "active_obstacle_count": 3,
+   "min_physical_obstacle_clearance": 3.0058784107488687
+  }
+ ]
+}

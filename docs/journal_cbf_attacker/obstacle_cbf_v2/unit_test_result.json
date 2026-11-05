@@ -1,0 +1,22 @@
+{
+ "file": "tests/test_cbf_clutter_v2.py",
+ "passed": 27,
+ "failed": 0,
+ "covers": [
+  "1. dynamic viability calculation (pass when ample room, fail when too close at full speed)",
+  "2. tangential velocity requires no stopping margin (zero inward speed, zero stopping margin)",
+  "3. inward velocity stopping distance matches the closed-form s^2/(2a)+s*dt_sub formula",
+  "4. multiple obstacles (viability checks every obstacle, not just the nearest)",
+  "5-6. resample only attacker state; obstacle field and asset initialization unchanged across resampling",
+  "7. resampling is deterministic (same seed -> same accepted state and resample count)",
+  "8. 100-attempt failure behavior (scenario_generation_failure when every candidate is forced infeasible)",
+  "9. route status classification (route_ok for direct and replanned cases)",
+  "10. route_temporarily_unavailable retains the previous waypoint when one exists",
+  "11. route_temporarily_unavailable with no previous waypoint commands hover (target=None)",
+  "12. route_error on an injected planner exception and on malformed (NaN) waypoint output",
+  "13. reproduction of the Prompt-2 collision seed (500100): confirmed infeasible unconditioned, resolved when viability-conditioned",
+  "14. reproduction of all 11 Prompt-2 planner-failure seeds: zero route_error, zero collisions under the corrected handling",
+  "15. near-viability-boundary safety (a constructed 0<=margin<=0.5m state remains viable and collision-free)"
+ ],
+ "note": "the full 1,000-episode revised Clutter Monte Carlo, the 10,000-scenario bias audit, the 100+-case near-boundary stress suite, and the legacy/C0 integrity regressions are run by experiments/journal_cbf_attacker_clutter_v2_run.py (and the dedicated bias_audit/stress modules), recorded under docs/journal_cbf_attacker/obstacle_cbf_v2/. Combined with tests/test_cbf_obstacle.py (25 passed) and tests/test_cbf_attacker.py (27 passed), total targeted tests for this repository's A1-CBF work: 79 passed, 0 failed."
+}

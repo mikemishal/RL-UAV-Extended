@@ -1,0 +1,56 @@
+{
+ "config_sha256": "cef44762094a57bd639e27b21df3172be3daf0e67dea814376960535f9670170",
+ "freeze_rule": "kp, physical limits, alpha, clearance, active range, polygon sides, replan rules, QP tolerances are frozen (Prompt 2 values) and were not tuned in this stage",
+ "frozen_controller_parameters": {
+  "a_max_mps2": 6.0,
+  "active_cbf_range_m": 20.0,
+  "alpha_per_s": 1.0,
+  "climb_descent_mps": 5.0,
+  "dt_s": 0.5,
+  "dt_sub_s": 0.1,
+  "kp_per_s": 1.0,
+  "note": "all identical to Prompt 2; NONE tuned in this stage",
+  "obstacle_clearance_m": 2.0,
+  "qp_policy": "hard -> soft -> emergency_brake",
+  "solver": "scipy SLSQP",
+  "v_xy_max_mps": 12.0,
+  "velocity_polygon_sides": 32
+ },
+ "gate": {
+  "capture_min": 0.95,
+  "emergency_brake_step_fraction_max": 0.01,
+  "exhaustion_max": 0.04,
+  "nonfinite_max": 0,
+  "obstacle_collision_max": 0,
+  "orbit_episodes_max": 0,
+  "path_excess_5x_max": 0.01,
+  "qp_hard_or_soft_success_min": 1.0,
+  "repeated_flyby_max": 0.02,
+  "route_errors_max": 0,
+  "scenario_generation_failures_max": 0,
+  "soft_fallback_step_fraction_max": 0.01,
+  "timeout_max": 0.01
+ },
+ "hypothesis": "Conditioning ONLY the attacker's initial spawn/heading on braking feasibility (never altering canonical C2 obstacle generation, the attacker dynamics, or any frozen CBF/route parameter) eliminates static-obstacle collisions caused by spawn-time physical infeasibility, while route-status handling (route_ok/route_temporarily_unavailable/route_error) correctly distinguishes transient planner limitations from real bugs.",
+ "protocol_sha256": "4633f85483f45e36acd9a74be95b21d80f31ec5eb5c1f16196c03288b2806217",
+ "resampling": "attacker spawn/heading only (existing _spawn_enemy_at_edge mechanism), obstacle field and asset initialization fixed, up to 100 attempts, else scenario_generation_failure",
+ "scope": "viability-conditioned static-obstacle navigation only; no defender CBF, no RL training",
+ "validation": {
+  "c0_identity_seeds": [
+   500000,
+   500999
+  ],
+  "chunk_size": 100,
+  "clutter_v2_seeds": [
+   530000,
+   530999
+  ],
+  "legacy_noop_seeds": [
+   540000,
+   540999
+  ],
+  "parent_commit": "2f45914"
+ },
+ "version": "a1_cbf_clutter_v2",
+ "viability_equation": "d_i >= s_i^2/(2*a_max) + s_i*dt_sub for every static obstacle i, s_i = max(0, -n_i . v_0); no additional buffer"
+}

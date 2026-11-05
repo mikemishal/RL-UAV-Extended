@@ -1,0 +1,2655 @@
+{
+ "n_states": 120,
+ "construction_viable_count": 105,
+ "qualifying_boundary_states_0_to_0.5m": 101,
+ "collisions": 0,
+ "nonfinite_failures": 0,
+ "min_physical_clearance_observed": 2.9622217797370545,
+ "passed": true,
+ "margin_target_range": [
+  0.0,
+  0.5
+ ],
+ "results": [
+  {
+   "seed": 550000,
+   "obstacle_id": 0,
+   "margin_target": 0.0,
+   "position": [
+    1.000568746687506,
+    -14.980821201858326,
+    4.233756411138879
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": false,
+   "margin_at_construction": -8.32940827422135e-10,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.480109372895935
+  },
+  {
+   "seed": 550000,
+   "obstacle_id": 0,
+   "margin_target": 0.1,
+   "position": [
+    0.9005687466875063,
+    -14.980821201858326,
+    4.233756411138879
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.10000002300891708,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.56497254975144
+  },
+  {
+   "seed": 550000,
+   "obstacle_id": 0,
+   "margin_target": 0.2,
+   "position": [
+    0.8005687466875067,
+    -14.980821201858326,
+    4.233756411138879
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.19999998724613022,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.6500378388106367
+  },
+  {
+   "seed": 550000,
+   "obstacle_id": 0,
+   "margin_target": 0.3,
+   "position": [
+    0.7005687466875052,
+    -14.980821201858326,
+    4.233756411138879
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.3000000110879881,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.7352836822346727
+  },
+  {
+   "seed": 550000,
+   "obstacle_id": 0,
+   "margin_target": 0.4,
+   "position": [
+    0.6005687466875056,
+    -14.980821201858326,
+    4.233756411138879
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.39999997532520126,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.820692771639563
+  },
+  {
+   "seed": 550000,
+   "obstacle_id": 0,
+   "margin_target": 0.5,
+   "position": [
+    0.500568746687506,
+    -14.980821201858326,
+    4.233756411138879
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.4999999991670592,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.906250562341599
+  },
+  {
+   "seed": 550001,
+   "obstacle_id": 5,
+   "margin_target": 0.0,
+   "position": [
+    18.9616540718278,
+    -20.897127716972985,
+    2.042562958000719
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 5.654837273993962e-07,
+   "outcome": "soldier_caught",
+   "steps": 12,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.6567832647920273
+  },
+  {
+   "seed": 550001,
+   "obstacle_id": 5,
+   "margin_target": 0.1,
+   "position": [
+    18.9616540718278,
+    -20.797127716972987,
+    2.042562958000719
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.10000094695345396,
+   "outcome": "soldier_caught",
+   "steps": 12,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.747489497762308
+  },
+  {
+   "seed": 550001,
+   "obstacle_id": 5,
+   "margin_target": 0.2,
+   "position": [
+    18.9616540718278,
+    -20.697127716972986,
+    2.042562958000719
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.1999994210745477,
+   "outcome": "soldier_caught",
+   "steps": 12,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.838514739797483
+  },
+  {
+   "seed": 550001,
+   "obstacle_id": 5,
+   "margin_target": 0.3,
+   "position": [
+    18.9616540718278,
+    -20.597127716972985,
+    2.042562958000719
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.2999998025442743,
+   "outcome": "soldier_caught",
+   "steps": 12,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.9298432331811273
+  },
+  {
+   "seed": 550001,
+   "obstacle_id": 5,
+   "margin_target": 0.4,
+   "position": [
+    18.9616540718278,
+    -20.497127716972983,
+    2.042562958000719
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.40000018401400084,
+   "outcome": "soldier_caught",
+   "steps": 12,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 4.021454446470289
+  },
+  {
+   "seed": 550001,
+   "obstacle_id": 5,
+   "margin_target": 0.5,
+   "position": [
+    18.9616540718278,
+    -20.397127716972985,
+    2.042562958000719
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.5000005654837274,
+   "outcome": "soldier_caught",
+   "steps": 12,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 4.113319659712949
+  },
+  {
+   "seed": 550002,
+   "obstacle_id": 3,
+   "margin_target": 0.0,
+   "position": [
+    6.656862227659083,
+    -9.926729367795474,
+    3.6340497067573523
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": false,
+   "margin_at_construction": -3.1252049836894e-08,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.260368372270988
+  },
+  {
+   "seed": 550002,
+   "obstacle_id": 3,
+   "margin_target": 0.1,
+   "position": [
+    6.556862227659083,
+    -9.926729367795474,
+    3.6340497067573523
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.09999987338051852,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.35303618890099
+  },
+  {
+   "seed": 550002,
+   "obstacle_id": 3,
+   "margin_target": 0.2,
+   "position": [
+    6.456862227659084,
+    -9.926729367795474,
+    3.6340497067573523
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.19999977801308688,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.4456775284080248
+  },
+  {
+   "seed": 550002,
+   "obstacle_id": 3,
+   "margin_target": 0.3,
+   "position": [
+    6.356862227659082,
+    -9.926729367795474,
+    3.6340497067573523
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.30000015948281344,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.5382864108999406
+  },
+  {
+   "seed": 550002,
+   "obstacle_id": 3,
+   "margin_target": 0.4,
+   "position": [
+    6.256862227659083,
+    -9.926729367795474,
+    3.6340497067573523
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.4000000641153818,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.6308570055148297
+  },
+  {
+   "seed": 550002,
+   "obstacle_id": 3,
+   "margin_target": 0.5,
+   "position": [
+    6.156862227659083,
+    -9.926729367795474,
+    3.6340497067573523
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.49999996874795016,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.723384861345531
+  },
+  {
+   "seed": 550003,
+   "obstacle_id": 0,
+   "margin_target": 0.0,
+   "position": [
+    -6.556281032635255,
+    -7.3113119026482,
+    3.9381420467116133
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 5.714746009743976e-08,
+   "outcome": "soldier_caught",
+   "steps": 7,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.3428915555486087
+  },
+  {
+   "seed": 550003,
+   "obstacle_id": 0,
+   "margin_target": 0.1,
+   "position": [
+    -6.656281032635254,
+    -7.3113119026482,
+    3.9381420467116133
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.09999996178002846,
+   "outcome": "soldier_caught",
+   "steps": 7,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.415440497182271
+  },
+  {
+   "seed": 550003,
+   "obstacle_id": 0,
+   "margin_target": 0.2,
+   "position": [
+    -6.756281032635254,
+    -7.3113119026482,
+    3.9381420467116133
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.19999986641259682,
+   "outcome": "soldier_caught",
+   "steps": 7,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.4885244648548404
+  },
+  {
+   "seed": 550003,
+   "obstacle_id": 0,
+   "margin_target": 0.3,
+   "position": [
+    -6.8562810326352555,
+    -7.3113119026482,
+    3.9381420467116133
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.2999997710451652,
+   "outcome": "soldier_caught",
+   "steps": 7,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.5620913765205633
+  },
+  {
+   "seed": 550003,
+   "obstacle_id": 0,
+   "margin_target": 0.4,
+   "position": [
+    -6.956281032635255,
+    -7.3113119026482,
+    3.9381420467116133
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.40000015251489174,
+   "outcome": "soldier_caught",
+   "steps": 7,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.636096452753533
+  },
+  {
+   "seed": 550003,
+   "obstacle_id": 0,
+   "margin_target": 0.5,
+   "position": [
+    -7.056281032635255,
+    -7.3113119026482,
+    3.9381420467116133
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.5000000571474601,
+   "outcome": "soldier_caught",
+   "steps": 7,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.710491701263267
+  },
+  {
+   "seed": 550004,
+   "obstacle_id": 6,
+   "margin_target": 0.0,
+   "position": [
+    -6.009382638416982,
+    2.457215571615947,
+    2.9601573424601044
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 8.634498094295395e-08,
+   "outcome": "soldier_caught",
+   "steps": 7,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.530883112468027
+  },
+  {
+   "seed": 550004,
+   "obstacle_id": 6,
+   "margin_target": 0.1,
+   "position": [
+    -6.109382638416982,
+    2.457215571615947,
+    2.9601573424601044
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.0999999909775493,
+   "outcome": "soldier_caught",
+   "steps": 7,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.627367773570322
+  },
+  {
+   "seed": 550004,
+   "obstacle_id": 6,
+   "margin_target": 0.2,
+   "position": [
+    -6.209382638416981,
+    2.457215571615947,
+    2.9601573424601044
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.19999989561011766,
+   "outcome": "soldier_caught",
+   "steps": 7,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.72377995542457
+  },
+  {
+   "seed": 550004,
+   "obstacle_id": 6,
+   "margin_target": 0.3,
+   "position": [
+    -6.309382638416983,
+    2.457215571615947,
+    2.9601573424601044
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.299999800242686,
+   "outcome": "soldier_caught",
+   "steps": 7,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.820116320170664
+  },
+  {
+   "seed": 550004,
+   "obstacle_id": 6,
+   "margin_target": 0.4,
+   "position": [
+    -6.409382638416982,
+    2.457215571615947,
+    2.9601573424601044
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.4000001817124126,
+   "outcome": "soldier_caught",
+   "steps": 7,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.916376390971445
+  },
+  {
+   "seed": 550004,
+   "obstacle_id": 6,
+   "margin_target": 0.5,
+   "position": [
+    -6.509382638416982,
+    2.457215571615947,
+    2.9601573424601044
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.5000000863449809,
+   "outcome": "soldier_caught",
+   "steps": 7,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 4.012554445781015
+  },
+  {
+   "seed": 550005,
+   "obstacle_id": 6,
+   "margin_target": 0.0,
+   "position": [
+    1.6166451354019458,
+    -1.3614420203703261,
+    3.1323648046942143
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": false,
+   "margin_at_construction": -3.766940182003964e-08,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.5406025986678777
+  },
+  {
+   "seed": 550005,
+   "obstacle_id": 6,
+   "margin_target": 0.1,
+   "position": [
+    1.7166451354019454,
+    -1.3614420203703261,
+    3.1323648046942143
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.09999998617245609,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.637291822911042
+  },
+  {
+   "seed": 550005,
+   "obstacle_id": 6,
+   "margin_target": 0.2,
+   "position": [
+    1.816645135401945,
+    -1.3614420203703261,
+    3.1323648046942143
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.200000010014314,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.733913336277741
+  },
+  {
+   "seed": 550005,
+   "obstacle_id": 6,
+   "margin_target": 0.3,
+   "position": [
+    1.9166451354019465,
+    -1.3614420203703261,
+    3.1323648046942143
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.3000000338561719,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.830466185093659
+  },
+  {
+   "seed": 550005,
+   "obstacle_id": 6,
+   "margin_target": 0.4,
+   "position": [
+    2.016645135401946,
+    -1.3614420203703261,
+    3.1323648046942143
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.4000000576980298,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.926948462010163
+  },
+  {
+   "seed": 550005,
+   "obstacle_id": 6,
+   "margin_target": 0.5,
+   "position": [
+    2.1166451354019458,
+    -1.3614420203703261,
+    3.1323648046942143
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.4999999623305982,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 4.023359213352936
+  },
+  {
+   "seed": 550006,
+   "obstacle_id": 6,
+   "margin_target": 0.0,
+   "position": [
+    -2.736858623473715,
+    -2.864032094669742,
+    4.751339125821929
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 6.456415135858151e-08,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.472663419437808
+  },
+  {
+   "seed": 550006,
+   "obstacle_id": 6,
+   "margin_target": 0.1,
+   "position": [
+    -2.736858623473715,
+    -2.7640320946697425,
+    4.751339125821929
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.09999996919671972,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.569058911991519
+  },
+  {
+   "seed": 550006,
+   "obstacle_id": 6,
+   "margin_target": 0.2,
+   "position": [
+    -2.736858623473715,
+    -2.664032094669743,
+    4.751339125821929
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.20000011224786718,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.6654935051922024
+  },
+  {
+   "seed": 550006,
+   "obstacle_id": 6,
+   "margin_target": 0.3,
+   "position": [
+    -2.736858623473715,
+    -2.5640320946697415,
+    4.751339125821929
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.30000001688043554,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.761921422672671
+  },
+  {
+   "seed": 550006,
+   "obstacle_id": 6,
+   "margin_target": 0.4,
+   "position": [
+    -2.736858623473715,
+    -2.464032094669742,
+    4.751339125821929
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.3999999215130039,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.858387487125796
+  },
+  {
+   "seed": 550006,
+   "obstacle_id": 6,
+   "margin_target": 0.5,
+   "position": [
+    -2.736858623473715,
+    -2.364032094669742,
+    4.751339125821929
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.5000000645641514,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.9548001458172024
+  },
+  {
+   "seed": 550007,
+   "obstacle_id": 4,
+   "margin_target": 0.0,
+   "position": [
+    4.893688891093962,
+    -8.223411687771133,
+    4.699048209241023
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": false,
+   "margin_at_construction": -2.123525071340282e-07,
+   "outcome": "soldier_caught",
+   "steps": 8,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.5365238958033944
+  },
+  {
+   "seed": 550007,
+   "obstacle_id": 4,
+   "margin_target": 0.1,
+   "position": [
+    4.993688891093962,
+    -8.223411687771133,
+    4.699048209241023
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.10000016911721943,
+   "outcome": "soldier_caught",
+   "steps": 8,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.6226187655709983
+  },
+  {
+   "seed": 550007,
+   "obstacle_id": 4,
+   "margin_target": 0.2,
+   "position": [
+    5.0936888910939615,
+    -8.223411687771133,
+    4.699048209241023
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.2000000737497878,
+   "outcome": "soldier_caught",
+   "steps": 8,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.708762017071836
+  },
+  {
+   "seed": 550007,
+   "obstacle_id": 4,
+   "margin_target": 0.3,
+   "position": [
+    5.193688891093963,
+    -8.223411687771133,
+    4.699048209241023
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.29999997838235615,
+   "outcome": "soldier_caught",
+   "steps": 8,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.7949356032353143
+  },
+  {
+   "seed": 550007,
+   "obstacle_id": 4,
+   "margin_target": 0.4,
+   "position": [
+    5.293688891093963,
+    -8.223411687771133,
+    4.699048209241023
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.3999998830149245,
+   "outcome": "soldier_caught",
+   "steps": 8,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.8811297832038316
+  },
+  {
+   "seed": 550007,
+   "obstacle_id": 4,
+   "margin_target": 0.5,
+   "position": [
+    5.393688891093962,
+    -8.223411687771133,
+    4.699048209241023
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.49999978764749287,
+   "outcome": "soldier_caught",
+   "steps": 8,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.9673300438514767
+  },
+  {
+   "seed": 550008,
+   "obstacle_id": 4,
+   "margin_target": 0.0,
+   "position": [
+    -5.960853043817597,
+    -0.08777047057573384,
+    3.687846646862897
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": false,
+   "margin_at_construction": -5.6005401205538874e-08,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.6508318341007993
+  },
+  {
+   "seed": 550008,
+   "obstacle_id": 4,
+   "margin_target": 0.1,
+   "position": [
+    -5.860853043817597,
+    -0.08777047057573384,
+    3.687846646862897
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.09999984862716715,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.749262467645721
+  },
+  {
+   "seed": 550008,
+   "obstacle_id": 4,
+   "margin_target": 0.2,
+   "position": [
+    -5.7608530438175976,
+    -0.08777047057573384,
+    3.687846646862897
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.20000023009689372,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.847723618768768
+  },
+  {
+   "seed": 550008,
+   "obstacle_id": 4,
+   "margin_target": 0.3,
+   "position": [
+    -5.660853043817596,
+    -0.08777047057573384,
+    3.687846646862897
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.3000001347294621,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.946161881708221
+  },
+  {
+   "seed": 550008,
+   "obstacle_id": 4,
+   "margin_target": 0.4,
+   "position": [
+    -5.5608530438175965,
+    -0.08777047057573384,
+    3.687846646862897
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.40000003936203044,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 4.044573441766815
+  },
+  {
+   "seed": 550008,
+   "obstacle_id": 4,
+   "margin_target": 0.5,
+   "position": [
+    -5.460853043817597,
+    -0.08777047057573384,
+    3.687846646862897
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.4999999439945988,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 4.142960206293182
+  },
+  {
+   "seed": 550009,
+   "obstacle_id": 1,
+   "margin_target": 0.0,
+   "position": [
+    0.07415047177325818,
+    -6.568926683064596,
+    1.531232286355499
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": false,
+   "margin_at_construction": -1.1061516147492512e-09,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 4.0031972403464575
+  },
+  {
+   "seed": 550009,
+   "obstacle_id": 1,
+   "margin_target": 0.1,
+   "position": [
+    -0.02584952822674147,
+    -6.568926683064596,
+    1.531232286355499
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.1000000003839645,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 4.084198238417822
+  },
+  {
+   "seed": 550009,
+   "obstacle_id": 1,
+   "margin_target": 0.2,
+   "position": [
+    -0.12584952822674111,
+    -6.568926683064596,
+    1.531232286355499
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.20000000187408062,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 4.1656655698713925
+  },
+  {
+   "seed": 550009,
+   "obstacle_id": 1,
+   "margin_target": 0.3,
+   "position": [
+    -0.22584952822674254,
+    -6.568926683064596,
+    1.531232286355499
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.29999999591361615,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 4.247435012195938
+  },
+  {
+   "seed": 550009,
+   "obstacle_id": 1,
+   "margin_target": 0.4,
+   "position": [
+    -0.3258495282267422,
+    -6.568926683064596,
+    1.531232286355499
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.40000000485431286,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 4.32937360006021
+  },
+  {
+   "seed": 550009,
+   "obstacle_id": 1,
+   "margin_target": 0.5,
+   "position": [
+    -0.4258495282267418,
+    -6.568926683064596,
+    1.531232286355499
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.4999999988938484,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 4.41148230945302
+  },
+  {
+   "seed": 550010,
+   "obstacle_id": 4,
+   "margin_target": 0.0,
+   "position": [
+    -5.171135930580988,
+    0.8294782205294666,
+    4.344252010262545
+   ],
+   "velocity": [
+    -0.0,
+    12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 1.6279130932161934e-08,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.0900909114984167
+  },
+  {
+   "seed": 550010,
+   "obstacle_id": 4,
+   "margin_target": 0.1,
+   "position": [
+    -5.171135930580988,
+    0.729478220529467,
+    4.344252010262545
+   ],
+   "velocity": [
+    -0.0,
+    12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.09999998051634407,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.1835398687783125
+  },
+  {
+   "seed": 550010,
+   "obstacle_id": 4,
+   "margin_target": 0.2,
+   "position": [
+    -5.171135930580988,
+    0.6294782205294673,
+    4.344252010262545
+   ],
+   "velocity": [
+    -0.0,
+    12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.20000000435820198,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.2769073796605745
+  },
+  {
+   "seed": 550010,
+   "obstacle_id": 4,
+   "margin_target": 0.3,
+   "position": [
+    -5.171135930580988,
+    0.5294782205294659,
+    4.344252010262545
+   ],
+   "velocity": [
+    -0.0,
+    12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.3000000282000599,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.370188240153838
+  },
+  {
+   "seed": 550010,
+   "obstacle_id": 4,
+   "margin_target": 0.4,
+   "position": [
+    -5.171135930580988,
+    0.42947822052946627,
+    4.344252010262545
+   ],
+   "velocity": [
+    -0.0,
+    12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.399999992437273,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.4633800483813526
+  },
+  {
+   "seed": 550010,
+   "obstacle_id": 4,
+   "margin_target": 0.5,
+   "position": [
+    -5.171135930580988,
+    0.3294782205294666,
+    4.344252010262545
+   ],
+   "velocity": [
+    -0.0,
+    12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.49999998647680854,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.556482514947064
+  },
+  {
+   "seed": 550011,
+   "obstacle_id": 4,
+   "margin_target": 0.0,
+   "position": [
+    -15.967819790993339,
+    -3.1435553135603236,
+    3.1634992064527516
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": false,
+   "margin_at_construction": -8.91954137216544e-08,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.7118587028451073
+  },
+  {
+   "seed": 550011,
+   "obstacle_id": 4,
+   "margin_target": 0.1,
+   "position": [
+    -15.967819790993339,
+    -3.043555313560324,
+    3.1634992064527516
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.10000005385573374,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.7991526635136887
+  },
+  {
+   "seed": 550011,
+   "obstacle_id": 4,
+   "margin_target": 0.2,
+   "position": [
+    -15.967819790993339,
+    -2.9435553135603243,
+    3.1634992064527516
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.1999999584883021,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.8866128253722225
+  },
+  {
+   "seed": 550011,
+   "obstacle_id": 4,
+   "margin_target": 0.3,
+   "position": [
+    -15.967819790993339,
+    -2.843555313560323,
+    3.1634992064527516
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.30000010153944956,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.9742232296363342
+  },
+  {
+   "seed": 550011,
+   "obstacle_id": 4,
+   "margin_target": 0.4,
+   "position": [
+    -15.967819790993339,
+    -2.7435553135603232,
+    3.1634992064527516
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.4000000061720179,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 4.061969229718596
+  },
+  {
+   "seed": 550011,
+   "obstacle_id": 4,
+   "margin_target": 0.5,
+   "position": [
+    -15.967819790993339,
+    -2.6435553135603236,
+    3.1634992064527516
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.4999999108045863,
+   "outcome": "soldier_caught",
+   "steps": 9,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 4.149837442162341
+  },
+  {
+   "seed": 550012,
+   "obstacle_id": 5,
+   "margin_target": 0.0,
+   "position": [
+    3.979752285441265,
+    6.552362110210446,
+    2.41519595272839
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": false,
+   "margin_at_construction": -1.6728535001675482e-08,
+   "outcome": "soldier_caught",
+   "steps": 11,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.3901557278240766
+  },
+  {
+   "seed": 550012,
+   "obstacle_id": 5,
+   "margin_target": 0.1,
+   "position": [
+    3.879752285441265,
+    6.552362110210446,
+    2.41519595272839
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.09999988790403336,
+   "outcome": "soldier_caught",
+   "steps": 11,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.4860677074993696
+  },
+  {
+   "seed": 550012,
+   "obstacle_id": 5,
+   "margin_target": 0.2,
+   "position": [
+    3.7797522854412655,
+    6.552362110210446,
+    2.41519595272839
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.20000003095518082,
+   "outcome": "soldier_caught",
+   "steps": 11,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.5819186520184125
+  },
+  {
+   "seed": 550012,
+   "obstacle_id": 5,
+   "margin_target": 0.3,
+   "position": [
+    3.679752285441264,
+    6.552362110210446,
+    2.41519595272839
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.2999999355877492,
+   "outcome": "soldier_caught",
+   "steps": 11,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.6777066540325727
+  },
+  {
+   "seed": 550012,
+   "obstacle_id": 5,
+   "margin_target": 0.4,
+   "position": [
+    3.5797522854412644,
+    6.552362110210446,
+    2.41519595272839
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.40000007863889664,
+   "outcome": "soldier_caught",
+   "steps": 11,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.7734307598675336
+  },
+  {
+   "seed": 550012,
+   "obstacle_id": 5,
+   "margin_target": 0.5,
+   "position": [
+    3.479752285441265,
+    6.552362110210446,
+    2.41519595272839
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.499999983271465,
+   "outcome": "soldier_caught",
+   "steps": 11,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.8690909695232953
+  },
+  {
+   "seed": 550013,
+   "obstacle_id": 1,
+   "margin_target": 0.0,
+   "position": [
+    -3.070941689403849,
+    -1.2398771332487897,
+    4.373799374220342
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": false,
+   "margin_at_construction": -2.7736000163258723e-09,
+   "outcome": "soldier_caught",
+   "steps": 8,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.3701319189945877
+  },
+  {
+   "seed": 550013,
+   "obstacle_id": 1,
+   "margin_target": 0.1,
+   "position": [
+    -3.1709416894038487,
+    -1.2398771332487897,
+    4.373799374220342
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.09999990185896834,
+   "outcome": "soldier_caught",
+   "steps": 8,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.4649567099491776
+  },
+  {
+   "seed": 550013,
+   "obstacle_id": 1,
+   "margin_target": 0.2,
+   "position": [
+    -3.2709416894038483,
+    -1.2398771332487897,
+    4.373799374220342
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.2000000449101158,
+   "outcome": "soldier_caught",
+   "steps": 8,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.5596851797978104
+  },
+  {
+   "seed": 550013,
+   "obstacle_id": 1,
+   "margin_target": 0.3,
+   "position": [
+    -3.3709416894038498,
+    -1.2398771332487897,
+    4.373799374220342
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.29999994954268416,
+   "outcome": "soldier_caught",
+   "steps": 8,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.654312560168904
+  },
+  {
+   "seed": 550013,
+   "obstacle_id": 1,
+   "margin_target": 0.4,
+   "position": [
+    -3.4709416894038494,
+    -1.2398771332487897,
+    4.373799374220342
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.4000000925938316,
+   "outcome": "soldier_caught",
+   "steps": 8,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.7488398047367752
+  },
+  {
+   "seed": 550013,
+   "obstacle_id": 1,
+   "margin_target": 0.5,
+   "position": [
+    -3.570941689403849,
+    -1.2398771332487897,
+    4.373799374220342
+   ],
+   "velocity": [
+    12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.4999999972264,
+   "outcome": "soldier_caught",
+   "steps": 8,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.843260237781209
+  },
+  {
+   "seed": 550014,
+   "obstacle_id": 4,
+   "margin_target": 0.0,
+   "position": [
+    7.875347345464037,
+    8.947594908612835,
+    3.3971855563383366
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": false,
+   "margin_at_construction": -2.080128638226597e-07,
+   "outcome": "soldier_caught",
+   "steps": 8,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.272964702835075
+  },
+  {
+   "seed": 550014,
+   "obstacle_id": 4,
+   "margin_target": 0.1,
+   "position": [
+    7.975347345464036,
+    8.947594908612835,
+    3.3971855563383366
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.10000017345686274,
+   "outcome": "soldier_caught",
+   "steps": 8,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.341569681099566
+  },
+  {
+   "seed": 550014,
+   "obstacle_id": 4,
+   "margin_target": 0.2,
+   "position": [
+    8.075347345464035,
+    8.947594908612835,
+    3.3971855563383366
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.1999996012522729,
+   "outcome": "soldier_caught",
+   "steps": 8,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.4108010186364153
+  },
+  {
+   "seed": 550014,
+   "obstacle_id": 4,
+   "margin_target": 0.3,
+   "position": [
+    8.175347345464036,
+    8.947594908612835,
+    3.3971855563383366
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.29999998272199946,
+   "outcome": "soldier_caught",
+   "steps": 8,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.480602349094647
+  },
+  {
+   "seed": 550014,
+   "obstacle_id": 4,
+   "margin_target": 0.4,
+   "position": [
+    8.275347345464038,
+    8.947594908612835,
+    3.3971855563383366
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.400000364191726,
+   "outcome": "soldier_caught",
+   "steps": 8,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.5509211749540492
+  },
+  {
+   "seed": 550014,
+   "obstacle_id": 4,
+   "margin_target": 0.5,
+   "position": [
+    8.375347345464036,
+    8.947594908612835,
+    3.3971855563383366
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.4999997919871362,
+   "outcome": "soldier_caught",
+   "steps": 8,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.6217084626526015
+  },
+  {
+   "seed": 550015,
+   "obstacle_id": 0,
+   "margin_target": 0.0,
+   "position": [
+    6.968653314407922,
+    1.160065828573991,
+    2.95885542425433
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": false,
+   "margin_at_construction": -1.1235103691831227e-07,
+   "outcome": "soldier_caught",
+   "steps": 7,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.489744741622351
+  },
+  {
+   "seed": 550015,
+   "obstacle_id": 0,
+   "margin_target": 0.1,
+   "position": [
+    7.068653314407921,
+    1.160065828573991,
+    2.95885542425433
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.09999979228153144,
+   "outcome": "soldier_caught",
+   "steps": 7,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.585313875380896
+  },
+  {
+   "seed": 550015,
+   "obstacle_id": 0,
+   "margin_target": 0.2,
+   "position": [
+    7.168653314407921,
+    1.160065828573991,
+    2.95885542425433
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.200000173751258,
+   "outcome": "soldier_caught",
+   "steps": 7,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.6807828733362182
+  },
+  {
+   "seed": 550015,
+   "obstacle_id": 0,
+   "margin_target": 0.3,
+   "position": [
+    7.268653314407922,
+    1.160065828573991,
+    2.95885542425433
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.30000007838382636,
+   "outcome": "soldier_caught",
+   "steps": 7,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.7761503049768432
+  },
+  {
+   "seed": 550015,
+   "obstacle_id": 0,
+   "margin_target": 0.4,
+   "position": [
+    7.368653314407922,
+    1.160065828573991,
+    2.95885542425433
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.3999999830163947,
+   "outcome": "soldier_caught",
+   "steps": 7,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.87141378611698
+  },
+  {
+   "seed": 550015,
+   "obstacle_id": 0,
+   "margin_target": 0.5,
+   "position": [
+    7.468653314407922,
+    1.160065828573991,
+    2.95885542425433
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.4999998876489631,
+   "outcome": "soldier_caught",
+   "steps": 7,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.9665671178735717
+  },
+  {
+   "seed": 550016,
+   "obstacle_id": 0,
+   "margin_target": 0.0,
+   "position": [
+    -14.5217593340344,
+    -2.5530320791009693,
+    2.5108228549584934
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": false,
+   "margin_at_construction": -8.07043285533382e-08,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.6128596374271167
+  },
+  {
+   "seed": 550016,
+   "obstacle_id": 0,
+   "margin_target": 0.1,
+   "position": [
+    -14.5217593340344,
+    -2.4530320791009697,
+    2.5108228549584934
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.10000006234681891,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.7057312154538793
+  },
+  {
+   "seed": 550016,
+   "obstacle_id": 0,
+   "margin_target": 0.2,
+   "position": [
+    -14.5217593340344,
+    -2.35303207910097,
+    2.5108228549584934
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.19999996697938727,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.798555494532081
+  },
+  {
+   "seed": 550016,
+   "obstacle_id": 0,
+   "margin_target": 0.3,
+   "position": [
+    -14.5217593340344,
+    -2.2530320791009686,
+    2.5108228549584934
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.30000011003053473,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.8913282275077328
+  },
+  {
+   "seed": 550016,
+   "obstacle_id": 0,
+   "margin_target": 0.4,
+   "position": [
+    -14.5217593340344,
+    -2.153032079100969,
+    2.5108228549584934
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.4000000146631031,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.984052218583341
+  },
+  {
+   "seed": 550016,
+   "obstacle_id": 0,
+   "margin_target": 0.5,
+   "position": [
+    -14.5217593340344,
+    -2.0530320791009693,
+    2.5108228549584934
+   ],
+   "velocity": [
+    -0.0,
+    -12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.49999991929567145,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 4.0767225180918825
+  },
+  {
+   "seed": 550017,
+   "obstacle_id": 3,
+   "margin_target": 0.0,
+   "position": [
+    -7.376705533741511,
+    -18.233782211298866,
+    1.9062300556905285
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": false,
+   "margin_at_construction": -1.1277338174409124e-07,
+   "outcome": "soldier_caught",
+   "steps": 11,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.5798607344779394
+  },
+  {
+   "seed": 550017,
+   "obstacle_id": 3,
+   "margin_target": 0.1,
+   "position": [
+    -7.276705533741511,
+    -18.233782211298866,
+    1.9062300556905285
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.09999979185918662,
+   "outcome": "soldier_caught",
+   "steps": 11,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.6640358134876623
+  },
+  {
+   "seed": 550017,
+   "obstacle_id": 3,
+   "margin_target": 0.2,
+   "position": [
+    -7.1767055337415115,
+    -18.233782211298866,
+    1.9062300556905285
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.20000017332891318,
+   "outcome": "soldier_caught",
+   "steps": 11,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.7410259521879734
+  },
+  {
+   "seed": 550017,
+   "obstacle_id": 3,
+   "margin_target": 0.3,
+   "position": [
+    -7.07670553374151,
+    -18.233782211298866,
+    1.9062300556905285
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.30000007796148154,
+   "outcome": "soldier_caught",
+   "steps": 11,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.818650132968127
+  },
+  {
+   "seed": 550017,
+   "obstacle_id": 3,
+   "margin_target": 0.4,
+   "position": [
+    -6.9767055337415105,
+    -18.233782211298866,
+    1.9062300556905285
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.3999999825940499,
+   "outcome": "soldier_caught",
+   "steps": 11,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.896870570900834
+  },
+  {
+   "seed": 550017,
+   "obstacle_id": 3,
+   "margin_target": 0.5,
+   "position": [
+    -6.876705533741511,
+    -18.233782211298866,
+    1.9062300556905285
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.49999988722661826,
+   "outcome": "soldier_caught",
+   "steps": 11,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.9756473363110016
+  },
+  {
+   "seed": 550018,
+   "obstacle_id": 3,
+   "margin_target": 0.0,
+   "position": [
+    -2.9992813581352493,
+    -2.313915980785808,
+    2.784772637107116
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": false,
+   "margin_at_construction": -4.826733857044019e-08,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.6399904722099556
+  },
+  {
+   "seed": 550018,
+   "obstacle_id": 3,
+   "margin_target": 0.1,
+   "position": [
+    -2.8992813581352497,
+    -2.313915980785808,
+    2.784772637107116
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.10000009478380889,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.7382847303276314
+  },
+  {
+   "seed": 550018,
+   "obstacle_id": 3,
+   "margin_target": 0.2,
+   "position": [
+    -2.79928135813525,
+    -2.313915980785808,
+    2.784772637107116
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.19999999941637725,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.836552285564448
+  },
+  {
+   "seed": 550018,
+   "obstacle_id": 3,
+   "margin_target": 0.3,
+   "position": [
+    -2.6992813581352486,
+    -2.313915980785808,
+    2.784772637107116
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.2999999040489456,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.934791230571772
+  },
+  {
+   "seed": 550018,
+   "obstacle_id": 3,
+   "margin_target": 0.4,
+   "position": [
+    -2.599281358135249,
+    -2.313915980785808,
+    2.784772637107116
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.40000004710009307,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 4.033036851299311
+  },
+  {
+   "seed": 550018,
+   "obstacle_id": 3,
+   "margin_target": 0.5,
+   "position": [
+    -2.4992813581352493,
+    -2.313915980785808,
+    2.784772637107116
+   ],
+   "velocity": [
+    -12.0,
+    -0.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.49999995173266143,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 4.131340646160151
+  },
+  {
+   "seed": 550019,
+   "obstacle_id": 2,
+   "margin_target": 0.0,
+   "position": [
+    8.783955068997109,
+    -7.3597232565125275,
+    4.422216713200546
+   ],
+   "velocity": [
+    -0.0,
+    12.0,
+    -0.0
+   ],
+   "viable_at_construction": false,
+   "margin_at_construction": -1.6538703917490238e-07,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 2.9622217797370545
+  },
+  {
+   "seed": 550019,
+   "obstacle_id": 2,
+   "margin_target": 0.1,
+   "position": [
+    8.783955068997109,
+    -7.459723256512527,
+    4.422216713200546
+   ],
+   "velocity": [
+    -0.0,
+    12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.10000021608268739,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.037624758705207
+  },
+  {
+   "seed": 550019,
+   "obstacle_id": 2,
+   "margin_target": 0.2,
+   "position": [
+    8.783955068997109,
+    -7.559723256512527,
+    4.422216713200546
+   ],
+   "velocity": [
+    -0.0,
+    12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.20000012071525575,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.1134367678478583
+  },
+  {
+   "seed": 550019,
+   "obstacle_id": 2,
+   "margin_target": 0.3,
+   "position": [
+    8.783955068997109,
+    -7.659723256512528,
+    4.422216713200546
+   ],
+   "velocity": [
+    -0.0,
+    12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.3000000253478241,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.189608396996588
+  },
+  {
+   "seed": 550019,
+   "obstacle_id": 2,
+   "margin_target": 0.4,
+   "position": [
+    8.783955068997109,
+    -7.759723256512528,
+    4.422216713200546
+   ],
+   "velocity": [
+    -0.0,
+    12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.39999992998039247,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.2660953763554805
+  },
+  {
+   "seed": 550019,
+   "obstacle_id": 2,
+   "margin_target": 0.5,
+   "position": [
+    8.783955068997109,
+    -7.8597232565125275,
+    4.422216713200546
+   ],
+   "velocity": [
+    -0.0,
+    12.0,
+    -0.0
+   ],
+   "viable_at_construction": true,
+   "margin_at_construction": 0.4999998346129608,
+   "outcome": "soldier_caught",
+   "steps": 10,
+   "collision": false,
+   "nonfinite": false,
+   "min_physical_clearance": 3.34285678323269
+  }
+ ]
+}

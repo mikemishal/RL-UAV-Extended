@@ -1,0 +1,144 @@
+{
+ "created_utc": "2026-11-05T18:23:18.583886+00:00",
+ "stages": {
+  "01_repository_verification": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/repository_verification.json": "6efffca61382bc6c1a83be020fd2f8c1c563d302352cf307209a55d821bb943d"
+   },
+   "completed_utc": "2026-11-05T18:23:19.149866+00:00",
+   "config_sha256": null,
+   "input_commit": "1de4228cd7834cca56bda2721fe73db0c6167db5",
+   "note": "HEAD descendant of 1de4228, tracked tree clean, namespaces disjoint",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/repository_verification.json"
+   ],
+   "started_utc": "2026-11-05T18:23:18.660765+00:00",
+   "status": "complete"
+  },
+  "02_protocol_freeze": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/protocol.json": "4f7664b8a78371ee930c974e91516a020bc04c08a46347b0e300a3d0e32adb1a"
+   },
+   "completed_utc": "2026-11-05T18:23:19.252303+00:00",
+   "config_sha256": "4633f85483f45e36acd9a74be95b21d80f31ec5eb5c1f16196c03288b2806217",
+   "input_commit": "1de4228cd7834cca56bda2721fe73db0c6167db5",
+   "note": "protocol sha 4633f85483f45e36",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/protocol.json"
+   ],
+   "started_utc": "2026-11-05T18:23:19.241901+00:00",
+   "status": "complete"
+  },
+  "03_planner_failure_audit": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/planner_failure_audit.json": "4c0b4f90a6a3b8b4e50421fdabaaef990dd03cdd5fce3528978f375b130f62a0"
+   },
+   "completed_utc": "2026-11-05T18:23:19.365411+00:00",
+   "config_sha256": "4633f85483f45e36acd9a74be95b21d80f31ec5eb5c1f16196c03288b2806217",
+   "input_commit": "1de4228cd7834cca56bda2721fe73db0c6167db5",
+   "note": "11 Prompt-2 events replayed and classified; 0 route_error",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/planner_failure_audit.json"
+   ],
+   "started_utc": "2026-11-05T18:23:19.359951+00:00",
+   "status": "complete"
+  },
+  "04_viability_mechanism": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/unit_test_result.json": "806f93660740fe44abde4a95f97469ed8080175239303c66177c495e09f69739"
+   },
+   "completed_utc": "2026-11-05T18:23:19.456351+00:00",
+   "config_sha256": "4633f85483f45e36acd9a74be95b21d80f31ec5eb5c1f16196c03288b2806217",
+   "input_commit": "1de4228cd7834cca56bda2721fe73db0c6167db5",
+   "note": "viability/resampling/route-status targeted tests passed",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/unit_test_result.json"
+   ],
+   "started_utc": "2026-11-05T18:23:19.451747+00:00",
+   "status": "complete"
+  },
+  "05_bias_audit": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/bias_audit.json": "78a061958eced088e233fff33cf438636d27a5c6b762c5be4fe18c86172775b3"
+   },
+   "completed_utc": "2026-11-05T18:23:19.546434+00:00",
+   "config_sha256": "4633f85483f45e36acd9a74be95b21d80f31ec5eb5c1f16196c03288b2806217",
+   "input_commit": "1de4228cd7834cca56bda2721fe73db0c6167db5",
+   "note": "10,000-scenario bias audit complete",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/bias_audit.json"
+   ],
+   "started_utc": "2026-11-05T18:23:19.542246+00:00",
+   "status": "complete"
+  },
+  "06_legacy_integrity_regressions": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/c0_identity_result.json": "c51d710489e8d6b285acdc169f0ee5e1016d1d1ad38b77fdc83c55ddc81b819e",
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/legacy_noop_result.json": "cf20fa44110d4e4fb2069419ec1037733dc69c2240d49211811ba461b3fe5ca2"
+   },
+   "completed_utc": "2026-11-05T18:23:36.950152+00:00",
+   "config_sha256": "4633f85483f45e36acd9a74be95b21d80f31ec5eb5c1f16196c03288b2806217",
+   "input_commit": "1de4228cd7834cca56bda2721fe73db0c6167db5",
+   "note": "A0 1000 seeds identical; C0 1000 seeds identical",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/legacy_noop_result.json",
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/c0_identity_result.json"
+   ],
+   "started_utc": "2026-11-05T18:23:19.657589+00:00",
+   "status": "complete"
+  },
+  "07_monte_carlo_evaluation": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/acceptance_decision.json": "b612a7e04a95deed96935d9cfd4a7e5e8faab2f61465c359861891eb01979667",
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/constraint_verification.json": "d818718ca2063896430e4fd76dee3f727820f842cba2c752a1aa7dc6302bc2a7",
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/monte_carlo_result.json": "e2be0aa96a22b7e6c80792b26b97444af8525950c0ef33f8c3b23f9140029698"
+   },
+   "completed_utc": "2026-11-05T18:36:23.198979+00:00",
+   "config_sha256": "4633f85483f45e36acd9a74be95b21d80f31ec5eb5c1f16196c03288b2806217",
+   "input_commit": "1de4228cd7834cca56bda2721fe73db0c6167db5",
+   "note": "A0 capture 0.985; A1-CBF capture 1.000; collisions 0; verdict A",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/monte_carlo_result.json",
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/acceptance_decision.json",
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/constraint_verification.json"
+   ],
+   "started_utc": "2026-11-05T18:23:37.056183+00:00",
+   "status": "complete"
+  },
+  "08_stress_test": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/stress_test_result.json": "1446e3ba8072e58cd23dd3f72fd01ab21726376cae9858969ccae15d2ff3b141"
+   },
+   "completed_utc": "2026-11-05T18:36:23.309442+00:00",
+   "config_sha256": "4633f85483f45e36acd9a74be95b21d80f31ec5eb5c1f16196c03288b2806217",
+   "input_commit": "1de4228cd7834cca56bda2721fe73db0c6167db5",
+   "note": "101 boundary states, 0 collisions, 0 nonfinite",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/stress_test_result.json"
+   ],
+   "started_utc": "2026-11-05T18:36:23.294000+00:00",
+   "status": "complete"
+  },
+  "09_documentation": {
+   "artifact_sha256": {
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/README.md": "02d0d439270f82658490a6377521a5c71cbeed914d6aa470cdcd9dd799c15685",
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/manuscript_notes.md": "0014dd9014270f43aa0d9b4d7023443dc8ff8d03f7856cd3454593601a1690a8"
+   },
+   "completed_utc": "2026-11-05T19:00:16.015125+00:00",
+   "config_sha256": "4633f85483f45e36acd9a74be95b21d80f31ec5eb5c1f16196c03288b2806217",
+   "input_commit": "1de4228cd7834cca56bda2721fe73db0c6167db5",
+   "note": "README.md + manuscript_notes.md written: viability equation, bias audit, route-failure audit, revised results, limitations",
+   "output_artifacts": [
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/README.md",
+    "docs/journal_cbf_attacker/obstacle_cbf_v2/manuscript_notes.md"
+   ],
+   "started_utc": "2026-11-05T19:00:16.011221+00:00",
+   "status": "complete"
+  },
+  "10_commit_push": {
+   "status": "pending"
+  }
+ },
+ "task": "journal_cbf_attacker/obstacle_cbf_v2",
+ "updated_utc": "2026-11-05T19:00:16.018144+00:00"
+}
