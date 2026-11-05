@@ -1,0 +1,6794 @@
+{
+ "a0": {
+  "episodes": [
+   {
+    "asset_position_m": [
+     15.921991348266602,
+     11.514555931091309,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 0.9999999894656186,
+    "path_length_m": 65.0272045256368,
+    "scenario_seed": 178000,
+    "steps": 11,
+    "terminal_distance_m": 2.0000005300946286,
+    "translation_m": [
+     15.921991659969002,
+     11.514555458408871
+    ]
+   },
+   {
+    "asset_position_m": [
+     -23.575912475585938,
+     11.402740478515625,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.000208721000081,
+    "path_length_m": 61.88716619391856,
+    "scenario_seed": 178001,
+    "steps": 11,
+    "terminal_distance_m": 1.9999995362732998,
+    "translation_m": [
+     -23.57591251883892,
+     11.402740685872008
+    ]
+   },
+   {
+    "asset_position_m": [
+     -19.406919479370117,
+     36.391502380371094,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0657112677803111,
+    "path_length_m": 61.0918051789388,
+    "scenario_seed": 178002,
+    "steps": 11,
+    "terminal_distance_m": 1.999999559347015,
+    "translation_m": [
+     -19.406919054630052,
+     36.39150419239431
+    ]
+   },
+   {
+    "asset_position_m": [
+     -16.617605209350586,
+     -40.49766540527344,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0002191580969155,
+    "path_length_m": 61.54242146499917,
+    "scenario_seed": 178003,
+    "steps": 11,
+    "terminal_distance_m": 2.000000328435282,
+    "translation_m": [
+     -16.617605505901185,
+     -40.497665832284675
+    ]
+   },
+   {
+    "asset_position_m": [
+     5.183030605316162,
+     18.004131317138672,
+     0.0
+    ],
+    "duration_s": 7.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0952244583862123,
+    "path_length_m": 63.85538261946107,
+    "scenario_seed": 178004,
+    "steps": 14,
+    "terminal_distance_m": 2.0000000190875795,
+    "translation_m": [
+     5.183030739681513,
+     18.00413136828087
+    ]
+   },
+   {
+    "asset_position_m": [
+     12.888553619384766,
+     -8.18110179901123,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0101583744330136,
+    "path_length_m": 57.97829505617078,
+    "scenario_seed": 178005,
+    "steps": 10,
+    "terminal_distance_m": 2.0000002364135985,
+    "translation_m": [
+     12.88855366959857,
+     -8.181101337128425
+    ]
+   },
+   {
+    "asset_position_m": [
+     15.970659255981445,
+     11.02807903289795,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0435123181126085,
+    "path_length_m": 60.43897433088248,
+    "scenario_seed": 178006,
+    "steps": 11,
+    "terminal_distance_m": 1.9999995691200174,
+    "translation_m": [
+     15.970658794291142,
+     11.028079023098488
+    ]
+   },
+   {
+    "asset_position_m": [
+     4.771598815917969,
+     18.424846649169922,
+     0.0
+    ],
+    "duration_s": 7.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0626825363290577,
+    "path_length_m": 75.50684768234852,
+    "scenario_seed": 178007,
+    "steps": 14,
+    "terminal_distance_m": 1.9999993789420611,
+    "translation_m": [
+     4.77159867052773,
+     18.424845749328377
+    ]
+   },
+   {
+    "asset_position_m": [
+     -10.586769104003906,
+     -28.790775299072266,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0000389934930098,
+    "path_length_m": 63.049901254076154,
+    "scenario_seed": 178008,
+    "steps": 11,
+    "terminal_distance_m": 2.000000149065722,
+    "translation_m": [
+     -10.586769157328717,
+     -28.79077527419404
+    ]
+   },
+   {
+    "asset_position_m": [
+     -44.64298629760742,
+     -4.407709121704102,
+     0.0
+    ],
+    "duration_s": 7.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0466500325263033,
+    "path_length_m": 73.70446124808109,
+    "scenario_seed": 178009,
+    "steps": 14,
+    "terminal_distance_m": 1.999999995262474,
+    "translation_m": [
+     -44.642984505722325,
+     -4.407709010000275
+    ]
+   },
+   {
+    "asset_position_m": [
+     -41.406951904296875,
+     38.82501220703125,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.000043933779367,
+    "path_length_m": 69.18606718960001,
+    "scenario_seed": 178010,
+    "steps": 12,
+    "terminal_distance_m": 2.0000005445491857,
+    "translation_m": [
+     -41.406952027558674,
+     38.825011016580326
+    ]
+   },
+   {
+    "asset_position_m": [
+     -29.129426956176758,
+     5.416083812713623,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.2841969464558511,
+    "path_length_m": 64.25813400400146,
+    "scenario_seed": 178011,
+    "steps": 12,
+    "terminal_distance_m": 1.9999999688260492,
+    "translation_m": [
+     -29.129427674270946,
+     5.416083933328468
+    ]
+   },
+   {
+    "asset_position_m": [
+     8.480756759643555,
+     -26.519176483154297,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.000146486790805,
+    "path_length_m": 55.779444351012884,
+    "scenario_seed": 178012,
+    "steps": 10,
+    "terminal_distance_m": 2.0000000166003247,
+    "translation_m": [
+     8.480756768693878,
+     -26.51917685253978
+    ]
+   },
+   {
+    "asset_position_m": [
+     6.152925968170166,
+     -30.3217830657959,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0000636049262086,
+    "path_length_m": 56.999751230913766,
+    "scenario_seed": 178013,
+    "steps": 10,
+    "terminal_distance_m": 1.999999812745535,
+    "translation_m": [
+     6.152926203740883,
+     -30.321783937889492
+    ]
+   },
+   {
+    "asset_position_m": [
+     -14.655425071716309,
+     21.219032287597656,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0615670405741302,
+    "path_length_m": 57.05336270749615,
+    "scenario_seed": 178014,
+    "steps": 11,
+    "terminal_distance_m": 2.000000118877068,
+    "translation_m": [
+     -14.6554248718382,
+     21.219031548257384
+    ]
+   },
+   {
+    "asset_position_m": [
+     -12.869065284729004,
+     40.778907775878906,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0052542988002044,
+    "path_length_m": 60.049461552864244,
+    "scenario_seed": 178015,
+    "steps": 11,
+    "terminal_distance_m": 2.0000003457018765,
+    "translation_m": [
+     -12.869065030465016,
+     40.77890602211968
+    ]
+   },
+   {
+    "asset_position_m": [
+     -12.470613479614258,
+     26.570947647094727,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0191115356074871,
+    "path_length_m": 61.16646620740438,
+    "scenario_seed": 178016,
+    "steps": 11,
+    "terminal_distance_m": 2.000000029214803,
+    "translation_m": [
+     -12.470613410721784,
+     26.570947252013486
+    ]
+   },
+   {
+    "asset_position_m": [
+     -11.49216079711914,
+     40.259559631347656,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0323444559473258,
+    "path_length_m": 53.10940234695291,
+    "scenario_seed": 178017,
+    "steps": 10,
+    "terminal_distance_m": 2.000000769326592,
+    "translation_m": [
+     -11.492161058183413,
+     40.25955804161205
+    ]
+   },
+   {
+    "asset_position_m": [
+     -35.27405548095703,
+     36.87282943725586,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0047223305706108,
+    "path_length_m": 63.13148863246689,
+    "scenario_seed": 178018,
+    "steps": 12,
+    "terminal_distance_m": 1.9999980191201066,
+    "translation_m": [
+     -35.27405586796573,
+     36.872828972074124
+    ]
+   },
+   {
+    "asset_position_m": [
+     5.708867073059082,
+     26.797075271606445,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0028368548292592,
+    "path_length_m": 67.62550374507978,
+    "scenario_seed": 178019,
+    "steps": 12,
+    "terminal_distance_m": 1.9999995355210338,
+    "translation_m": [
+     5.708866942712339,
+     26.797075055645898
+    ]
+   },
+   {
+    "asset_position_m": [
+     -5.458461284637451,
+     21.1009578704834,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0044214258384505,
+    "path_length_m": 53.4226973227673,
+    "scenario_seed": 178020,
+    "steps": 10,
+    "terminal_distance_m": 2.000000047175678,
+    "translation_m": [
+     -5.45846150873362,
+     21.100958524440514
+    ]
+   },
+   {
+    "asset_position_m": [
+     31.608713150024414,
+     -5.0515336990356445,
+     0.0
+    ],
+    "duration_s": 7.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.1071791025676365,
+    "path_length_m": 76.98522087778477,
+    "scenario_seed": 178021,
+    "steps": 14,
+    "terminal_distance_m": 1.9999996417157282,
+    "translation_m": [
+     31.60871348829577,
+     -5.051533530120437
+    ]
+   },
+   {
+    "asset_position_m": [
+     18.334522247314453,
+     7.983527183532715,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.262763233672777,
+    "path_length_m": 68.15838098812964,
+    "scenario_seed": 178022,
+    "steps": 12,
+    "terminal_distance_m": 2.000000597858072,
+    "translation_m": [
+     18.334521934771185,
+     7.9835272506376285
+    ]
+   },
+   {
+    "asset_position_m": [
+     9.34421157836914,
+     40.46943283081055,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0001167939991225,
+    "path_length_m": 61.143932299610135,
+    "scenario_seed": 178023,
+    "steps": 11,
+    "terminal_distance_m": 2.000000049799755,
+    "translation_m": [
+     9.344211123713592,
+     40.469434395467964
+    ]
+   },
+   {
+    "asset_position_m": [
+     -22.85468864440918,
+     33.45045471191406,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0019629500051788,
+    "path_length_m": 52.3442350318067,
+    "scenario_seed": 178024,
+    "steps": 9,
+    "terminal_distance_m": 1.9999999902550236,
+    "translation_m": [
+     -22.854689508346198,
+     33.450453949466535
+    ]
+   },
+   {
+    "asset_position_m": [
+     7.514693260192871,
+     -39.55116271972656,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0310500951640442,
+    "path_length_m": 60.12199284895,
+    "scenario_seed": 178025,
+    "steps": 11,
+    "terminal_distance_m": 2.000000367111083,
+    "translation_m": [
+     7.51469329841,
+     -39.55116351647254
+    ]
+   },
+   {
+    "asset_position_m": [
+     -43.41038131713867,
+     28.86495018005371,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0123667790781445,
+    "path_length_m": 50.57017897840025,
+    "scenario_seed": 178026,
+    "steps": 9,
+    "terminal_distance_m": 1.9999999247033453,
+    "translation_m": [
+     -43.4103831888515,
+     28.864949465540192
+    ]
+   },
+   {
+    "asset_position_m": [
+     21.92595863342285,
+     20.586843490600586,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.000066370535588,
+    "path_length_m": 69.07245622130158,
+    "scenario_seed": 178027,
+    "steps": 12,
+    "terminal_distance_m": 2.000000496653597,
+    "translation_m": [
+     21.925959264490768,
+     20.586844339992698
+    ]
+   },
+   {
+    "asset_position_m": [
+     12.406106948852539,
+     34.02912521362305,
+     0.0
+    ],
+    "duration_s": 7.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.1393915796164686,
+    "path_length_m": 64.25472943701924,
+    "scenario_seed": 178028,
+    "steps": 14,
+    "terminal_distance_m": 1.9999999650452194,
+    "translation_m": [
+     12.406107062304041,
+     34.02912473143711
+    ]
+   },
+   {
+    "asset_position_m": [
+     12.402349472045898,
+     -9.953932762145996,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.1450051034380124,
+    "path_length_m": 74.1362994385682,
+    "scenario_seed": 178029,
+    "steps": 13,
+    "terminal_distance_m": 1.9999993637950677,
+    "translation_m": [
+     12.40234904947345,
+     -9.953932844092037
+    ]
+   },
+   {
+    "asset_position_m": [
+     -11.758623123168945,
+     18.182636260986328,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0000997556105897,
+    "path_length_m": 68.51182615815134,
+    "scenario_seed": 178030,
+    "steps": 12,
+    "terminal_distance_m": 2.0000000006341594,
+    "translation_m": [
+     -11.7586233306927,
+     18.182637160376338
+    ]
+   },
+   {
+    "asset_position_m": [
+     -30.955236434936523,
+     -9.666284561157227,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.1094679224656379,
+    "path_length_m": 75.12549636118848,
+    "scenario_seed": 178031,
+    "steps": 13,
+    "terminal_distance_m": 2.000000760923723,
+    "translation_m": [
+     -30.955236871009706,
+     -9.666284533127182
+    ]
+   },
+   {
+    "asset_position_m": [
+     14.345318794250488,
+     36.941131591796875,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.001936788368851,
+    "path_length_m": 63.88131539270603,
+    "scenario_seed": 178032,
+    "steps": 11,
+    "terminal_distance_m": 1.9999992066682706,
+    "translation_m": [
+     14.34531832450293,
+     36.94113166175015
+    ]
+   },
+   {
+    "asset_position_m": [
+     -37.10662841796875,
+     -9.018010139465332,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.1041717305988104,
+    "path_length_m": 69.76523986097025,
+    "scenario_seed": 178033,
+    "steps": 13,
+    "terminal_distance_m": 2.0000008222817214,
+    "translation_m": [
+     -37.106627937040784,
+     -9.018009818976267
+    ]
+   },
+   {
+    "asset_position_m": [
+     8.31119155883789,
+     -15.996472358703613,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0693010025749445,
+    "path_length_m": 68.6787163427293,
+    "scenario_seed": 178034,
+    "steps": 12,
+    "terminal_distance_m": 1.9999996054046323,
+    "translation_m": [
+     8.31119173245401,
+     -15.996472277563083
+    ]
+   },
+   {
+    "asset_position_m": [
+     43.23952102661133,
+     -6.481276512145996,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0000685262625915,
+    "path_length_m": 61.656918094869006,
+    "scenario_seed": 178035,
+    "steps": 11,
+    "terminal_distance_m": 2.00000084283683,
+    "translation_m": [
+     43.239521853192954,
+     -6.481276399054622
+    ]
+   },
+   {
+    "asset_position_m": [
+     19.479585647583008,
+     27.82666015625,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0221545684742868,
+    "path_length_m": 65.99059503296357,
+    "scenario_seed": 178036,
+    "steps": 13,
+    "terminal_distance_m": 2.0000001566550134,
+    "translation_m": [
+     19.47958552670843,
+     27.82665959349704
+    ]
+   },
+   {
+    "asset_position_m": [
+     14.87391471862793,
+     -41.69577407836914,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.006853048973187,
+    "path_length_m": 52.292834732270116,
+    "scenario_seed": 178037,
+    "steps": 9,
+    "terminal_distance_m": 1.9999994325238977,
+    "translation_m": [
+     14.873914324847185,
+     -41.69577418127267
+    ]
+   },
+   {
+    "asset_position_m": [
+     25.22091293334961,
+     5.993636608123779,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 0.9999999955317842,
+    "path_length_m": 58.33961021230131,
+    "scenario_seed": 178038,
+    "steps": 10,
+    "terminal_distance_m": 1.9999994554464533,
+    "translation_m": [
+     25.22091232676823,
+     5.993636411248893
+    ]
+   },
+   {
+    "asset_position_m": [
+     -26.96042251586914,
+     -15.179363250732422,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0001462203947917,
+    "path_length_m": 50.28914346698865,
+    "scenario_seed": 178039,
+    "steps": 9,
+    "terminal_distance_m": 1.9999993180088804,
+    "translation_m": [
+     -26.96042223624667,
+     -15.179363262424616
+    ]
+   },
+   {
+    "asset_position_m": [
+     25.137386322021484,
+     -1.032425045967102,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0253924179445553,
+    "path_length_m": 60.624585605007276,
+    "scenario_seed": 178040,
+    "steps": 11,
+    "terminal_distance_m": 1.9999999528946044,
+    "translation_m": [
+     25.13738687386263,
+     -1.0324250607367826
+    ]
+   },
+   {
+    "asset_position_m": [
+     34.1609992980957,
+     8.524210929870605,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0064120283332287,
+    "path_length_m": 50.35744108140107,
+    "scenario_seed": 178041,
+    "steps": 9,
+    "terminal_distance_m": 2.0000000228396893,
+    "translation_m": [
+     34.16100098073714,
+     8.524211170398042
+    ]
+   },
+   {
+    "asset_position_m": [
+     -41.16057586669922,
+     12.081830024719238,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.1388090807636486,
+    "path_length_m": 64.77263835962779,
+    "scenario_seed": 178042,
+    "steps": 12,
+    "terminal_distance_m": 2.0000001573235346,
+    "translation_m": [
+     -41.16057703159559,
+     12.08183005280556
+    ]
+   },
+   {
+    "asset_position_m": [
+     -41.77617645263672,
+     -26.188295364379883,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0002331401506386,
+    "path_length_m": 68.04411876879811,
+    "scenario_seed": 178043,
+    "steps": 12,
+    "terminal_distance_m": 1.9999996400249347,
+    "translation_m": [
+     -41.77617512587868,
+     -26.188296312044887
+    ]
+   },
+   {
+    "asset_position_m": [
+     -28.259174346923828,
+     -23.40094757080078,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0046881627336122,
+    "path_length_m": 57.93801386855128,
+    "scenario_seed": 178044,
+    "steps": 12,
+    "terminal_distance_m": 1.999999712589777,
+    "translation_m": [
+     -28.259174715328424,
+     -23.400946675278092
+    ]
+   },
+   {
+    "asset_position_m": [
+     30.40641212463379,
+     32.46881103515625,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0025981398191417,
+    "path_length_m": 67.47350762782763,
+    "scenario_seed": 178045,
+    "steps": 12,
+    "terminal_distance_m": 2.0000001535805807,
+    "translation_m": [
+     30.406411328609423,
+     32.468811598198144
+    ]
+   },
+   {
+    "asset_position_m": [
+     -14.84700870513916,
+     -2.137934684753418,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0054871710795104,
+    "path_length_m": 54.91794472843661,
+    "scenario_seed": 178046,
+    "steps": 10,
+    "terminal_distance_m": 2.000000106502556,
+    "translation_m": [
+     -14.847008360697522,
+     -2.1379347435221803
+    ]
+   },
+   {
+    "asset_position_m": [
+     -11.831857681274414,
+     -16.700958251953125,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0002984685954592,
+    "path_length_m": 60.76432385029967,
+    "scenario_seed": 178047,
+    "steps": 11,
+    "terminal_distance_m": 1.9999998701734933,
+    "translation_m": [
+     -11.83185792536051,
+     -16.7009591981141
+    ]
+   },
+   {
+    "asset_position_m": [
+     26.191116333007812,
+     42.445674896240234,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0001172452967257,
+    "path_length_m": 66.88787054454151,
+    "scenario_seed": 178048,
+    "steps": 12,
+    "terminal_distance_m": 1.9999988574889938,
+    "translation_m": [
+     26.191115903696762,
+     42.445675515844044
+    ]
+   },
+   {
+    "asset_position_m": [
+     6.234618186950684,
+     34.65106201171875,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.1399102140204624,
+    "path_length_m": 65.55768125342888,
+    "scenario_seed": 178049,
+    "steps": 12,
+    "terminal_distance_m": 1.9999987909902264,
+    "translation_m": [
+     6.234618379938002,
+     34.65106143287612
+    ]
+   },
+   {
+    "asset_position_m": [
+     -26.110992431640625,
+     -43.99407196044922,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0001965616214654,
+    "path_length_m": 72.87322013774144,
+    "scenario_seed": 178050,
+    "steps": 13,
+    "terminal_distance_m": 1.9999997077046707,
+    "translation_m": [
+     -26.110992674610074,
+     -43.994071869024324
+    ]
+   },
+   {
+    "asset_position_m": [
+     17.03955078125,
+     -15.93759822845459,
+     0.0
+    ],
+    "duration_s": 7.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.055649304626473,
+    "path_length_m": 60.702343512697226,
+    "scenario_seed": 178051,
+    "steps": 14,
+    "terminal_distance_m": 1.9999999553370027,
+    "translation_m": [
+     17.03955155409958,
+     -15.937598461486068
+    ]
+   },
+   {
+    "asset_position_m": [
+     12.852542877197266,
+     31.437177658081055,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0001195965197505,
+    "path_length_m": 50.406400436940146,
+    "scenario_seed": 178052,
+    "steps": 9,
+    "terminal_distance_m": 2.0000001433808148,
+    "translation_m": [
+     12.852542833091025,
+     31.43717762781155
+    ]
+   },
+   {
+    "asset_position_m": [
+     -40.8026008605957,
+     -26.685096740722656,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0122878648938975,
+    "path_length_m": 65.08624880873607,
+    "scenario_seed": 178053,
+    "steps": 11,
+    "terminal_distance_m": 1.9999999553141516,
+    "translation_m": [
+     -40.80260006625373,
+     -26.68509678494849
+    ]
+   },
+   {
+    "asset_position_m": [
+     -28.187721252441406,
+     22.1442813873291,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0866886512387224,
+    "path_length_m": 73.56168572985914,
+    "scenario_seed": 178054,
+    "steps": 13,
+    "terminal_distance_m": 2.000000592741288,
+    "translation_m": [
+     -28.18772151084307,
+     22.144282237594002
+    ]
+   },
+   {
+    "asset_position_m": [
+     36.63444519042969,
+     10.754583358764648,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.029963640559793,
+    "path_length_m": 69.4648027377663,
+    "scenario_seed": 178055,
+    "steps": 12,
+    "terminal_distance_m": 1.9999997120632542,
+    "translation_m": [
+     36.634445938786044,
+     10.754583649768218
+    ]
+   },
+   {
+    "asset_position_m": [
+     -40.1354866027832,
+     -8.672210693359375,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0000293589975657,
+    "path_length_m": 68.27726347418766,
+    "scenario_seed": 178056,
+    "steps": 12,
+    "terminal_distance_m": 2.0000012233327205,
+    "translation_m": [
+     -40.13548690162027,
+     -8.672210857365528
+    ]
+   },
+   {
+    "asset_position_m": [
+     20.504352569580078,
+     -15.766270637512207,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0003137097643187,
+    "path_length_m": 52.60576769933996,
+    "scenario_seed": 178057,
+    "steps": 9,
+    "terminal_distance_m": 2.0000000313737583,
+    "translation_m": [
+     20.50435330349103,
+     -15.766270591595042
+    ]
+   },
+   {
+    "asset_position_m": [
+     2.728346347808838,
+     -25.76349639892578,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.010462084590417,
+    "path_length_m": 52.781770367532694,
+    "scenario_seed": 178058,
+    "steps": 9,
+    "terminal_distance_m": 1.9999997752587448,
+    "translation_m": [
+     2.728346328021587,
+     -25.76349672836149
+    ]
+   },
+   {
+    "asset_position_m": [
+     12.430537223815918,
+     -23.905418395996094,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0001476913316822,
+    "path_length_m": 54.47759500986624,
+    "scenario_seed": 178059,
+    "steps": 10,
+    "terminal_distance_m": 2.000000088304885,
+    "translation_m": [
+     12.430536833732756,
+     -23.905418592341142
+    ]
+   },
+   {
+    "asset_position_m": [
+     -31.8079891204834,
+     20.804244995117188,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0207150821393,
+    "path_length_m": 57.255850084873614,
+    "scenario_seed": 178060,
+    "steps": 11,
+    "terminal_distance_m": 1.9999991464052504,
+    "translation_m": [
+     -31.807988669669285,
+     20.804244129908355
+    ]
+   },
+   {
+    "asset_position_m": [
+     41.88929748535156,
+     -39.41558074951172,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0029726854981853,
+    "path_length_m": 53.16464566181368,
+    "scenario_seed": 178061,
+    "steps": 9,
+    "terminal_distance_m": 2.0000019518640353,
+    "translation_m": [
+     41.88929813459021,
+     -39.415581129751736
+    ]
+   },
+   {
+    "asset_position_m": [
+     11.136576652526855,
+     14.502634048461914,
+     0.0
+    ],
+    "duration_s": 7.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.1099100495367562,
+    "path_length_m": 79.94527699333693,
+    "scenario_seed": 178062,
+    "steps": 14,
+    "terminal_distance_m": 1.9999999661752665,
+    "translation_m": [
+     11.136576832108677,
+     14.502634449265882
+    ]
+   },
+   {
+    "asset_position_m": [
+     -11.804855346679688,
+     -41.83247756958008,
+     0.0
+    ],
+    "duration_s": 7.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.1674250694279025,
+    "path_length_m": 80.25612671733688,
+    "scenario_seed": 178063,
+    "steps": 15,
+    "terminal_distance_m": 1.9999994986919651,
+    "translation_m": [
+     -11.804855590312975,
+     -41.83247706603942
+    ]
+   },
+   {
+    "asset_position_m": [
+     23.27366065979004,
+     3.7630889415740967,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0704067868189062,
+    "path_length_m": 62.25290308422213,
+    "scenario_seed": 178064,
+    "steps": 12,
+    "terminal_distance_m": 2.000000131612281,
+    "translation_m": [
+     23.27366059819086,
+     3.763088918843504
+    ]
+   },
+   {
+    "asset_position_m": [
+     10.924985885620117,
+     7.969353675842285,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0085312900802748,
+    "path_length_m": 52.01628787915371,
+    "scenario_seed": 178065,
+    "steps": 9,
+    "terminal_distance_m": 2.0000002897111604,
+    "translation_m": [
+     10.924986031855592,
+     7.969353514343169
+    ]
+   },
+   {
+    "asset_position_m": [
+     18.147552490234375,
+     37.91122055053711,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0002743254633968,
+    "path_length_m": 61.86123815801775,
+    "scenario_seed": 178066,
+    "steps": 11,
+    "terminal_distance_m": 2.000001179732117,
+    "translation_m": [
+     18.14755274441297,
+     37.91122028744983
+    ]
+   },
+   {
+    "asset_position_m": [
+     -20.334291458129883,
+     -29.460359573364258,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0202128994096977,
+    "path_length_m": 56.21968596030345,
+    "scenario_seed": 178067,
+    "steps": 10,
+    "terminal_distance_m": 1.999999890662491,
+    "translation_m": [
+     -20.334290836430462,
+     -29.46035953978672
+    ]
+   },
+   {
+    "asset_position_m": [
+     40.11835479736328,
+     -33.93722152709961,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 0.9999999836697764,
+    "path_length_m": 58.83944703476192,
+    "scenario_seed": 178068,
+    "steps": 10,
+    "terminal_distance_m": 2.000000095650337,
+    "translation_m": [
+     40.11835667127385,
+     -33.93722182519774
+    ]
+   },
+   {
+    "asset_position_m": [
+     27.109140396118164,
+     -20.764856338500977,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.000130030925348,
+    "path_length_m": 50.75816438277658,
+    "scenario_seed": 178069,
+    "steps": 9,
+    "terminal_distance_m": 1.9999992319574416,
+    "translation_m": [
+     27.10914087537763,
+     -20.764856141192386
+    ]
+   },
+   {
+    "asset_position_m": [
+     42.78409957885742,
+     -22.96027374267578,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0012423479515842,
+    "path_length_m": 59.60574875299522,
+    "scenario_seed": 178070,
+    "steps": 11,
+    "terminal_distance_m": 1.999999884159987,
+    "translation_m": [
+     42.784101185142845,
+     -22.960273443793987
+    ]
+   },
+   {
+    "asset_position_m": [
+     -33.42066192626953,
+     -10.371442794799805,
+     0.0
+    ],
+    "duration_s": 7.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.090630561847359,
+    "path_length_m": 66.66651055476967,
+    "scenario_seed": 178071,
+    "steps": 15,
+    "terminal_distance_m": 1.999999916384935,
+    "translation_m": [
+     -33.4206609476962,
+     -10.371443143221398
+    ]
+   },
+   {
+    "asset_position_m": [
+     22.146371841430664,
+     -31.339038848876953,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0038906938344674,
+    "path_length_m": 56.88679890133319,
+    "scenario_seed": 178072,
+    "steps": 10,
+    "terminal_distance_m": 1.999999843269146,
+    "translation_m": [
+     22.14637098303324,
+     -31.339039642751878
+    ]
+   },
+   {
+    "asset_position_m": [
+     -14.054953575134277,
+     7.434885501861572,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0117075295767504,
+    "path_length_m": 66.80326104412786,
+    "scenario_seed": 178073,
+    "steps": 12,
+    "terminal_distance_m": 1.999999642621983,
+    "translation_m": [
+     -14.054954008330174,
+     7.434885709894434
+    ]
+   },
+   {
+    "asset_position_m": [
+     -23.039936065673828,
+     -29.041536331176758,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.000319170121551,
+    "path_length_m": 55.20337369569208,
+    "scenario_seed": 178074,
+    "steps": 10,
+    "terminal_distance_m": 2.000000154435733,
+    "translation_m": [
+     -23.039936106911373,
+     -29.041535835037138
+    ]
+   },
+   {
+    "asset_position_m": [
+     18.80821418762207,
+     21.6348819732666,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0066349289896268,
+    "path_length_m": 53.946454025369846,
+    "scenario_seed": 178075,
+    "steps": 10,
+    "terminal_distance_m": 1.9999993716481244,
+    "translation_m": [
+     18.808214714837437,
+     21.634882018852508
+    ]
+   },
+   {
+    "asset_position_m": [
+     -34.693260192871094,
+     44.870086669921875,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0324913658866457,
+    "path_length_m": 59.67611674931549,
+    "scenario_seed": 178076,
+    "steps": 12,
+    "terminal_distance_m": 1.999999871085634,
+    "translation_m": [
+     -34.69325861406751,
+     44.87008701325523
+    ]
+   },
+   {
+    "asset_position_m": [
+     14.201883316040039,
+     32.59136962890625,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0000631465866296,
+    "path_length_m": 62.792203073606906,
+    "scenario_seed": 178077,
+    "steps": 11,
+    "terminal_distance_m": 1.9999994777261103,
+    "translation_m": [
+     14.20188327903772,
+     32.59136902194875
+    ]
+   },
+   {
+    "asset_position_m": [
+     -13.535687446594238,
+     5.046844482421875,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0000431051029126,
+    "path_length_m": 68.52490719016595,
+    "scenario_seed": 178078,
+    "steps": 12,
+    "terminal_distance_m": 2.0000002499269436,
+    "translation_m": [
+     -13.535687188207362,
+     5.046844669055748
+    ]
+   },
+   {
+    "asset_position_m": [
+     24.361034393310547,
+     -32.815155029296875,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0032262679775248,
+    "path_length_m": 57.79804299618157,
+    "scenario_seed": 178079,
+    "steps": 11,
+    "terminal_distance_m": 2.000000170930484,
+    "translation_m": [
+     24.361035103192116,
+     -32.81515457169816
+    ]
+   },
+   {
+    "asset_position_m": [
+     -16.914196014404297,
+     36.256568908691406,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.2470138850124932,
+    "path_length_m": 68.3454024905134,
+    "scenario_seed": 178080,
+    "steps": 13,
+    "terminal_distance_m": 1.999998341027956,
+    "translation_m": [
+     -16.914195655414165,
+     36.2565699277568
+    ]
+   },
+   {
+    "asset_position_m": [
+     31.972570419311523,
+     32.362003326416016,
+     0.0
+    ],
+    "duration_s": 7.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0166566295384063,
+    "path_length_m": 75.0667395830163,
+    "scenario_seed": 178081,
+    "steps": 14,
+    "terminal_distance_m": 2.000000514968581,
+    "translation_m": [
+     31.972570227264445,
+     32.3620041464444
+    ]
+   },
+   {
+    "asset_position_m": [
+     8.376559257507324,
+     -23.566308975219727,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.003674795564563,
+    "path_length_m": 52.15795457923816,
+    "scenario_seed": 178082,
+    "steps": 9,
+    "terminal_distance_m": 2.0000002555883483,
+    "translation_m": [
+     8.376559585036048,
+     -23.566308501740544
+    ]
+   },
+   {
+    "asset_position_m": [
+     -7.553060054779053,
+     -0.5751801133155823,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.000067605072244,
+    "path_length_m": 51.074487407298506,
+    "scenario_seed": 178083,
+    "steps": 9,
+    "terminal_distance_m": 2.000000090128927,
+    "translation_m": [
+     -7.553060159161284,
+     -0.5751801138408155
+    ]
+   },
+   {
+    "asset_position_m": [
+     -33.34845733642578,
+     14.593365669250488,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0245761328575418,
+    "path_length_m": 74.45767542226697,
+    "scenario_seed": 178084,
+    "steps": 13,
+    "terminal_distance_m": 1.9999995585105321,
+    "translation_m": [
+     -33.34845570114333,
+     14.593365228046734
+    ]
+   },
+   {
+    "asset_position_m": [
+     21.94232940673828,
+     -27.280418395996094,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0406858071744403,
+    "path_length_m": 58.65578408710098,
+    "scenario_seed": 178085,
+    "steps": 13,
+    "terminal_distance_m": 1.9999997936471559,
+    "translation_m": [
+     21.942328969589944,
+     -27.280417791959156
+    ]
+   },
+   {
+    "asset_position_m": [
+     14.991726875305176,
+     -20.599164962768555,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0000292748225075,
+    "path_length_m": 59.2851680005509,
+    "scenario_seed": 178086,
+    "steps": 11,
+    "terminal_distance_m": 2.0000004493968886,
+    "translation_m": [
+     14.991727022218605,
+     -20.599165546108864
+    ]
+   },
+   {
+    "asset_position_m": [
+     20.031782150268555,
+     -2.425283432006836,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.069098221706143,
+    "path_length_m": 69.69115005703253,
+    "scenario_seed": 178087,
+    "steps": 13,
+    "terminal_distance_m": 1.9999993169250467,
+    "translation_m": [
+     20.0317829345439,
+     -2.4252835153088723
+    ]
+   },
+   {
+    "asset_position_m": [
+     -7.5219221115112305,
+     6.251928806304932,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0308786801127625,
+    "path_length_m": 70.4031332125416,
+    "scenario_seed": 178088,
+    "steps": 12,
+    "terminal_distance_m": 1.9999997721741365,
+    "translation_m": [
+     -7.521922337742268,
+     6.251928817037027
+    ]
+   },
+   {
+    "asset_position_m": [
+     -10.985255241394043,
+     -16.78714942932129,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0146685647888163,
+    "path_length_m": 57.71545157455209,
+    "scenario_seed": 178089,
+    "steps": 10,
+    "terminal_distance_m": 2.000000289560728,
+    "translation_m": [
+     -10.98525516468004,
+     -16.787149513576193
+    ]
+   },
+   {
+    "asset_position_m": [
+     -29.20757484436035,
+     37.43316650390625,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.009390071174784,
+    "path_length_m": 70.81893843638791,
+    "scenario_seed": 178090,
+    "steps": 12,
+    "terminal_distance_m": 2.0000003335746084,
+    "translation_m": [
+     -29.20757570346699,
+     37.43316617669618
+    ]
+   },
+   {
+    "asset_position_m": [
+     3.6919991970062256,
+     -35.48375701904297,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0123682371378846,
+    "path_length_m": 54.717473368500066,
+    "scenario_seed": 178091,
+    "steps": 10,
+    "terminal_distance_m": 1.9999990696106489,
+    "translation_m": [
+     3.691999202224018,
+     -35.48375657736926
+    ]
+   },
+   {
+    "asset_position_m": [
+     28.310749053955078,
+     -38.7437629699707,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0000011903640513,
+    "path_length_m": 51.84179070562736,
+    "scenario_seed": 178092,
+    "steps": 9,
+    "terminal_distance_m": 1.9999996833139198,
+    "translation_m": [
+     28.310749949741563,
+     -38.74376320326078
+    ]
+   },
+   {
+    "asset_position_m": [
+     27.98334312438965,
+     23.6823787689209,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.011140316040839,
+    "path_length_m": 50.45008633303632,
+    "scenario_seed": 178093,
+    "steps": 9,
+    "terminal_distance_m": 2.0000003728948474,
+    "translation_m": [
+     27.983343494432248,
+     23.68237896149719
+    ]
+   },
+   {
+    "asset_position_m": [
+     36.22248840332031,
+     39.016380310058594,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0030087946399724,
+    "path_length_m": 57.718244040390914,
+    "scenario_seed": 178094,
+    "steps": 11,
+    "terminal_distance_m": 1.9999999697686233,
+    "translation_m": [
+     36.22248796214929,
+     39.01637927858377
+    ]
+   },
+   {
+    "asset_position_m": [
+     34.2848014831543,
+     -6.030821323394775,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0059199061843553,
+    "path_length_m": 56.87489946586414,
+    "scenario_seed": 178095,
+    "steps": 11,
+    "terminal_distance_m": 2.0000001365177082,
+    "translation_m": [
+     34.284800205482085,
+     -6.030821126527989
+    ]
+   },
+   {
+    "asset_position_m": [
+     -31.57579803466797,
+     -20.360607147216797,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0537361964603889,
+    "path_length_m": 73.98969941965055,
+    "scenario_seed": 178096,
+    "steps": 13,
+    "terminal_distance_m": 1.9999997243074703,
+    "translation_m": [
+     -31.57579892932826,
+     -20.360607501731355
+    ]
+   },
+   {
+    "asset_position_m": [
+     -31.17525291442871,
+     -27.863759994506836,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0071581756721382,
+    "path_length_m": 58.560826675217676,
+    "scenario_seed": 178097,
+    "steps": 10,
+    "terminal_distance_m": 1.99999981464112,
+    "translation_m": [
+     -31.175253477919377,
+     -27.863760311525223
+    ]
+   },
+   {
+    "asset_position_m": [
+     7.869539737701416,
+     -17.222253799438477,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.164566988685711,
+    "path_length_m": 70.12697212166346,
+    "scenario_seed": 178098,
+    "steps": 13,
+    "terminal_distance_m": 2.0000000980078325,
+    "translation_m": [
+     7.869539813352131,
+     -17.22225384473687
+    ]
+   },
+   {
+    "asset_position_m": [
+     -38.4395637512207,
+     -19.43572998046875,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0920710014816297,
+    "path_length_m": 60.195549114548065,
+    "scenario_seed": 178099,
+    "steps": 11,
+    "terminal_distance_m": 2.0000001392477835,
+    "translation_m": [
+     -38.43956552770973,
+     -19.435729645552698
+    ]
+   },
+   {
+    "asset_position_m": [
+     40.25181198120117,
+     -25.834266662597656,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0140313809610977,
+    "path_length_m": 50.417990241670466,
+    "scenario_seed": 178100,
+    "steps": 10,
+    "terminal_distance_m": 2.000001095259661,
+    "translation_m": [
+     40.25181050685505,
+     -25.834266652941487
+    ]
+   },
+   {
+    "asset_position_m": [
+     29.464252471923828,
+     -23.111791610717773,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.007252395265404,
+    "path_length_m": 52.10603113746175,
+    "scenario_seed": 178101,
+    "steps": 9,
+    "terminal_distance_m": 1.9999992655888195,
+    "translation_m": [
+     29.464252803725415,
+     -23.11179097473955
+    ]
+   },
+   {
+    "asset_position_m": [
+     -32.73775100708008,
+     -32.15053939819336,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0386776620339757,
+    "path_length_m": 64.50846318018861,
+    "scenario_seed": 178102,
+    "steps": 13,
+    "terminal_distance_m": 2.0000005886451206,
+    "translation_m": [
+     -32.73774930233295,
+     -32.15053859326209
+    ]
+   },
+   {
+    "asset_position_m": [
+     11.431640625,
+     32.58113098144531,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.007863834041841,
+    "path_length_m": 69.29333927436137,
+    "scenario_seed": 178103,
+    "steps": 12,
+    "terminal_distance_m": 2.0000001603953104,
+    "translation_m": [
+     11.431640547299384,
+     32.581130099456
+    ]
+   },
+   {
+    "asset_position_m": [
+     30.44379997253418,
+     -5.8725152015686035,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.035475334720549,
+    "path_length_m": 60.99207597521853,
+    "scenario_seed": 178104,
+    "steps": 11,
+    "terminal_distance_m": 1.9999996716428023,
+    "translation_m": [
+     30.443799429133346,
+     -5.872515091545459
+    ]
+   },
+   {
+    "asset_position_m": [
+     20.594573974609375,
+     -21.510828018188477,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0527685676824992,
+    "path_length_m": 57.96569574082977,
+    "scenario_seed": 178105,
+    "steps": 11,
+    "terminal_distance_m": 2.0000002124651,
+    "translation_m": [
+     20.594573047290808,
+     -21.51082890602201
+    ]
+   },
+   {
+    "asset_position_m": [
+     39.46923065185547,
+     -23.421369552612305,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0025114521991345,
+    "path_length_m": 67.46850177759995,
+    "scenario_seed": 178106,
+    "steps": 12,
+    "terminal_distance_m": 2.0000009854687897,
+    "translation_m": [
+     39.46923071335435,
+     -23.421369797654744
+    ]
+   },
+   {
+    "asset_position_m": [
+     -26.479291915893555,
+     3.528505563735962,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.00011228436377,
+    "path_length_m": 52.899254544122,
+    "scenario_seed": 178107,
+    "steps": 9,
+    "terminal_distance_m": 1.9999994617321577,
+    "translation_m": [
+     -26.479292615277696,
+     3.528505629050379
+    ]
+   },
+   {
+    "asset_position_m": [
+     42.71428298950195,
+     8.935406684875488,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0000000008796721,
+    "path_length_m": 64.17636797174367,
+    "scenario_seed": 178108,
+    "steps": 11,
+    "terminal_distance_m": 1.9999991746286165,
+    "translation_m": [
+     42.71428484240987,
+     8.935406453867053
+    ]
+   },
+   {
+    "asset_position_m": [
+     25.968252182006836,
+     22.06022071838379,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0075919710485775,
+    "path_length_m": 64.02340365734473,
+    "scenario_seed": 178109,
+    "steps": 12,
+    "terminal_distance_m": 1.999999191488316,
+    "translation_m": [
+     25.9682527438242,
+     22.060221671124236
+    ]
+   },
+   {
+    "asset_position_m": [
+     15.695164680480957,
+     27.26423454284668,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0178567135525605,
+    "path_length_m": 68.29909171103915,
+    "scenario_seed": 178110,
+    "steps": 12,
+    "terminal_distance_m": 1.999999429775507,
+    "translation_m": [
+     15.695164642053797,
+     27.264234001416504
+    ]
+   },
+   {
+    "asset_position_m": [
+     -30.00367546081543,
+     17.707345962524414,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0400764692786664,
+    "path_length_m": 62.683482586628706,
+    "scenario_seed": 178111,
+    "steps": 13,
+    "terminal_distance_m": 2.0000000081786453,
+    "translation_m": [
+     -30.003676158017253,
+     17.707345882485285
+    ]
+   },
+   {
+    "asset_position_m": [
+     -39.004478454589844,
+     -5.613675594329834,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0805533946702939,
+    "path_length_m": 60.80999988250274,
+    "scenario_seed": 178112,
+    "steps": 12,
+    "terminal_distance_m": 2.0000000358516696,
+    "translation_m": [
+     -39.004480062642266,
+     -5.613675831149557
+    ]
+   },
+   {
+    "asset_position_m": [
+     9.26486587524414,
+     30.390892028808594,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.000100990774439,
+    "path_length_m": 54.32600713298952,
+    "scenario_seed": 178113,
+    "steps": 10,
+    "terminal_distance_m": 2.0000002239369667,
+    "translation_m": [
+     9.264865676641392,
+     30.3908920900746
+    ]
+   },
+   {
+    "asset_position_m": [
+     -19.600101470947266,
+     11.729313850402832,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.1867285983306042,
+    "path_length_m": 68.2298406368697,
+    "scenario_seed": 178114,
+    "steps": 12,
+    "terminal_distance_m": 2.000000032565594,
+    "translation_m": [
+     -19.60010121058039,
+     11.729314081813683
+    ]
+   },
+   {
+    "asset_position_m": [
+     38.69918441772461,
+     -5.85618257522583,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0748888590586279,
+    "path_length_m": 73.62020947554834,
+    "scenario_seed": 178115,
+    "steps": 13,
+    "terminal_distance_m": 2.0000004134992544,
+    "translation_m": [
+     38.69918402769756,
+     -5.856182426080117
+    ]
+   },
+   {
+    "asset_position_m": [
+     33.209659576416016,
+     6.625951290130615,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0000000240980969,
+    "path_length_m": 52.21792789510905,
+    "scenario_seed": 178116,
+    "steps": 9,
+    "terminal_distance_m": 2.000000599764006,
+    "translation_m": [
+     33.20966138571817,
+     6.62595116661683
+    ]
+   },
+   {
+    "asset_position_m": [
+     34.00948715209961,
+     -5.982243061065674,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0567287215471683,
+    "path_length_m": 54.618883384652726,
+    "scenario_seed": 178117,
+    "steps": 10,
+    "terminal_distance_m": 1.999999697679889,
+    "translation_m": [
+     34.00948716726998,
+     -5.982243229891168
+    ]
+   },
+   {
+    "asset_position_m": [
+     -9.993901252746582,
+     11.931496620178223,
+     0.0
+    ],
+    "duration_s": 7.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.1355864619676515,
+    "path_length_m": 71.80556463241592,
+    "scenario_seed": 178118,
+    "steps": 14,
+    "terminal_distance_m": 1.9999999984514183,
+    "translation_m": [
+     -9.993900979075576,
+     11.931496828966807
+    ]
+   },
+   {
+    "asset_position_m": [
+     -37.67150115966797,
+     25.8817195892334,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0008107519785336,
+    "path_length_m": 61.31707882940992,
+    "scenario_seed": 178119,
+    "steps": 11,
+    "terminal_distance_m": 2.000001478528007,
+    "translation_m": [
+     -37.67150167272724,
+     25.88172008390262
+    ]
+   },
+   {
+    "asset_position_m": [
+     38.99964904785156,
+     -43.45500946044922,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0011368789537904,
+    "path_length_m": 65.90367510092388,
+    "scenario_seed": 178120,
+    "steps": 12,
+    "terminal_distance_m": 2.0000011345267326,
+    "translation_m": [
+     38.99964995349214,
+     -43.45500793541906
+    ]
+   },
+   {
+    "asset_position_m": [
+     -16.499950408935547,
+     15.410341262817383,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0002009358169939,
+    "path_length_m": 73.96411039011663,
+    "scenario_seed": 178121,
+    "steps": 13,
+    "terminal_distance_m": 2.000000203892388,
+    "translation_m": [
+     -16.499950952757814,
+     15.410341201563309
+    ]
+   },
+   {
+    "asset_position_m": [
+     -13.897380828857422,
+     -41.27891159057617,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.000206440545957,
+    "path_length_m": 72.70218855954853,
+    "scenario_seed": 178122,
+    "steps": 13,
+    "terminal_distance_m": 2.000000557412005,
+    "translation_m": [
+     -13.897380382757078,
+     -41.27891269424628
+    ]
+   },
+   {
+    "asset_position_m": [
+     0.8891414403915405,
+     37.73397445678711,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0026524434224051,
+    "path_length_m": 63.22184951693472,
+    "scenario_seed": 178123,
+    "steps": 11,
+    "terminal_distance_m": 1.9999995079657855,
+    "translation_m": [
+     0.889141465603509,
+     37.733976039283725
+    ]
+   },
+   {
+    "asset_position_m": [
+     27.003297805786133,
+     36.14944839477539,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0058634836247482,
+    "path_length_m": 65.18644295245846,
+    "scenario_seed": 178124,
+    "steps": 11,
+    "terminal_distance_m": 2.0000001480111624,
+    "translation_m": [
+     27.00329775599756,
+     36.149449969452526
+    ]
+   },
+   {
+    "asset_position_m": [
+     41.346839904785156,
+     -32.78667068481445,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0304217509938183,
+    "path_length_m": 53.11669598927585,
+    "scenario_seed": 178125,
+    "steps": 10,
+    "terminal_distance_m": 1.9999989078531721,
+    "translation_m": [
+     41.3468417624192,
+     -32.786671397471
+    ]
+   },
+   {
+    "asset_position_m": [
+     27.905088424682617,
+     -29.004789352416992,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0025391900631453,
+    "path_length_m": 54.20172478310966,
+    "scenario_seed": 178126,
+    "steps": 10,
+    "terminal_distance_m": 2.0000003110329283,
+    "translation_m": [
+     27.905087764561713,
+     -29.00478963115401
+    ]
+   },
+   {
+    "asset_position_m": [
+     -8.215620040893555,
+     42.52878952026367,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0050569437615624,
+    "path_length_m": 57.94461869763183,
+    "scenario_seed": 178127,
+    "steps": 12,
+    "terminal_distance_m": 2.000000129499568,
+    "translation_m": [
+     -8.215619653884126,
+     42.52878982698653
+    ]
+   },
+   {
+    "asset_position_m": [
+     2.1625349521636963,
+     -15.055473327636719,
+     0.0
+    ],
+    "duration_s": 7.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.1759250044483973,
+    "path_length_m": 80.11965907097529,
+    "scenario_seed": 178128,
+    "steps": 14,
+    "terminal_distance_m": 1.9999995240057056,
+    "translation_m": [
+     2.1625350468387285,
+     -15.055473089514592
+    ]
+   },
+   {
+    "asset_position_m": [
+     -30.609346389770508,
+     -36.27629470825195,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0000040709179356,
+    "path_length_m": 57.75389240228895,
+    "scenario_seed": 178129,
+    "steps": 10,
+    "terminal_distance_m": 1.999999514173394,
+    "translation_m": [
+     -30.609345679685287,
+     -36.276296403628436
+    ]
+   },
+   {
+    "asset_position_m": [
+     -14.711820602416992,
+     -44.81085968017578,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0062844430725562,
+    "path_length_m": 50.02431019662975,
+    "scenario_seed": 178130,
+    "steps": 9,
+    "terminal_distance_m": 2.0000000427493236,
+    "translation_m": [
+     -14.711820759074481,
+     -44.81086145525433
+    ]
+   },
+   {
+    "asset_position_m": [
+     0.8028950691223145,
+     6.028659820556641,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0376862352258776,
+    "path_length_m": 54.67297288731489,
+    "scenario_seed": 178131,
+    "steps": 11,
+    "terminal_distance_m": 2.000000021216554,
+    "translation_m": [
+     0.8028950393363203,
+     6.028659758257615
+    ]
+   },
+   {
+    "asset_position_m": [
+     -2.638942241668701,
+     5.2355194091796875,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.007871862961779,
+    "path_length_m": 58.060241690261854,
+    "scenario_seed": 178132,
+    "steps": 12,
+    "terminal_distance_m": 2.0000000090103214,
+    "translation_m": [
+     -2.6389422553905177,
+     5.23551933259911
+    ]
+   },
+   {
+    "asset_position_m": [
+     -40.765960693359375,
+     -11.498947143554688,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 0.9999999609526095,
+    "path_length_m": 59.725647024912526,
+    "scenario_seed": 178133,
+    "steps": 10,
+    "terminal_distance_m": 1.9999998230604847,
+    "translation_m": [
+     -40.765961387708984,
+     -11.498946820953968
+    ]
+   },
+   {
+    "asset_position_m": [
+     16.613122940063477,
+     -35.3790283203125,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0000838787787356,
+    "path_length_m": 50.92244325728431,
+    "scenario_seed": 178134,
+    "steps": 9,
+    "terminal_distance_m": 1.9999996003015745,
+    "translation_m": [
+     16.613123036039013,
+     -35.37902659938483
+    ]
+   },
+   {
+    "asset_position_m": [
+     -36.01734924316406,
+     -38.568729400634766,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.000438855642126,
+    "path_length_m": 51.68800260463973,
+    "scenario_seed": 178135,
+    "steps": 9,
+    "terminal_distance_m": 1.9999985505693771,
+    "translation_m": [
+     -36.01734990744971,
+     -38.56872912966817
+    ]
+   },
+   {
+    "asset_position_m": [
+     32.94551086425781,
+     10.650623321533203,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0063142075639333,
+    "path_length_m": 57.98744774326527,
+    "scenario_seed": 178136,
+    "steps": 11,
+    "terminal_distance_m": 1.9999993819530073,
+    "translation_m": [
+     32.9455100464606,
+     10.65062356647621
+    ]
+   },
+   {
+    "asset_position_m": [
+     -14.803471565246582,
+     -27.839662551879883,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0001015179912123,
+    "path_length_m": 61.02988827918503,
+    "scenario_seed": 178137,
+    "steps": 11,
+    "terminal_distance_m": 1.9999993783164485,
+    "translation_m": [
+     -14.803471979513844,
+     -27.839662732733142
+    ]
+   },
+   {
+    "asset_position_m": [
+     -14.860456466674805,
+     27.795345306396484,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.04990730543914,
+    "path_length_m": 57.046402008615146,
+    "scenario_seed": 178138,
+    "steps": 10,
+    "terminal_distance_m": 2.0000007572349277,
+    "translation_m": [
+     -14.860456106086568,
+     27.795345772246236
+    ]
+   },
+   {
+    "asset_position_m": [
+     -17.633155822753906,
+     26.125911712646484,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0000111052092866,
+    "path_length_m": 51.67118509204776,
+    "scenario_seed": 178139,
+    "steps": 9,
+    "terminal_distance_m": 1.999999470198703,
+    "translation_m": [
+     -17.63315652282738,
+     26.125912118378956
+    ]
+   },
+   {
+    "asset_position_m": [
+     -40.714141845703125,
+     -4.9075140953063965,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.1039356113242562,
+    "path_length_m": 60.83879509046219,
+    "scenario_seed": 178140,
+    "steps": 11,
+    "terminal_distance_m": 1.999998785826536,
+    "translation_m": [
+     -40.71414309552407,
+     -4.907513943628452
+    ]
+   },
+   {
+    "asset_position_m": [
+     -10.599562644958496,
+     29.885725021362305,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0216728794880015,
+    "path_length_m": 62.81259624115802,
+    "scenario_seed": 178141,
+    "steps": 11,
+    "terminal_distance_m": 2.0000000377311262,
+    "translation_m": [
+     -10.599562899066349,
+     29.88572433897709
+    ]
+   },
+   {
+    "asset_position_m": [
+     -20.64490509033203,
+     -17.775720596313477,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.086943875479077,
+    "path_length_m": 56.45430072882877,
+    "scenario_seed": 178142,
+    "steps": 10,
+    "terminal_distance_m": 2.0000004615032267,
+    "translation_m": [
+     -20.644905956456725,
+     -17.775721067720987
+    ]
+   },
+   {
+    "asset_position_m": [
+     30.265392303466797,
+     30.82550811767578,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.00000043256726,
+    "path_length_m": 51.915281851605414,
+    "scenario_seed": 178143,
+    "steps": 9,
+    "terminal_distance_m": 2.000000014418564,
+    "translation_m": [
+     30.26539280173226,
+     30.825508061135004
+    ]
+   },
+   {
+    "asset_position_m": [
+     35.30821228027344,
+     -41.151065826416016,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0011664967167542,
+    "path_length_m": 63.97109479677016,
+    "scenario_seed": 178144,
+    "steps": 11,
+    "terminal_distance_m": 1.9999993279963073,
+    "translation_m": [
+     35.308212547390525,
+     -41.15106696451614
+    ]
+   },
+   {
+    "asset_position_m": [
+     34.02927780151367,
+     10.500657081604004,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0000546447498244,
+    "path_length_m": 54.30331714092148,
+    "scenario_seed": 178145,
+    "steps": 10,
+    "terminal_distance_m": 1.999999594953147,
+    "translation_m": [
+     34.02927810055517,
+     10.50065752641206
+    ]
+   },
+   {
+    "asset_position_m": [
+     -39.895652770996094,
+     -26.358360290527344,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.012298092076082,
+    "path_length_m": 68.5736767377041,
+    "scenario_seed": 178146,
+    "steps": 13,
+    "terminal_distance_m": 2.0000000712339543,
+    "translation_m": [
+     -39.89565303559293,
+     -26.358360599457473
+    ]
+   },
+   {
+    "asset_position_m": [
+     15.684924125671387,
+     -39.438968658447266,
+     0.0
+    ],
+    "duration_s": 7.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.1167537146503037,
+    "path_length_m": 69.95561930961556,
+    "scenario_seed": 178147,
+    "steps": 14,
+    "terminal_distance_m": 2.000000160243471,
+    "translation_m": [
+     15.684924165647168,
+     -39.438967682582415
+    ]
+   },
+   {
+    "asset_position_m": [
+     -16.012283325195312,
+     -39.976478576660156,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0001774200772329,
+    "path_length_m": 62.37021015800139,
+    "scenario_seed": 178148,
+    "steps": 11,
+    "terminal_distance_m": 2.0000004495955395,
+    "translation_m": [
+     -16.012282844552665,
+     -39.97647701745461
+    ]
+   },
+   {
+    "asset_position_m": [
+     41.28085708618164,
+     -34.52143096923828,
+     0.0
+    ],
+    "duration_s": 8.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.2328761137493822,
+    "path_length_m": 86.41744077409679,
+    "scenario_seed": 178149,
+    "steps": 17,
+    "terminal_distance_m": 2.000000801201652,
+    "translation_m": [
+     41.28085646652713,
+     -34.52142944258166
+    ]
+   },
+   {
+    "asset_position_m": [
+     -6.560410022735596,
+     -18.053836822509766,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0023421853566066,
+    "path_length_m": 68.76141676952903,
+    "scenario_seed": 178150,
+    "steps": 12,
+    "terminal_distance_m": 1.999999982915611,
+    "translation_m": [
+     -6.560410091018177,
+     -18.053836451532202
+    ]
+   },
+   {
+    "asset_position_m": [
+     -27.479211807250977,
+     7.744411945343018,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0124254574527933,
+    "path_length_m": 66.15392220348281,
+    "scenario_seed": 178151,
+    "steps": 12,
+    "terminal_distance_m": 1.9999997573814166,
+    "translation_m": [
+     -27.47921164067162,
+     7.7444118570110465
+    ]
+   },
+   {
+    "asset_position_m": [
+     16.37238883972168,
+     21.962940216064453,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.000221786858196,
+    "path_length_m": 55.603174153097555,
+    "scenario_seed": 178152,
+    "steps": 10,
+    "terminal_distance_m": 2.000000035401413,
+    "translation_m": [
+     16.372388601583747,
+     21.962939321034455
+    ]
+   },
+   {
+    "asset_position_m": [
+     -8.85198974609375,
+     -16.678129196166992,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0129929359791905,
+    "path_length_m": 73.80210708210922,
+    "scenario_seed": 178153,
+    "steps": 13,
+    "terminal_distance_m": 2.0000000002908678,
+    "translation_m": [
+     -8.85198967557195,
+     -16.67812838572675
+    ]
+   },
+   {
+    "asset_position_m": [
+     28.666086196899414,
+     33.044677734375,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0039458598715965,
+    "path_length_m": 52.492483121489485,
+    "scenario_seed": 178154,
+    "steps": 9,
+    "terminal_distance_m": 2.000000614793668,
+    "translation_m": [
+     28.66608681300994,
+     33.04467908970291
+    ]
+   },
+   {
+    "asset_position_m": [
+     24.883941650390625,
+     -24.83464241027832,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0191521441055218,
+    "path_length_m": 64.014805297968,
+    "scenario_seed": 178155,
+    "steps": 11,
+    "terminal_distance_m": 2.000000468944057,
+    "translation_m": [
+     24.88394111178208,
+     -24.83464245714318
+    ]
+   },
+   {
+    "asset_position_m": [
+     -6.801018238067627,
+     44.76038360595703,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0310458493801198,
+    "path_length_m": 66.40471635628013,
+    "scenario_seed": 178156,
+    "steps": 12,
+    "terminal_distance_m": 2.0000007842193916,
+    "translation_m": [
+     -6.8010183146746215,
+     44.76038443743156
+    ]
+   },
+   {
+    "asset_position_m": [
+     -19.127927780151367,
+     22.843076705932617,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0072785553039298,
+    "path_length_m": 62.94099753499035,
+    "scenario_seed": 178157,
+    "steps": 12,
+    "terminal_distance_m": 2.0000000048150923,
+    "translation_m": [
+     -19.127927967394207,
+     22.843076114602553
+    ]
+   },
+   {
+    "asset_position_m": [
+     -8.149304389953613,
+     16.29677391052246,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.028364424435743,
+    "path_length_m": 69.6213959504149,
+    "scenario_seed": 178158,
+    "steps": 12,
+    "terminal_distance_m": 2.000000153986329,
+    "translation_m": [
+     -8.149304815318267,
+     16.29677475397704
+    ]
+   },
+   {
+    "asset_position_m": [
+     -15.337329864501953,
+     -21.30021095275879,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0009346806151114,
+    "path_length_m": 71.29181088453393,
+    "scenario_seed": 178159,
+    "steps": 12,
+    "terminal_distance_m": 2.0000007709785135,
+    "translation_m": [
+     -15.337329411041633,
+     -21.300210219195286
+    ]
+   },
+   {
+    "asset_position_m": [
+     -8.00652027130127,
+     10.485044479370117,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.014491353220988,
+    "path_length_m": 61.64394730621725,
+    "scenario_seed": 178160,
+    "steps": 11,
+    "terminal_distance_m": 1.9999999140345626,
+    "translation_m": [
+     -8.006520602073245,
+     10.485044822122951
+    ]
+   },
+   {
+    "asset_position_m": [
+     -19.623064041137695,
+     -43.56476974487305,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0007252783240534,
+    "path_length_m": 60.509671916351856,
+    "scenario_seed": 178161,
+    "steps": 11,
+    "terminal_distance_m": 1.9999992185802784,
+    "translation_m": [
+     -19.623064184472867,
+     -43.564771105313554
+    ]
+   },
+   {
+    "asset_position_m": [
+     -8.701593399047852,
+     1.5192760229110718,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0186487850406654,
+    "path_length_m": 65.65955478110166,
+    "scenario_seed": 178162,
+    "steps": 12,
+    "terminal_distance_m": 1.9999999511697306,
+    "translation_m": [
+     -8.70159347427392,
+     1.5192760483385044
+    ]
+   },
+   {
+    "asset_position_m": [
+     12.587719917297363,
+     -13.334723472595215,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0177851946030314,
+    "path_length_m": 68.44811819463017,
+    "scenario_seed": 178163,
+    "steps": 12,
+    "terminal_distance_m": 2.0000001573078494,
+    "translation_m": [
+     12.587720391716664,
+     -13.334723283599473
+    ]
+   },
+   {
+    "asset_position_m": [
+     -8.353466033935547,
+     6.612661838531494,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0521631250421712,
+    "path_length_m": 70.80003364530009,
+    "scenario_seed": 178164,
+    "steps": 13,
+    "terminal_distance_m": 2.0000003561959088,
+    "translation_m": [
+     -8.353465869290844,
+     6.612661978059066
+    ]
+   },
+   {
+    "asset_position_m": [
+     29.57172393798828,
+     -13.752275466918945,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0743385807725543,
+    "path_length_m": 74.54557653397691,
+    "scenario_seed": 178165,
+    "steps": 13,
+    "terminal_distance_m": 2.000000557859885,
+    "translation_m": [
+     29.57172457428697,
+     -13.752275090164563
+    ]
+   },
+   {
+    "asset_position_m": [
+     -0.6871533989906311,
+     -38.758033752441406,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0281582100487794,
+    "path_length_m": 65.28540027064896,
+    "scenario_seed": 178166,
+    "steps": 12,
+    "terminal_distance_m": 2.0000004216080285,
+    "translation_m": [
+     -0.68715337398352,
+     -38.75803428890463
+    ]
+   },
+   {
+    "asset_position_m": [
+     -42.59425735473633,
+     32.83088684082031,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 0.999999996593056,
+    "path_length_m": 71.0737708166073,
+    "scenario_seed": 178167,
+    "steps": 12,
+    "terminal_distance_m": 2.0000005028705283,
+    "translation_m": [
+     -42.59425715420392,
+     32.830887136834356
+    ]
+   },
+   {
+    "asset_position_m": [
+     -0.6662967801094055,
+     26.927152633666992,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0093206381260216,
+    "path_length_m": 53.58598064737843,
+    "scenario_seed": 178168,
+    "steps": 10,
+    "terminal_distance_m": 2.0000004567794742,
+    "translation_m": [
+     -0.6662967808485689,
+     26.927152704372453
+    ]
+   },
+   {
+    "asset_position_m": [
+     -42.020633697509766,
+     -16.21873664855957,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 0.9999999982367063,
+    "path_length_m": 52.68402376627232,
+    "scenario_seed": 178169,
+    "steps": 9,
+    "terminal_distance_m": 1.999999336876858,
+    "translation_m": [
+     -42.02063207561862,
+     -16.21873619278
+    ]
+   },
+   {
+    "asset_position_m": [
+     -28.890094757080078,
+     -25.302549362182617,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0123228696454252,
+    "path_length_m": 63.51158083842922,
+    "scenario_seed": 178170,
+    "steps": 12,
+    "terminal_distance_m": 1.999999165091684,
+    "translation_m": [
+     -28.890095335402776,
+     -25.302550151930003
+    ]
+   },
+   {
+    "asset_position_m": [
+     -35.641029357910156,
+     -24.509334564208984,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0321073096241085,
+    "path_length_m": 55.500380346915534,
+    "scenario_seed": 178171,
+    "steps": 10,
+    "terminal_distance_m": 1.999999405559859,
+    "translation_m": [
+     -35.641029789331114,
+     -24.50933461515968
+    ]
+   },
+   {
+    "asset_position_m": [
+     5.404973030090332,
+     -25.25029754638672,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0143091177621695,
+    "path_length_m": 53.03371932072695,
+    "scenario_seed": 178172,
+    "steps": 10,
+    "terminal_distance_m": 1.9999997828518479,
+    "translation_m": [
+     5.404973193007621,
+     -25.250297535638676
+    ]
+   },
+   {
+    "asset_position_m": [
+     20.91070556640625,
+     -21.997108459472656,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0000473866857051,
+    "path_length_m": 63.266010552006826,
+    "scenario_seed": 178173,
+    "steps": 11,
+    "terminal_distance_m": 2.000000150398504,
+    "translation_m": [
+     20.91070543912066,
+     -21.997109114185314
+    ]
+   },
+   {
+    "asset_position_m": [
+     12.298121452331543,
+     9.371269226074219,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0000493534983355,
+    "path_length_m": 53.716437335533726,
+    "scenario_seed": 178174,
+    "steps": 10,
+    "terminal_distance_m": 1.999999713209015,
+    "translation_m": [
+     12.298121204085248,
+     9.371269293757782
+    ]
+   },
+   {
+    "asset_position_m": [
+     6.1754069328308105,
+     44.18000793457031,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.005109584584971,
+    "path_length_m": 49.98406106908921,
+    "scenario_seed": 178175,
+    "steps": 9,
+    "terminal_distance_m": 2.0000011364342822,
+    "translation_m": [
+     6.175406793652222,
+     44.180007639036766
+    ]
+   },
+   {
+    "asset_position_m": [
+     -7.538908958435059,
+     34.05474090576172,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0339238717150019,
+    "path_length_m": 55.64132381125665,
+    "scenario_seed": 178176,
+    "steps": 10,
+    "terminal_distance_m": 1.999999739935899,
+    "translation_m": [
+     -7.538908749147495,
+     34.054742586857834
+    ]
+   },
+   {
+    "asset_position_m": [
+     -28.75303077697754,
+     -2.130415916442871,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0043305920144563,
+    "path_length_m": 54.888046567572026,
+    "scenario_seed": 178177,
+    "steps": 10,
+    "terminal_distance_m": 2.0000008260970077,
+    "translation_m": [
+     -28.75303007243778,
+     -2.1304159225696715
+    ]
+   },
+   {
+    "asset_position_m": [
+     18.4341983795166,
+     3.955124616622925,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0483898451537417,
+    "path_length_m": 54.89298268844571,
+    "scenario_seed": 178178,
+    "steps": 10,
+    "terminal_distance_m": 2.000000607328219,
+    "translation_m": [
+     18.434197465474522,
+     3.9551246704803518
+    ]
+   },
+   {
+    "asset_position_m": [
+     -44.848995208740234,
+     -30.011789321899414,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.1375917861132459,
+    "path_length_m": 63.98593095684345,
+    "scenario_seed": 178179,
+    "steps": 12,
+    "terminal_distance_m": 1.9999999560977808,
+    "translation_m": [
+     -44.84899631391181,
+     -30.011788439145658
+    ]
+   },
+   {
+    "asset_position_m": [
+     21.01090431213379,
+     -19.455801010131836,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0001108260310019,
+    "path_length_m": 59.174523973415475,
+    "scenario_seed": 178180,
+    "steps": 10,
+    "terminal_distance_m": 2.0000006459102466,
+    "translation_m": [
+     21.010904128681315,
+     -19.455801771905886
+    ]
+   },
+   {
+    "asset_position_m": [
+     12.005213737487793,
+     -18.01923942565918,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0521680122952461,
+    "path_length_m": 61.522280682457385,
+    "scenario_seed": 178181,
+    "steps": 12,
+    "terminal_distance_m": 1.9999999889066977,
+    "translation_m": [
+     12.005213998008838,
+     -18.019240174285542
+    ]
+   },
+   {
+    "asset_position_m": [
+     -13.482723236083984,
+     18.43781089782715,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0000164833940872,
+    "path_length_m": 53.12541949731369,
+    "scenario_seed": 178182,
+    "steps": 9,
+    "terminal_distance_m": 2.0000003051285287,
+    "translation_m": [
+     -13.482723420997075,
+     18.43781007420889
+    ]
+   },
+   {
+    "asset_position_m": [
+     -17.2824764251709,
+     -39.602664947509766,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0009763685547506,
+    "path_length_m": 52.50055717891094,
+    "scenario_seed": 178183,
+    "steps": 9,
+    "terminal_distance_m": 2.000000456211096,
+    "translation_m": [
+     -17.282477315473727,
+     -39.602663237420536
+    ]
+   },
+   {
+    "asset_position_m": [
+     -17.657602310180664,
+     22.33688735961914,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.002433447251349,
+    "path_length_m": 64.61608584995679,
+    "scenario_seed": 178184,
+    "steps": 11,
+    "terminal_distance_m": 1.999999983674698,
+    "translation_m": [
+     -17.657601697173078,
+     22.336887432880246
+    ]
+   },
+   {
+    "asset_position_m": [
+     9.59273910522461,
+     28.555316925048828,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.119422558705762,
+    "path_length_m": 65.40220593410625,
+    "scenario_seed": 178185,
+    "steps": 12,
+    "terminal_distance_m": 1.9999999811848603,
+    "translation_m": [
+     9.592738878019233,
+     28.55531729894476
+    ]
+   },
+   {
+    "asset_position_m": [
+     -30.0490665435791,
+     -35.53859329223633,
+     0.0
+    ],
+    "duration_s": 6.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.028358535538918,
+    "path_length_m": 65.2109845426335,
+    "scenario_seed": 178186,
+    "steps": 13,
+    "terminal_distance_m": 1.9999996995282943,
+    "translation_m": [
+     -30.04906684909215,
+     -35.53859194258287
+    ]
+   },
+   {
+    "asset_position_m": [
+     26.24778175354004,
+     8.848731994628906,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0034391537989693,
+    "path_length_m": 56.02694779140878,
+    "scenario_seed": 178187,
+    "steps": 10,
+    "terminal_distance_m": 2.000000545425959,
+    "translation_m": [
+     26.2477826321283,
+     8.848732287202235
+    ]
+   },
+   {
+    "asset_position_m": [
+     29.301103591918945,
+     31.938276290893555,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.00724291265869,
+    "path_length_m": 55.61391509065263,
+    "scenario_seed": 178188,
+    "steps": 10,
+    "terminal_distance_m": 1.9999993222723187,
+    "translation_m": [
+     29.30110438688515,
+     31.93827699472171
+    ]
+   },
+   {
+    "asset_position_m": [
+     -33.779380798339844,
+     39.10541915893555,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0687007719010553,
+    "path_length_m": 59.11506464921247,
+    "scenario_seed": 178189,
+    "steps": 11,
+    "terminal_distance_m": 1.9999983896685105,
+    "translation_m": [
+     -33.77938189269018,
+     39.105420828816364
+    ]
+   },
+   {
+    "asset_position_m": [
+     18.74867820739746,
+     -35.823116302490234,
+     0.0
+    ],
+    "duration_s": 6.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0015360601383516,
+    "path_length_m": 68.70394609083233,
+    "scenario_seed": 178190,
+    "steps": 12,
+    "terminal_distance_m": 2.000000736018318,
+    "translation_m": [
+     18.74867733710903,
+     -35.82311814731318
+    ]
+   },
+   {
+    "asset_position_m": [
+     -12.322270393371582,
+     -11.82443618774414,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.100253341439867,
+    "path_length_m": 60.7582599515883,
+    "scenario_seed": 178191,
+    "steps": 11,
+    "terminal_distance_m": 1.9999995530225403,
+    "translation_m": [
+     -12.322270594881168,
+     -11.824435861089746
+    ]
+   },
+   {
+    "asset_position_m": [
+     25.226593017578125,
+     21.397037506103516,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0327206947386443,
+    "path_length_m": 52.70917391286815,
+    "scenario_seed": 178192,
+    "steps": 10,
+    "terminal_distance_m": 1.99999914256251,
+    "translation_m": [
+     25.22659325091741,
+     21.39703712814629
+    ]
+   },
+   {
+    "asset_position_m": [
+     12.891610145568848,
+     27.893402099609375,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0104364818310239,
+    "path_length_m": 50.68969640361008,
+    "scenario_seed": 178193,
+    "steps": 9,
+    "terminal_distance_m": 2.0000006532210435,
+    "translation_m": [
+     12.891609992166437,
+     27.893401665113657
+    ]
+   },
+   {
+    "asset_position_m": [
+     -5.699188709259033,
+     29.895160675048828,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.000128103630091,
+    "path_length_m": 49.984497784360244,
+    "scenario_seed": 178194,
+    "steps": 9,
+    "terminal_distance_m": 1.9999999419336802,
+    "translation_m": [
+     -5.699188703508163,
+     29.895161462578717
+    ]
+   },
+   {
+    "asset_position_m": [
+     21.321216583251953,
+     -40.5790901184082,
+     0.0
+    ],
+    "duration_s": 4.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0030767896862676,
+    "path_length_m": 53.26775988025541,
+    "scenario_seed": 178195,
+    "steps": 9,
+    "terminal_distance_m": 1.9999989431374359,
+    "translation_m": [
+     21.321215665197798,
+     -40.579091844010016
+    ]
+   },
+   {
+    "asset_position_m": [
+     -36.22809600830078,
+     -40.2999267578125,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.001573635105812,
+    "path_length_m": 58.255063181883216,
+    "scenario_seed": 178196,
+    "steps": 10,
+    "terminal_distance_m": 2.0000016054675203,
+    "translation_m": [
+     -36.22809632891675,
+     -40.299927280922056
+    ]
+   },
+   {
+    "asset_position_m": [
+     7.57201623916626,
+     44.200439453125,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.055001284359235,
+    "path_length_m": 53.20754318042041,
+    "scenario_seed": 178197,
+    "steps": 10,
+    "terminal_distance_m": 2.000000985930216,
+    "translation_m": [
+     7.572016392018696,
+     44.20043773388781
+    ]
+   },
+   {
+    "asset_position_m": [
+     20.42668914794922,
+     -40.49147415161133,
+     0.0
+    ],
+    "duration_s": 5.5,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.000044812800925,
+    "path_length_m": 60.22983824983757,
+    "scenario_seed": 178198,
+    "steps": 11,
+    "terminal_distance_m": 1.9999993661523874,
+    "translation_m": [
+     20.42668849334552,
+     -40.49147331761372
+    ]
+   },
+   {
+    "asset_position_m": [
+     -0.6417673230171204,
+     39.253448486328125,
+     0.0
+    ],
+    "duration_s": 5.0,
+    "expert_cosine_mean": null,
+    "outcome": "soldier_caught",
+    "path_excess": 1.0009446410901992,
+    "path_length_m": 59.17335914984376,
+    "scenario_seed": 178199,
+    "steps": 10,
+    "terminal_distance_m": 1.999998557097629,
+    "translation_m": [
+     -0.6417672940137091,
+     39.25344818458705
+    ]
+   }
+  ],
+  "metrics": {
+   "asset_displacement_max_m": 0.0,
+   "capture": 1.0,
+   "collision": 0.0,
+   "episodes": 200,
+   "exhaustion": 0.0,
+   "expert_cosine_mean": null,
+   "expert_cosine_median": null,
+   "expert_cosine_min": null,
+   "expert_cosine_p5": null,
+   "expert_cosine_steps": 0,
+   "flyby_episodes": 0,
+   "gt1.3": 0.0,
+   "gt2": 0.0,
+   "gt5": 0.0,
+   "gt5_count": 0,
+   "held_action_steps": 0,
+   "intercepted": 0.0,
+   "max_path_excess": 1.2841969464558511,
+   "mean_duration_s": 5.585,
+   "mean_path_excess": 1.0320493099756212,
+   "mean_path_length_m": 61.53372248849289,
+   "mean_return": 10.49823373036382,
+   "mean_return_discounted": 9.50678969435111,
+   "mean_terminal_distance_m": 1.9999999789070255,
+   "median_path_excess": 1.0074352631762538,
+   "min_defender_separation_m": 10.549678802490234,
+   "nonclosing_episodes": 0,
+   "nonfinite": 0,
+   "orbit_episodes": 0,
+   "pathology_rate": 0.0,
+   "repeated_flyby_episodes": 0,
+   "reward_path": -0.20024614492036186,
+   "reward_progress": 1.8154798752841814,
+   "reward_step": -1.117,
+   "reward_terminal": 10.0,
+   "timeout": 0.0
+  }
+ },
+ "episodes": 200,
+ "per_seed": {
+  "201": {
+   "a0_metrics": {
+    "asset_displacement_max_m": 0.0,
+    "capture": 1.0,
+    "collision": 0.0,
+    "episodes": 200,
+    "exhaustion": 0.0,
+    "expert_cosine_mean": null,
+    "expert_cosine_median": null,
+    "expert_cosine_min": null,
+    "expert_cosine_p5": null,
+    "expert_cosine_steps": 0,
+    "flyby_episodes": 0,
+    "gt1.3": 0.0,
+    "gt2": 0.0,
+    "gt5": 0.0,
+    "gt5_count": 0,
+    "held_action_steps": 0,
+    "intercepted": 0.0,
+    "max_path_excess": 1.2841969464558511,
+    "mean_duration_s": 5.585,
+    "mean_path_excess": 1.0320493099756212,
+    "mean_path_length_m": 61.53372248849289,
+    "mean_return": 10.49823373036382,
+    "mean_return_discounted": 9.50678969435111,
+    "mean_terminal_distance_m": 1.9999999789070255,
+    "median_path_excess": 1.0074352631762538,
+    "min_defender_separation_m": 10.549678802490234,
+    "nonclosing_episodes": 0,
+    "nonfinite": 0,
+    "orbit_episodes": 0,
+    "pathology_rate": 0.0,
+    "repeated_flyby_episodes": 0,
+    "reward_path": -0.20024614492036186,
+    "reward_progress": 1.8154798752841814,
+    "reward_step": -1.117,
+    "reward_terminal": 10.0,
+    "timeout": 0.0
+   },
+   "accepted_model_sha256": "06cb8fdfff653f4efb63d5d16fe762565fdf7a652f610af389b8726d774dfa58",
+   "anchor_metrics": {
+    "anchor1_basic_pursuit": 0.59,
+    "anchor2_static_defender": 0.44,
+    "anchor3_moving_defender": 0.43
+   },
+   "gate_on_200": {
+    "checks": {
+     "anchor1_basic_pursuit": false,
+     "anchor2_static_defender": false,
+     "anchor3_moving_defender": false,
+     "capture": false,
+     "cosine_mean": false,
+     "cosine_min": false,
+     "exhaustion": false,
+     "gt2": false,
+     "gt5": false,
+     "median_path_excess": false,
+     "numerical_failures": true,
+     "orbit": false,
+     "timeout": false
+    },
+    "passed": false
+   },
+   "generalization": {
+    "parent_regions": {
+     "negx_negy_inner": {
+      "capture": 0.075,
+      "episodes": 40,
+      "expert_cosine_mean": 0.6707043369603375
+     },
+     "negx_negy_outer": {
+      "capture": 0.0,
+      "episodes": 40,
+      "expert_cosine_mean": 0.4213280230609672
+     },
+     "negx_posy_inner": {
+      "capture": 0.175,
+      "episodes": 40,
+      "expert_cosine_mean": 0.6619809721752303
+     },
+     "negx_posy_outer": {
+      "capture": 0.075,
+      "episodes": 40,
+      "expert_cosine_mean": 0.3708537509687127
+     },
+     "posx_negy_inner": {
+      "capture": 0.15,
+      "episodes": 40,
+      "expert_cosine_mean": 0.6684736407345078
+     },
+     "posx_negy_outer": {
+      "capture": 0.0,
+      "episodes": 40,
+      "expert_cosine_mean": 0.3435371275925595
+     },
+     "posx_posy_inner": {
+      "capture": 0.25,
+      "episodes": 40,
+      "expert_cosine_mean": 0.6866209209668194
+     },
+     "posx_posy_outer": {
+      "capture": 0.025,
+      "episodes": 40,
+      "expert_cosine_mean": 0.38625414774700767
+     }
+    },
+    "regions": {
+     "negx_negy_inner": {
+      "capture": 0.475,
+      "episodes": 40,
+      "expert_cosine_mean": 0.3873978033639361
+     },
+     "negx_negy_outer": {
+      "capture": 0.6,
+      "episodes": 40,
+      "expert_cosine_mean": 0.4450454888571192
+     },
+     "negx_posy_inner": {
+      "capture": 0.575,
+      "episodes": 40,
+      "expert_cosine_mean": 0.439392854300866
+     },
+     "negx_posy_outer": {
+      "capture": 0.375,
+      "episodes": 40,
+      "expert_cosine_mean": -0.08905340294303461
+     },
+     "posx_negy_inner": {
+      "capture": 0.85,
+      "episodes": 40,
+      "expert_cosine_mean": 0.6659576301801544
+     },
+     "posx_negy_outer": {
+      "capture": 0.55,
+      "episodes": 40,
+      "expert_cosine_mean": 0.4137104959620947
+     },
+     "posx_posy_inner": {
+      "capture": 0.6,
+      "episodes": 40,
+      "expert_cosine_mean": 0.4672672816839895
+     },
+     "posx_posy_outer": {
+      "capture": 0.475,
+      "episodes": 40,
+      "expert_cosine_mean": 0.39429142495677105
+     }
+    },
+    "scenario_table": {
+     "negx_negy_inner": [
+      178503,
+      178506,
+      178508,
+      178509,
+      178514,
+      178516,
+      178519,
+      178522,
+      178523,
+      178524,
+      178525,
+      178526,
+      178527,
+      178528,
+      178529,
+      178533,
+      178537,
+      178538,
+      178539,
+      178540,
+      178541,
+      178543,
+      178544,
+      178549,
+      178550,
+      178553,
+      178559,
+      178562,
+      178565,
+      178569,
+      178570,
+      178571,
+      178575,
+      178579,
+      178587,
+      178590,
+      178591,
+      178593,
+      178595,
+      178598
+     ],
+     "negx_negy_outer": [
+      178503,
+      178508,
+      178509,
+      178519,
+      178522,
+      178524,
+      178525,
+      178526,
+      178527,
+      178528,
+      178529,
+      178533,
+      178537,
+      178538,
+      178540,
+      178541,
+      178544,
+      178550,
+      178559,
+      178565,
+      178569,
+      178570,
+      178571,
+      178575,
+      178579,
+      178587,
+      178591,
+      178593,
+      178595,
+      178598,
+      178599,
+      178604,
+      178605,
+      178607,
+      178609,
+      178611,
+      178614,
+      178615,
+      178616,
+      178619
+     ],
+     "negx_posy_inner": [
+      178500,
+      178501,
+      178506,
+      178507,
+      178508,
+      178511,
+      178512,
+      178513,
+      178514,
+      178517,
+      178520,
+      178521,
+      178523,
+      178524,
+      178526,
+      178527,
+      178529,
+      178530,
+      178532,
+      178535,
+      178539,
+      178540,
+      178541,
+      178543,
+      178544,
+      178551,
+      178552,
+      178555,
+      178556,
+      178558,
+      178562,
+      178563,
+      178567,
+      178568,
+      178575,
+      178577,
+      178578,
+      178579,
+      178582,
+      178584
+     ],
+     "negx_posy_outer": [
+      178500,
+      178501,
+      178506,
+      178507,
+      178508,
+      178511,
+      178512,
+      178513,
+      178514,
+      178520,
+      178521,
+      178523,
+      178524,
+      178526,
+      178527,
+      178529,
+      178532,
+      178535,
+      178539,
+      178540,
+      178541,
+      178543,
+      178544,
+      178551,
+      178552,
+      178555,
+      178556,
+      178558,
+      178562,
+      178563,
+      178567,
+      178575,
+      178577,
+      178578,
+      178582,
+      178588,
+      178590,
+      178594,
+      178597,
+      178604
+     ],
+     "posx_negy_inner": [
+      178502,
+      178503,
+      178504,
+      178505,
+      178509,
+      178510,
+      178515,
+      178516,
+      178518,
+      178519,
+      178522,
+      178525,
+      178528,
+      178531,
+      178534,
+      178536,
+      178538,
+      178542,
+      178545,
+      178546,
+      178547,
+      178548,
+      178549,
+      178553,
+      178554,
+      178557,
+      178559,
+      178560,
+      178561,
+      178565,
+      178566,
+      178569,
+      178572,
+      178573,
+      178576,
+      178580,
+      178581,
+      178583,
+      178585,
+      178586
+     ],
+     "posx_negy_outer": [
+      178502,
+      178504,
+      178505,
+      178509,
+      178510,
+      178515,
+      178516,
+      178518,
+      178519,
+      178525,
+      178528,
+      178531,
+      178534,
+      178536,
+      178538,
+      178542,
+      178545,
+      178546,
+      178547,
+      178549,
+      178553,
+      178559,
+      178560,
+      178561,
+      178565,
+      178569,
+      178572,
+      178573,
+      178576,
+      178583,
+      178585,
+      178587,
+      178589,
+      178591,
+      178592,
+      178596,
+      178598,
+      178599,
+      178600,
+      178603
+     ],
+     "posx_posy_inner": [
+      178501,
+      178502,
+      178505,
+      178507,
+      178510,
+      178511,
+      178513,
+      178517,
+      178520,
+      178521,
+      178530,
+      178531,
+      178535,
+      178536,
+      178545,
+      178546,
+      178547,
+      178548,
+      178551,
+      178554,
+      178557,
+      178558,
+      178560,
+      178561,
+      178564,
+      178566,
+      178567,
+      178568,
+      178572,
+      178573,
+      178574,
+      178577,
+      178580,
+      178581,
+      178582,
+      178583,
+      178584,
+      178586,
+      178588,
+      178589
+     ],
+     "posx_posy_outer": [
+      178501,
+      178507,
+      178510,
+      178511,
+      178513,
+      178517,
+      178520,
+      178521,
+      178530,
+      178531,
+      178536,
+      178546,
+      178547,
+      178548,
+      178551,
+      178554,
+      178557,
+      178558,
+      178561,
+      178564,
+      178566,
+      178567,
+      178568,
+      178572,
+      178573,
+      178574,
+      178580,
+      178581,
+      178582,
+      178584,
+      178586,
+      178588,
+      178589,
+      178592,
+      178594,
+      178596,
+      178597,
+      178601,
+      178602,
+      178608
+     ]
+    }
+   },
+   "mastery_epoch": null,
+   "metrics": {
+    "asset_displacement_max_m": 0.0,
+    "capture": 0.565,
+    "collision": 0.0,
+    "episodes": 200,
+    "exhaustion": 0.41,
+    "expert_cosine_mean": 0.02957356000672801,
+    "expert_cosine_median": -0.1834849905631084,
+    "expert_cosine_min": -0.999938447738083,
+    "expert_cosine_p5": -0.6111724851136514,
+    "expert_cosine_steps": 16834,
+    "flyby_episodes": 108,
+    "gt1.3": 0.52,
+    "gt2": 0.48,
+    "gt5": 0.205,
+    "gt5_count": 41,
+    "held_action_steps": 0,
+    "intercepted": 0.0,
+    "max_path_excess": 14.479871009323105,
+    "mean_duration_s": 42.085,
+    "mean_path_excess": 3.0341643971038788,
+    "mean_path_length_m": 173.98921765062602,
+    "mean_return": -7.0027876834917775,
+    "mean_return_discounted": 0.4184150035767671,
+    "mean_terminal_distance_m": 13.013291056202668,
+    "median_path_excess": 1.7350489551017003,
+    "min_defender_separation_m": 0.588722288608551,
+    "nonclosing_episodes": 97,
+    "nonfinite": 0,
+    "orbit_episodes": 1,
+    "pathology_rate": 0.49,
+    "repeated_flyby_episodes": 91,
+    "reward_path": -0.5717437754670368,
+    "reward_progress": 0.68595609197508,
+    "reward_step": -8.41699999999982,
+    "reward_terminal": 1.3,
+    "timeout": 0.025
+   },
+   "parent_metrics": {
+    "asset_displacement_max_m": 0.0,
+    "capture": 0.045,
+    "collision": 0.0,
+    "episodes": 200,
+    "exhaustion": 0.955,
+    "expert_cosine_mean": 0.3908761985275821,
+    "expert_cosine_median": 0.5993758378625241,
+    "expert_cosine_min": -0.9999910127666461,
+    "expert_cosine_p5": -0.8635506966096423,
+    "expert_cosine_steps": 12348,
+    "flyby_episodes": 198,
+    "gt1.3": 0.99,
+    "gt2": 0.99,
+    "gt5": 0.86,
+    "gt5_count": 172,
+    "held_action_steps": 0,
+    "intercepted": 0.0,
+    "max_path_excess": 20.824586205605133,
+    "mean_duration_s": 30.87,
+    "mean_path_excess": 8.243977573251062,
+    "mean_path_length_m": 300.484368135544,
+    "mean_return": -15.932839096126147,
+    "mean_return_discounted": -9.703567270092304,
+    "mean_terminal_distance_m": 39.52869608247698,
+    "median_path_excess": 7.069375448846288,
+    "min_defender_separation_m": 9.753898620605469,
+    "nonclosing_episodes": 197,
+    "nonfinite": 0,
+    "orbit_episodes": 0,
+    "pathology_rate": 0.985,
+    "repeated_flyby_episodes": 192,
+    "reward_path": -0.9789001606174219,
+    "reward_progress": 0.3200610644912691,
+    "reward_step": -6.173999999999994,
+    "reward_terminal": -9.1,
+    "timeout": 0.0
+   },
+   "representation_post": {
+    "generalization_regions": {
+     "negx_negy_inner": {
+      "capture": 0.475,
+      "episodes": 40,
+      "expert_cosine_mean": 0.3873978033639361
+     },
+     "negx_negy_outer": {
+      "capture": 0.6,
+      "episodes": 40,
+      "expert_cosine_mean": 0.4450454888571192
+     },
+     "negx_posy_inner": {
+      "capture": 0.575,
+      "episodes": 40,
+      "expert_cosine_mean": 0.439392854300866
+     },
+     "negx_posy_outer": {
+      "capture": 0.375,
+      "episodes": 40,
+      "expert_cosine_mean": -0.08905340294303461
+     },
+     "posx_negy_inner": {
+      "capture": 0.85,
+      "episodes": 40,
+      "expert_cosine_mean": 0.6659576301801544
+     },
+     "posx_negy_outer": {
+      "capture": 0.55,
+      "episodes": 40,
+      "expert_cosine_mean": 0.4137104959620947
+     },
+     "posx_posy_inner": {
+      "capture": 0.6,
+      "episodes": 40,
+      "expert_cosine_mean": 0.4672672816839895
+     },
+     "posx_posy_outer": {
+      "capture": 0.475,
+      "episodes": 40,
+      "expert_cosine_mean": 0.39429142495677105
+     }
+    },
+    "generalization_scenarios": {
+     "negx_negy_inner": [
+      178503,
+      178506,
+      178508,
+      178509,
+      178514,
+      178516,
+      178519,
+      178522,
+      178523,
+      178524,
+      178525,
+      178526,
+      178527,
+      178528,
+      178529,
+      178533,
+      178537,
+      178538,
+      178539,
+      178540,
+      178541,
+      178543,
+      178544,
+      178549,
+      178550,
+      178553,
+      178559,
+      178562,
+      178565,
+      178569,
+      178570,
+      178571,
+      178575,
+      178579,
+      178587,
+      178590,
+      178591,
+      178593,
+      178595,
+      178598
+     ],
+     "negx_negy_outer": [
+      178503,
+      178508,
+      178509,
+      178519,
+      178522,
+      178524,
+      178525,
+      178526,
+      178527,
+      178528,
+      178529,
+      178533,
+      178537,
+      178538,
+      178540,
+      178541,
+      178544,
+      178550,
+      178559,
+      178565,
+      178569,
+      178570,
+      178571,
+      178575,
+      178579,
+      178587,
+      178591,
+      178593,
+      178595,
+      178598,
+      178599,
+      178604,
+      178605,
+      178607,
+      178609,
+      178611,
+      178614,
+      178615,
+      178616,
+      178619
+     ],
+     "negx_posy_inner": [
+      178500,
+      178501,
+      178506,
+      178507,
+      178508,
+      178511,
+      178512,
+      178513,
+      178514,
+      178517,
+      178520,
+      178521,
+      178523,
+      178524,
+      178526,
+      178527,
+      178529,
+      178530,
+      178532,
+      178535,
+      178539,
+      178540,
+      178541,
+      178543,
+      178544,
+      178551,
+      178552,
+      178555,
+      178556,
+      178558,
+      178562,
+      178563,
+      178567,
+      178568,
+      178575,
+      178577,
+      178578,
+      178579,
+      178582,
+      178584
+     ],
+     "negx_posy_outer": [
+      178500,
+      178501,
+      178506,
+      178507,
+      178508,
+      178511,
+      178512,
+      178513,
+      178514,
+      178520,
+      178521,
+      178523,
+      178524,
+      178526,
+      178527,
+      178529,
+      178532,
+      178535,
+      178539,
+      178540,
+      178541,
+      178543,
+      178544,
+      178551,
+      178552,
+      178555,
+      178556,
+      178558,
+      178562,
+      178563,
+      178567,
+      178575,
+      178577,
+      178578,
+      178582,
+      178588,
+      178590,
+      178594,
+      178597,
+      178604
+     ],
+     "posx_negy_inner": [
+      178502,
+      178503,
+      178504,
+      178505,
+      178509,
+      178510,
+      178515,
+      178516,
+      178518,
+      178519,
+      178522,
+      178525,
+      178528,
+      178531,
+      178534,
+      178536,
+      178538,
+      178542,
+      178545,
+      178546,
+      178547,
+      178548,
+      178549,
+      178553,
+      178554,
+      178557,
+      178559,
+      178560,
+      178561,
+      178565,
+      178566,
+      178569,
+      178572,
+      178573,
+      178576,
+      178580,
+      178581,
+      178583,
+      178585,
+      178586
+     ],
+     "posx_negy_outer": [
+      178502,
+      178504,
+      178505,
+      178509,
+      178510,
+      178515,
+      178516,
+      178518,
+      178519,
+      178525,
+      178528,
+      178531,
+      178534,
+      178536,
+      178538,
+      178542,
+      178545,
+      178546,
+      178547,
+      178549,
+      178553,
+      178559,
+      178560,
+      178561,
+      178565,
+      178569,
+      178572,
+      178573,
+      178576,
+      178583,
+      178585,
+      178587,
+      178589,
+      178591,
+      178592,
+      178596,
+      178598,
+      178599,
+      178600,
+      178603
+     ],
+     "posx_posy_inner": [
+      178501,
+      178502,
+      178505,
+      178507,
+      178510,
+      178511,
+      178513,
+      178517,
+      178520,
+      178521,
+      178530,
+      178531,
+      178535,
+      178536,
+      178545,
+      178546,
+      178547,
+      178548,
+      178551,
+      178554,
+      178557,
+      178558,
+      178560,
+      178561,
+      178564,
+      178566,
+      178567,
+      178568,
+      178572,
+      178573,
+      178574,
+      178577,
+      178580,
+      178581,
+      178582,
+      178583,
+      178584,
+      178586,
+      178588,
+      178589
+     ],
+     "posx_posy_outer": [
+      178501,
+      178507,
+      178510,
+      178511,
+      178513,
+      178517,
+      178520,
+      178521,
+      178530,
+      178531,
+      178536,
+      178546,
+      178547,
+      178548,
+      178551,
+      178554,
+      178557,
+      178558,
+      178561,
+      178564,
+      178566,
+      178567,
+      178568,
+      178572,
+      178573,
+      178574,
+      178580,
+      178581,
+      178582,
+      178584,
+      178586,
+      178588,
+      178589,
+      178592,
+      178594,
+      178596,
+      178597,
+      178601,
+      178602,
+      178608
+     ]
+    },
+    "held_out": {
+     "capture": 0.565,
+     "exhaustion": 0.41,
+     "expert_cosine_mean": 0.02957356000672801,
+     "expert_cosine_median": -0.1834849905631084,
+     "expert_cosine_min": -0.999938447738083,
+     "expert_cosine_p5": -0.6111724851136514,
+     "gt2": 0.48,
+     "gt5": 0.205,
+     "median_path_excess": 1.7350489551017003,
+     "nonfinite": 0,
+     "orbit_episodes": 1,
+     "timeout": 0.025
+    },
+    "sensitivity": {
+     "asset_to_attacker_sensitivity_ratio": 1.144404649734497,
+     "first_layer_column_norm_asset_xyz": [
+      2.155580520629883,
+      2.1870267391204834,
+      1.4142135381698608
+     ],
+     "first_layer_column_norm_attacker_xyz": [
+      10.648550987243652,
+      9.51868724822998,
+      7.709001541137695
+     ],
+     "jacobian_norm_asset_xy_mean": 1.245491862297058,
+     "jacobian_norm_attacker_xy_mean": 1.088331699371338,
+     "orthogonal_init_column_norm": 1.4142135623730951,
+     "relative_alignment_mean": 0.4587291479110718,
+     "states": 5345
+    }
+   },
+   "seed": 201,
+   "training_status": "RETENTION_FAILURE"
+  },
+  "202": {
+   "a0_metrics": {
+    "asset_displacement_max_m": 0.0,
+    "capture": 1.0,
+    "collision": 0.0,
+    "episodes": 200,
+    "exhaustion": 0.0,
+    "expert_cosine_mean": null,
+    "expert_cosine_median": null,
+    "expert_cosine_min": null,
+    "expert_cosine_p5": null,
+    "expert_cosine_steps": 0,
+    "flyby_episodes": 0,
+    "gt1.3": 0.0,
+    "gt2": 0.0,
+    "gt5": 0.0,
+    "gt5_count": 0,
+    "held_action_steps": 0,
+    "intercepted": 0.0,
+    "max_path_excess": 1.2841969464558511,
+    "mean_duration_s": 5.585,
+    "mean_path_excess": 1.0320493099756212,
+    "mean_path_length_m": 61.53372248849289,
+    "mean_return": 10.49823373036382,
+    "mean_return_discounted": 9.50678969435111,
+    "mean_terminal_distance_m": 1.9999999789070255,
+    "median_path_excess": 1.0074352631762538,
+    "min_defender_separation_m": 10.549678802490234,
+    "nonclosing_episodes": 0,
+    "nonfinite": 0,
+    "orbit_episodes": 0,
+    "pathology_rate": 0.0,
+    "repeated_flyby_episodes": 0,
+    "reward_path": -0.20024614492036186,
+    "reward_progress": 1.8154798752841814,
+    "reward_step": -1.117,
+    "reward_terminal": 10.0,
+    "timeout": 0.0
+   },
+   "accepted_model_sha256": "75c6f1517d93cbd7edd6f9cd841f875bd80145de0064b658f1e76711487ac28c",
+   "anchor_metrics": {
+    "anchor1_basic_pursuit": 0.51,
+    "anchor2_static_defender": 0.31,
+    "anchor3_moving_defender": 0.25
+   },
+   "gate_on_200": {
+    "checks": {
+     "anchor1_basic_pursuit": false,
+     "anchor2_static_defender": false,
+     "anchor3_moving_defender": false,
+     "capture": false,
+     "cosine_mean": false,
+     "cosine_min": false,
+     "exhaustion": false,
+     "gt2": false,
+     "gt5": false,
+     "median_path_excess": false,
+     "numerical_failures": true,
+     "orbit": true,
+     "timeout": true
+    },
+    "passed": false
+   },
+   "generalization": {
+    "parent_regions": {
+     "negx_negy_inner": {
+      "capture": 0.3,
+      "episodes": 40,
+      "expert_cosine_mean": 0.6500272680481922
+     },
+     "negx_negy_outer": {
+      "capture": 0.1,
+      "episodes": 40,
+      "expert_cosine_mean": 0.2990287127807541
+     },
+     "negx_posy_inner": {
+      "capture": 0.05,
+      "episodes": 40,
+      "expert_cosine_mean": 0.7076745551615737
+     },
+     "negx_posy_outer": {
+      "capture": 0.0,
+      "episodes": 40,
+      "expert_cosine_mean": 0.45303681104754034
+     },
+     "posx_negy_inner": {
+      "capture": 0.275,
+      "episodes": 40,
+      "expert_cosine_mean": 0.6760184294717124
+     },
+     "posx_negy_outer": {
+      "capture": 0.0,
+      "episodes": 40,
+      "expert_cosine_mean": 0.3444133435191266
+     },
+     "posx_posy_inner": {
+      "capture": 0.15,
+      "episodes": 40,
+      "expert_cosine_mean": 0.6678934950229729
+     },
+     "posx_posy_outer": {
+      "capture": 0.0,
+      "episodes": 40,
+      "expert_cosine_mean": 0.4747111814241237
+     }
+    },
+    "regions": {
+     "negx_negy_inner": {
+      "capture": 0.525,
+      "episodes": 40,
+      "expert_cosine_mean": 0.4490807080740622
+     },
+     "negx_negy_outer": {
+      "capture": 0.3,
+      "episodes": 40,
+      "expert_cosine_mean": 0.3911225726775908
+     },
+     "negx_posy_inner": {
+      "capture": 0.525,
+      "episodes": 40,
+      "expert_cosine_mean": 0.3946647243896568
+     },
+     "negx_posy_outer": {
+      "capture": 0.575,
+      "episodes": 40,
+      "expert_cosine_mean": 0.47057519489438443
+     },
+     "posx_negy_inner": {
+      "capture": 0.6,
+      "episodes": 40,
+      "expert_cosine_mean": 0.44726872816164354
+     },
+     "posx_negy_outer": {
+      "capture": 0.725,
+      "episodes": 40,
+      "expert_cosine_mean": 0.4512287394719326
+     },
+     "posx_posy_inner": {
+      "capture": 0.425,
+      "episodes": 40,
+      "expert_cosine_mean": 0.41961066621209764
+     },
+     "posx_posy_outer": {
+      "capture": 0.4,
+      "episodes": 40,
+      "expert_cosine_mean": 0.3699658176345874
+     }
+    },
+    "scenario_table": {
+     "negx_negy_inner": [
+      178503,
+      178506,
+      178508,
+      178509,
+      178514,
+      178516,
+      178519,
+      178522,
+      178523,
+      178524,
+      178525,
+      178526,
+      178527,
+      178528,
+      178529,
+      178533,
+      178537,
+      178538,
+      178539,
+      178540,
+      178541,
+      178543,
+      178544,
+      178549,
+      178550,
+      178553,
+      178559,
+      178562,
+      178565,
+      178569,
+      178570,
+      178571,
+      178575,
+      178579,
+      178587,
+      178590,
+      178591,
+      178593,
+      178595,
+      178598
+     ],
+     "negx_negy_outer": [
+      178503,
+      178508,
+      178509,
+      178519,
+      178522,
+      178524,
+      178525,
+      178526,
+      178527,
+      178528,
+      178529,
+      178533,
+      178537,
+      178538,
+      178540,
+      178541,
+      178544,
+      178550,
+      178559,
+      178565,
+      178569,
+      178570,
+      178571,
+      178575,
+      178579,
+      178587,
+      178591,
+      178593,
+      178595,
+      178598,
+      178599,
+      178604,
+      178605,
+      178607,
+      178609,
+      178611,
+      178614,
+      178615,
+      178616,
+      178619
+     ],
+     "negx_posy_inner": [
+      178500,
+      178501,
+      178506,
+      178507,
+      178508,
+      178511,
+      178512,
+      178513,
+      178514,
+      178517,
+      178520,
+      178521,
+      178523,
+      178524,
+      178526,
+      178527,
+      178529,
+      178530,
+      178532,
+      178535,
+      178539,
+      178540,
+      178541,
+      178543,
+      178544,
+      178551,
+      178552,
+      178555,
+      178556,
+      178558,
+      178562,
+      178563,
+      178567,
+      178568,
+      178575,
+      178577,
+      178578,
+      178579,
+      178582,
+      178584
+     ],
+     "negx_posy_outer": [
+      178500,
+      178501,
+      178506,
+      178507,
+      178508,
+      178511,
+      178512,
+      178513,
+      178514,
+      178520,
+      178521,
+      178523,
+      178524,
+      178526,
+      178527,
+      178529,
+      178532,
+      178535,
+      178539,
+      178540,
+      178541,
+      178543,
+      178544,
+      178551,
+      178552,
+      178555,
+      178556,
+      178558,
+      178562,
+      178563,
+      178567,
+      178575,
+      178577,
+      178578,
+      178582,
+      178588,
+      178590,
+      178594,
+      178597,
+      178604
+     ],
+     "posx_negy_inner": [
+      178502,
+      178503,
+      178504,
+      178505,
+      178509,
+      178510,
+      178515,
+      178516,
+      178518,
+      178519,
+      178522,
+      178525,
+      178528,
+      178531,
+      178534,
+      178536,
+      178538,
+      178542,
+      178545,
+      178546,
+      178547,
+      178548,
+      178549,
+      178553,
+      178554,
+      178557,
+      178559,
+      178560,
+      178561,
+      178565,
+      178566,
+      178569,
+      178572,
+      178573,
+      178576,
+      178580,
+      178581,
+      178583,
+      178585,
+      178586
+     ],
+     "posx_negy_outer": [
+      178502,
+      178504,
+      178505,
+      178509,
+      178510,
+      178515,
+      178516,
+      178518,
+      178519,
+      178525,
+      178528,
+      178531,
+      178534,
+      178536,
+      178538,
+      178542,
+      178545,
+      178546,
+      178547,
+      178549,
+      178553,
+      178559,
+      178560,
+      178561,
+      178565,
+      178569,
+      178572,
+      178573,
+      178576,
+      178583,
+      178585,
+      178587,
+      178589,
+      178591,
+      178592,
+      178596,
+      178598,
+      178599,
+      178600,
+      178603
+     ],
+     "posx_posy_inner": [
+      178501,
+      178502,
+      178505,
+      178507,
+      178510,
+      178511,
+      178513,
+      178517,
+      178520,
+      178521,
+      178530,
+      178531,
+      178535,
+      178536,
+      178545,
+      178546,
+      178547,
+      178548,
+      178551,
+      178554,
+      178557,
+      178558,
+      178560,
+      178561,
+      178564,
+      178566,
+      178567,
+      178568,
+      178572,
+      178573,
+      178574,
+      178577,
+      178580,
+      178581,
+      178582,
+      178583,
+      178584,
+      178586,
+      178588,
+      178589
+     ],
+     "posx_posy_outer": [
+      178501,
+      178507,
+      178510,
+      178511,
+      178513,
+      178517,
+      178520,
+      178521,
+      178530,
+      178531,
+      178536,
+      178546,
+      178547,
+      178548,
+      178551,
+      178554,
+      178557,
+      178558,
+      178561,
+      178564,
+      178566,
+      178567,
+      178568,
+      178572,
+      178573,
+      178574,
+      178580,
+      178581,
+      178582,
+      178584,
+      178586,
+      178588,
+      178589,
+      178592,
+      178594,
+      178596,
+      178597,
+      178601,
+      178602,
+      178608
+     ]
+    }
+   },
+   "mastery_epoch": null,
+   "metrics": {
+    "asset_displacement_max_m": 0.0,
+    "capture": 0.605,
+    "collision": 0.0,
+    "episodes": 200,
+    "exhaustion": 0.395,
+    "expert_cosine_mean": 0.44073862249297924,
+    "expert_cosine_median": 0.7030996834793237,
+    "expert_cosine_min": -0.9995959101231017,
+    "expert_cosine_p5": -0.853942643328306,
+    "expert_cosine_steps": 7135,
+    "flyby_episodes": 122,
+    "gt1.3": 0.61,
+    "gt2": 0.6,
+    "gt5": 0.27,
+    "gt5_count": 54,
+    "held_action_steps": 0,
+    "intercepted": 0.0,
+    "max_path_excess": 19.45641929626828,
+    "mean_duration_s": 17.8375,
+    "mean_path_excess": 3.7875856143988322,
+    "mean_path_length_m": 192.48835468340158,
+    "mean_return": -0.9245796342508211,
+    "mean_return_discounted": 0.5336715936184561,
+    "mean_terminal_distance_m": 13.07655017323858,
+    "median_path_excess": 3.3446567304945023,
+    "min_defender_separation_m": 1.013204574584961,
+    "nonclosing_episodes": 114,
+    "nonfinite": 0,
+    "orbit_episodes": 0,
+    "pathology_rate": 0.57,
+    "repeated_flyby_episodes": 106,
+    "reward_path": -0.6267206776254749,
+    "reward_progress": 1.1696410433746522,
+    "reward_step": -3.567499999999998,
+    "reward_terminal": 2.1,
+    "timeout": 0.0
+   },
+   "parent_metrics": {
+    "asset_displacement_max_m": 0.0,
+    "capture": 0.06,
+    "collision": 0.0,
+    "episodes": 200,
+    "exhaustion": 0.94,
+    "expert_cosine_mean": 0.4003118059029611,
+    "expert_cosine_median": 0.6114386509062015,
+    "expert_cosine_min": -0.9996923699360281,
+    "expert_cosine_p5": -0.8552068473070205,
+    "expert_cosine_steps": 12024,
+    "flyby_episodes": 197,
+    "gt1.3": 0.985,
+    "gt2": 0.98,
+    "gt5": 0.855,
+    "gt5_count": 171,
+    "held_action_steps": 0,
+    "intercepted": 0.0,
+    "max_path_excess": 21.90742644052322,
+    "mean_duration_s": 30.06,
+    "mean_path_excess": 8.003240644191527,
+    "mean_path_length_m": 297.7491749230909,
+    "mean_return": -15.439946255362605,
+    "mean_return_discounted": -9.453638726014024,
+    "mean_terminal_distance_m": 39.59388110964967,
+    "median_path_excess": 7.136514874067418,
+    "min_defender_separation_m": 9.903688430786133,
+    "nonclosing_episodes": 196,
+    "nonfinite": 0,
+    "orbit_episodes": 0,
+    "pathology_rate": 0.98,
+    "repeated_flyby_episodes": 189,
+    "reward_path": -0.969908557555375,
+    "reward_progress": 0.34196230219276486,
+    "reward_step": -6.011999999999995,
+    "reward_terminal": -8.8,
+    "timeout": 0.0
+   },
+   "representation_post": {
+    "generalization_regions": {
+     "negx_negy_inner": {
+      "capture": 0.525,
+      "episodes": 40,
+      "expert_cosine_mean": 0.4490807080740622
+     },
+     "negx_negy_outer": {
+      "capture": 0.3,
+      "episodes": 40,
+      "expert_cosine_mean": 0.3911225726775908
+     },
+     "negx_posy_inner": {
+      "capture": 0.525,
+      "episodes": 40,
+      "expert_cosine_mean": 0.3946647243896568
+     },
+     "negx_posy_outer": {
+      "capture": 0.575,
+      "episodes": 40,
+      "expert_cosine_mean": 0.47057519489438443
+     },
+     "posx_negy_inner": {
+      "capture": 0.6,
+      "episodes": 40,
+      "expert_cosine_mean": 0.44726872816164354
+     },
+     "posx_negy_outer": {
+      "capture": 0.725,
+      "episodes": 40,
+      "expert_cosine_mean": 0.4512287394719326
+     },
+     "posx_posy_inner": {
+      "capture": 0.425,
+      "episodes": 40,
+      "expert_cosine_mean": 0.41961066621209764
+     },
+     "posx_posy_outer": {
+      "capture": 0.4,
+      "episodes": 40,
+      "expert_cosine_mean": 0.3699658176345874
+     }
+    },
+    "generalization_scenarios": {
+     "negx_negy_inner": [
+      178503,
+      178506,
+      178508,
+      178509,
+      178514,
+      178516,
+      178519,
+      178522,
+      178523,
+      178524,
+      178525,
+      178526,
+      178527,
+      178528,
+      178529,
+      178533,
+      178537,
+      178538,
+      178539,
+      178540,
+      178541,
+      178543,
+      178544,
+      178549,
+      178550,
+      178553,
+      178559,
+      178562,
+      178565,
+      178569,
+      178570,
+      178571,
+      178575,
+      178579,
+      178587,
+      178590,
+      178591,
+      178593,
+      178595,
+      178598
+     ],
+     "negx_negy_outer": [
+      178503,
+      178508,
+      178509,
+      178519,
+      178522,
+      178524,
+      178525,
+      178526,
+      178527,
+      178528,
+      178529,
+      178533,
+      178537,
+      178538,
+      178540,
+      178541,
+      178544,
+      178550,
+      178559,
+      178565,
+      178569,
+      178570,
+      178571,
+      178575,
+      178579,
+      178587,
+      178591,
+      178593,
+      178595,
+      178598,
+      178599,
+      178604,
+      178605,
+      178607,
+      178609,
+      178611,
+      178614,
+      178615,
+      178616,
+      178619
+     ],
+     "negx_posy_inner": [
+      178500,
+      178501,
+      178506,
+      178507,
+      178508,
+      178511,
+      178512,
+      178513,
+      178514,
+      178517,
+      178520,
+      178521,
+      178523,
+      178524,
+      178526,
+      178527,
+      178529,
+      178530,
+      178532,
+      178535,
+      178539,
+      178540,
+      178541,
+      178543,
+      178544,
+      178551,
+      178552,
+      178555,
+      178556,
+      178558,
+      178562,
+      178563,
+      178567,
+      178568,
+      178575,
+      178577,
+      178578,
+      178579,
+      178582,
+      178584
+     ],
+     "negx_posy_outer": [
+      178500,
+      178501,
+      178506,
+      178507,
+      178508,
+      178511,
+      178512,
+      178513,
+      178514,
+      178520,
+      178521,
+      178523,
+      178524,
+      178526,
+      178527,
+      178529,
+      178532,
+      178535,
+      178539,
+      178540,
+      178541,
+      178543,
+      178544,
+      178551,
+      178552,
+      178555,
+      178556,
+      178558,
+      178562,
+      178563,
+      178567,
+      178575,
+      178577,
+      178578,
+      178582,
+      178588,
+      178590,
+      178594,
+      178597,
+      178604
+     ],
+     "posx_negy_inner": [
+      178502,
+      178503,
+      178504,
+      178505,
+      178509,
+      178510,
+      178515,
+      178516,
+      178518,
+      178519,
+      178522,
+      178525,
+      178528,
+      178531,
+      178534,
+      178536,
+      178538,
+      178542,
+      178545,
+      178546,
+      178547,
+      178548,
+      178549,
+      178553,
+      178554,
+      178557,
+      178559,
+      178560,
+      178561,
+      178565,
+      178566,
+      178569,
+      178572,
+      178573,
+      178576,
+      178580,
+      178581,
+      178583,
+      178585,
+      178586
+     ],
+     "posx_negy_outer": [
+      178502,
+      178504,
+      178505,
+      178509,
+      178510,
+      178515,
+      178516,
+      178518,
+      178519,
+      178525,
+      178528,
+      178531,
+      178534,
+      178536,
+      178538,
+      178542,
+      178545,
+      178546,
+      178547,
+      178549,
+      178553,
+      178559,
+      178560,
+      178561,
+      178565,
+      178569,
+      178572,
+      178573,
+      178576,
+      178583,
+      178585,
+      178587,
+      178589,
+      178591,
+      178592,
+      178596,
+      178598,
+      178599,
+      178600,
+      178603
+     ],
+     "posx_posy_inner": [
+      178501,
+      178502,
+      178505,
+      178507,
+      178510,
+      178511,
+      178513,
+      178517,
+      178520,
+      178521,
+      178530,
+      178531,
+      178535,
+      178536,
+      178545,
+      178546,
+      178547,
+      178548,
+      178551,
+      178554,
+      178557,
+      178558,
+      178560,
+      178561,
+      178564,
+      178566,
+      178567,
+      178568,
+      178572,
+      178573,
+      178574,
+      178577,
+      178580,
+      178581,
+      178582,
+      178583,
+      178584,
+      178586,
+      178588,
+      178589
+     ],
+     "posx_posy_outer": [
+      178501,
+      178507,
+      178510,
+      178511,
+      178513,
+      178517,
+      178520,
+      178521,
+      178530,
+      178531,
+      178536,
+      178546,
+      178547,
+      178548,
+      178551,
+      178554,
+      178557,
+      178558,
+      178561,
+      178564,
+      178566,
+      178567,
+      178568,
+      178572,
+      178573,
+      178574,
+      178580,
+      178581,
+      178582,
+      178584,
+      178586,
+      178588,
+      178589,
+      178592,
+      178594,
+      178596,
+      178597,
+      178601,
+      178602,
+      178608
+     ]
+    },
+    "held_out": {
+     "capture": 0.605,
+     "exhaustion": 0.395,
+     "expert_cosine_mean": 0.44073862249297924,
+     "expert_cosine_median": 0.7030996834793237,
+     "expert_cosine_min": -0.9995959101231017,
+     "expert_cosine_p5": -0.853942643328306,
+     "gt2": 0.6,
+     "gt5": 0.27,
+     "median_path_excess": 3.3446567304945023,
+     "nonfinite": 0,
+     "orbit_episodes": 0,
+     "timeout": 0.0
+    },
+    "sensitivity": {
+     "asset_to_attacker_sensitivity_ratio": 0.6928341388702393,
+     "first_layer_column_norm_asset_xyz": [
+      2.241302013397217,
+      2.0555531978607178,
+      1.4142135381698608
+     ],
+     "first_layer_column_norm_attacker_xyz": [
+      10.545500755310059,
+      10.888761520385742,
+      9.603769302368164
+     ],
+     "jacobian_norm_asset_xy_mean": 0.8592690825462341,
+     "jacobian_norm_attacker_xy_mean": 1.2402234077453613,
+     "orthogonal_init_column_norm": 1.4142135623730951,
+     "relative_alignment_mean": 0.788126528263092,
+     "states": 1450
+    }
+   },
+   "seed": 202,
+   "training_status": "RETENTION_FAILURE"
+  },
+  "203": {
+   "a0_metrics": {
+    "asset_displacement_max_m": 0.0,
+    "capture": 1.0,
+    "collision": 0.0,
+    "episodes": 200,
+    "exhaustion": 0.0,
+    "expert_cosine_mean": null,
+    "expert_cosine_median": null,
+    "expert_cosine_min": null,
+    "expert_cosine_p5": null,
+    "expert_cosine_steps": 0,
+    "flyby_episodes": 0,
+    "gt1.3": 0.0,
+    "gt2": 0.0,
+    "gt5": 0.0,
+    "gt5_count": 0,
+    "held_action_steps": 0,
+    "intercepted": 0.0,
+    "max_path_excess": 1.2841969464558511,
+    "mean_duration_s": 5.585,
+    "mean_path_excess": 1.0320493099756212,
+    "mean_path_length_m": 61.53372248849289,
+    "mean_return": 10.49823373036382,
+    "mean_return_discounted": 9.50678969435111,
+    "mean_terminal_distance_m": 1.9999999789070255,
+    "median_path_excess": 1.0074352631762538,
+    "min_defender_separation_m": 10.549678802490234,
+    "nonclosing_episodes": 0,
+    "nonfinite": 0,
+    "orbit_episodes": 0,
+    "pathology_rate": 0.0,
+    "repeated_flyby_episodes": 0,
+    "reward_path": -0.20024614492036186,
+    "reward_progress": 1.8154798752841814,
+    "reward_step": -1.117,
+    "reward_terminal": 10.0,
+    "timeout": 0.0
+   },
+   "accepted_model_sha256": "b55c85ea95cc9aa3c08b6c66427443cc887ce1d2bdb879ff0efd9579b797bb9e",
+   "anchor_metrics": {
+    "anchor1_basic_pursuit": 0.41,
+    "anchor2_static_defender": 0.23,
+    "anchor3_moving_defender": 0.38
+   },
+   "gate_on_200": {
+    "checks": {
+     "anchor1_basic_pursuit": false,
+     "anchor2_static_defender": false,
+     "anchor3_moving_defender": false,
+     "capture": false,
+     "cosine_mean": false,
+     "cosine_min": false,
+     "exhaustion": false,
+     "gt2": false,
+     "gt5": false,
+     "median_path_excess": false,
+     "numerical_failures": true,
+     "orbit": false,
+     "timeout": true
+    },
+    "passed": false
+   },
+   "generalization": {
+    "parent_regions": {
+     "negx_negy_inner": {
+      "capture": 0.025,
+      "episodes": 40,
+      "expert_cosine_mean": 0.7136348671713652
+     },
+     "negx_negy_outer": {
+      "capture": 0.05,
+      "episodes": 40,
+      "expert_cosine_mean": 0.5216122044028002
+     },
+     "negx_posy_inner": {
+      "capture": 0.125,
+      "episodes": 40,
+      "expert_cosine_mean": 0.6749070670086696
+     },
+     "negx_posy_outer": {
+      "capture": 0.05,
+      "episodes": 40,
+      "expert_cosine_mean": 0.4240368445602763
+     },
+     "posx_negy_inner": {
+      "capture": 0.425,
+      "episodes": 40,
+      "expert_cosine_mean": 0.6977627537854671
+     },
+     "posx_negy_outer": {
+      "capture": 0.075,
+      "episodes": 40,
+      "expert_cosine_mean": 0.347992054762225
+     },
+     "posx_posy_inner": {
+      "capture": 0.05,
+      "episodes": 40,
+      "expert_cosine_mean": 0.7104870144157024
+     },
+     "posx_posy_outer": {
+      "capture": 0.0,
+      "episodes": 40,
+      "expert_cosine_mean": 0.3052848525319748
+     }
+    },
+    "regions": {
+     "negx_negy_inner": {
+      "capture": 0.35,
+      "episodes": 40,
+      "expert_cosine_mean": 0.418630377564084
+     },
+     "negx_negy_outer": {
+      "capture": 0.575,
+      "episodes": 40,
+      "expert_cosine_mean": 0.4758176428710446
+     },
+     "negx_posy_inner": {
+      "capture": 0.725,
+      "episodes": 40,
+      "expert_cosine_mean": 0.48739158378479636
+     },
+     "negx_posy_outer": {
+      "capture": 0.4,
+      "episodes": 40,
+      "expert_cosine_mean": 0.4241825452135415
+     },
+     "posx_negy_inner": {
+      "capture": 0.55,
+      "episodes": 40,
+      "expert_cosine_mean": 0.4486717823536499
+     },
+     "posx_negy_outer": {
+      "capture": 0.35,
+      "episodes": 40,
+      "expert_cosine_mean": 0.41309412170739607
+     },
+     "posx_posy_inner": {
+      "capture": 0.575,
+      "episodes": 40,
+      "expert_cosine_mean": 0.45009805512688633
+     },
+     "posx_posy_outer": {
+      "capture": 0.8,
+      "episodes": 40,
+      "expert_cosine_mean": 0.6285466665731616
+     }
+    },
+    "scenario_table": {
+     "negx_negy_inner": [
+      178503,
+      178506,
+      178508,
+      178509,
+      178514,
+      178516,
+      178519,
+      178522,
+      178523,
+      178524,
+      178525,
+      178526,
+      178527,
+      178528,
+      178529,
+      178533,
+      178537,
+      178538,
+      178539,
+      178540,
+      178541,
+      178543,
+      178544,
+      178549,
+      178550,
+      178553,
+      178559,
+      178562,
+      178565,
+      178569,
+      178570,
+      178571,
+      178575,
+      178579,
+      178587,
+      178590,
+      178591,
+      178593,
+      178595,
+      178598
+     ],
+     "negx_negy_outer": [
+      178503,
+      178508,
+      178509,
+      178519,
+      178522,
+      178524,
+      178525,
+      178526,
+      178527,
+      178528,
+      178529,
+      178533,
+      178537,
+      178538,
+      178540,
+      178541,
+      178544,
+      178550,
+      178559,
+      178565,
+      178569,
+      178570,
+      178571,
+      178575,
+      178579,
+      178587,
+      178591,
+      178593,
+      178595,
+      178598,
+      178599,
+      178604,
+      178605,
+      178607,
+      178609,
+      178611,
+      178614,
+      178615,
+      178616,
+      178619
+     ],
+     "negx_posy_inner": [
+      178500,
+      178501,
+      178506,
+      178507,
+      178508,
+      178511,
+      178512,
+      178513,
+      178514,
+      178517,
+      178520,
+      178521,
+      178523,
+      178524,
+      178526,
+      178527,
+      178529,
+      178530,
+      178532,
+      178535,
+      178539,
+      178540,
+      178541,
+      178543,
+      178544,
+      178551,
+      178552,
+      178555,
+      178556,
+      178558,
+      178562,
+      178563,
+      178567,
+      178568,
+      178575,
+      178577,
+      178578,
+      178579,
+      178582,
+      178584
+     ],
+     "negx_posy_outer": [
+      178500,
+      178501,
+      178506,
+      178507,
+      178508,
+      178511,
+      178512,
+      178513,
+      178514,
+      178520,
+      178521,
+      178523,
+      178524,
+      178526,
+      178527,
+      178529,
+      178532,
+      178535,
+      178539,
+      178540,
+      178541,
+      178543,
+      178544,
+      178551,
+      178552,
+      178555,
+      178556,
+      178558,
+      178562,
+      178563,
+      178567,
+      178575,
+      178577,
+      178578,
+      178582,
+      178588,
+      178590,
+      178594,
+      178597,
+      178604
+     ],
+     "posx_negy_inner": [
+      178502,
+      178503,
+      178504,
+      178505,
+      178509,
+      178510,
+      178515,
+      178516,
+      178518,
+      178519,
+      178522,
+      178525,
+      178528,
+      178531,
+      178534,
+      178536,
+      178538,
+      178542,
+      178545,
+      178546,
+      178547,
+      178548,
+      178549,
+      178553,
+      178554,
+      178557,
+      178559,
+      178560,
+      178561,
+      178565,
+      178566,
+      178569,
+      178572,
+      178573,
+      178576,
+      178580,
+      178581,
+      178583,
+      178585,
+      178586
+     ],
+     "posx_negy_outer": [
+      178502,
+      178504,
+      178505,
+      178509,
+      178510,
+      178515,
+      178516,
+      178518,
+      178519,
+      178525,
+      178528,
+      178531,
+      178534,
+      178536,
+      178538,
+      178542,
+      178545,
+      178546,
+      178547,
+      178549,
+      178553,
+      178559,
+      178560,
+      178561,
+      178565,
+      178569,
+      178572,
+      178573,
+      178576,
+      178583,
+      178585,
+      178587,
+      178589,
+      178591,
+      178592,
+      178596,
+      178598,
+      178599,
+      178600,
+      178603
+     ],
+     "posx_posy_inner": [
+      178501,
+      178502,
+      178505,
+      178507,
+      178510,
+      178511,
+      178513,
+      178517,
+      178520,
+      178521,
+      178530,
+      178531,
+      178535,
+      178536,
+      178545,
+      178546,
+      178547,
+      178548,
+      178551,
+      178554,
+      178557,
+      178558,
+      178560,
+      178561,
+      178564,
+      178566,
+      178567,
+      178568,
+      178572,
+      178573,
+      178574,
+      178577,
+      178580,
+      178581,
+      178582,
+      178583,
+      178584,
+      178586,
+      178588,
+      178589
+     ],
+     "posx_posy_outer": [
+      178501,
+      178507,
+      178510,
+      178511,
+      178513,
+      178517,
+      178520,
+      178521,
+      178530,
+      178531,
+      178536,
+      178546,
+      178547,
+      178548,
+      178551,
+      178554,
+      178557,
+      178558,
+      178561,
+      178564,
+      178566,
+      178567,
+      178568,
+      178572,
+      178573,
+      178574,
+      178580,
+      178581,
+      178582,
+      178584,
+      178586,
+      178588,
+      178589,
+      178592,
+      178594,
+      178596,
+      178597,
+      178601,
+      178602,
+      178608
+     ]
+    }
+   },
+   "mastery_epoch": null,
+   "metrics": {
+    "asset_displacement_max_m": 0.0,
+    "capture": 0.55,
+    "collision": 0.0,
+    "episodes": 200,
+    "exhaustion": 0.45,
+    "expert_cosine_mean": 0.4785589686751464,
+    "expert_cosine_median": 0.7623826403854039,
+    "expert_cosine_min": -0.9999067224823602,
+    "expert_cosine_p5": -0.8566909229670187,
+    "expert_cosine_steps": 6780,
+    "flyby_episodes": 104,
+    "gt1.3": 0.52,
+    "gt2": 0.51,
+    "gt5": 0.24,
+    "gt5_count": 48,
+    "held_action_steps": 0,
+    "intercepted": 0.0,
+    "max_path_excess": 11.883081049638896,
+    "mean_duration_s": 16.95,
+    "mean_path_excess": 3.200608013990827,
+    "mean_path_length_m": 179.71688717536665,
+    "mean_return": -1.7715095794921876,
+    "mean_return_discounted": 0.2960671156822354,
+    "mean_terminal_distance_m": 12.11108990276225,
+    "median_path_excess": 2.4588809121798914,
+    "min_defender_separation_m": 0.3204077482223511,
+    "nonclosing_episodes": 95,
+    "nonfinite": 0,
+    "orbit_episodes": 1,
+    "pathology_rate": 0.495,
+    "repeated_flyby_episodes": 98,
+    "reward_path": -0.5927242142379427,
+    "reward_progress": 1.2112146347457529,
+    "reward_step": -3.389999999999998,
+    "reward_terminal": 1.0,
+    "timeout": 0.0
+   },
+   "parent_metrics": {
+    "asset_displacement_max_m": 0.0,
+    "capture": 0.04,
+    "collision": 0.0,
+    "episodes": 200,
+    "exhaustion": 0.96,
+    "expert_cosine_mean": 0.43010640980087284,
+    "expert_cosine_median": 0.6408187230100875,
+    "expert_cosine_min": -0.999902085477686,
+    "expert_cosine_p5": -0.8482859102819718,
+    "expert_cosine_steps": 11837,
+    "flyby_episodes": 194,
+    "gt1.3": 0.975,
+    "gt2": 0.97,
+    "gt5": 0.845,
+    "gt5_count": 169,
+    "held_action_steps": 0,
+    "intercepted": 0.0,
+    "max_path_excess": 21.811493723481586,
+    "mean_duration_s": 29.5925,
+    "mean_path_excess": 7.803306608891007,
+    "mean_path_length_m": 298.3980160815594,
+    "mean_return": -15.73108086826157,
+    "mean_return_discounted": -9.675238502095908,
+    "mean_terminal_distance_m": 39.48958992847545,
+    "median_path_excess": 6.745552522095053,
+    "min_defender_separation_m": 10.007597923278809,
+    "nonclosing_episodes": 194,
+    "nonfinite": 0,
+    "orbit_episodes": 0,
+    "pathology_rate": 0.97,
+    "repeated_flyby_episodes": 192,
+    "reward_path": -0.9724746134467251,
+    "reward_progress": 0.359893745185149,
+    "reward_step": -5.9184999999999945,
+    "reward_terminal": -9.2,
+    "timeout": 0.0
+   },
+   "representation_post": {
+    "generalization_regions": {
+     "negx_negy_inner": {
+      "capture": 0.35,
+      "episodes": 40,
+      "expert_cosine_mean": 0.418630377564084
+     },
+     "negx_negy_outer": {
+      "capture": 0.575,
+      "episodes": 40,
+      "expert_cosine_mean": 0.4758176428710446
+     },
+     "negx_posy_inner": {
+      "capture": 0.725,
+      "episodes": 40,
+      "expert_cosine_mean": 0.48739158378479636
+     },
+     "negx_posy_outer": {
+      "capture": 0.4,
+      "episodes": 40,
+      "expert_cosine_mean": 0.4241825452135415
+     },
+     "posx_negy_inner": {
+      "capture": 0.55,
+      "episodes": 40,
+      "expert_cosine_mean": 0.4486717823536499
+     },
+     "posx_negy_outer": {
+      "capture": 0.35,
+      "episodes": 40,
+      "expert_cosine_mean": 0.41309412170739607
+     },
+     "posx_posy_inner": {
+      "capture": 0.575,
+      "episodes": 40,
+      "expert_cosine_mean": 0.45009805512688633
+     },
+     "posx_posy_outer": {
+      "capture": 0.8,
+      "episodes": 40,
+      "expert_cosine_mean": 0.6285466665731616
+     }
+    },
+    "generalization_scenarios": {
+     "negx_negy_inner": [
+      178503,
+      178506,
+      178508,
+      178509,
+      178514,
+      178516,
+      178519,
+      178522,
+      178523,
+      178524,
+      178525,
+      178526,
+      178527,
+      178528,
+      178529,
+      178533,
+      178537,
+      178538,
+      178539,
+      178540,
+      178541,
+      178543,
+      178544,
+      178549,
+      178550,
+      178553,
+      178559,
+      178562,
+      178565,
+      178569,
+      178570,
+      178571,
+      178575,
+      178579,
+      178587,
+      178590,
+      178591,
+      178593,
+      178595,
+      178598
+     ],
+     "negx_negy_outer": [
+      178503,
+      178508,
+      178509,
+      178519,
+      178522,
+      178524,
+      178525,
+      178526,
+      178527,
+      178528,
+      178529,
+      178533,
+      178537,
+      178538,
+      178540,
+      178541,
+      178544,
+      178550,
+      178559,
+      178565,
+      178569,
+      178570,
+      178571,
+      178575,
+      178579,
+      178587,
+      178591,
+      178593,
+      178595,
+      178598,
+      178599,
+      178604,
+      178605,
+      178607,
+      178609,
+      178611,
+      178614,
+      178615,
+      178616,
+      178619
+     ],
+     "negx_posy_inner": [
+      178500,
+      178501,
+      178506,
+      178507,
+      178508,
+      178511,
+      178512,
+      178513,
+      178514,
+      178517,
+      178520,
+      178521,
+      178523,
+      178524,
+      178526,
+      178527,
+      178529,
+      178530,
+      178532,
+      178535,
+      178539,
+      178540,
+      178541,
+      178543,
+      178544,
+      178551,
+      178552,
+      178555,
+      178556,
+      178558,
+      178562,
+      178563,
+      178567,
+      178568,
+      178575,
+      178577,
+      178578,
+      178579,
+      178582,
+      178584
+     ],
+     "negx_posy_outer": [
+      178500,
+      178501,
+      178506,
+      178507,
+      178508,
+      178511,
+      178512,
+      178513,
+      178514,
+      178520,
+      178521,
+      178523,
+      178524,
+      178526,
+      178527,
+      178529,
+      178532,
+      178535,
+      178539,
+      178540,
+      178541,
+      178543,
+      178544,
+      178551,
+      178552,
+      178555,
+      178556,
+      178558,
+      178562,
+      178563,
+      178567,
+      178575,
+      178577,
+      178578,
+      178582,
+      178588,
+      178590,
+      178594,
+      178597,
+      178604
+     ],
+     "posx_negy_inner": [
+      178502,
+      178503,
+      178504,
+      178505,
+      178509,
+      178510,
+      178515,
+      178516,
+      178518,
+      178519,
+      178522,
+      178525,
+      178528,
+      178531,
+      178534,
+      178536,
+      178538,
+      178542,
+      178545,
+      178546,
+      178547,
+      178548,
+      178549,
+      178553,
+      178554,
+      178557,
+      178559,
+      178560,
+      178561,
+      178565,
+      178566,
+      178569,
+      178572,
+      178573,
+      178576,
+      178580,
+      178581,
+      178583,
+      178585,
+      178586
+     ],
+     "posx_negy_outer": [
+      178502,
+      178504,
+      178505,
+      178509,
+      178510,
+      178515,
+      178516,
+      178518,
+      178519,
+      178525,
+      178528,
+      178531,
+      178534,
+      178536,
+      178538,
+      178542,
+      178545,
+      178546,
+      178547,
+      178549,
+      178553,
+      178559,
+      178560,
+      178561,
+      178565,
+      178569,
+      178572,
+      178573,
+      178576,
+      178583,
+      178585,
+      178587,
+      178589,
+      178591,
+      178592,
+      178596,
+      178598,
+      178599,
+      178600,
+      178603
+     ],
+     "posx_posy_inner": [
+      178501,
+      178502,
+      178505,
+      178507,
+      178510,
+      178511,
+      178513,
+      178517,
+      178520,
+      178521,
+      178530,
+      178531,
+      178535,
+      178536,
+      178545,
+      178546,
+      178547,
+      178548,
+      178551,
+      178554,
+      178557,
+      178558,
+      178560,
+      178561,
+      178564,
+      178566,
+      178567,
+      178568,
+      178572,
+      178573,
+      178574,
+      178577,
+      178580,
+      178581,
+      178582,
+      178583,
+      178584,
+      178586,
+      178588,
+      178589
+     ],
+     "posx_posy_outer": [
+      178501,
+      178507,
+      178510,
+      178511,
+      178513,
+      178517,
+      178520,
+      178521,
+      178530,
+      178531,
+      178536,
+      178546,
+      178547,
+      178548,
+      178551,
+      178554,
+      178557,
+      178558,
+      178561,
+      178564,
+      178566,
+      178567,
+      178568,
+      178572,
+      178573,
+      178574,
+      178580,
+      178581,
+      178582,
+      178584,
+      178586,
+      178588,
+      178589,
+      178592,
+      178594,
+      178596,
+      178597,
+      178601,
+      178602,
+      178608
+     ]
+    },
+    "held_out": {
+     "capture": 0.55,
+     "exhaustion": 0.45,
+     "expert_cosine_mean": 0.4785589686751464,
+     "expert_cosine_median": 0.7623826403854039,
+     "expert_cosine_min": -0.9999067224823602,
+     "expert_cosine_p5": -0.8566909229670187,
+     "gt2": 0.51,
+     "gt5": 0.24,
+     "median_path_excess": 2.4588809121798914,
+     "nonfinite": 0,
+     "orbit_episodes": 1,
+     "timeout": 0.0
+    },
+    "sensitivity": {
+     "asset_to_attacker_sensitivity_ratio": 0.8187517523765564,
+     "first_layer_column_norm_asset_xyz": [
+      2.2666449546813965,
+      2.208587408065796,
+      1.4142134189605713
+     ],
+     "first_layer_column_norm_attacker_xyz": [
+      10.042978286743164,
+      13.145231246948242,
+      9.328657150268555
+     ],
+     "jacobian_norm_asset_xy_mean": 1.0642756223678589,
+     "jacobian_norm_attacker_xy_mean": 1.2998758554458618,
+     "orthogonal_init_column_norm": 1.4142135623730951,
+     "relative_alignment_mean": 0.7870654463768005,
+     "states": 1448
+    }
+   },
+   "seed": 203,
+   "training_status": "RETENTION_FAILURE"
+  }
+ },
+ "scenarios": [
+  178000,
+  178199
+ ]
+}

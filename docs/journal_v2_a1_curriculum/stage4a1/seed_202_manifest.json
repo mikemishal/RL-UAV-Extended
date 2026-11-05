@@ -1,0 +1,213 @@
+{
+ "accepted_epoch": 2,
+ "accepted_model_sha256": "75c6f1517d93cbd7edd6f9cd841f875bd80145de0064b658f1e76711487ac28c",
+ "bc_protocol": "a1_cur4a1_goal_conditioned_bc_v1",
+ "created_utc": "2026-11-05T01:55:27.997515+00:00",
+ "epochs": [
+  {
+   "epoch": 1,
+   "train_loss": 0.2699421232411752,
+   "val": {
+    "goal": {
+     "angle_deg_median": 8.430712037676209,
+     "cos_mean": 0.9698482324524125,
+     "cos_median": 0.9891938865184784,
+     "cos_min": 0.3719046413898468,
+     "cos_p5": 0.861511516571045,
+     "loss": 0.06064153621660785,
+     "mse": 0.030489768669020322,
+     "samples": 13410
+    },
+    "loss": 0.07195412442845289,
+    "retain": {
+     "angle_deg_median": 9.64901285886755,
+     "cos_mean": 0.9774393068300768,
+     "cos_median": 0.9858530163764954,
+     "cos_min": 0.6748753190040588,
+     "cos_p5": 0.9265469819307327,
+     "loss": 0.045250352847380174,
+     "mse": 0.022689659677457025,
+     "samples": 2230
+    }
+   },
+   "validation": {
+    "anchor1_capture": 0.14,
+    "anchor2_capture": 0.13,
+    "anchor3_capture": 0.14,
+    "epoch": 1,
+    "gate": {
+     "checks": {
+      "anchor1_basic_pursuit": false,
+      "anchor2_static_defender": false,
+      "anchor3_moving_defender": false,
+      "capture": false,
+      "cosine_mean": false,
+      "cosine_min": false,
+      "exhaustion": false,
+      "gt2": false,
+      "gt5": false,
+      "median_path_excess": false,
+      "numerical_failures": true,
+      "orbit": true,
+      "timeout": true
+     },
+     "passed": false
+    },
+    "metrics": {
+     "asset_displacement_max_m": 0.0,
+     "capture": 0.35,
+     "collision": 0.0,
+     "episodes": 40,
+     "exhaustion": 0.65,
+     "expert_cosine_mean": 0.32079889448911947,
+     "expert_cosine_median": 0.5346897554293897,
+     "expert_cosine_min": -0.9784724754164916,
+     "expert_cosine_p5": -0.8646378855888336,
+     "expert_cosine_steps": 1795,
+     "flyby_episodes": 31,
+     "gt1.3": 0.8,
+     "gt2": 0.75,
+     "gt5": 0.425,
+     "gt5_count": 17,
+     "held_action_steps": 0,
+     "intercepted": 0.0,
+     "max_path_excess": 15.853124971514642,
+     "mean_duration_s": 22.4375,
+     "mean_path_excess": 4.841637468985499,
+     "mean_path_length_m": 241.10373798703102,
+     "mean_return": -7.316581193335873,
+     "mean_return_discounted": -3.924927297529687,
+     "mean_terminal_distance_m": 18.68899639103776,
+     "median_path_excess": 4.536761595647598,
+     "min_defender_separation_m": 4.148941516876221,
+     "nonclosing_episodes": 29,
+     "nonfinite": 0,
+     "orbit_episodes": 0,
+     "pathology_rate": 0.725,
+     "repeated_flyby_episodes": 27,
+     "reward_path": -0.7775413707063878,
+     "reward_progress": 0.9484601773705117,
+     "reward_step": -4.487499999999997,
+     "reward_terminal": -3.0,
+     "timeout": 0.0
+    },
+    "passed": false
+   }
+  },
+  {
+   "epoch": 2,
+   "train_loss": 0.04990975358940781,
+   "val": {
+    "goal": {
+     "angle_deg_median": 5.558570495271999,
+     "cos_mean": 0.9843655220880871,
+     "cos_median": 0.9952977001667023,
+     "cos_min": 0.6007286310195923,
+     "cos_p5": 0.9255466043949128,
+     "loss": 0.030697819826883223,
+     "mse": 0.015063341914970366,
+     "samples": 13410
+    },
+    "loss": 0.037229325354133654,
+    "retain": {
+     "angle_deg_median": 6.514604023908144,
+     "cos_mean": 0.9881510862587813,
+     "cos_median": 0.9935429692268372,
+     "cos_min": 0.8399574160575867,
+     "cos_p5": 0.9567377418279648,
+     "loss": 0.02612602210900173,
+     "mse": 0.014277108367783072,
+     "samples": 2230
+    }
+   },
+   "validation": {
+    "anchor1_capture": 0.51,
+    "anchor2_capture": 0.31,
+    "anchor3_capture": 0.25,
+    "epoch": 2,
+    "gate": {
+     "checks": {
+      "anchor1_basic_pursuit": false,
+      "anchor2_static_defender": false,
+      "anchor3_moving_defender": false,
+      "capture": false,
+      "cosine_mean": false,
+      "cosine_min": false,
+      "exhaustion": false,
+      "gt2": false,
+      "gt5": false,
+      "median_path_excess": false,
+      "numerical_failures": true,
+      "orbit": true,
+      "timeout": true
+     },
+     "passed": false
+    },
+    "metrics": {
+     "asset_displacement_max_m": 0.0,
+     "capture": 0.625,
+     "collision": 0.0,
+     "episodes": 40,
+     "exhaustion": 0.375,
+     "expert_cosine_mean": 0.4394341118728995,
+     "expert_cosine_median": 0.7005478502523323,
+     "expert_cosine_min": -0.9931481565562698,
+     "expert_cosine_p5": -0.8539775836083761,
+     "expert_cosine_steps": 1450,
+     "flyby_episodes": 25,
+     "gt1.3": 0.65,
+     "gt2": 0.625,
+     "gt5": 0.25,
+     "gt5_count": 10,
+     "held_action_steps": 0,
+     "intercepted": 0.0,
+     "max_path_excess": 19.45641929626828,
+     "mean_duration_s": 18.125,
+     "mean_path_excess": 3.7772175027446777,
+     "mean_path_length_m": 195.91324082823243,
+     "mean_return": -0.5758153150582713,
+     "mean_return_discounted": 0.6885786391475959,
+     "mean_terminal_distance_m": 12.648533037822144,
+     "median_path_excess": 3.3099484719761825,
+     "min_defender_separation_m": 9.335657119750977,
+     "nonclosing_episodes": 23,
+     "nonfinite": 0,
+     "orbit_episodes": 0,
+     "pathology_rate": 0.575,
+     "repeated_flyby_episodes": 22,
+     "reward_path": -0.6316569436032665,
+     "reward_progress": 1.1808416285449936,
+     "reward_step": -3.6249999999999987,
+     "reward_terminal": 2.5,
+     "timeout": 0.0
+    },
+    "passed": false
+   }
+  }
+ ],
+ "epochs_trained": 2,
+ "hyper": {
+  "batch_size": 256,
+  "epochs": 20,
+  "lr": 0.001
+ },
+ "mastery_epoch": null,
+ "parent": {
+  "attacker_id": "A1-CUR3V2-202",
+  "model_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485",
+  "parent_status": "quantitatively_accepted_curriculum_parent",
+  "path": "C:\\Users\\mimishal\\OneDrive\\Documents\\UIC\\PhD\\Research\\RL-UAV-Extended-lrppo-clutter\\results\\journal_v2_corrected_semantics\\a1_curriculum\\stage3_v2\\seed_202\\checkpoints\\accepted_model.zip",
+  "rollout": 5,
+  "seed": 202,
+  "stage3_v2_commit": "3a2b23f",
+  "stage3_v2_protocol_sha256": "195848ac91d665e65579ecc131600d211561267d1aff89b914eccb537a558a0a",
+  "stage3_v2_training_status": "MASTERED"
+ },
+ "parent_status": "quantitatively_accepted_curriculum_parent",
+ "protocol_sha256": "4a4b91aa92d5bc970e52f7da38227b23c710e85c39be31c084ec3a0127ca9a75",
+ "research_commit": "9984495a4835fba393908ed8ef6688f717cc23cf",
+ "retain_loss_weight": 0.25,
+ "seed": 202,
+ "status": "RETENTION_FAILURE",
+ "wall_time_s": 43.84265875816345
+}

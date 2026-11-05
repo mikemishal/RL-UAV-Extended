@@ -1,0 +1,74 @@
+{
+ "coverage": {
+  "asset_position_m": {
+   "x": [
+    -44.9993896484375,
+    0.3333878368139267,
+    44.9985466003418
+   ],
+   "y": [
+    -44.99549865722656,
+    1.7870885729789734,
+    44.9837532043457
+   ]
+  },
+  "asset_quadrant_episode_counts": {
+   "+x+y": 1551,
+   "+x-y": 1458,
+   "-x+y": 1516,
+   "-x-y": 1475
+  },
+  "caught_fraction": 1.0,
+  "central_fraction": 0.03133333333333333,
+  "episodes": 6000,
+  "heading_offset_deg": [
+   0.010251116228449611,
+   43.50500229324426,
+   89.99034397483645
+  ],
+  "initial_altitude_m": [
+   10.004108428955078,
+   19.983062744140625,
+   29.996572494506836
+  ],
+  "initial_range_m": [
+   50.998959836424746,
+   59.83991964155522,
+   76.63004916861946
+  ],
+  "late_approach_decisions_within_2_of_end": 12000,
+  "near_diagonal_episode_count": 1570,
+  "outer_fraction": 0.5428333333333333,
+  "pairs": 67245,
+  "pairs_per_episode_mean": 11.2075,
+  "pairs_per_episode_min_max": [
+   9,
+   20
+  ]
+ },
+ "created_utc": "2026-11-05T01:44:32Z",
+ "dataset_sha256": "c5bcf331099697498cecf3814dce92d2ece751bef885ed8807af16510b86f8b1",
+ "env_config_sha256": "b02c34240e8453f7d27c7be71c55830796105059234c801cebabc4f1be3cec81",
+ "episodes": 6000,
+ "pairs": 67245,
+ "schema": "a1_cur4a1_dataset_manifest/1",
+ "shard_hashes": {
+  "0": "c33df94eb62c22930a73ef05845690d6b72b288f786efeebae383d3a52631298",
+  "1": "04d48e85711093fbe17bf48397fb62e83c973879d61dfe1efdc373c54f9094ea",
+  "2": "e85e1a80742dc82ae43c2f50c93aaa7f7e1d06dbf381179dc0aab50fc0b1e291",
+  "3": "5be173e7bb915dd19730c8e9786b0dc5430f8fd3a5b8925f42b3e8f7ca94d6da",
+  "4": "6cdb358001d86ad14da47812f01d1eebffd6d7f303042a436fd2ea196d3df91c",
+  "5": "5120058c3e4f38eb095f6090e8be0187746c5b6649811fef0805c0d8225b0e45",
+  "6": "6ec39be274d978bfed1905c9a51a5c879cfb0cd72f68b1dba0f3c5f97c15ccd3",
+  "7": "e86cfe60858db99ecbc801a8deea0f55c854d85d3842f6a8e185ef0ae600a3c8",
+  "8": "89d6b730a525367af14ab9d10ebf5bfd3b231a1adf1e9d944b1bd1fa37344e4b",
+  "9": "e522147772f779c896ea02fd2d350ae29f3648370fb05731ee2395c16b612bd3",
+  "10": "07fba8c7f945bf6ea086de1e992af1fbf3fb19b9cffd0841bcbafd13d9ddc775",
+  "11": "b0e387ac7d24da40edcb9a76823487442f03a0ca29feebb204a878d4fd33a199"
+ },
+ "split_fraction": 0.8,
+ "train_episodes": 4800,
+ "train_pairs": 53835,
+ "val_episodes": 1200,
+ "val_pairs": 13410
+}

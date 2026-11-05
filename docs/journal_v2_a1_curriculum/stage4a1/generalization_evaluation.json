@@ -1,0 +1,260 @@
+{
+ "201": {
+  "parent_regions": {
+   "negx_negy_inner": {
+    "capture": 0.075,
+    "episodes": 40,
+    "expert_cosine_mean": 0.6707043369603375
+   },
+   "negx_negy_outer": {
+    "capture": 0.0,
+    "episodes": 40,
+    "expert_cosine_mean": 0.4213280230609672
+   },
+   "negx_posy_inner": {
+    "capture": 0.175,
+    "episodes": 40,
+    "expert_cosine_mean": 0.6619809721752303
+   },
+   "negx_posy_outer": {
+    "capture": 0.075,
+    "episodes": 40,
+    "expert_cosine_mean": 0.3708537509687127
+   },
+   "posx_negy_inner": {
+    "capture": 0.15,
+    "episodes": 40,
+    "expert_cosine_mean": 0.6684736407345078
+   },
+   "posx_negy_outer": {
+    "capture": 0.0,
+    "episodes": 40,
+    "expert_cosine_mean": 0.3435371275925595
+   },
+   "posx_posy_inner": {
+    "capture": 0.25,
+    "episodes": 40,
+    "expert_cosine_mean": 0.6866209209668194
+   },
+   "posx_posy_outer": {
+    "capture": 0.025,
+    "episodes": 40,
+    "expert_cosine_mean": 0.38625414774700767
+   }
+  },
+  "regions": {
+   "negx_negy_inner": {
+    "capture": 0.475,
+    "episodes": 40,
+    "expert_cosine_mean": 0.3873978033639361
+   },
+   "negx_negy_outer": {
+    "capture": 0.6,
+    "episodes": 40,
+    "expert_cosine_mean": 0.4450454888571192
+   },
+   "negx_posy_inner": {
+    "capture": 0.575,
+    "episodes": 40,
+    "expert_cosine_mean": 0.439392854300866
+   },
+   "negx_posy_outer": {
+    "capture": 0.375,
+    "episodes": 40,
+    "expert_cosine_mean": -0.08905340294303461
+   },
+   "posx_negy_inner": {
+    "capture": 0.85,
+    "episodes": 40,
+    "expert_cosine_mean": 0.6659576301801544
+   },
+   "posx_negy_outer": {
+    "capture": 0.55,
+    "episodes": 40,
+    "expert_cosine_mean": 0.4137104959620947
+   },
+   "posx_posy_inner": {
+    "capture": 0.6,
+    "episodes": 40,
+    "expert_cosine_mean": 0.4672672816839895
+   },
+   "posx_posy_outer": {
+    "capture": 0.475,
+    "episodes": 40,
+    "expert_cosine_mean": 0.39429142495677105
+   }
+  }
+ },
+ "202": {
+  "parent_regions": {
+   "negx_negy_inner": {
+    "capture": 0.3,
+    "episodes": 40,
+    "expert_cosine_mean": 0.6500272680481922
+   },
+   "negx_negy_outer": {
+    "capture": 0.1,
+    "episodes": 40,
+    "expert_cosine_mean": 0.2990287127807541
+   },
+   "negx_posy_inner": {
+    "capture": 0.05,
+    "episodes": 40,
+    "expert_cosine_mean": 0.7076745551615737
+   },
+   "negx_posy_outer": {
+    "capture": 0.0,
+    "episodes": 40,
+    "expert_cosine_mean": 0.45303681104754034
+   },
+   "posx_negy_inner": {
+    "capture": 0.275,
+    "episodes": 40,
+    "expert_cosine_mean": 0.6760184294717124
+   },
+   "posx_negy_outer": {
+    "capture": 0.0,
+    "episodes": 40,
+    "expert_cosine_mean": 0.3444133435191266
+   },
+   "posx_posy_inner": {
+    "capture": 0.15,
+    "episodes": 40,
+    "expert_cosine_mean": 0.6678934950229729
+   },
+   "posx_posy_outer": {
+    "capture": 0.0,
+    "episodes": 40,
+    "expert_cosine_mean": 0.4747111814241237
+   }
+  },
+  "regions": {
+   "negx_negy_inner": {
+    "capture": 0.525,
+    "episodes": 40,
+    "expert_cosine_mean": 0.4490807080740622
+   },
+   "negx_negy_outer": {
+    "capture": 0.3,
+    "episodes": 40,
+    "expert_cosine_mean": 0.3911225726775908
+   },
+   "negx_posy_inner": {
+    "capture": 0.525,
+    "episodes": 40,
+    "expert_cosine_mean": 0.3946647243896568
+   },
+   "negx_posy_outer": {
+    "capture": 0.575,
+    "episodes": 40,
+    "expert_cosine_mean": 0.47057519489438443
+   },
+   "posx_negy_inner": {
+    "capture": 0.6,
+    "episodes": 40,
+    "expert_cosine_mean": 0.44726872816164354
+   },
+   "posx_negy_outer": {
+    "capture": 0.725,
+    "episodes": 40,
+    "expert_cosine_mean": 0.4512287394719326
+   },
+   "posx_posy_inner": {
+    "capture": 0.425,
+    "episodes": 40,
+    "expert_cosine_mean": 0.41961066621209764
+   },
+   "posx_posy_outer": {
+    "capture": 0.4,
+    "episodes": 40,
+    "expert_cosine_mean": 0.3699658176345874
+   }
+  }
+ },
+ "203": {
+  "parent_regions": {
+   "negx_negy_inner": {
+    "capture": 0.025,
+    "episodes": 40,
+    "expert_cosine_mean": 0.7136348671713652
+   },
+   "negx_negy_outer": {
+    "capture": 0.05,
+    "episodes": 40,
+    "expert_cosine_mean": 0.5216122044028002
+   },
+   "negx_posy_inner": {
+    "capture": 0.125,
+    "episodes": 40,
+    "expert_cosine_mean": 0.6749070670086696
+   },
+   "negx_posy_outer": {
+    "capture": 0.05,
+    "episodes": 40,
+    "expert_cosine_mean": 0.4240368445602763
+   },
+   "posx_negy_inner": {
+    "capture": 0.425,
+    "episodes": 40,
+    "expert_cosine_mean": 0.6977627537854671
+   },
+   "posx_negy_outer": {
+    "capture": 0.075,
+    "episodes": 40,
+    "expert_cosine_mean": 0.347992054762225
+   },
+   "posx_posy_inner": {
+    "capture": 0.05,
+    "episodes": 40,
+    "expert_cosine_mean": 0.7104870144157024
+   },
+   "posx_posy_outer": {
+    "capture": 0.0,
+    "episodes": 40,
+    "expert_cosine_mean": 0.3052848525319748
+   }
+  },
+  "regions": {
+   "negx_negy_inner": {
+    "capture": 0.35,
+    "episodes": 40,
+    "expert_cosine_mean": 0.418630377564084
+   },
+   "negx_negy_outer": {
+    "capture": 0.575,
+    "episodes": 40,
+    "expert_cosine_mean": 0.4758176428710446
+   },
+   "negx_posy_inner": {
+    "capture": 0.725,
+    "episodes": 40,
+    "expert_cosine_mean": 0.48739158378479636
+   },
+   "negx_posy_outer": {
+    "capture": 0.4,
+    "episodes": 40,
+    "expert_cosine_mean": 0.4241825452135415
+   },
+   "posx_negy_inner": {
+    "capture": 0.55,
+    "episodes": 40,
+    "expert_cosine_mean": 0.4486717823536499
+   },
+   "posx_negy_outer": {
+    "capture": 0.35,
+    "episodes": 40,
+    "expert_cosine_mean": 0.41309412170739607
+   },
+   "posx_posy_inner": {
+    "capture": 0.575,
+    "episodes": 40,
+    "expert_cosine_mean": 0.45009805512688633
+   },
+   "posx_posy_outer": {
+    "capture": 0.8,
+    "episodes": 40,
+    "expert_cosine_mean": 0.6285466665731616
+   }
+  }
+ }
+}

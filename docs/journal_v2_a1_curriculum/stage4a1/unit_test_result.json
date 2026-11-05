@@ -1,0 +1,17 @@
+{
+ "file": "tests/test_journal_v2_a1_cur4a1.py",
+ "passed": 24,
+ "failed": 0,
+ "covers": [
+  "feasible-box translation math (exact margin constraints, no clipping; infeasible targets raise TranslationInfeasible and are never silently clipped)",
+  "translation preserves relative geometry (attacker-asset range, endurance budget) and respects the safety margin; asset position after translation == the sampled delta (asset started at the origin); z unaffected",
+  "asset is stationary within an episode (v_s = 0); defender remains masked/parked/non-intercepting under translation; observation carries only the CURRENT (translated) asset position, no future information",
+  "deterministic replay; stratified translation-generalization scenarios fit their quadrant/magnitude target within jitter",
+  "expert dataset: episode-level 80/20 split with no leakage, quadrant coverage; expert labels are normalized A0 directions with no future information",
+  "retention dataset: state classification (not_visible/newly_visible/active_evasion/post_pass_pursuit) consistent with detection/closest step; labels are the PARENT's own actions, not A0's",
+  "combined-loss BC: initialize_model copies actor+critic exactly and forces log_std=-2.0; train_combined trains the actor only (critic and log_std provably unchanged) and reduces validation loss; epoch checkpoint/resume matches an uninterrupted run bit-for-bit; model save/load round-trip preserves actor weights",
+  "asset-input sensitivity metric distinguishes an untrained (orthogonal-init, ratio < 20%) from a goal-sensitive input; namespaces fresh/disjoint; frozen gate boundary cases",
+  "parents are the pre-registered Stage3-v2 hashes (not the failed Stage4/Stage4A models); protocol is stable and documents the translation/retention design; 15-stage task state + isolated output namespace"
+ ],
+ "note": "the targeted suite validates mechanics (translation math, dataset generation, combined-loss training, resume) with small real rollouts; it does not reproduce the closed-loop covariate-shift failure found in the full run (that requires the full ~67k-pair dataset and multiple epochs) - see README.md / manuscript_notes.md for that analysis."
+}

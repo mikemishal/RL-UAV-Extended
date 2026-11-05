@@ -1,0 +1,61 @@
+{
+ "all_three_mastered": false,
+ "common_structural_pathology": {},
+ "figures": [
+  "docs/journal_v2_a1_curriculum/stage4a1/figures/fig1_translated_capture_vs_epoch.png",
+  "docs/journal_v2_a1_curriculum/stage4a1/figures/fig1_translated_capture_vs_epoch.pdf",
+  "docs/journal_v2_a1_curriculum/stage4a1/figures/fig2_a0_cosine_vs_epoch.png",
+  "docs/journal_v2_a1_curriculum/stage4a1/figures/fig2_a0_cosine_vs_epoch.pdf",
+  "docs/journal_v2_a1_curriculum/stage4a1/figures/fig3_sensitivity_pre_vs_post.png",
+  "docs/journal_v2_a1_curriculum/stage4a1/figures/fig3_sensitivity_pre_vs_post.pdf",
+  "docs/journal_v2_a1_curriculum/stage4a1/figures/fig4_retention_anchors_vs_epoch.png",
+  "docs/journal_v2_a1_curriculum/stage4a1/figures/fig4_retention_anchors_vs_epoch.pdf",
+  "docs/journal_v2_a1_curriculum/stage4a1/figures/fig5_capture_by_translation_region.png",
+  "docs/journal_v2_a1_curriculum/stage4a1/figures/fig5_capture_by_translation_region.pdf",
+  "docs/journal_v2_a1_curriculum/stage4a1/figures/fig6_translated_trajectories_202.png",
+  "docs/journal_v2_a1_curriculum/stage4a1/figures/fig6_translated_trajectories_202.pdf"
+ ],
+ "needs_manual_review": false,
+ "promising_seeds": [],
+ "representation": {
+  "201": {
+   "passed": false,
+   "post_ratio": 1.144404649734497,
+   "pre_ratio": 0.022169936448335648,
+   "region_gate": false,
+   "region_min_capture": 0.375,
+   "sensitivity_gain": 51.619663069463165,
+   "sensitivity_gate": true
+  },
+  "202": {
+   "passed": false,
+   "post_ratio": 0.6928341388702393,
+   "pre_ratio": 0.025231150910258293,
+   "region_gate": false,
+   "region_min_capture": 0.3,
+   "sensitivity_gain": 27.459474256029754,
+   "sensitivity_gate": true
+  },
+  "203": {
+   "passed": false,
+   "post_ratio": 0.8187517523765564,
+   "pre_ratio": 0.02144031599164009,
+   "region_gate": false,
+   "region_min_capture": 0.35,
+   "sensitivity_gain": 38.18748532884498,
+   "sensitivity_gate": true
+  }
+ },
+ "rule": ">= 2/3 seeds master (2 consecutive epoch passes), retain all three anchors, AND pass the representation gate (sensitivity ratio >= 2x PRE, no region < 95%); no shared pathology; verdict B if not passed but >= 1 mastered or >= 2 seeds with capture >= 0.80 and sensitivity gain >= 1.5x",
+ "seeds_mastered": [],
+ "seeds_passing_representation_gate": [],
+ "seeds_retaining_all_anchors": [],
+ "stage4a1_pass": false,
+ "training_status": {
+  "201": "RETENTION_FAILURE",
+  "202": "RETENTION_FAILURE",
+  "203": "RETENTION_FAILURE"
+ },
+ "trajectory_figure_seed": 202,
+ "verdict": "C"
+}

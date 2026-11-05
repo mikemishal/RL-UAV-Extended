@@ -1,0 +1,8 @@
+{
+ "margin_m": 5.0,
+ "max_abs_translation_consistency_error_m": 3.0172661240612797e-06,
+ "max_relative_range_change_m": 0.0,
+ "relative_geometry_preserved": true,
+ "scenarios_checked": 200,
+ "translation_applied_consistently": true
+}

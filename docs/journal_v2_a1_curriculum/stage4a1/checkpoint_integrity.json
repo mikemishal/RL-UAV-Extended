@@ -1,0 +1,27 @@
+{
+ "all_ok": true,
+ "stage4a1": {
+  "seed_201": {
+   "accepted_sha256": "06cb8fdfff653f4efb63d5d16fe762565fdf7a652f610af389b8726d774dfa58",
+   "matches_manifest": true,
+   "parent_matches_preregistered": true,
+   "parent_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+   "status": "RETENTION_FAILURE"
+  },
+  "seed_202": {
+   "accepted_sha256": "75c6f1517d93cbd7edd6f9cd841f875bd80145de0064b658f1e76711487ac28c",
+   "matches_manifest": true,
+   "parent_matches_preregistered": true,
+   "parent_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485",
+   "status": "RETENTION_FAILURE"
+  },
+  "seed_203": {
+   "accepted_sha256": "b55c85ea95cc9aa3c08b6c66427443cc887ce1d2bdb879ff0efd9579b797bb9e",
+   "matches_manifest": true,
+   "parent_matches_preregistered": true,
+   "parent_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+   "status": "RETENTION_FAILURE"
+  }
+ },
+ "through_stage4a": "verified by 01_repository_verification (see repository_verification.json)"
+}

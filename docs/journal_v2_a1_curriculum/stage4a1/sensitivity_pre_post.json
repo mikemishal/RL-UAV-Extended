@@ -1,0 +1,143 @@
+{
+ "201": {
+  "gate": {
+   "passed": false,
+   "post_ratio": 1.144404649734497,
+   "pre_ratio": 0.022169936448335648,
+   "region_gate": false,
+   "region_min_capture": 0.375,
+   "sensitivity_gain": 51.619663069463165,
+   "sensitivity_gate": true
+  },
+  "post": {
+   "asset_to_attacker_sensitivity_ratio": 1.144404649734497,
+   "first_layer_column_norm_asset_xyz": [
+    2.155580520629883,
+    2.1870267391204834,
+    1.4142135381698608
+   ],
+   "first_layer_column_norm_attacker_xyz": [
+    10.648550987243652,
+    9.51868724822998,
+    7.709001541137695
+   ],
+   "jacobian_norm_asset_xy_mean": 1.245491862297058,
+   "jacobian_norm_attacker_xy_mean": 1.088331699371338,
+   "orthogonal_init_column_norm": 1.4142135623730951,
+   "relative_alignment_mean": 0.4587291479110718,
+   "states": 5345
+  },
+  "pre": {
+   "asset_to_attacker_sensitivity_ratio": 0.022169936448335648,
+   "first_layer_column_norm_asset_xyz": [
+    1.4142135381698608,
+    1.4142136573791504,
+    1.4142135381698608
+   ],
+   "first_layer_column_norm_attacker_xyz": [
+    11.059039115905762,
+    10.001843452453613,
+    8.070417404174805
+   ],
+   "jacobian_norm_asset_xy_mean": 0.09258902817964554,
+   "jacobian_norm_attacker_xy_mean": 4.176332473754883,
+   "orthogonal_init_column_norm": 1.4142135623730951,
+   "relative_alignment_mean": -0.19800718128681183,
+   "states": 2515
+  }
+ },
+ "202": {
+  "gate": {
+   "passed": false,
+   "post_ratio": 0.6928341388702393,
+   "pre_ratio": 0.025231150910258293,
+   "region_gate": false,
+   "region_min_capture": 0.3,
+   "sensitivity_gain": 27.459474256029754,
+   "sensitivity_gate": true
+  },
+  "post": {
+   "asset_to_attacker_sensitivity_ratio": 0.6928341388702393,
+   "first_layer_column_norm_asset_xyz": [
+    2.241302013397217,
+    2.0555531978607178,
+    1.4142135381698608
+   ],
+   "first_layer_column_norm_attacker_xyz": [
+    10.545500755310059,
+    10.888761520385742,
+    9.603769302368164
+   ],
+   "jacobian_norm_asset_xy_mean": 0.8592690825462341,
+   "jacobian_norm_attacker_xy_mean": 1.2402234077453613,
+   "orthogonal_init_column_norm": 1.4142135623730951,
+   "relative_alignment_mean": 0.788126528263092,
+   "states": 1450
+  },
+  "pre": {
+   "asset_to_attacker_sensitivity_ratio": 0.025231150910258293,
+   "first_layer_column_norm_asset_xyz": [
+    1.4142135381698608,
+    1.4142134189605713,
+    1.4142135381698608
+   ],
+   "first_layer_column_norm_attacker_xyz": [
+    10.98823356628418,
+    11.474447250366211,
+    9.992670059204102
+   ],
+   "jacobian_norm_asset_xy_mean": 0.10905953496694565,
+   "jacobian_norm_attacker_xy_mean": 4.322416305541992,
+   "orthogonal_init_column_norm": 1.4142135623730951,
+   "relative_alignment_mean": 0.17696279287338257,
+   "states": 2361
+  }
+ },
+ "203": {
+  "gate": {
+   "passed": false,
+   "post_ratio": 0.8187517523765564,
+   "pre_ratio": 0.02144031599164009,
+   "region_gate": false,
+   "region_min_capture": 0.35,
+   "sensitivity_gain": 38.18748532884498,
+   "sensitivity_gate": true
+  },
+  "post": {
+   "asset_to_attacker_sensitivity_ratio": 0.8187517523765564,
+   "first_layer_column_norm_asset_xyz": [
+    2.2666449546813965,
+    2.208587408065796,
+    1.4142134189605713
+   ],
+   "first_layer_column_norm_attacker_xyz": [
+    10.042978286743164,
+    13.145231246948242,
+    9.328657150268555
+   ],
+   "jacobian_norm_asset_xy_mean": 1.0642756223678589,
+   "jacobian_norm_attacker_xy_mean": 1.2998758554458618,
+   "orthogonal_init_column_norm": 1.4142135623730951,
+   "relative_alignment_mean": 0.7870654463768005,
+   "states": 1448
+  },
+  "pre": {
+   "asset_to_attacker_sensitivity_ratio": 0.02144031599164009,
+   "first_layer_column_norm_asset_xyz": [
+    1.41421377658844,
+    1.4142135381698608,
+    1.4142134189605713
+   ],
+   "first_layer_column_norm_attacker_xyz": [
+    10.688021659851074,
+    13.594273567199707,
+    9.658172607421875
+   ],
+   "jacobian_norm_asset_xy_mean": 0.10829013586044312,
+   "jacobian_norm_attacker_xy_mean": 5.050771236419678,
+   "orthogonal_init_column_norm": 1.4142135623730951,
+   "relative_alignment_mean": 0.2423090785741806,
+   "states": 2331
+  }
+ }
+}

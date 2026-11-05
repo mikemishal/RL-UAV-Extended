@@ -1,0 +1,229 @@
+{
+ "architecture": "unchanged SB3 MlpPolicy [64,64] tanh, 37-D -> 3-D Gaussian; ONLY mlp_extractor.policy_net and action_net are trained (actor only); log_std frozen at -2.0; critic untouched.",
+ "curriculum_mode": "curriculum_translated_goal_conditioned_imitation",
+ "dataset": {
+  "episodes": 6000,
+  "expert_scenarios": [
+   172000,
+   177999
+  ],
+  "split": "by episode, 80% train / 20% val (seeded permutation, Stage-1-v2 split mechanism)",
+  "target_pairs": "60,000-80,000"
+ },
+ "environment": {
+  "asset": "STATIONARY within an episode (v_s = 0); position is TRANSLATED (not moved during the episode)",
+  "config_differences_from_canonical": {
+   "defender_standby_until_detection": {
+    "canonical": true,
+    "stage1_v2": false
+   },
+   "intercept_radius": {
+    "canonical": 2.5,
+    "stage1_v2": 1e-06
+   },
+   "v_s": {
+    "canonical": 1.5,
+    "stage1_v2": 0.0
+   }
+  },
+  "env_config_sha256": "b02c34240e8453f7d27c7be71c55830796105059234c801cebabc4f1be3cec81",
+  "mechanism": "unchanged Stage-1-v2 curriculum_basic_pursuit_no_defender_interaction (defender parked + masked + non-intercepting)",
+  "translation": {
+   "feasible_box": "exact per-scenario box from the edge-spawn point and the origin-starting asset; no clipping, invalid targets are rejected (`TranslationInfeasible`) and a different scenario seed is tried",
+   "margin_m": 5.0,
+   "mechanism": "both the attacker's canonical perimeter-spawn position and the asset's origin are shifted by the SAME horizontal vector delta, drawn from a dedicated stream (tag 0xc4a2) independent of spawn/soldier/enemy/sensor/obstacle streams; relative geometry and the endurance budget (computed from the initial 3-D distance) are therefore exactly preserved"
+  }
+ },
+ "expert": "canonical scripted A0 (direct_obstacle_only): normalized desired direction unit(p_asset - p_attacker) at the CURRENT (translated) state; no privileged/future information.",
+ "gate": {
+  "anchor1_capture_min": 0.99,
+  "anchor2_capture_min": 0.8,
+  "anchor3_capture_min": 0.75,
+  "capture_min": 0.99,
+  "cosine_mean_min": 0.995,
+  "cosine_min_min": 0.95,
+  "exhaustion_max": 0.0,
+  "gt2_max": 0.01,
+  "gt5_max": 0.0,
+  "median_path_excess_max": 1.2,
+  "nonfinite_max": 0,
+  "orbit_episodes_max": 0,
+  "timeout_max": 0.0
+ },
+ "generalization_strata": {
+  "negx_negy_inner": [
+   -10.606601717798211,
+   -10.606601717798211
+  ],
+  "negx_negy_outer": [
+   -24.74873734152916,
+   -24.74873734152916
+  ],
+  "negx_posy_inner": [
+   -10.606601717798211,
+   10.606601717798211
+  ],
+  "negx_posy_outer": [
+   -24.74873734152916,
+   24.74873734152916
+  ],
+  "posx_negy_inner": [
+   10.606601717798211,
+   -10.606601717798211
+  ],
+  "posx_negy_outer": [
+   24.74873734152916,
+   -24.74873734152916
+  ],
+  "posx_posy_inner": [
+   10.606601717798211,
+   10.606601717798211
+  ],
+  "posx_posy_outer": [
+   24.74873734152916,
+   24.74873734152916
+  ]
+ },
+ "hypothesis": "The Stage-4 moving-target failure was caused in part by inadequate dependence on asset-position inputs created by fixed-origin curriculum training. Randomizing the stationary goal location during expert imitation should produce translation-aware pursuit while preserving previously learned defender-evasion behavior.",
+ "identifiers": {
+  "action": "a1_cur1_action_v1",
+  "bc_protocol": "a1_cur4a1_goal_conditioned_bc_v1",
+  "curriculum": "journal_v2_a1_curriculum",
+  "observation": "a1_v2_obs_v1",
+  "reward": "a1_v2_reward_v2",
+  "stage": "stage4a1"
+ },
+ "mastery": "two consecutive epoch validations pass ALL gate checks",
+ "objective": {
+  "L_goal": "MSE(a, a_A0) + (1 - cos(a, a_A0))",
+  "L_retain": "MSE(a, a_parent) + (1 - cos(a, a_parent))",
+  "L_total": "L_goal + 0.25 * L_retain",
+  "epoch_selection": "lowest combined validation loss",
+  "log_std": -2.0,
+  "max_epochs": 20,
+  "no_ppo_learn": true,
+  "trained_parameters": [
+   "mlp_extractor.policy_net",
+   "action_net"
+  ],
+  "weight_frozen_before_training": 0.25
+ },
+ "observation_audit": "a1_v2_obs_v1 (37-D) unchanged; no new features; translation tests whether the EXISTING asset-position slots (3-5) can be learned to carry goal information.",
+ "parents": {
+  "checkpoints": {
+   "201": {
+    "model_sha256": "c60ae85d0c0b84c2b52dd4d0c280ccede9f6ecae6166448bd3a9de8218988e78",
+    "rollout": 3,
+    "status": "quantitatively_accepted_curriculum_parent"
+   },
+   "202": {
+    "model_sha256": "3dfabf5cf245bc07aa02ac67840792c9a422724a7784be2efe07d196389ba485",
+    "rollout": 5,
+    "status": "quantitatively_accepted_curriculum_parent"
+   },
+   "203": {
+    "model_sha256": "818338a5579e1e63259dff8fb94a61f2518a2e61db9901e158703a177951b52c",
+    "rollout": 7,
+    "status": "quantitatively_accepted_curriculum_parent"
+   }
+  },
+  "note": "accepted Stage3-v2 curriculum checkpoints (NOT the failed Stage-4/4A models)",
+  "status": "quantitatively_accepted_curriculum_parent"
+ },
+ "prior_evidence": {
+  "stage4": {
+   "commit": "15faece",
+   "result": "0/3 mastered; repeated fly-bys"
+  },
+  "stage4a": {
+   "commit": "9984495",
+   "final_sha256": {
+    "201": "4b94fe90d05ecdfa8f894894447251b7c102f3a840a07b249e9ffdac304dde95",
+    "202": "26ed0b49b462b52ddc62509de7eca5f25441a4e1d7f1b4f5a9b488899904e343",
+    "203": "bf2f5d97a90b6959e8e551f252a9c5a6f7dc92548d06a3a0492bc19a2bc77938"
+   },
+   "result": "0/3 mastered; asset-input sensitivity ratio only 2.1-2.5% PRE (Stage3-v2 parents), ~10% POST Stage-4A (393k PPO steps)"
+  }
+ },
+ "prior_stage4a_protocol_sha256": "402849afcdd6767bf0ffb78adbf6ed20f6feafc554597bae83779adcb58856a7",
+ "protocol_sha256": "4a4b91aa92d5bc970e52f7da38227b23c710e85c39be31c084ec3a0127ca9a75",
+ "representation_gate": {
+  "asset_sensitivity_ratio_min_gain": 2.0,
+  "quadrant_capture_min": 0.95,
+  "rule": "for each PASSING seed: POST asset/attacker sensitivity ratio >= 2x PRE, AND no translation-generalization region captures below 95%"
+ },
+ "retention": {
+  "anchors": {
+   "anchor1_basic_pursuit": 0.99,
+   "anchor2_static_defender": 0.8,
+   "anchor3_moving_defender": 0.75
+  },
+  "stop": "capture below the anchor minimum on 2 consecutive epochs on ANY anchor => retention failure"
+ },
+ "retention_dataset": {
+  "label": "parent policy deterministic mean action at the visited state",
+  "no_future_outcome_labels": true,
+  "seeds": [
+   191200,
+   192199
+  ],
+  "source": "reserved Stage3-v2 (moving-defender) scenarios, driven by the SEED'S OWN Stage3-v2 parent policy (not A0)",
+  "state_classes": [
+   "not_visible",
+   "newly_visible",
+   "active_evasion",
+   "post_pass_pursuit"
+  ],
+  "target_states_per_seed": 12000
+ },
+ "success_rule": ">= 2/3 seeds master, representation gate passes, Stage1/2/3 retention holds, no shared pathology; < 2 => STOP, do not proceed to moving-asset imitation",
+ "tests": "representation/curriculum intervention: randomized-origin goal conditioning by A0 imitation (NOT a new controller architecture, NOT PPO learn())",
+ "validation": {
+  "A": [
+   178000,
+   178099
+  ],
+  "B": [
+   178100,
+   178199
+  ],
+  "anchor1_basic_pursuit": [
+   178200,
+   178299
+  ],
+  "anchor2_static_defender": [
+   178300,
+   178399
+  ],
+  "anchor3_moving_defender": [
+   178400,
+   178499
+  ],
+  "final": "178000-178199 (200 episodes), translated full-coverage held-out",
+  "generalization": [
+   178500,
+   179499
+  ],
+  "namespace_overlaps": {
+   "anchor1": [],
+   "anchor2": [],
+   "anchor3": [],
+   "expert": [],
+   "generalization": [],
+   "mutual": [],
+   "retention_source": [],
+   "training_overlap": [],
+   "training_stream": [
+    1000000,
+    2147483647
+   ],
+   "validation_A": [],
+   "validation_B": []
+  },
+  "retention_source": [
+   191200,
+   192199
+  ]
+ },
+ "version": "a1_curriculum_stage4a1"
+}
