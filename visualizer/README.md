@@ -11,7 +11,7 @@ performs policy inference, or changes recorded outcomes.
 
 ## Scientific integrity and coordinate decision
 
-Based on local research commit `9984495a4835fba393908ed8ef6688f717cc23cf` (curriculum Stage4A evidence: isolated moving-target pursuit, 0/3 seeds mastered, verdict C, no review IDs registered; on top of Stage4 `15faece` evidence: moving canonical asset + moving defender, 0/3 mastered, verdict C; on top of Stage3-v2 `3a2b23f` evidence: hold-until-detection Greedy, 3/3 seeds mastered, provisional curriculum checkpoints; Stage2-v2 budget-extension evidence `1214c38`, 0/3 mastered; Stage-1-v2 BC attackers `A1-BC1-*` unchanged; tag `journal-v2-a1-curriculum-bc-stage1-v1`; on top of tag
+Based on local research commit `2f45914ca9d4fe2521c2fdbe3e11f62c1ebfaa6b` (curriculum Stage4A-1 evidence: goal-conditioned translated-target imitation, 0/3 seeds mastered, verdict C, no review IDs registered; on top of Stage4A `9984495` evidence: isolated moving-target pursuit, 0/3 mastered, verdict C; on top of Stage4 `15faece` evidence: moving canonical asset + moving defender, 0/3 mastered, verdict C; on top of Stage3-v2 `3a2b23f` evidence: hold-until-detection Greedy, 3/3 seeds mastered, provisional curriculum checkpoints; Stage2-v2 budget-extension evidence `1214c38`, 0/3 mastered; Stage-1-v2 BC attackers `A1-BC1-*` unchanged; tag `journal-v2-a1-curriculum-bc-stage1-v1`; on top of tag
 `journal-v2-a1-training-protocol-v1`; frozen canonical A0 is tag `journal-v2-a0-canonical-v1`, `bdbee45…`)
 (branch `research/journal-corrected-attacker-v2`),
 not a remote branch. All additions are confined to this `visualizer` directory.
