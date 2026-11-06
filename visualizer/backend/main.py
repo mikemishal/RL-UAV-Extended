@@ -18,7 +18,18 @@ from .case_library import (
     filter_cases,
 )
 from .application_error import ApplicationError
-from .config import Settings, load_settings, local_output_root
+from .config import Settings, episode_store_root, load_settings, local_output_root
+from .episode_models import (
+    BulkDeleteRequest,
+    BulkDeleteResponse,
+    DeleteOutcome,
+    EpisodeCreateRequest,
+    EpisodeListResponse,
+    EpisodeMetadata,
+    SCENARIO_PRESETS,
+)
+from .episode_service import EpisodeService
+from .episode_store import EpisodeStore
 from .errors import ErrorDetail, register_error_handlers
 from .precomputed_cases import PrecomputedCaseProvider
 from .replay_contract import ReplayBundle
@@ -45,6 +56,13 @@ class HealthResponse(BaseModel):
     simulation_enabled: bool
     data_root: Literal["configured", "not_configured"]
     warnings: list[ErrorDetail]
+    # ---- Simplified two-scenario episode backend (additive, backward-compatible fields) ----
+    research_source_available: bool = False
+    a0_available: bool = False
+    a1_cbf_available: bool = False
+    episode_storage_writable: bool = False
+    new_episode_count: int = 0
+    saved_episode_count: int = 0
 
 
 def create_app(
@@ -52,6 +70,7 @@ def create_app(
     *,
     catalog_provider: CatalogProvider | None = None,
     job_manager: ReplayJobManager | None = None,
+    episode_service: EpisodeService | None = None,
 ) -> FastAPI:
     configured = settings if settings is not None else load_settings()
     catalog = catalog_provider if catalog_provider is not None else CatalogProvider(configured)
@@ -64,6 +83,9 @@ def create_app(
         application.state.jobs = job_manager if job_manager is not None else ReplayJobManager(configured, catalog)
         application.state.cases = CaseLibrary(application.state.jobs.get_replay)
         application.state.precomputed_cases = PrecomputedCaseProvider(configured)
+        application.state.episodes = (
+            episode_service if episode_service is not None else EpisodeService(configured, EpisodeStore(episode_store_root()))
+        )
         if configured.research_data_root is None:
             logger.warning("DATA_ROOT_NOT_CONFIGURED: set VISUALIZER_RESEARCH_DATA_ROOT in visualizer\\.env")
         try:
@@ -88,12 +110,62 @@ def create_app(
         warnings = [] if configured else [
             ErrorDetail(code="DATA_ROOT_NOT_CONFIGURED", message="Set VISUALIZER_RESEARCH_DATA_ROOT in the local backend configuration.")
         ]
+        episodes = application.state.episodes
+        new_count, saved_count = episodes.counts()
         return HealthResponse(
             status="ok" if configured else "degraded",
             simulation_enabled=configured,
             data_root="configured" if configured else "not_configured",
             warnings=warnings,
+            research_source_available=episodes.research_source_available(),
+            a0_available=episodes.a0_available(),
+            a1_cbf_available=episodes.a1_cbf_available(),
+            episode_storage_writable=episodes.storage_writable(),
+            new_episode_count=new_count,
+            saved_episode_count=saved_count,
         )
+
+    # ---- Simplified two-scenario episode backend (brief sections 2-16): a SEPARATE, additive API. The
+    # frontend never needs to know about C0/C2 clutter levels or controller internals -- only `scenario`,
+    # `defender`, and an optional `seed`. The attacker is ALWAYS auto-resolved from the scenario. ----
+    @application.get("/api/scenario-presets")
+    def scenario_presets() -> dict:
+        return {"presets": [preset.model_dump(mode="json") for preset in SCENARIO_PRESETS.values()]}
+
+    @application.post("/api/episodes", response_model=EpisodeMetadata, status_code=status.HTTP_201_CREATED)
+    def create_episode(request: EpisodeCreateRequest) -> EpisodeMetadata:
+        return application.state.episodes.create_episode(request)
+
+    @application.get("/api/episodes", response_model=EpisodeListResponse)
+    def list_episodes(
+        new: bool | None = Query(default=None),
+        scenario: str | None = Query(default=None),
+        defender: str | None = Query(default=None),
+    ) -> EpisodeListResponse:
+        episodes_service = application.state.episodes
+        filtered = episodes_service.list_episodes(new=new, scenario=scenario, defender=defender)
+        new_count, saved_count = episodes_service.counts()
+        return EpisodeListResponse(episodes=filtered, total=len(filtered), new_count=new_count, saved_count=saved_count)
+
+    @application.get("/api/episodes/{episode_id}")
+    def get_episode(episode_id: str) -> dict:
+        metadata, replay = application.state.episodes.get_episode(episode_id)
+        return {"metadata": metadata.model_dump(mode="json"), "replay": replay}
+
+    @application.delete("/api/episodes/{episode_id}")
+    def delete_episode(episode_id: str) -> DeleteOutcome:
+        deleted = application.state.episodes.delete_episode(episode_id)
+        if not deleted:
+            raise ApplicationError("EPISODE_NOT_FOUND", f"No episode {episode_id!r} exists.", 404)
+        return DeleteOutcome(episode_id=episode_id, deleted=True)
+
+    @application.post("/api/episodes/delete", response_model=BulkDeleteResponse)
+    def bulk_delete_episodes(request: BulkDeleteRequest) -> BulkDeleteResponse:
+        results = application.state.episodes.delete_many(request.episode_ids)
+        return BulkDeleteResponse(results=[
+            DeleteOutcome(episode_id=episode_id, deleted=deleted, reason=None if deleted else "not_found")
+            for episode_id, deleted in results.items()
+        ])
 
     @application.get("/api/policies")
     def policies() -> dict:

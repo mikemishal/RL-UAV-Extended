@@ -9,6 +9,9 @@ from pydantic import BaseModel, ConfigDict, field_validator
 
 VISUALIZER_ROOT = Path(__file__).resolve().parents[1]
 LOCAL_OUTPUT_ROOT = VISUALIZER_ROOT / "data" / "local"
+# Simplified-API episode storage (brief section 7) -- SEPARATE from LOCAL_OUTPUT_ROOT's replay-job/case-library
+# area; episodes created through the two-scenario API have no checkpoint provenance to verify.
+EPISODE_STORE_ROOT = VISUALIZER_ROOT / "data" / "episodes"
 
 
 class ConfigurationError(ValueError):
@@ -95,4 +98,12 @@ def local_output_root() -> Path:
     resolved = LOCAL_OUTPUT_ROOT.resolve()
     if not resolved.is_relative_to(VISUALIZER_ROOT.resolve()):
         raise ConfigurationError("Visualization output must remain inside the visualizer worktree.")
+    return resolved
+
+
+def episode_store_root() -> Path:
+    resolved = EPISODE_STORE_ROOT.resolve()
+    if not resolved.is_relative_to(VISUALIZER_ROOT.resolve()):
+        raise ConfigurationError("Episode storage must remain inside the visualizer worktree.")
+    resolved.mkdir(parents=True, exist_ok=True)
     return resolved

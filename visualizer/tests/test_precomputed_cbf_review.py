@@ -160,7 +160,7 @@ def test_health_endpoint_still_returns_200_with_new_routes_present():
 
 # ----------------------------------------------------------------------------- 5: research-source pin
 def test_research_pin_matches_the_cbf_attacker_commit():
-    assert EXPECTED_RESEARCH_COMMIT == "9f2a103650767d57c611da733bfbe3f3737f54c6"
+    assert EXPECTED_RESEARCH_COMMIT == "a989217b38dc0316718d04e41b065943fec29ce7"
 
 
 # ----------------------------------------------------------------------------- 6: outcome metadata

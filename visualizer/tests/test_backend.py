@@ -30,6 +30,10 @@ def test_health_without_data_root():
             "service": "counter-uas-visualizer", "phase": 3, "status": "degraded",
             "simulation_enabled": False, "data_root": "not_configured",
             "warnings": [{"code": "DATA_ROOT_NOT_CONFIGURED", "message": "Set VISUALIZER_RESEARCH_DATA_ROOT in the local backend configuration."}],
+            # Simplified two-scenario episode backend fields (additive, brief section 17): everything reports
+            # unavailable/empty when no research data root is configured at all.
+            "research_source_available": False, "a0_available": False, "a1_cbf_available": False,
+            "episode_storage_writable": True, "new_episode_count": 0, "saved_episode_count": 0,
         }
 
 
@@ -40,7 +44,7 @@ def test_configured_health_and_no_path_endpoint(research_root):
         assert body["warnings"] == []
         assert str(research_root) not in str(body)
         assert client.get("/api/files", params={"path": str(research_root)}).status_code == 404
-        assert client.post("/api/episodes", json={"path": "C:\\private"}).status_code == 404
+        assert client.post("/api/private-files", json={"path": "C:\\private"}).status_code == 404
         assert client.get("/api/missing").json()["error"]["code"] == "HTTP_ERROR"
 
 
