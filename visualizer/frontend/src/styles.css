@@ -308,3 +308,37 @@ button.paired-seed-row { cursor: pointer; }
 .case-success { margin: 8px 0; color: #91dfc0; }
 .capture-status { margin: 8px 0; color: #91dfc0; }
 @media (max-width: 850px) { .case-columns { grid-template-columns: minmax(0, 1fr); }.research-cases-heading { align-items: stretch; flex-direction: column; }.research-cases-heading label { min-width: 0; }.case-form-grid, .case-filter-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* A1-CBF defender-review precomputed trajectory path (journal_cbf_attacker, defender_cbf / Prompt 4). */
+.cbf-review { padding: 20px; }
+.cbf-review-banner { margin-bottom: 16px; padding: 12px; border: 1px solid #8a6a1f; border-radius: 6px; background: #2c2308; color: #ffdf8a; }
+.cbf-review-banner p { margin: 6px 0 0; font-size: 11px; color: #e7cf9a; }
+.cbf-review-warnings { margin: 8px 0 0; padding-left: 18px; color: #ffb4b9; font-size: 10px; }
+.cbf-review-columns { display: grid; grid-template-columns: minmax(260px, .8fr) minmax(0, 1.4fr); gap: 24px; }
+.cbf-review-list-button { display: grid; gap: 4px; }
+.cbf-review-rank { color: #70b8a9; font-size: 10px; font-weight: 700; }
+.cbf-review-substitute-flag { color: #e7b35a; font-style: italic; }
+.cbf-review-rationale { padding: 8px; border: 1px solid #29414f; border-radius: 5px; background: #0d1822; }
+.cbf-review-summary-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 14px; margin: 10px 0; font-size: 11px; }
+.cbf-review-watch { margin: 10px 0; padding: 10px; border: 1px solid #29414f; border-radius: 5px; background: #0d1822; }
+.cbf-review-watch h4 { margin: 0 0 6px; }
+.cbf-review-overlay-toggles { display: flex; flex-wrap: wrap; gap: 14px; margin: 10px 0; font-size: 11px; }
+.cbf-review-overlay-toggles label { display: flex; align-items: center; gap: 5px; }
+.cbf-review-scene { background: #0a141c; border: 1px solid #263c4b; border-radius: 6px; }
+.cbf-review-scene-bg { fill: #0a141c; }
+.cbf-review-obstacle { fill: #3a4a55; stroke: #556b78; }
+.cbf-review-trail { fill: none; stroke-width: 1.5; opacity: .85; }
+.cbf-review-trail-attacker { stroke: #4da3ff; }
+.cbf-review-trail-defender { stroke: #ff6b6b; }
+.cbf-review-trail-asset { stroke: #63d19a; }
+.cbf-review-marker { stroke: #0a141c; stroke-width: 1; }
+.cbf-review-marker-attacker { fill: #4da3ff; }
+.cbf-review-marker-attacker.cbf-active { fill: #ffd84d; stroke: #ffffff; stroke-width: 2; }
+.cbf-review-marker-defender { fill: #ff6b6b; }
+.cbf-review-marker-asset { fill: #63d19a; }
+.cbf-review-safety-ring { fill: none; stroke: #e7b35a; stroke-width: 1; stroke-dasharray: 4 3; }
+.cbf-review-intercept-ring { fill: none; stroke: #ff4d4d; stroke-width: 1; stroke-dasharray: 2 2; }
+.cbf-review-transport { display: flex; align-items: center; gap: 8px; margin: 10px 0; }
+.cbf-review-transport input[type="range"] { flex: 1; }
+.cbf-review-playback-info { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 14px; padding: 10px; border: 1px solid #29414f; border-radius: 5px; background: #0d1822; font-size: 11px; }
+@media (max-width: 850px) { .cbf-review-columns { grid-template-columns: minmax(0, 1fr); } .cbf-review-summary-grid, .cbf-review-playback-info { grid-template-columns: minmax(0, 1fr); } }

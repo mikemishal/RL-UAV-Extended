@@ -17,8 +17,10 @@ from .case_library import (
     CasePatch,
     filter_cases,
 )
+from .application_error import ApplicationError
 from .config import Settings, load_settings, local_output_root
 from .errors import ErrorDetail, register_error_handlers
+from .precomputed_cases import PrecomputedCaseProvider
 from .replay_contract import ReplayBundle
 from .replay_jobs import ReplayCatalog, ReplayJob, ReplayJobManager
 from .replay_requests import ReplayBatchRequest
@@ -61,6 +63,7 @@ def create_app(
         application.state.catalog = catalog
         application.state.jobs = job_manager if job_manager is not None else ReplayJobManager(configured, catalog)
         application.state.cases = CaseLibrary(application.state.jobs.get_replay)
+        application.state.precomputed_cases = PrecomputedCaseProvider(configured)
         if configured.research_data_root is None:
             logger.warning("DATA_ROOT_NOT_CONFIGURED: set VISUALIZER_RESEARCH_DATA_ROOT in visualizer\\.env")
         try:
@@ -228,6 +231,20 @@ def create_app(
         application.state.cases.get(case_id)
         path = export_file_path(case_id, export_id, filename)
         return FileResponse(path, filename=filename)
+
+    # ---- A1-CBF defender-review precomputed trajectory path (journal_cbf_attacker, defender_cbf / Prompt 4 manual
+    # review). SEPARATE from /api/cases and /api/replays above -- read-only, additive, never touches the strict
+    # ReplayBundle/CaseLibrary machinery those routes depend on. See backend/precomputed_cases.py. ----
+    @application.get("/api/cbf-review/collection")
+    def cbf_review_collection() -> dict:
+        return application.state.precomputed_cases.collection()
+
+    @application.get("/api/cbf-review/cases/{case_id}")
+    def cbf_review_case(case_id: str) -> dict:
+        case = application.state.precomputed_cases.case(case_id)
+        if case is None:
+            raise ApplicationError("CBF_REVIEW_CASE_NOT_FOUND", f"No A1-CBF review case named {case_id!r}.", 404)
+        return case
 
     return application
 

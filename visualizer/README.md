@@ -11,7 +11,7 @@ performs policy inference, or changes recorded outcomes.
 
 ## Scientific integrity and coordinate decision
 
-Based on local research commit `2f45914ca9d4fe2521c2fdbe3e11f62c1ebfaa6b` (curriculum Stage4A-1 evidence: goal-conditioned translated-target imitation, 0/3 seeds mastered, verdict C, no review IDs registered; on top of Stage4A `9984495` evidence: isolated moving-target pursuit, 0/3 mastered, verdict C; on top of Stage4 `15faece` evidence: moving canonical asset + moving defender, 0/3 mastered, verdict C; on top of Stage3-v2 `3a2b23f` evidence: hold-until-detection Greedy, 3/3 seeds mastered, provisional curriculum checkpoints; Stage2-v2 budget-extension evidence `1214c38`, 0/3 mastered; Stage-1-v2 BC attackers `A1-BC1-*` unchanged; tag `journal-v2-a1-curriculum-bc-stage1-v1`; on top of tag
+Based on local research commit `9f2a103650767d57c611da733bfbe3f3737f54c6` (journal_cbf_attacker, defender_cbf / Prompt 4: joint static-obstacle + defender CBF-QP evasive attacker; primary safety gate PASS, primary defender-avoidance effect gate FAIL, 200-case joint stress set 3/200 obstacle collisions, generalization diagnostic strongly positive vs PN/RMPC; verdict B, NOT frozen/tagged; branch `research/cbf-attacker`) on top of obstacle_cbf_v2 `8bf8447` (viability-conditioned clutter initialization, verdict A), obstacle_cbf `1de4228`, and foundation `2beaf77` -- a SEPARATE, deterministic guidance-and-CBF evasive-attacker lineage, not a continuation of the PPO/BC curriculum below (every file that curriculum's catalog/replay logic depends on remains present, since `2f45914` is an ancestor of this commit). On top of curriculum Stage4A-1 evidence `2f45914` (goal-conditioned translated-target imitation, 0/3 seeds mastered, verdict C, no review IDs registered; on top of Stage4A `9984495` evidence: isolated moving-target pursuit, 0/3 mastered, verdict C; on top of Stage4 `15faece` evidence: moving canonical asset + moving defender, 0/3 mastered, verdict C; on top of Stage3-v2 `3a2b23f` evidence: hold-until-detection Greedy, 3/3 seeds mastered, provisional curriculum checkpoints; Stage2-v2 budget-extension evidence `1214c38`, 0/3 mastered; Stage-1-v2 BC attackers `A1-BC1-*` unchanged; tag `journal-v2-a1-curriculum-bc-stage1-v1`; on top of tag
 `journal-v2-a1-training-protocol-v1`; frozen canonical A0 is tag `journal-v2-a0-canonical-v1`, `bdbee45…`)
 (branch `research/journal-corrected-attacker-v2`),
 not a remote branch. All additions are confined to this `visualizer` directory.
@@ -19,6 +19,10 @@ Scientific Python, experiment configuration, results, weights and tags are uncha
 The engine refuses to run against any other research commit
 (`EXPECTED_RESEARCH_COMMIT` in `backend/replay_engine.py`); update that pin only
 after auditing the new research source.
+
+The A1-CBF defender-review collection (`/api/cbf-review/*`, see `backend/precomputed_cases.py`) is a SEPARATE,
+read-only path for precomputed, controller-neutral trajectory JSON exported by the research repository -- it does
+not use `EXPECTED_RESEARCH_COMMIT`, the strict `ReplayBundle` contract, or re-run/reconstruct any controller.
 
 ### Simulation semantics: V1 and V2
 

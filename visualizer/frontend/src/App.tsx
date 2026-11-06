@@ -31,6 +31,7 @@ import type {
   Semantics,
 } from './api';
 import { ResearchCases } from './ResearchCases';
+import { CbfDefenderReview } from './CbfDefenderReview';
 
 type BackendStatus = { kind: 'checking' | 'ok' | 'degraded' | 'error'; message: string };
 type EpisodeCount = 1 | 3 | 5 | 10;
@@ -51,6 +52,8 @@ function queryPreset() {
   const defender = params.get('defender');
   const attacker = params.get('attacker');
   const replay = params.get('replay');
+  const view = params.get('view');
+  const cbfCase = params.get('case');
   return {
     // A recorded replay (opaque 32-hex id) to open on load, e.g. ?replay=<id>; ignored unless it is in the validated replay list.
     replay: replay && /^[0-9a-f]{32}$/.test(replay) ? replay : null,
@@ -61,6 +64,9 @@ function queryPreset() {
     seed: seed && /^\d+$/.test(seed) ? seed : '0',
     // Only analytical ids are accepted here; the catalog still decides whether it is available.
     defender: defender && ['greedy', 'kalman_greedy', 'pn', 'lead', 'rmpc', 'passive'].includes(defender) ? defender : 'greedy',
+    // Deep link into the A1-CBF defender-review collection, e.g. ?view=cbf-review&case=06_defender_interception_failure.
+    view: (view === 'cbf-review' ? 'cbf-review' : null) as 'cbf-review' | null,
+    cbfCase: cbfCase && /^[0-9a-zA-Z_-]{1,120}$/.test(cbfCase) ? cbfCase : null,
   };
 }
 const ComparisonExplorer = lazy(() => import('./ComparisonExplorer').then(module => ({ default: module.ComparisonExplorer })));
@@ -283,7 +289,8 @@ function EpisodeSelection({
 
 export function App() {
   const health = useBackendHealth();
-  const [viewMode, setViewMode] = useState<'single' | 'comparison' | 'cases'>('single');
+  const [viewMode, setViewMode] = useState<'single' | 'comparison' | 'cases' | 'cbf-review'>(() => queryPreset().view ?? 'single');
+  const [cbfReviewCaseId, setCbfReviewCaseId] = useState<string | null>(() => queryPreset().cbfCase);
   const [caseOrigin, setCaseOrigin] = useState<'single' | 'comparison'>('single');
   const [layoutMode, setLayoutMode] = useState<'focus' | 'analysis'>('focus');
   const [comparisonContext, setComparisonContext] = useState<{
@@ -771,17 +778,30 @@ export function App() {
           <button type="button" aria-pressed={viewMode === 'single'} onClick={() => setViewMode('single')}>Simulation Viewer</button>
           <button type="button" aria-pressed={viewMode === 'comparison'} onClick={() => setViewMode('comparison')}>Compare policies</button>
           <button type="button" aria-pressed={viewMode === 'cases'} onClick={() => {
-            if (viewMode !== 'cases') setCaseOrigin(viewMode);
+            if (viewMode === 'single' || viewMode === 'comparison') setCaseOrigin(viewMode);
             setViewMode('cases');
           }}>Research cases</button>
+          <button type="button" aria-pressed={viewMode === 'cbf-review'} onClick={() => setViewMode('cbf-review')}>A1-CBF Defender Review</button>
         </div>
-        {viewMode !== 'cases' && <div className="app-mode-switch" role="group" aria-label="Workspace layout">
+        {viewMode !== 'cases' && viewMode !== 'cbf-review' && <div className="app-mode-switch" role="group" aria-label="Workspace layout">
           <button type="button" aria-pressed={layoutMode === 'focus'} onClick={() => setLayoutMode('focus')}>Focus</button>
           <button type="button" aria-pressed={layoutMode === 'analysis'} onClick={() => setLayoutMode('analysis')}>Analysis</button>
         </div>}
         <span className="phase-badge">LOCAL SIMULATION</span>
       </header>
       <div className="status-bar"><span className={`status-dot ${health.kind}`} /><span role="status">{health.message}</span><span className="localhost-label">LOCALHOST ONLY</span></div>
+      {viewMode === 'cbf-review' && (
+        <CbfDefenderReview
+          initialCaseId={cbfReviewCaseId}
+          onCaseChange={caseId => {
+            setCbfReviewCaseId(caseId);
+            const params = new URLSearchParams(window.location.search);
+            params.set('view', 'cbf-review');
+            if (caseId) params.set('case', caseId); else params.delete('case');
+            window.history.replaceState(null, '', `${window.location.pathname}?${params.toString()}`);
+          }}
+        />
+      )}
       {viewMode === 'cases' && (
         <ResearchCases
           replayCatalog={replays}
@@ -811,7 +831,7 @@ export function App() {
             onCaseContext={handleComparisonCaseContext}
           />
         </Suspense>
-      ) : <div className="single-workspace" hidden={viewMode === 'cases'}>
+      ) : <div className="single-workspace" hidden={viewMode === 'cases' || viewMode === 'cbf-review'}>
       <div className={`dashboard${diagnosticsCollapsed ? ' diagnostics-collapsed' : ''}`}>
         <aside className="configuration panel">
           <span className="eyebrow">SIMULATION VIEWER</span><h2>Episode configuration</h2>
