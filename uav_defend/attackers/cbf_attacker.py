@@ -102,32 +102,37 @@ class CBFAttackerController:
         """Target-relative nominal guidance component (see `nominal_velocity_command`)."""
         return nominal_velocity_command(relative_position, kp=self.kp, max_speed=self.limits.max_horizontal_speed, eps=self.eps)
 
-    def filter_velocity(self, v_nom: np.ndarray, *, state: dict | None = None, hazards: tuple = ()) -> tuple[np.ndarray, dict]:
-        """CBF/QP safety-filter component. Identity when `hazards` is empty (`v_safe = v_nom` exactly, bit-for-bit
-        -- this is the ENTIRE behavior for Prompt 1 / C0, and remains exactly this for any hazard-free step in any
-        clutter level, preserving the foundation stage's acceptance result unperturbed). When `hazards` is
-        non-empty (Prompt 2: static-obstacle CBF constraints, each a `uav_defend.attackers.cbf_obstacle.StaticHazard`),
-        solves `min_v 0.5*||v - v_nom||^2` subject to every active constraint via
+    def filter_velocity(self, v_nom: np.ndarray, *, state: dict | None = None, hazards: tuple = (), defender_hazard=None) -> tuple[np.ndarray, dict]:
+        """CBF/QP safety-filter component. Identity when `hazards` is empty AND `defender_hazard` is None
+        (`v_safe = v_nom` exactly, bit-for-bit -- this is the ENTIRE behavior for Prompt 1 / C0, and remains
+        exactly this for any hazard-free, defender-unobservable step in any clutter/defender level, preserving the
+        foundation stage's acceptance result unperturbed). When `hazards` is non-empty and/or `defender_hazard` is
+        provided (Prompt 2/4: static-obstacle and/or defender-avoidance CBF constraints -- a
+        `uav_defend.attackers.cbf_obstacle.StaticHazard`/`uav_defend.attackers.cbf_defender.DefenderHazard`),
+        solves the JOINT `min_v 0.5*||v - v_nom||^2` subject to every active constraint via
         `uav_defend.attackers.cbf_obstacle.solve_velocity_cbf_qp` (hard -> soft-slack -> emergency-brake fallback
-        chain; see that function's docstring). `state` is accepted (own position/velocity) for forward
-        compatibility with future hazard types (e.g. a moving defender) that may need it; the static-obstacle QP
-        does not read it (each hazard already carries its own precomputed normal/clearance/stopping-margin).
+        chain, shared between obstacle and defender constraint classes; see that function's docstring). `state` is
+        accepted (own position/velocity) for forward compatibility; the QP itself does not read it (each hazard
+        already carries its own precomputed normal/clearance/stopping-margin/estimated-velocity).
         """
         v_nom = np.asarray(v_nom, dtype=np.float64).reshape(3)
         constraint_count = len(hazards)
-        if constraint_count == 0:
+        if constraint_count == 0 and defender_hazard is None:
             v_safe = v_nom.copy()
             diagnostics = {
                 "cbf_enabled": True, "cbf_constraint_count": 0, "cbf_qp_status": "identity_no_constraints",
                 "cbf_intervention_norm": 0.0, "qp_success": True, "qp_iterations": 0, "qp_objective": 0.0,
-                "qp_max_constraint_residual": 0.0, "soft_slack": 0.0,
+                "qp_max_constraint_residual": 0.0, "soft_slack": 0.0, "obstacle_constraint_residual": 0.0,
+                "defender_constraint_residual": 0.0, "intervention_source": "none", "infeasibility_source": None,
             }
             return v_safe, diagnostics
 
         from uav_defend.attackers.cbf_obstacle import CBF_ALPHA, solve_velocity_cbf_qp
+        from uav_defend.attackers.cbf_defender import CBF_ALPHA_DEFENDER
 
         v_safe, qp_diag = solve_velocity_cbf_qp(
-            v_nom, list(hazards), alpha=CBF_ALPHA, max_horizontal_speed=self.limits.max_horizontal_speed,
+            v_nom, list(hazards), defender_hazard=defender_hazard, alpha=CBF_ALPHA, alpha_defender=CBF_ALPHA_DEFENDER,
+            max_horizontal_speed=self.limits.max_horizontal_speed,
             max_climb_rate=self.limits.max_climb_rate, max_descent_rate=self.limits.max_descent_rate,
         )
         intervention_norm = float(np.linalg.norm(v_safe - v_nom))

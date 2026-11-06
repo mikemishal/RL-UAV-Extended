@@ -1,0 +1,70 @@
+{
+  "kalman_greedy": {
+    "obstacle_only_interception": 0.97,
+    "full_interception": 0.96,
+    "obstacle_only_capture": 0.03,
+    "full_capture": 0.04,
+    "obstacle_collisions_oo": 0,
+    "obstacle_collisions_full": 0,
+    "effect_passed": false,
+    "effect_checks": {
+      "interception_reduction": false,
+      "bootstrap_ci_excludes_zero_beneficial": false,
+      "separation_increase": false,
+      "capture_tradeoff": true
+    },
+    "interception_reduction_pp": 1.0000000000000009,
+    "separation_increase_m": -3.53781848261292e-09
+  },
+  "pn": {
+    "obstacle_only_interception": 0.95,
+    "full_interception": 0.62,
+    "obstacle_only_capture": 0.05,
+    "full_capture": 0.38,
+    "obstacle_collisions_oo": 0,
+    "obstacle_collisions_full": 0,
+    "effect_passed": false,
+    "effect_checks": {
+      "interception_reduction": true,
+      "bootstrap_ci_excludes_zero_beneficial": true,
+      "separation_increase": false,
+      "capture_tradeoff": true
+    },
+    "interception_reduction_pp": 32.99999999999999,
+    "separation_increase_m": 1.1655831499979286e-07
+  },
+  "lead": {
+    "obstacle_only_interception": 0.97,
+    "full_interception": 0.95,
+    "obstacle_only_capture": 0.03,
+    "full_capture": 0.05,
+    "obstacle_collisions_oo": 0,
+    "obstacle_collisions_full": 0,
+    "effect_passed": false,
+    "effect_checks": {
+      "interception_reduction": false,
+      "bootstrap_ci_excludes_zero_beneficial": false,
+      "separation_increase": false,
+      "capture_tradeoff": true
+    },
+    "interception_reduction_pp": 2.0000000000000018,
+    "separation_increase_m": -4.8082231529633646e-09
+  },
+  "rmpc": {
+    "obstacle_only_interception": 0.75,
+    "full_interception": 0.37,
+    "obstacle_only_capture": 0.25,
+    "full_capture": 0.63,
+    "obstacle_collisions_oo": 0,
+    "obstacle_collisions_full": 0,
+    "effect_passed": false,
+    "effect_checks": {
+      "interception_reduction": true,
+      "bootstrap_ci_excludes_zero_beneficial": true,
+      "separation_increase": false,
+      "capture_tradeoff": true
+    },
+    "interception_reduction_pp": 38.0,
+    "separation_increase_m": 0.707713690451758
+  }
+}

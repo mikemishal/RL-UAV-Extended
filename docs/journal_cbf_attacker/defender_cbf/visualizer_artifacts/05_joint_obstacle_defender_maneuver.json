@@ -1,0 +1,223 @@
+{
+  "defender": "greedy",
+  "seed": 630007,
+  "defender_cbf_enabled": true,
+  "outcome": "intercepted",
+  "obstacles": [
+    {
+      "min": [
+        9.16910232303021,
+        15.367253302795536,
+        0.0
+      ],
+      "max": [
+        12.700113205263783,
+        19.470780561491747,
+        8.389031522955197
+      ]
+    },
+    {
+      "min": [
+        -29.33735688403854,
+        -30.18964720513867,
+        0.0
+      ],
+      "max": [
+        -23.353870070579944,
+        -26.794618544706438,
+        3.245141625337967
+      ]
+    },
+    {
+      "min": [
+        -11.099831835860307,
+        -14.182113228651554,
+        0.0
+      ],
+      "max": [
+        -5.940432756090167,
+        -9.460476760970314,
+        5.102261414531668
+      ]
+    },
+    {
+      "min": [
+        -34.97537544516701,
+        14.72103209291923,
+        0.0
+      ],
+      "max": [
+        -31.352235990106397,
+        19.189484588910872,
+        6.018570137727972
+      ]
+    },
+    {
+      "min": [
+        -20.831385508884935,
+        15.745954360287175,
+        0.0
+      ],
+      "max": [
+        -16.677867293372096,
+        19.341040673136884,
+        3.3689639637354833
+      ]
+    },
+    {
+      "min": [
+        31.715476753311847,
+        11.486056944616356,
+        0.0
+      ],
+      "max": [
+        35.12841264949998,
+        16.47176074648936,
+        5.330865135279208
+      ]
+    },
+    {
+      "min": [
+        24.936942346016323,
+        25.810980328619696,
+        0.0
+      ],
+      "max": [
+        28.5129954037003,
+        29.115444681861273,
+        9.939354855412128
+      ]
+    },
+    {
+      "min": [
+        36.28115853219501,
+        -42.754038685777154,
+        0.0
+      ],
+      "max": [
+        39.94470235880145,
+        -39.38250185038715,
+        9.106254073128547
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "t": 0.0,
+      "attacker_pos": [
+        30.761951446533203,
+        -32.92995071411133,
+        1.0
+      ],
+      "defender_pos": [
+        42.79538345336914,
+        -23.97469711303711,
+        1.0
+      ],
+      "asset_pos": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "inactive",
+      "defender_barrier_h": null,
+      "min_inflated_obstacle_clearance": null
+    },
+    {
+      "t": 0.5,
+      "attacker_pos": [
+        32.1606330871582,
+        -34.49665832519531,
+        0.9870607852935791
+      ],
+      "defender_pos": [
+        38.79466247558594,
+        -24.79206085205078,
+        0.9500435590744019
+      ],
+      "asset_pos": [
+        -0.5715598464012146,
+        0.3372124433517456,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "none",
+      "cbf_qp_status": "hard",
+      "defender_barrier_h": 11.445605511386999,
+      "min_inflated_obstacle_clearance": 3.8801871580479435
+    },
+    {
+      "t": 1.0,
+      "attacker_pos": [
+        32.40595626831055,
+        -35.120086669921875,
+        0.9537805318832397
+      ],
+      "defender_pos": [
+        34.43024826049805,
+        -27.575958251953125,
+        0.9217609763145447
+      ],
+      "asset_pos": [
+        -0.5910978317260742,
+        0.1580042988061905,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "defender",
+      "cbf_qp_status": "hard",
+      "defender_barrier_h": 5.464882218401232,
+      "min_inflated_obstacle_clearance": 2.953359644924692
+    },
+    {
+      "t": 1.5,
+      "attacker_pos": [
+        31.334758758544922,
+        -35.82909393310547,
+        0.9039713740348816
+      ],
+      "defender_pos": [
+        30.56635093688965,
+        -32.229061126708984,
+        1.3989994525909424
+      ],
+      "asset_pos": [
+        -0.8351248502731323,
+        1.193510890007019,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "defender",
+      "cbf_qp_status": "hard",
+      "defender_barrier_h": 1.2507953553625955,
+      "min_inflated_obstacle_clearance": 2.9385210530600476
+    },
+    {
+      "t": 2.0,
+      "attacker_pos": [
+        30.92548179626465,
+        -36.22781753540039,
+        0.7678138017654419
+      ],
+      "defender_pos": [
+        29.77692413330078,
+        -34.13031005859375,
+        1.496706247329712
+      ],
+      "asset_pos": [
+        -0.6058248281478882,
+        1.2306418418884277,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "defender",
+      "cbf_qp_status": "hard",
+      "defender_barrier_h": -0.33442531145021626,
+      "min_inflated_obstacle_clearance": 3.330817885090491
+    }
+  ],
+  "what_to_look_for": "Deterministically constructed stress case: attacker starts within 10 m of an obstacle AND within 25 m of a closing defender. Watch intervention_source alternate through 'joint' steps where BOTH constraint classes are simultaneously active in the same QP solve.",
+  "schema": "a1_cbf_defender_cbf_visualizer_trajectory/1"
+}

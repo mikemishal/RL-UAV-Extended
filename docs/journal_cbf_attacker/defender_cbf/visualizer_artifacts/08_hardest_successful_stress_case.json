@@ -1,0 +1,177 @@
+{
+  "defender": "greedy",
+  "seed": 630009,
+  "defender_cbf_enabled": true,
+  "outcome": "intercepted",
+  "obstacles": [
+    {
+      "min": [
+        38.70463908873835,
+        4.698871724512805,
+        0.0
+      ],
+      "max": [
+        44.285698038635275,
+        9.608642067387244,
+        5.983255939992205
+      ]
+    },
+    {
+      "min": [
+        9.027892914313977,
+        -37.24545673112503,
+        0.0
+      ],
+      "max": [
+        13.363857304535632,
+        -32.320794801089235,
+        4.0499364783363685
+      ]
+    },
+    {
+      "min": [
+        42.17161309903591,
+        13.159850597792266,
+        0.0
+      ],
+      "max": [
+        45.22754875097401,
+        18.97396542703222,
+        6.119539250254156
+      ]
+    },
+    {
+      "min": [
+        -12.04467526556477,
+        -25.96091359577139,
+        0.0
+      ],
+      "max": [
+        -8.782378210727067,
+        -20.643704926362016,
+        6.258172991571819
+      ]
+    },
+    {
+      "min": [
+        -47.60157556175112,
+        -39.17905989311351,
+        0.0
+      ],
+      "max": [
+        -43.22581564760529,
+        -36.13773841325396,
+        3.8523428418482144
+      ]
+    },
+    {
+      "min": [
+        28.491475696346146,
+        -23.41173424554995,
+        0.0
+      ],
+      "max": [
+        31.82417206854596,
+        -17.89589500007959,
+        8.855188734189252
+      ]
+    },
+    {
+      "min": [
+        3.9063196896862604,
+        -19.909766291666557,
+        0.0
+      ],
+      "max": [
+        7.1285138933827135,
+        -16.087929860321985,
+        8.080651040488661
+      ]
+    },
+    {
+      "min": [
+        -21.73431494439344,
+        -2.9262070711404617,
+        0.0
+      ],
+      "max": [
+        -15.824006555466418,
+        0.6883652998429652,
+        9.976887474468477
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "t": 0.0,
+      "attacker_pos": [
+        37.76462173461914,
+        -11.919170379638672,
+        1.0
+      ],
+      "defender_pos": [
+        22.79094696044922,
+        -11.030906677246094,
+        1.0
+      ],
+      "asset_pos": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "inactive",
+      "defender_barrier_h": null,
+      "min_inflated_obstacle_clearance": null
+    },
+    {
+      "t": 0.5,
+      "attacker_pos": [
+        35.43955993652344,
+        -13.355408668518066,
+        0.9754613041877747
+      ],
+      "defender_pos": [
+        27.466524124145508,
+        -11.419195175170898,
+        0.8381900191307068
+      ],
+      "asset_pos": [
+        -0.1327008754014969,
+        -0.6338396668434143,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "joint",
+      "cbf_qp_status": "hard",
+      "defender_barrier_h": 7.745092208931389,
+      "min_inflated_obstacle_clearance": 3.4464947398743564
+    },
+    {
+      "t": 1.0,
+      "attacker_pos": [
+        34.155906677246094,
+        -14.1062593460083,
+        1.1440805196762085
+      ],
+      "defender_pos": [
+        32.422325134277344,
+        -12.329447746276855,
+        0.8480308651924133
+      ],
+      "asset_pos": [
+        0.5562384724617004,
+        -1.1210768222808838,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "defender",
+      "cbf_qp_status": "soft_fallback",
+      "defender_barrier_h": -6.232573981505307,
+      "min_inflated_obstacle_clearance": 1.778931933936573
+    }
+  ],
+  "what_to_look_for": "Second-highest joint-constraint-fraction stress scenario that did not collide: both the static obstacle and defender CBF constraints are active for a majority of steps, yet the attacker completes the episode without an obstacle collision.",
+  "schema": "a1_cbf_defender_cbf_visualizer_trajectory/1"
+}

@@ -22,6 +22,13 @@ import numpy as np
 from scipy.optimize import minimize
 
 from uav_defend.attackers.cbf_attacker import CBF_DT_SUB, CBFAttackerController, apply_one_substep, substep_count
+from uav_defend.attackers.cbf_defender import (
+    CBF_ALPHA_DEFENDER,
+    DEFENDER_SAFETY_RADIUS,
+    DefenderHazard,
+    build_defender_hazard,
+    predict_defender_positions,
+)
 from uav_defend.obstacles.geometry import AABBObstacle
 from uav_defend.obstacles.perception import PerceivedObstacleSet, PerceivedStaticObstacle
 from uav_defend.obstacles.route_planner import build_and_search_route
@@ -197,6 +204,20 @@ def _cbf_constraint_funcs(hazards: list[StaticHazard], alpha: float, slack: bool
     return funcs
 
 
+def _defender_constraint_funcs(defender_hazard, alpha_defender: float, slack: bool) -> list:
+    """Defender-avoidance constraint (journal_cbf_attacker, defender_cbf / Prompt 4, brief section 8):
+    `n_D^T (v_safe - v_D) >= -alpha_D h_D`  <=>  `n_D^T v_safe >= n_D^T v_D - alpha_D h_D`. Returns [] when
+    `defender_hazard` is None (no observable defender this step -- the joint QP then degenerates exactly to the
+    Prompt-2/3 obstacle-only QP, bit-for-bit)."""
+    if defender_hazard is None:
+        return []
+    n, h, v_d = defender_hazard.normal, defender_hazard.h, defender_hazard.defender_velocity
+    rhs = float(np.dot(n, v_d)) - alpha_defender * h
+    if slack:
+        return [lambda v, n=n, rhs=rhs: float(np.dot(n, v[:3])) - rhs + v[3]]
+    return [lambda v, n=n, rhs=rhs: float(np.dot(n, v[:3])) - rhs]
+
+
 def _velocity_bound_funcs(max_horizontal_speed: float, max_climb_rate: float, max_descent_rate: float, n_sides: int) -> list:
     normals, apothem = velocity_polygon_halfplanes(max_horizontal_speed, n_sides)
     funcs = []
@@ -221,21 +242,45 @@ def _max_residual(funcs, v) -> float:
     return max((max(0.0, -f(v)) for f in funcs), default=0.0)
 
 
+def _classify_intervention_source(v_nom: np.ndarray, hazards: list[StaticHazard], defender_hazard, alpha: float, alpha_defender: float) -> str:
+    """Classifies WHY the QP would need to intervene, evaluated at the RAW nominal command v_nom (before solving):
+    a constraint class is "active" iff v_nom itself already violates at least one of its constraints. Brief
+    section 24: one of "none" / "obstacle" / "defender" / "joint"."""
+    v3 = np.asarray(v_nom, dtype=np.float64).reshape(3)
+    obstacle_active = any(f(v3) < 0.0 for f in _cbf_constraint_funcs(hazards, alpha, slack=False))
+    defender_active = any(f(v3) < 0.0 for f in _defender_constraint_funcs(defender_hazard, alpha_defender, slack=False))
+    if obstacle_active and defender_active:
+        return "joint"
+    if obstacle_active:
+        return "obstacle"
+    if defender_active:
+        return "defender"
+    return "none"
+
+
 def solve_velocity_cbf_qp(
-    v_nom: np.ndarray, hazards: list[StaticHazard], *, alpha: float = CBF_ALPHA,
+    v_nom: np.ndarray, hazards: list[StaticHazard], *, defender_hazard=None, alpha: float = CBF_ALPHA,
+    alpha_defender: float = CBF_ALPHA_DEFENDER,
     max_horizontal_speed: float, max_climb_rate: float, max_descent_rate: float,
     n_sides: int = VELOCITY_POLYGON_SIDES, maxiter: int = 200, ftol: float = 1e-12, residual_tol: float = 1e-4,
 ) -> tuple[np.ndarray, dict]:
-    """Solves `min_v 0.5*||v - v_nom||^2` subject to every active CBF constraint (section 11) and the velocity
-    bounds (section 14), via `scipy.optimize.minimize(method="SLSQP")` -- deterministic initial guess (clipped
-    `v_nom`), fixed tolerances/iteration cap. Hard-first / soft-slack-fallback / emergency-brake chain (section 16).
+    """Solves `min_v 0.5*||v - v_nom||^2` subject to every active static CBF constraint (section 11), the OPTIONAL
+    defender CBF constraint (journal_cbf_attacker, defender_cbf / Prompt 4, brief sections 8/10 -- solved JOINTLY,
+    never sequentially, in the SAME QP), and the velocity bounds (section 14), via
+    `scipy.optimize.minimize(method="SLSQP")` -- deterministic initial guess (clipped `v_nom`), fixed
+    tolerances/iteration cap. Hard-first / soft-slack-fallback / emergency-brake chain (section 16), with SEPARATE
+    residuals tracked for the obstacle and defender constraint classes (brief section 11) and an
+    `intervention_source` classification (section 24).
 
-    No obstacle constraints: identity (NOT routed through SciPy at all; preserves Prompt-1 bit-for-bit behavior
-    exactly -- see `CBFAttackerController.filter_velocity`, which only calls this function when `hazards` is
-    non-empty)."""
+    No obstacle AND no defender constraints: identity (NOT routed through SciPy at all; preserves Prompt-1
+    bit-for-bit behavior exactly -- see `CBFAttackerController.filter_velocity`, which only calls this function
+    when `hazards` is non-empty OR `defender_hazard` is not None). `defender_hazard=None` alone (no observable
+    defender) degenerates this function EXACTLY to the Prompt-2/3 obstacle-only QP -- bit-for-bit, since the
+    defender constraint list is then simply empty."""
     v_nom = np.asarray(v_nom, dtype=np.float64).reshape(3)
     bound_funcs = _velocity_bound_funcs(max_horizontal_speed, max_climb_rate, max_descent_rate, n_sides)
     x0 = _clip_initial_guess(v_nom, max_horizontal_speed, max_climb_rate, max_descent_rate)
+    intervention_source = _classify_intervention_source(v_nom, hazards, defender_hazard, alpha, alpha_defender)
 
     def objective(v):
         diff = v[:3] - v_nom
@@ -248,21 +293,30 @@ def solve_velocity_cbf_qp(
     # returned point is numerically feasible to well within tolerance -- what matters for safety is feasibility,
     # not the optimizer's own termination diagnostic. `qp_success` still records the raw solver flag for
     # transparency/diagnostics.
-    hard_funcs = _cbf_constraint_funcs(hazards, alpha, slack=False) + bound_funcs
+    obstacle_funcs = _cbf_constraint_funcs(hazards, alpha, slack=False)
+    defender_funcs = _defender_constraint_funcs(defender_hazard, alpha_defender, slack=False)
+    hard_funcs = obstacle_funcs + defender_funcs + bound_funcs
     constraints = [{"type": "ineq", "fun": f} for f in hard_funcs]
     res = minimize(objective, x0, method="SLSQP", constraints=constraints, options={"maxiter": maxiter, "ftol": ftol})
     hard_residual = _max_residual(hard_funcs, res.x)
+    obstacle_residual = _max_residual(obstacle_funcs, res.x)
+    defender_residual = _max_residual(defender_funcs, res.x)
     if hard_residual <= residual_tol:
         v_safe = res.x[:3]
         return v_safe, {
             "cbf_qp_status": "hard", "qp_success": bool(res.success), "qp_iterations": int(res.nit), "qp_objective": float(objective(res.x)),
             "qp_max_constraint_residual": hard_residual, "soft_slack": 0.0,
+            "obstacle_constraint_residual": obstacle_residual, "defender_constraint_residual": defender_residual,
+            "intervention_source": intervention_source, "infeasibility_source": None,
         }
 
     # ---- (2) SOFT-SLACK FALLBACK ----
-    soft_cbf_funcs = _cbf_constraint_funcs(hazards, alpha, slack=True)
+    # Physical obstacle constraints and defender safety constraints share the SAME soft slack mechanism (brief
+    # section 11): neither class is ever preferentially sacrificed to satisfy the other.
+    soft_obstacle_funcs = _cbf_constraint_funcs(hazards, alpha, slack=True)
+    soft_defender_funcs = _defender_constraint_funcs(defender_hazard, alpha_defender, slack=True)
     soft_bound_funcs = [lambda v, f=f: f(v[:3]) for f in bound_funcs]  # bounds stay HARD (never relaxed by slack)
-    soft_funcs = soft_cbf_funcs + soft_bound_funcs
+    soft_funcs = soft_obstacle_funcs + soft_defender_funcs + soft_bound_funcs
 
     def soft_objective(v):
         diff = v[:3] - v_nom
@@ -276,21 +330,40 @@ def solve_velocity_cbf_qp(
         bounds=[(None, None)] * 3 + [(0.0, None)], options={"maxiter": maxiter, "ftol": ftol},
     )
     soft_residual = _max_residual(soft_funcs, soft_res.x)
+    soft_obstacle_residual = _max_residual([lambda v, f=f: f(v) for f in soft_obstacle_funcs], soft_res.x)
+    soft_defender_residual = _max_residual([lambda v, f=f: f(v) for f in soft_defender_funcs], soft_res.x)
     if soft_residual <= residual_tol:
         v_safe = soft_res.x[:3]
+        # Which constraint class actually NEEDED the slack (brief section 11: "report which constraint class
+        # caused infeasibility") -- the hard-QP's own per-class residuals identify this directly.
+        infeasibility_source = (
+            "joint" if (obstacle_residual > residual_tol and defender_residual > residual_tol) else
+            "obstacle" if obstacle_residual > residual_tol else
+            "defender" if defender_residual > residual_tol else "bounds"
+        )
         return v_safe, {
             "cbf_qp_status": "soft_fallback", "qp_success": bool(soft_res.success), "qp_iterations": int(soft_res.nit),
             "qp_objective": float(soft_objective(soft_res.x)), "qp_max_constraint_residual": soft_residual,
-            "soft_slack": float(soft_res.x[3]),
+            "soft_slack": float(soft_res.x[3]), "obstacle_constraint_residual": soft_obstacle_residual,
+            "defender_constraint_residual": soft_defender_residual, "intervention_source": intervention_source,
+            "infeasibility_source": infeasibility_source,
         }
 
     # ---- (3) EMERGENCY BRAKE ----
-    # The acceleration-feasible command toward zero velocity -- never a random/invented escape direction. The
-    # route planner re-evaluates on the next step (brief section 16).
+    # The acceleration-feasible command toward zero velocity -- never a random/invented escape direction, and
+    # NEVER a preferential violation of one constraint class over the other. The route planner / defender
+    # observation re-evaluates on the next step (brief section 16).
+    infeasibility_source = (
+        "joint" if (obstacle_residual > residual_tol and defender_residual > residual_tol) else
+        "obstacle" if obstacle_residual > residual_tol else
+        "defender" if defender_residual > residual_tol else "bounds"
+    )
     return np.zeros(3, dtype=np.float64), {
         "cbf_qp_status": "emergency_brake", "qp_success": False,
         "qp_iterations": int(soft_res.nit), "qp_objective": float("nan"), "qp_max_constraint_residual": soft_residual,
         "soft_slack": float(soft_res.x[3]) if soft_res.x is not None else float("nan"),
+        "obstacle_constraint_residual": soft_obstacle_residual, "defender_constraint_residual": soft_defender_residual,
+        "intervention_source": intervention_source, "infeasibility_source": infeasibility_source,
     }
 
 
@@ -299,11 +372,12 @@ def integrate_obstacle_cbf_substeps(
     position: np.ndarray, velocity: np.ndarray, *, route_target: np.ndarray | None, controller: CBFAttackerController,
     obstacles: tuple[AABBObstacle, ...], dt: float, dt_sub: float = CBF_DT_SUB, L: float, max_altitude: float,
     eps: float = 1e-8, clearance: float = CBF_OBSTACLE_CLEARANCE, active_range: float = CBF_ACTIVE_OBSTACLE_RANGE,
-    alpha: float = CBF_ALPHA,
+    alpha: float = CBF_ALPHA, defender_pos: np.ndarray | None = None, defender_vel_estimate: np.ndarray | None = None,
+    defender_safety_radius: float | None = None, alpha_defender: float = CBF_ALPHA_DEFENDER,
 ) -> tuple[np.ndarray, np.ndarray, dict, dict]:
     """Safety-critical variant of `cbf_attacker.integrate_quadrotor_substeps`: re-solves the nominal-guidance +
-    CBF-QP safety filter EVERY substep (dt_sub, default 0.1 s), instead of holding one command constant across all
-    5 substeps of the external 0.5 s step.
+    joint obstacle/defender CBF-QP safety filter EVERY substep (dt_sub, default 0.1 s), instead of holding one
+    command constant across all 5 substeps of the external 0.5 s step.
 
     WHY this differs from Prompt 1's "hold the command constant across substeps" rule: the stopping-margin barrier
     (`build_static_hazards`'s `d_stop_i = s_i^2/(2 a_max) + s_i * dt_sub`) is explicitly derived assuming the
@@ -325,16 +399,30 @@ def integrate_obstacle_cbf_substeps(
     with no previously retained waypoint) -- in that case the nominal command is `v_nom = 0` every substep (hover/
     brake), never an invented escape direction; the CBF-QP may still intervene if a hazard demands outward motion.
 
+    Defender avoidance (journal_cbf_attacker, defender_cbf / Prompt 4, brief section 9): when `defender_pos` is
+    provided (the defender was observable -- gated position -- at the START of this external step),
+    `defender_vel_estimate` (the finite-difference ESTIMATE, refreshed only once per external step, never
+    repredicted mid-step) is used to extrapolate the defender's position at CONSTANT velocity for each substep
+    (`predict_defender_positions`), and a fresh `DefenderHazard` is built every substep from the attacker's
+    CURRENT substep state and the PREDICTED defender position. No defender acceleration is predicted. When
+    `defender_pos` is None (not observable this external step), no defender constraint exists at all -- the joint
+    QP degenerates exactly to the Prompt-2/3 obstacle-only QP.
+
     Returns `(position, velocity, exec_diagnostics, cbf_diagnostics)` where `exec_diagnostics` has the SAME schema
     as `integrate_quadrotor_substeps` (accel/speed/climb saturation flags) and `cbf_diagnostics` holds the LAST
     substep's CBF-QP diagnostics plus aggregates (`emergency_brake_substeps`, `min_h_over_substeps`,
-    `max_active_obstacle_count`) over all 5 substeps.
+    `max_active_obstacle_count`, `min_defender_h_over_substeps`, `max_defender_closing_speed`) over all 5 substeps.
     """
     pos = np.asarray(position, dtype=np.float64).copy()
     vel = np.asarray(velocity, dtype=np.float64).copy()
     route_target = np.asarray(route_target, dtype=np.float64).reshape(3) if route_target is not None else None
     n = substep_count(dt, dt_sub)
     limits = controller.limits
+    safety_radius = defender_safety_radius if defender_safety_radius is not None else DEFENDER_SAFETY_RADIUS
+    defender_predicted_positions = (
+        predict_defender_positions(defender_pos, defender_vel_estimate, dt_sub=dt_sub, n_substeps=n)
+        if defender_pos is not None else None
+    )
 
     max_accel_used = 0.0
     accel_saturated = horizontal_saturated = vertical_saturated = False
@@ -342,11 +430,16 @@ def integrate_obstacle_cbf_substeps(
     min_h_over_substeps = float("inf")
     min_d_over_substeps = float("inf")
     max_active_obstacle_count = 0
+    min_defender_h_over_substeps = float("inf")
+    max_defender_closing_speed = 0.0
+    defender_active_substeps = 0
+    simultaneous_obstacle_defender_substeps = 0
     last_cbf_diag: dict = {}
+    last_defender_hazard: DefenderHazard | None = None
     last_v_nom = np.zeros(3)
     last_v_safe = np.zeros(3)
 
-    for _ in range(n):
+    for substep_idx in range(n):
         if route_target is None:
             v_nom = np.zeros(3, dtype=np.float64)   # hover/brake (brief section 9): no target available this step
         else:
@@ -356,7 +449,20 @@ def integrate_obstacle_cbf_substeps(
             pos, vel, obstacles, clearance=clearance, active_range=active_range, max_accel=limits.max_accel,
             dt_sub=dt_sub, alpha=alpha,
         )
-        v_safe, cbf_diag = controller.filter_velocity(v_nom, state={"position": pos.copy(), "velocity": vel.copy()}, hazards=tuple(hazards))
+        defender_hazard = None
+        if defender_predicted_positions is not None:
+            defender_hazard = build_defender_hazard(
+                pos, vel, defender_predicted_positions[substep_idx], defender_vel_estimate,
+                safety_radius=safety_radius, max_accel=limits.max_accel, dt_sub=dt_sub,
+            )
+            min_defender_h_over_substeps = min(min_defender_h_over_substeps, defender_hazard.h)
+            max_defender_closing_speed = max(max_defender_closing_speed, defender_hazard.closing_speed)
+            defender_active_substeps += 1
+            if hazards:
+                simultaneous_obstacle_defender_substeps += 1
+        v_safe, cbf_diag = controller.filter_velocity(
+            v_nom, state={"position": pos.copy(), "velocity": vel.copy()}, hazards=tuple(hazards), defender_hazard=defender_hazard,
+        )
         if cbf_diag["cbf_qp_status"] == "emergency_brake":
             emergency_brake_substeps += 1
         if hazards:
@@ -370,6 +476,7 @@ def integrate_obstacle_cbf_substeps(
         horizontal_saturated = horizontal_saturated or sub_diag["horizontal_speed_saturated"]
         vertical_saturated = vertical_saturated or sub_diag["vertical_rate_saturated"]
         last_cbf_diag = cbf_diag
+        last_defender_hazard = defender_hazard
         last_v_nom = v_nom
         last_v_safe = v_safe
 
@@ -383,6 +490,14 @@ def integrate_obstacle_cbf_substeps(
         "min_d_over_substeps": min_d_over_substeps,
         "emergency_brake_substeps": emergency_brake_substeps, "min_h_over_substeps": min_h_over_substeps,
         "max_active_obstacle_count": max_active_obstacle_count,
+        "min_defender_h_over_substeps": min_defender_h_over_substeps, "max_defender_closing_speed": max_defender_closing_speed,
+        "defender_constraint_present": defender_predicted_positions is not None,
+        "defender_active_substeps": defender_active_substeps,
+        "simultaneous_obstacle_defender_substeps": simultaneous_obstacle_defender_substeps,
+        "last_defender_distance": (last_defender_hazard.distance if last_defender_hazard is not None else float("inf")),
+        "last_defender_closing_speed": (last_defender_hazard.closing_speed if last_defender_hazard is not None else 0.0),
+        "last_defender_stopping_margin": (last_defender_hazard.stopping_margin if last_defender_hazard is not None else 0.0),
+        "last_defender_h": (last_defender_hazard.h if last_defender_hazard is not None else float("inf")),
     }
     return pos.astype(np.float32), vel.astype(np.float32), exec_diag, cbf_diagnostics
 

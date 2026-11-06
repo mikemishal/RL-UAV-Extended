@@ -27,6 +27,7 @@ from uav_defend.tracking import EnemyKalmanFilter
 from uav_defend.dynamics.constrained_point_mass import advance_velocity, apply_boundary
 from uav_defend.attackers.cbf_attacker import CBF_DT_SUB, CBFAttackerController, integrate_quadrotor_substeps
 from uav_defend.attackers.cbf_obstacle import CBF_ACTIVE_OBSTACLE_RANGE, CBF_ALPHA, CBF_OBSTACLE_CLEARANCE, CBFRouteNavigator, build_static_hazards, initial_state_dynamically_viable, integrate_obstacle_cbf_substeps
+from uav_defend.attackers.cbf_defender import DEFENDER_DETECTION_RANGE, DEFENDER_SAFETY_RADIUS, DefenderVelocityEstimator, build_defender_hazard, gated_defender_position
 from uav_defend.obstacles.swept_contact import first_contact
 from uav_defend.obstacles import DynamicsLimits, ObstacleAvoidancePlanner, ObstacleLayout, generate_layout
 from uav_defend.obstacles.stateful_avoidance import StatefulAvoidanceController
@@ -203,6 +204,7 @@ class SoldierEnv(gym.Env):
         render_mode: str | None = None,
         enemy_control_mode: str = "legacy",
         viability_conditioned_init: bool = False,
+        defender_cbf_enabled: bool = False,
     ):
         """
         Initialize the SoldierEnv.
@@ -250,6 +252,18 @@ class SoldierEnv(gym.Env):
                     times -- the obstacle field and asset initialization are generated ONCE and never regenerated.
                     If no viable draw is found within 100 attempts, the episode is marked
                     `scenario_generation_failure` in info and should be excluded from rate metrics by the caller.
+            defender_cbf_enabled: A1-CBF defender-avoidance extension (journal_cbf_attacker, defender_cbf /
+                    Prompt 4; see uav_defend/attackers/cbf_defender.py and
+                    docs/journal_cbf_attacker/defender_cbf/README.md). OFF by default (bit-for-bit unchanged --
+                    the SAME constructor-argument pattern as enemy_control_mode/viability_conditioned_init). When
+                    True AND enemy_control_mode=="cbf_velocity", the defender UAV becomes an additional, JOINTLY
+                    solved CBF-QP constraint (never a second, sequential solve) whenever it is observable through
+                    the SAME established attacker-visible defender-information gate the PPO/BC curriculum's own
+                    observation uses (EnvConfig.enemy_defender_detection_range, canonical 25 m) -- NEVER
+                    ground-truth defender state outside that gate. When False, the defender is never queried at
+                    all inside the CBF attacker path (gated_defender_position is never called), so A1-CBF's
+                    behavior is UNCHANGED from Prompt 2/3 regardless of whether a real defender happens to be
+                    active in the episode.
         
         Example:
             # Direct track (noisy measurement + finite-difference velocity)
@@ -268,9 +282,15 @@ class SoldierEnv(gym.Env):
             )
         self._enemy_control_mode = enemy_control_mode
         self._viability_conditioned_init = bool(viability_conditioned_init)
+        self._defender_cbf_enabled = bool(defender_cbf_enabled)
 
         self.config = config if config is not None else EnvConfig()
         self.render_mode = render_mode
+
+        # Defender-velocity estimator (journal_cbf_attacker, defender_cbf extension): `dt` here MUST be the
+        # EXTERNAL step interval (self.config.dt), NOT CBF_DT_SUB -- gated defender position observations only
+        # refresh once per external SoldierEnv.step() call (see DefenderVelocityEstimator docstring).
+        self._defender_velocity_estimator = DefenderVelocityEstimator(dt=self.config.dt)
         
         # =====================================================================
         # OBSERVATION SPACE (fixed-size, normalized for RL)
@@ -913,6 +933,7 @@ class SoldierEnv(gym.Env):
         self._cbf_last_diagnostics = {}
         self._cbf_route_nav.reset()
         self._cbf_emergency_brake_count = 0
+        self._defender_velocity_estimator.reset()
         self._attacker_initial_range = float(initial_range)
         self._attacker_path_length = 0.0
         self._attacker_heading_change_deg = 0.0
@@ -2645,7 +2666,31 @@ class SoldierEnv(gym.Env):
             max_accel=self._cbf_controller.limits.max_accel, dt_sub=CBF_DT_SUB, alpha=CBF_ALPHA,
         )
 
-        if not hazards_at_start:
+        # Defender hazard (journal_cbf_attacker, defender_cbf / Prompt 4, brief sections 3/4/9): gated STRICTLY
+        # through the SAME established attacker-visible defender-information contract the PPO/BC curriculum's own
+        # observation uses (EnvConfig.enemy_defender_detection_range, DEFENDER_DETECTION_RANGE==25.0 verified in
+        # uav_defend/config/env_config.py) -- NEVER ground-truth defender state outside that gate, and the
+        # defender's velocity is independently ESTIMATED (finite differences of gated positions only), never read
+        # from the ground-truth self._defender_vel. Entirely skipped -- including the gate check itself -- when
+        # self._defender_cbf_enabled is False, so A1-CBF's cbf_velocity path is bit-for-bit unchanged from
+        # Prompt 2/3 whenever this NEW constructor flag is left at its default (mirrors
+        # viability_conditioned_init's bit-for-bit-by-construction pattern). `self._defender_pos` here is the
+        # defender's CURRENT (this-step, pre-action) position -- see step()'s ordering docstring: _move_enemy()
+        # runs AFTER the standby hand-off (B) but BEFORE _move_defender() executes the supplied action (E), so
+        # this is exactly the defender's "currently observed motion" the brief's receding-horizon design assumes.
+        defender_gated_pos = None
+        defender_vel_estimate = np.zeros(3, dtype=np.float64)
+        defender_vel_valid = False
+        if self._defender_cbf_enabled:
+            defender_gated_pos = gated_defender_position(
+                enemy_pos_before, self._defender_pos.astype(np.float64), detection_range=DEFENDER_DETECTION_RANGE,
+            )
+            defender_vel_estimate, defender_vel_valid = self._defender_velocity_estimator.update(
+                self._step_count, defender_gated_pos,
+            )
+        defender_observable = defender_gated_pos is not None
+
+        if not hazards_at_start and not defender_observable:
             # Hazard-free this step (ALWAYS true for C0): bit-for-bit Prompt-1 computation when a target is
             # available. `target` can still be None here (route temporarily unavailable with no retained waypoint,
             # e.g. the moving asset itself is transiently inside an obstacle's inflated zone -- brief section 9) --
@@ -2667,12 +2712,17 @@ class SoldierEnv(gym.Env):
             max_active_obstacle_count = 0
             emergency_brake_this_step = cbf_diag["cbf_qp_status"] == "emergency_brake"
         else:
-            # >=1 active hazard: safety-critical re-solve-every-substep executor (see docstring above).
+            # >=1 active static hazard OR an observable defender hazard: safety-critical re-solve-every-substep
+            # executor (see docstring above) -- a defender-only scenario (no nearby static obstacles) MUST still
+            # route through this executor, since the defender is itself MOVING (the acceleration-lag/stopping-
+            # margin argument applies at least as strongly as for a static obstacle).
             new_pos, new_vel, exec_diag, cbf_diag = integrate_obstacle_cbf_substeps(
                 position=enemy_pos_before, velocity=enemy_vel_before, route_target=target, controller=self._cbf_controller,
                 obstacles=self._obstacle_layout.obstacles, dt=self.config.dt, L=self.config.L,
                 max_altitude=self.config.max_altitude, eps=eps, clearance=CBF_OBSTACLE_CLEARANCE,
                 active_range=CBF_ACTIVE_OBSTACLE_RANGE, alpha=CBF_ALPHA,
+                defender_pos=defender_gated_pos, defender_vel_estimate=defender_vel_estimate,
+                defender_safety_radius=DEFENDER_SAFETY_RADIUS,
             )
             v_safe = cbf_diag["v_safe_last_substep"]
             min_inflated_clearance = cbf_diag["min_d_over_substeps"]
@@ -2723,6 +2773,23 @@ class SoldierEnv(gym.Env):
             "qp_max_constraint_residual": float(cbf_diag.get("qp_max_constraint_residual", 0.0)),
             "soft_slack": float(cbf_diag.get("soft_slack", 0.0)),
             "emergency_brake_count": self._cbf_emergency_brake_count,
+            # ---- Defender-CBF diagnostics (journal_cbf_attacker, defender_cbf / Prompt 4, brief section 24) ----
+            "defender_cbf_enabled": bool(self._defender_cbf_enabled),
+            "defender_observable": bool(defender_observable),
+            "defender_relative_position": (
+                (enemy_pos_before - defender_gated_pos).astype(np.float32) if defender_observable else np.zeros(3, dtype=np.float32)
+            ),
+            "defender_velocity_estimate": defender_vel_estimate.astype(np.float32),
+            "defender_velocity_valid": bool(defender_vel_valid),
+            "defender_distance": float(cbf_diag.get("last_defender_distance", float("inf"))),
+            "defender_closing_speed": float(cbf_diag.get("last_defender_closing_speed", 0.0)),
+            "defender_stopping_margin": float(cbf_diag.get("last_defender_stopping_margin", 0.0)),
+            "defender_barrier_h": float(cbf_diag.get("last_defender_h", float("inf"))),
+            "defender_constraint_active": bool(cbf_diag.get("defender_constraint_present", False)),
+            "defender_constraint_residual": float(cbf_diag.get("defender_constraint_residual", 0.0)),
+            "joint_constraint_count": int(max_active_obstacle_count + (1 if defender_observable else 0)),
+            "simultaneous_obstacle_defender_constraints": bool(cbf_diag.get("simultaneous_obstacle_defender_substeps", 0) > 0),
+            "intervention_source": cbf_diag.get("intervention_source", "none"),
         }
 
     def _cbf_info(self) -> dict:
@@ -2762,6 +2829,20 @@ class SoldierEnv(gym.Env):
             "qp_max_constraint_residual": d.get("qp_max_constraint_residual", 0.0),
             "soft_slack": d.get("soft_slack", 0.0),
             "emergency_brake_count": d.get("emergency_brake_count", 0),
+            "defender_cbf_enabled": d.get("defender_cbf_enabled", False),
+            "defender_observable": d.get("defender_observable", False),
+            "defender_relative_position": d.get("defender_relative_position", zero3),
+            "defender_velocity_estimate": d.get("defender_velocity_estimate", zero3),
+            "defender_velocity_valid": d.get("defender_velocity_valid", False),
+            "defender_distance": d.get("defender_distance", float("inf")),
+            "defender_closing_speed": d.get("defender_closing_speed", 0.0),
+            "defender_stopping_margin": d.get("defender_stopping_margin", 0.0),
+            "defender_barrier_h": d.get("defender_barrier_h", float("inf")),
+            "defender_constraint_active": d.get("defender_constraint_active", False),
+            "defender_constraint_residual": d.get("defender_constraint_residual", 0.0),
+            "joint_constraint_count": d.get("joint_constraint_count", 0),
+            "simultaneous_obstacle_defender_constraints": d.get("simultaneous_obstacle_defender_constraints", False),
+            "intervention_source": d.get("intervention_source", "none"),
         }
 
     def _enemy_dynamics_limits(self) -> DynamicsLimits:

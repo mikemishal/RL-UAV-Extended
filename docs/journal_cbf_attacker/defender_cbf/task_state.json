@@ -1,0 +1,39 @@
+{
+  "stage": "journal_cbf_attacker / defender_cbf (Prompt 4)",
+  "branch": "research/cbf-attacker",
+  "starting_head": "8bf8447",
+  "architecture_frozen": "moving-asset pursuit -> static route planner -> v_nom -> joint obstacle+defender CBF-QP -> v_safe -> velocity executor",
+  "frozen_constants": {
+    "DEFENDER_DETECTION_RANGE_m": 25.0,
+    "DEFENDER_SAFETY_RADIUS_R_D_m": 3.5,
+    "DEFENDER_INTERCEPT_RADIUS_m": 2.5,
+    "CBF_ALPHA_DEFENDER_per_s": 1.0,
+    "a_max_mps2": 6.0,
+    "dt_sub_s": 0.1,
+    "soft_slack_penalty": 10000.0
+  },
+  "steps": {
+    "0_defender_module_and_joint_qp": "done",
+    "1_env_wiring": "done",
+    "2_smoke_test": "done",
+    "3_unit_tests": "done (34 tests, tests/test_cbf_defender.py)",
+    "4_experiment_harness": "done (experiments/journal_cbf_attacker_defender_foundation.py)",
+    "5_regressions_c0_a0_and_static_clutter": "done (1000 seeds bit-for-bit; 500 episodes, 0 collisions)",
+    "6_primary_monte_carlo_1000x2": "done (primary safety gate PASS; effect gate FAIL)",
+    "7_stress_set_200": "done (100% simultaneous-constraint rate; 3/200 obstacle collisions FAIL zero-collision requirement)",
+    "8_generalization_diagnostic_4x200x2": "done (0 collisions; PN/RMPC large significant effect, Kalman-Greedy/Lead small effect)",
+    "9_behavioral_analysis": "done (see README section 7.4 interpretation)",
+    "10_broad_regression": "done (1233 passed, 0 failed, 3699.73s)",
+    "11_figures": "done (6 of 8 requested, PNG only; time-boxed, documented)",
+    "12_visualizer_artifacts": "done (10/10 JSON files)",
+    "13_documentation": "done (README.md, manuscript_notes.md)",
+    "14_freeze_decision": "NOT frozen -- primary effect gate and stress zero-collision requirement did not both pass; verdict B (manual review required)",
+    "15_commit_push": "pending user confirmation given mixed/partial result"
+  },
+  "final_verdict": "B - DEFENDER CBF WORKS BUT NEEDS MANUAL REVIEW BEFORE FREEZE",
+  "notes": [
+    "Smoke test (30 episodes, C2, active Greedy defender, viability_conditioned_init=True): 0 obstacle collisions.",
+    "Per-seed obstacle-only vs full-CBF comparison (seeds 5000-5029) confirms real divergent behavior: some episodes trade asset-capture for evasion (helps), others lose tempo and get intercepted sooner (hurts) -- consistent with an honest, non-tuned-to-win controller.",
+    "Verified live-code nuance: EnvConfig.unsafe_intercept_radius (3.5m) gates ENEMY-SOLDIER (attacker-asset) distance at interception, not attacker-defender distance; EnvConfig.intercept_radius (2.5m) gates attacker-defender distance (dist_de). R_D=3.5 reuses the unsafe_intercept_radius NUMBER applied to the NEW attacker-defender CBF relationship the brief defines in section 6 -- documented explicitly in cbf_defender.py and the README to avoid confusion."
+  ]
+}
