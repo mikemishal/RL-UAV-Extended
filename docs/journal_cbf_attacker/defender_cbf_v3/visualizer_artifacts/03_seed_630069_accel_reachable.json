@@ -1,0 +1,204 @@
+{
+  "defender": "greedy",
+  "seed": 630069,
+  "defender_cbf_enabled": true,
+  "outcome": "intercepted",
+  "obstacles": [
+    {
+      "min": [
+        -11.740889625027604,
+        30.825449493310455,
+        0.0
+      ],
+      "max": [
+        -7.909508255015114,
+        34.04162121795726,
+        6.06716440540163
+      ]
+    },
+    {
+      "min": [
+        15.345751900302186,
+        -22.227102205940668,
+        0.0
+      ],
+      "max": [
+        21.148477694074845,
+        -16.227403345395878,
+        6.219309509765767
+      ]
+    },
+    {
+      "min": [
+        -37.05014614517765,
+        -25.95260422508939,
+        0.0
+      ],
+      "max": [
+        -33.12595614948495,
+        -22.515548806247335,
+        4.312671229252759
+      ]
+    },
+    {
+      "min": [
+        -31.085445586956915,
+        -27.53627938652512,
+        0.0
+      ],
+      "max": [
+        -27.055981439101693,
+        -22.86691300341452,
+        3.069768476132027
+      ]
+    },
+    {
+      "min": [
+        -48.13421874858272,
+        21.257549755423014,
+        0.0
+      ],
+      "max": [
+        -43.21582111534514,
+        26.41048556029976,
+        4.705251588915381
+      ]
+    },
+    {
+      "min": [
+        -32.442027793325636,
+        -35.76399894604083,
+        0.0
+      ],
+      "max": [
+        -28.656341520598296,
+        -32.02007823053707,
+        9.768816648144483
+      ]
+    },
+    {
+      "min": [
+        16.185791436646355,
+        16.52758196915777,
+        0.0
+      ],
+      "max": [
+        20.294994383599686,
+        21.611440770935157,
+        7.851395415815664
+      ]
+    },
+    {
+      "min": [
+        -3.911301461721198,
+        -44.285179230530204,
+        0.0
+      ],
+      "max": [
+        0.6662524931757225,
+        -40.1585792580162,
+        7.662338131577326
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "t": 0.0,
+      "attacker_pos": [
+        28.151100158691406,
+        16.85901641845703,
+        1.0
+      ],
+      "defender_pos": [
+        38.02879333496094,
+        5.570474147796631,
+        1.0
+      ],
+      "asset_pos": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "inactive",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": false,
+      "reachable_emergency_brake": false
+    },
+    {
+      "t": 0.5,
+      "attacker_pos": [
+        26.101463317871094,
+        17.31616973876953,
+        1.0
+      ],
+      "defender_pos": [
+        35.131614685058594,
+        9.258066177368164,
+        1.0787861347198486
+      ],
+      "asset_pos": [
+        -0.9379597902297974,
+        1.5218045711517334,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "obstacle",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 1.0,
+      "attacker_pos": [
+        25.515851974487305,
+        17.44678497314453,
+        1.0
+      ],
+      "defender_pos": [
+        30.5621280670166,
+        14.018270492553711,
+        1.3875691890716553
+      ],
+      "asset_pos": [
+        -0.34554630517959595,
+        1.6117095947265625,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "defender",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": false,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 1.5,
+      "attacker_pos": [
+        25.515851974487305,
+        17.44678497314453,
+        1.0
+      ],
+      "defender_pos": [
+        27.593957901000977,
+        17.11032485961914,
+        2.348433256149292
+      ],
+      "asset_pos": [
+        -1.3929834365844727,
+        1.6544771194458008,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "defender",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": false,
+      "reachable_emergency_brake": true
+    }
+  ],
+  "what_to_look_for": "Prompt-5 priority-conflict case (fixed in Prompt 5 via defender slack): remains collision-free under Prompt 6, but the outcome flips from 'soldier_caught' to 'intercepted' -- a tactical trade-off from the added acceleration-reachability constraint, not a safety regression.",
+  "schema": "a1_cbf_defender_cbf_v3_visualizer_trajectory/1"
+}

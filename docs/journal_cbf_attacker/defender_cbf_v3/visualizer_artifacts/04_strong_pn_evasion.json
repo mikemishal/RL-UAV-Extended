@@ -1,0 +1,499 @@
+{
+  "defender": "pn",
+  "seed": 640000,
+  "defender_cbf_enabled": true,
+  "outcome": "soldier_caught",
+  "obstacles": [
+    {
+      "min": [
+        -9.560458718626224,
+        36.509615773630856,
+        0.0
+      ],
+      "max": [
+        -5.7350750344739065,
+        40.03849781248563,
+        8.796398627051001
+      ]
+    },
+    {
+      "min": [
+        -19.369608115406837,
+        4.106485137669447,
+        0.0
+      ],
+      "max": [
+        -15.229877631761216,
+        7.193509654531061,
+        5.4195029931995
+      ]
+    },
+    {
+      "min": [
+        5.325892373244317,
+        23.801899667321635,
+        0.0
+      ],
+      "max": [
+        10.367645624530011,
+        29.278050501645083,
+        9.15504998790966
+      ]
+    },
+    {
+      "min": [
+        -27.1080189985923,
+        -9.204283362385464,
+        0.0
+      ],
+      "max": [
+        -22.234585175272912,
+        -5.005882275011164,
+        8.158174477042675
+      ]
+    },
+    {
+      "min": [
+        -12.526824706069526,
+        19.50466570228444,
+        0.0
+      ],
+      "max": [
+        -9.48939677794916,
+        24.955479070636727,
+        9.698823160929471
+      ]
+    },
+    {
+      "min": [
+        36.64780466645948,
+        23.43866872188433,
+        0.0
+      ],
+      "max": [
+        40.49663637856622,
+        27.0636430658656,
+        6.283097195602036
+      ]
+    },
+    {
+      "min": [
+        10.335718339645847,
+        11.311652862200061,
+        0.0
+      ],
+      "max": [
+        13.887511036437918,
+        15.838194514782375,
+        3.7398177491300175
+      ]
+    },
+    {
+      "min": [
+        -22.757317017883686,
+        -17.443034283223362,
+        0.0
+      ],
+      "max": [
+        -17.82112891806787,
+        -14.212284489558494,
+        3.6011172043680344
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "t": 0.0,
+      "attacker_pos": [
+        -50.0,
+        15.280571937561035,
+        29.53264808654785
+      ],
+      "defender_pos": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "asset_pos": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "inactive",
+      "defender_barrier_h": null,
+      "min_inflated_obstacle_clearance": Infinity
+    },
+    {
+      "t": 0.5,
+      "attacker_pos": [
+        -44.99840545654297,
+        13.762332916259766,
+        27.03264808654785
+      ],
+      "defender_pos": [
+        0.15401440858840942,
+        0.0673205554485321,
+        0.0
+      ],
+      "asset_pos": [
+        0.15401440858840942,
+        0.0673205554485321,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "identity_no_constraints",
+      "defender_barrier_h": null,
+      "min_inflated_obstacle_clearance": null
+    },
+    {
+      "t": 1.0,
+      "attacker_pos": [
+        -40.022560119628906,
+        12.228283882141113,
+        24.53264808654785
+      ],
+      "defender_pos": [
+        0.012050479650497437,
+        -0.1460472196340561,
+        0.0
+      ],
+      "asset_pos": [
+        0.012050479650497437,
+        -0.1460472196340561,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "identity_no_constraints",
+      "defender_barrier_h": null,
+      "min_inflated_obstacle_clearance": null
+    },
+    {
+      "t": 1.5,
+      "attacker_pos": [
+        -35.0658073425293,
+        10.706016540527344,
+        22.03264808654785
+      ],
+      "defender_pos": [
+        0.16130349040031433,
+        -0.09966553002595901,
+        0.0
+      ],
+      "asset_pos": [
+        0.16130349040031433,
+        -0.09966553002595901,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "identity_no_constraints",
+      "defender_barrier_h": null,
+      "min_inflated_obstacle_clearance": null
+    },
+    {
+      "t": 2.0,
+      "attacker_pos": [
+        -30.601160049438477,
+        9.261014938354492,
+        19.693885803222656
+      ],
+      "defender_pos": [
+        0.268375039100647,
+        -0.2560599744319916,
+        0.0
+      ],
+      "asset_pos": [
+        0.268375039100647,
+        -0.2560599744319916,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "obstacle",
+      "cbf_qp_status": "emergency_brake",
+      "defender_barrier_h": null,
+      "min_inflated_obstacle_clearance": 16.196190223582274
+    },
+    {
+      "t": 2.5,
+      "attacker_pos": [
+        -26.622451782226562,
+        7.622645854949951,
+        17.656021118164062
+      ],
+      "defender_pos": [
+        -0.9592148065567017,
+        -1.1156114339828491,
+        0.0
+      ],
+      "asset_pos": [
+        -0.9592148065567017,
+        -1.1156114339828491,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "obstacle",
+      "cbf_qp_status": "hard",
+      "defender_barrier_h": null,
+      "min_inflated_obstacle_clearance": 12.216325166326264
+    },
+    {
+      "t": 3.0,
+      "attacker_pos": [
+        -22.448087692260742,
+        6.103560924530029,
+        15.810810089111328
+      ],
+      "defender_pos": [
+        -0.8989317417144775,
+        -0.694739580154419,
+        0.0
+      ],
+      "asset_pos": [
+        -0.8989317417144775,
+        -0.694739580154419,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "obstacle",
+      "cbf_qp_status": "hard",
+      "defender_barrier_h": null,
+      "min_inflated_obstacle_clearance": 8.991896565403042
+    },
+    {
+      "t": 3.5,
+      "attacker_pos": [
+        -17.861785888671875,
+        4.587748050689697,
+        13.493014335632324
+      ],
+      "defender_pos": [
+        -0.5156612992286682,
+        -1.0919140577316284,
+        0.0
+      ],
+      "asset_pos": [
+        -0.5156612992286682,
+        -1.0919140577316284,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "obstacle",
+      "cbf_qp_status": "hard",
+      "defender_barrier_h": null,
+      "min_inflated_obstacle_clearance": 6.510562678899222
+    },
+    {
+      "t": 4.0,
+      "attacker_pos": [
+        -13.669329643249512,
+        3.1866378784179688,
+        11.677393913269043
+      ],
+      "defender_pos": [
+        0.1803727149963379,
+        -1.4682859182357788,
+        0.0
+      ],
+      "asset_pos": [
+        0.1803727149963379,
+        -1.4682859182357788,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "joint",
+      "cbf_qp_status": "soft_fallback",
+      "defender_barrier_h": 8.349475170615008,
+      "min_inflated_obstacle_clearance": 4.572011568263657
+    },
+    {
+      "t": 4.5,
+      "attacker_pos": [
+        -9.961219787597656,
+        1.9903666973114014,
+        9.939692497253418
+      ],
+      "defender_pos": [
+        0.6092629432678223,
+        -1.263943076133728,
+        0.0
+      ],
+      "asset_pos": [
+        0.6092629432678223,
+        -1.263943076133728,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "defender",
+      "cbf_qp_status": "soft_fallback",
+      "defender_barrier_h": 6.882258129960201,
+      "min_inflated_obstacle_clearance": 3.7828390192808485
+    },
+    {
+      "t": 5.0,
+      "attacker_pos": [
+        -7.3404765129089355,
+        1.1299769878387451,
+        8.405316352844238
+      ],
+      "defender_pos": [
+        -1.1740986108779907,
+        -0.8462393283843994,
+        0.8032091856002808
+      ],
+      "asset_pos": [
+        0.9079862833023071,
+        -1.495895266532898,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "defender",
+      "cbf_qp_status": "hard",
+      "defender_barrier_h": 5.643933343818215,
+      "min_inflated_obstacle_clearance": 4.129038959703176
+    },
+    {
+      "t": 5.5,
+      "attacker_pos": [
+        -5.816492080688477,
+        0.6226580739021301,
+        7.275149822235107
+      ],
+      "defender_pos": [
+        -4.174262046813965,
+        1.015610694885254,
+        2.2650790214538574
+      ],
+      "asset_pos": [
+        0.031178951263427734,
+        -1.6653908491134644,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "defender",
+      "cbf_qp_status": "emergency_brake",
+      "defender_barrier_h": -0.44856746382498525,
+      "min_inflated_obstacle_clearance": 6.050656302045119
+    },
+    {
+      "t": 6.0,
+      "attacker_pos": [
+        -5.091513156890869,
+        0.3082906901836395,
+        6.824689865112305
+      ],
+      "defender_pos": [
+        -6.866785526275635,
+        4.8269853591918945,
+        4.050539016723633
+      ],
+      "asset_pos": [
+        -0.521614134311676,
+        -2.082425832748413,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "defender",
+      "cbf_qp_status": "hard",
+      "defender_barrier_h": 0.8170030060857947,
+      "min_inflated_obstacle_clearance": 7.560425125878994
+    },
+    {
+      "t": 6.5,
+      "attacker_pos": [
+        -3.80570912361145,
+        -0.2992018759250641,
+        5.395347595214844
+      ],
+      "defender_pos": [
+        -11.283653259277344,
+        7.725113868713379,
+        6.27487850189209
+      ],
+      "asset_pos": [
+        0.049220144748687744,
+        -2.0167603492736816,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "none",
+      "cbf_qp_status": "hard",
+      "defender_barrier_h": 5.911722569628456,
+      "min_inflated_obstacle_clearance": 8.334655337612977
+    },
+    {
+      "t": 7.0,
+      "attacker_pos": [
+        -2.192949056625366,
+        -0.5021513104438782,
+        3.2813379764556885
+      ],
+      "defender_pos": [
+        -16.896617889404297,
+        9.319436073303223,
+        7.566778182983398
+      ],
+      "asset_pos": [
+        0.26714253425598145,
+        -0.5731168985366821,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "none",
+      "cbf_qp_status": "hard",
+      "defender_barrier_h": 13.323339540625703,
+      "min_inflated_obstacle_clearance": 9.726370447262383
+    },
+    {
+      "t": 7.5,
+      "attacker_pos": [
+        -1.1196109056472778,
+        0.059773094952106476,
+        1.8672571182250977
+      ],
+      "defender_pos": [
+        -23.073970794677734,
+        9.269248962402344,
+        7.870217800140381
+      ],
+      "asset_pos": [
+        0.30736488103866577,
+        1.2363865375518799,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "none",
+      "cbf_qp_status": "hard",
+      "defender_barrier_h": 20.179281811308353,
+      "min_inflated_obstacle_clearance": 11.34102184510177
+    },
+    {
+      "t": 8.0,
+      "attacker_pos": [
+        -0.9641551971435547,
+        0.383779913187027,
+        1.4662401676177979
+      ],
+      "defender_pos": [
+        -26.287595748901367,
+        8.268134117126465,
+        7.660915374755859
+      ],
+      "asset_pos": [
+        -0.08502951264381409,
+        1.42169988155365,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "none",
+      "cbf_qp_status": "hard",
+      "defender_barrier_h": 25.818944915861074,
+      "min_inflated_obstacle_clearance": 12.282002701653612
+    }
+  ],
+  "what_to_look_for": "A PN-defender scenario where the attacker successfully evades/captures despite active defender-CBF intervention -- illustrates the large PN benefit preserved under Prompt 6.",
+  "schema": "a1_cbf_defender_cbf_v3_visualizer_trajectory/1"
+}

@@ -110,10 +110,12 @@ class CBFAttackerController:
         provided (Prompt 2/4: static-obstacle and/or defender-avoidance CBF constraints -- a
         `uav_defend.attackers.cbf_obstacle.StaticHazard`/`uav_defend.attackers.cbf_defender.DefenderHazard`),
         solves the JOINT `min_v 0.5*||v - v_nom||^2` subject to every active constraint via
-        `uav_defend.attackers.cbf_obstacle.solve_velocity_cbf_qp` (hard -> soft-slack -> emergency-brake fallback
-        chain, shared between obstacle and defender constraint classes; see that function's docstring). `state` is
-        accepted (own position/velocity) for forward compatibility; the QP itself does not read it (each hazard
-        already carries its own precomputed normal/clearance/stopping-margin/estimated-velocity).
+        `uav_defend.attackers.cbf_obstacle.solve_velocity_cbf_qp` (hard-physical-safety -> soft-defender-slack ->
+        reachable-emergency-brake chain; see that function's docstring). `state["velocity"]` is now REQUIRED
+        whenever a QP solve actually happens (journal_cbf_attacker, defender_cbf_v3 / Prompt 6, brief section 3):
+        the one-substep acceleration-reachable set is centered on the attacker's ACTUAL current velocity, so this
+        is no longer a forward-compatibility-only field -- every real caller already supplies it (see
+        `uav_defend.attackers.cbf_obstacle.integrate_obstacle_cbf_substeps`).
         """
         v_nom = np.asarray(v_nom, dtype=np.float64).reshape(3)
         constraint_count = len(hazards)
@@ -127,13 +129,23 @@ class CBFAttackerController:
             }
             return v_safe, diagnostics
 
+        if state is None or "velocity" not in state:
+            raise ValueError(
+                "filter_velocity requires state['velocity'] (the attacker's actual current velocity) whenever "
+                "hazards/defender_hazard are present -- the acceleration-reachability constraint (journal_"
+                "cbf_attacker, defender_cbf_v3 / Prompt 6) is centered on it and cannot be silently defaulted."
+            )
+        v_current = np.asarray(state["velocity"], dtype=np.float64).reshape(3)
+
         from uav_defend.attackers.cbf_obstacle import CBF_ALPHA, solve_velocity_cbf_qp
         from uav_defend.attackers.cbf_defender import CBF_ALPHA_DEFENDER
 
         v_safe, qp_diag = solve_velocity_cbf_qp(
-            v_nom, list(hazards), defender_hazard=defender_hazard, alpha=CBF_ALPHA, alpha_defender=CBF_ALPHA_DEFENDER,
+            v_nom, list(hazards), v_current=v_current, defender_hazard=defender_hazard,
+            alpha=CBF_ALPHA, alpha_defender=CBF_ALPHA_DEFENDER,
             max_horizontal_speed=self.limits.max_horizontal_speed,
             max_climb_rate=self.limits.max_climb_rate, max_descent_rate=self.limits.max_descent_rate,
+            max_accel=self.limits.max_accel,
         )
         intervention_norm = float(np.linalg.norm(v_safe - v_nom))
         diagnostics = {

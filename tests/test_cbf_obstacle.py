@@ -81,7 +81,13 @@ def test_static_cbf_inequality_limits_inward_velocity_component():
     from uav_defend.attackers.cbf_obstacle import StaticHazard
 
     hz = StaticHazard(obstacle_id=0, normal=np.array([-1.0, 0.0, 0.0]), d=1.0, h=1.0, inward_speed=0.0, stopping_margin=0.0, physical_clearance=3.0)
-    v_safe, diag = solve_velocity_cbf_qp(np.array([12.0, 0.0, 0.0]), [hz], max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0)
+    # v_current=0, max_accel=1e6 (effectively infinite acceleration-reachable ball): this legacy Prompt-2/3 test
+    # exercises the OBSTACLE-CBF inequality specifically, not acceleration-reachability (which has its own
+    # dedicated tests in test_cbf_defender_v3.py, journal_cbf_attacker Prompt 6).
+    v_safe, diag = solve_velocity_cbf_qp(
+        np.array([12.0, 0.0, 0.0]), [hz], v_current=np.zeros(3), max_accel=1e6,
+        max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0,
+    )
     assert diag["cbf_qp_status"] == "hard"
     assert float(np.dot(hz.normal, v_safe)) >= -CBF_ALPHA * hz.h - 1e-4   # n^T v_safe >= -alpha*h, satisfied
     assert v_safe[0] <= 1.0 + 1e-6                                        # forward speed is correctly capped
@@ -118,19 +124,34 @@ def test_hard_qp_succeeds_when_feasible():
     from uav_defend.attackers.cbf_obstacle import StaticHazard
 
     hz = StaticHazard(obstacle_id=0, normal=np.array([0.0, -1.0, 0.0]), d=5.0, h=3.0, inward_speed=0.0, stopping_margin=0.0, physical_clearance=7.0)
-    v_safe, diag = solve_velocity_cbf_qp(np.array([0.0, 12.0, 0.0]), [hz], max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0)
+    v_safe, diag = solve_velocity_cbf_qp(
+        np.array([0.0, 12.0, 0.0]), [hz], v_current=np.zeros(3), max_accel=1e6,
+        max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0,
+    )
     assert diag["cbf_qp_status"] == "hard" and diag["qp_max_constraint_residual"] < 1e-4
     assert v_safe[1] <= 3.0 + 1e-4                                            # vy capped to satisfy -alpha*h = -3
 
 
-# ----------------------------------------------------------------------------- 11: soft QP fallback
-def test_soft_fallback_engages_when_hard_qp_is_infeasible():
+# ----------------------------------------------------------------------------- 11: obstacle-hard infeasibility (Prompt 6: no more obstacle soft fallback)
+def test_obstacle_hard_infeasibility_goes_straight_to_reachable_emergency_brake():
+    """Prompt-6 behavior change (journal_cbf_attacker, defender_cbf_v3, brief section 11): obstacle safety may
+    NEVER receive slack any more, not even in this no-defender, obstacle-only-infeasible case -- there is no
+    longer an obstacle-slack 'soft_fallback' stage at all. When the hard obstacle+bounds(+acceleration)
+    constraints are infeasible together, the controller goes straight to the REACHABLE emergency brake and
+    classifies `physical_safety_infeasible`, honestly reporting the TRUE (un-softened) obstacle residual rather
+    than a slack-absorbed near-zero one."""
     from uav_defend.attackers.cbf_obstacle import StaticHazard
 
     hz1 = StaticHazard(obstacle_id=0, normal=np.array([-1.0, 0.0, 0.0]), d=-5.0, h=-10.0, inward_speed=0.0, stopping_margin=0.0, physical_clearance=-5.0)
     hz2 = StaticHazard(obstacle_id=1, normal=np.array([1.0, 0.0, 0.0]), d=-5.0, h=-10.0, inward_speed=0.0, stopping_margin=0.0, physical_clearance=-5.0)
-    v_safe, diag = solve_velocity_cbf_qp(np.array([5.0, 0.0, 0.0]), [hz1, hz2], max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0)
-    assert diag["cbf_qp_status"] == "soft_fallback" and diag["soft_slack"] > 0
+    v_safe, diag = solve_velocity_cbf_qp(
+        np.array([5.0, 0.0, 0.0]), [hz1, hz2], v_current=np.zeros(3), max_accel=1e6,
+        max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0,
+    )
+    assert diag["cbf_qp_status"] == "emergency_brake"
+    assert diag["priority_classification"] == "physical_safety_infeasible"
+    assert diag["soft_slack"] == 0.0                      # no obstacle slack was ever introduced
+    assert np.allclose(v_safe, 0.0)                       # v_current=0 -> the reachable brake is exactly zero
 
 
 # ----------------------------------------------------------------------------- 12: emergency brake
@@ -148,7 +169,10 @@ def test_emergency_brake_triggers_when_both_qps_fail(monkeypatch):
     from uav_defend.attackers.cbf_obstacle import StaticHazard
 
     hz = StaticHazard(obstacle_id=0, normal=np.array([-1.0, 0.0, 0.0]), d=1.0, h=1.0, inward_speed=0.0, stopping_margin=0.0, physical_clearance=3.0)
-    v_safe, diag = solve_velocity_cbf_qp(np.array([12.0, 0.0, 0.0]), [hz], max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0)
+    v_safe, diag = solve_velocity_cbf_qp(
+        np.array([12.0, 0.0, 0.0]), [hz], v_current=np.zeros(3), max_accel=1e6,
+        max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0,
+    )
     assert diag["cbf_qp_status"] == "emergency_brake" and np.allclose(v_safe, 0.0)
 
 

@@ -195,7 +195,7 @@ def test_defender_stopping_margin_matches_the_frozen_formula():
 def test_defender_only_qp_satisfies_the_frozen_inequality():
     hz = DefenderHazard(normal=np.array([-1.0, 0.0, 0.0]), d=1.0, h=1.0, closing_speed=0.0, stopping_margin=0.0, distance=4.5, defender_velocity=np.zeros(3))
     v_safe, diag = solve_velocity_cbf_qp(
-        np.array([12.0, 0.0, 0.0]), [], defender_hazard=hz,
+        np.array([12.0, 0.0, 0.0]), [], v_current=np.zeros(3), max_accel=1e6, defender_hazard=hz,
         max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0,
     )
     assert diag["cbf_qp_status"] == "hard"
@@ -219,7 +219,8 @@ def test_defender_only_qp_deflects_velocity_away_from_closing_defender():
     )
     v_nom = np.array([-6.0, 0.0, 0.0])  # nominal: fly straight at/through the defender
     v_safe, diag = solve_velocity_cbf_qp(
-        v_nom, [], defender_hazard=hz, max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0,
+        v_nom, [], v_current=np.array([-6.0, 0.0, 0.0]), defender_hazard=hz,
+        max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0,
     )
     # The safe velocity must reduce the inward (toward-defender) component relative to nominal.
     inward_nom = -float(np.dot(hz.normal, v_nom))
@@ -233,7 +234,7 @@ def test_joint_qp_satisfies_both_constraint_classes_simultaneously():
     obstacle_hz = StaticHazard(obstacle_id=0, normal=np.array([0.0, 1.0, 0.0]), d=1.0, h=1.0, inward_speed=0.0, stopping_margin=0.0, physical_clearance=3.0)
     defender_hz = DefenderHazard(normal=np.array([1.0, 0.0, 0.0]), d=1.0, h=1.0, closing_speed=0.0, stopping_margin=0.0, distance=4.5, defender_velocity=np.zeros(3))
     v_safe, diag = solve_velocity_cbf_qp(
-        np.array([5.0, -5.0, 0.0]), [obstacle_hz], defender_hazard=defender_hz,
+        np.array([5.0, -5.0, 0.0]), [obstacle_hz], v_current=np.zeros(3), max_accel=1e6, defender_hazard=defender_hz,
         max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0,
     )
     assert diag["cbf_qp_status"] in ("hard", "soft_fallback")
@@ -251,7 +252,7 @@ def test_conflicting_obstacle_and_defender_constraints_trigger_soft_or_emergency
     obstacle_hz = StaticHazard(obstacle_id=0, normal=np.array([-1.0, 0.0, 0.0]), d=0.05, h=-5.0, inward_speed=10.0, stopping_margin=5.0, physical_clearance=0.05)
     defender_hz = DefenderHazard(normal=np.array([1.0, 0.0, 0.0]), d=0.05, h=-5.0, closing_speed=10.0, stopping_margin=5.0, distance=0.05 + DEFENDER_SAFETY_RADIUS, defender_velocity=np.zeros(3))
     v_safe, diag = solve_velocity_cbf_qp(
-        np.array([0.0, 0.0, 0.0]), [obstacle_hz], defender_hazard=defender_hz,
+        np.array([0.0, 0.0, 0.0]), [obstacle_hz], v_current=np.zeros(3), max_accel=1e6, defender_hazard=defender_hz,
         max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0,
     )
     assert diag["cbf_qp_status"] in ("hard", "soft_fallback", "emergency_brake")
@@ -264,7 +265,7 @@ def test_soft_fallback_infeasibility_source_identifies_the_violating_class():
     # with NO static obstacle present -- any resulting soft fallback must blame "defender", never "obstacle".
     defender_hz = DefenderHazard(normal=np.array([1.0, 0.0, 0.0]), d=0.01, h=-50.0, closing_speed=50.0, stopping_margin=50.01, distance=0.01 + DEFENDER_SAFETY_RADIUS, defender_velocity=np.zeros(3))
     v_safe, diag = solve_velocity_cbf_qp(
-        np.array([0.0, 0.0, 0.0]), [], defender_hazard=defender_hz,
+        np.array([0.0, 0.0, 0.0]), [], v_current=np.zeros(3), max_accel=1e6, defender_hazard=defender_hz,
         max_horizontal_speed=1.0, max_climb_rate=1.0, max_descent_rate=1.0,  # tight speed bound forces infeasibility
     )
     if diag["cbf_qp_status"] in ("soft_fallback", "emergency_brake"):
@@ -277,7 +278,7 @@ def test_emergency_brake_commands_zero_velocity_never_an_invented_direction():
     obstacle_hz = StaticHazard(obstacle_id=0, normal=np.array([1.0, 0.0, 0.0]), d=-10.0, h=-100.0, inward_speed=50.0, stopping_margin=90.0, physical_clearance=-10.0)
     defender_hz = DefenderHazard(normal=np.array([-1.0, 0.0, 0.0]), d=-10.0, h=-100.0, closing_speed=50.0, stopping_margin=90.0, distance=-10.0 + DEFENDER_SAFETY_RADIUS, defender_velocity=np.zeros(3))
     v_safe, diag = solve_velocity_cbf_qp(
-        np.array([0.0, 0.0, 0.0]), [obstacle_hz], defender_hazard=defender_hz,
+        np.array([0.0, 0.0, 0.0]), [obstacle_hz], v_current=np.zeros(3), max_accel=1e6, defender_hazard=defender_hz,
         max_horizontal_speed=0.01, max_climb_rate=0.01, max_descent_rate=0.01,
     )
     if diag["cbf_qp_status"] == "emergency_brake":
@@ -289,20 +290,20 @@ def test_intervention_source_classifies_none_obstacle_defender_and_joint():
     obstacle_hz = StaticHazard(obstacle_id=0, normal=np.array([-1.0, 0.0, 0.0]), d=0.5, h=-1.0, inward_speed=5.0, stopping_margin=1.5, physical_clearance=0.5)
     defender_hz = DefenderHazard(normal=np.array([1.0, 0.0, 0.0]), d=0.5, h=-1.0, closing_speed=5.0, stopping_margin=1.5, distance=0.5 + DEFENDER_SAFETY_RADIUS, defender_velocity=np.zeros(3))
 
-    _, diag_none = solve_velocity_cbf_qp(np.zeros(3), [], defender_hazard=None, max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0)
+    _, diag_none = solve_velocity_cbf_qp(np.zeros(3), [], v_current=np.zeros(3), max_accel=1e6, defender_hazard=None, max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0)
     assert diag_none["intervention_source"] == "none"
 
     # obstacle normal=[-1,0,0]: constraint n.v + alpha*h >= 0 is violated for v_x > -1 (h=-1 means already
     # penetrated -- almost any non-retreating command is "active"). v=[5,0,0] clearly violates it.
-    _, diag_obstacle = solve_velocity_cbf_qp(np.array([5.0, 0.0, 0.0]), [obstacle_hz], defender_hazard=None, max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0)
+    _, diag_obstacle = solve_velocity_cbf_qp(np.array([5.0, 0.0, 0.0]), [obstacle_hz], v_current=np.zeros(3), max_accel=1e6, defender_hazard=None, max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0)
     assert diag_obstacle["intervention_source"] == "obstacle"
 
     # defender normal=[1,0,0]: constraint n.v >= n.v_d - alpha_d*h is violated for v_x < 1. v=[-5,0,0] violates it.
-    _, diag_defender = solve_velocity_cbf_qp(np.array([-5.0, 0.0, 0.0]), [], defender_hazard=defender_hz, max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0)
+    _, diag_defender = solve_velocity_cbf_qp(np.array([-5.0, 0.0, 0.0]), [], v_current=np.zeros(3), max_accel=1e6, defender_hazard=defender_hz, max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0)
     assert diag_defender["intervention_source"] == "defender"
 
     # v_x=0 lies in the overlap region (-1, 1) that violates BOTH constraints simultaneously -> "joint".
-    _, diag_joint = solve_velocity_cbf_qp(np.array([0.0, 0.0, 0.0]), [obstacle_hz], defender_hazard=defender_hz, max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0)
+    _, diag_joint = solve_velocity_cbf_qp(np.array([0.0, 0.0, 0.0]), [obstacle_hz], v_current=np.zeros(3), max_accel=1e6, defender_hazard=defender_hz, max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0)
     assert diag_joint["intervention_source"] == "joint"
 
 
@@ -354,8 +355,14 @@ def test_full_variant_degenerates_to_obstacle_only_when_defender_unobservable():
     obstacle-only QP -- confirms the 'full' and 'obstacle-only' configurations never diverge while the defender is
     out of range."""
     hz = StaticHazard(obstacle_id=0, normal=np.array([-1.0, 0.0, 0.0]), d=1.0, h=1.0, inward_speed=0.0, stopping_margin=0.0, physical_clearance=3.0)
-    v_a, diag_a = solve_velocity_cbf_qp(np.array([12.0, 0.0, 0.0]), [hz], defender_hazard=None, max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0)
-    v_b, diag_b = solve_velocity_cbf_qp(np.array([12.0, 0.0, 0.0]), [hz], max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0)
+    v_a, diag_a = solve_velocity_cbf_qp(
+        np.array([12.0, 0.0, 0.0]), [hz], v_current=np.zeros(3), max_accel=1e6, defender_hazard=None,
+        max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0,
+    )
+    v_b, diag_b = solve_velocity_cbf_qp(
+        np.array([12.0, 0.0, 0.0]), [hz], v_current=np.zeros(3), max_accel=1e6,
+        max_horizontal_speed=12.0, max_climb_rate=5.0, max_descent_rate=5.0,
+    )
     assert np.allclose(v_a, v_b)
     assert diag_a["cbf_qp_status"] == diag_b["cbf_qp_status"]
 

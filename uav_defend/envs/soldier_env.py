@@ -2800,6 +2800,16 @@ class SoldierEnv(gym.Env):
             "priority_conflict": bool(cbf_diag.get("priority_conflict_substeps", 0) > 0) if "priority_conflict_substeps" in cbf_diag else bool(cbf_diag.get("priority_conflict", False)),
             "priority_classification": cbf_diag.get("priority_classification"),
             "obstacle_safety_infeasible": bool(cbf_diag.get("obstacle_safety_infeasible_substeps", 0) > 0) if "obstacle_safety_infeasible_substeps" in cbf_diag else bool(cbf_diag.get("priority_classification") == "obstacle_safety_infeasible"),
+            # ---- Acceleration-reachability diagnostics (journal_cbf_attacker, defender_cbf_v3 / Prompt 6, brief
+            # section 21) ----
+            "optimizer_accel_request": np.asarray(cbf_diag.get("optimizer_accel_request", [0.0, 0.0, 0.0]), dtype=np.float32),
+            "optimizer_accel_norm": float(cbf_diag.get("optimizer_accel_norm", 0.0)),
+            "accel_constraint_active": bool(cbf_diag.get("accel_constraint_active_substeps", 0) > 0) if "accel_constraint_active_substeps" in cbf_diag else bool(cbf_diag.get("accel_constraint_active", False)),
+            "accel_reachable_margin": float(cbf_diag.get("accel_reachable_margin", 0.0)),
+            "executor_velocity_error": float(cbf_diag.get("max_executor_velocity_error_over_substeps", 0.0)),
+            "optimizer_executor_contract_violation": bool(cbf_diag.get("optimizer_executor_contract_violation_substeps", 0) > 0),
+            "physical_safety_infeasible": bool(cbf_diag.get("physical_safety_infeasible_substeps", 0) > 0) if "physical_safety_infeasible_substeps" in cbf_diag else bool(cbf_diag.get("physical_safety_infeasible", False)),
+            "reachable_emergency_brake": bool(cbf_diag.get("reachable_emergency_brake_substeps", 0) > 0) if "reachable_emergency_brake_substeps" in cbf_diag else bool(cbf_diag.get("reachable_emergency_brake", False)),
         }
 
     def _cbf_info(self) -> dict:
@@ -2862,6 +2872,14 @@ class SoldierEnv(gym.Env):
             "priority_conflict": d.get("priority_conflict", False),
             "priority_classification": d.get("priority_classification", None),
             "obstacle_safety_infeasible": d.get("obstacle_safety_infeasible", False),
+            "optimizer_accel_request": d.get("optimizer_accel_request", zero3),
+            "optimizer_accel_norm": d.get("optimizer_accel_norm", 0.0),
+            "accel_constraint_active": d.get("accel_constraint_active", False),
+            "accel_reachable_margin": d.get("accel_reachable_margin", 0.0),
+            "executor_velocity_error": d.get("executor_velocity_error", 0.0),
+            "optimizer_executor_contract_violation": d.get("optimizer_executor_contract_violation", False),
+            "physical_safety_infeasible": d.get("physical_safety_infeasible", False),
+            "reachable_emergency_brake": d.get("reachable_emergency_brake", False),
         }
 
     def _enemy_dynamics_limits(self) -> DynamicsLimits:

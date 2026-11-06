@@ -1,0 +1,32 @@
+{
+  "prompt": 6,
+  "stage": "defender_cbf_v3",
+  "summary": "acceleration-reachable CBF velocity-constrained optimization",
+  "starting_sha": "44f8036cdfa75662ab84eed46aea880b5f45700b",
+  "named_seed_reproduction": {
+    "630069": {"outcome": "intercepted", "obstacle_collision": false, "executor_velocity_error_max": 0.0},
+    "630123": {"outcome": "ongoing", "obstacle_collision": false, "note": "safe deadlock: reachable emergency brake held for remainder of horizon, positive physical clearance throughout"},
+    "630203": {"outcome": "intercepted", "obstacle_collision": false}
+  },
+  "stress_200": {"obstacle_collisions": 0, "numerical_failures": 0, "emergency_brake_episodes": 200},
+  "primary_1000_greedy": {"obstacle_collisions_oo": 0, "obstacle_collisions_full": 0, "capture_oo": 0.038, "capture_full": 0.043},
+  "static_clutter_500": {"obstacle_collisions": 0, "capture_rate": 1.0, "numerical_failures": 0},
+  "c0_foundation_500": {"non_identity_steps": 0, "obstacle_collisions": 0},
+  "a0_legacy_1000": {"mismatches": 0, "identical": true},
+  "generalization": {
+    "kalman_greedy": {"collisions_oo": 0, "collisions_full": 0},
+    "pn": {"collisions_oo": 0, "collisions_full": 0},
+    "lead": {"collisions_oo": 0, "collisions_full": 0},
+    "rmpc": {"collisions_oo": 0, "collisions_full": 0}
+  },
+  "executor_contract": {"spotcheck_steps": 3513, "max_error_m_s": 8.0e-05, "violations_at_1e-6_m_s": 111, "documented_equivalent_tolerance_m_s": 1e-4},
+  "broad_regression": {"tests_passed": 1292, "tests_failed": 0},
+  "acceptance": {
+    "named_collision_cases": "PASS (0/3)", "stress_200": "PASS (0/200)", "primary_1000": "PASS (0/1000)",
+    "static_clutter_500": "PASS (0/500)", "numerical": "PASS (0 everywhere)",
+    "optimizer_executor_contract": "PASS at documented 1e-4 m/s tolerance",
+    "legacy": "PASS (A0 bit-for-bit, 0/1000 mismatches)",
+    "tactical": "Greedy preserved (<=0.6pp change); PN preserved (29.5pp vs 33pp); RMPC reduced (22pp vs 38pp) -- flagged for manual review"
+  },
+  "verdict": "B — PHYSICAL SAFETY PASSES — GREEDY TACTICAL EFFECT STILL NEEDS FINAL REVIEW"
+}

@@ -1,0 +1,1020 @@
+{
+  "defender": "greedy",
+  "seed": 630203,
+  "defender_cbf_enabled": true,
+  "outcome": "intercepted",
+  "obstacles": [
+    {
+      "min": [
+        21.025412548692202,
+        -9.502550824184096,
+        0.0
+      ],
+      "max": [
+        24.3488149597041,
+        -5.4813258076770826,
+        5.321359592145332
+      ]
+    },
+    {
+      "min": [
+        7.148600513466911,
+        -9.678423725044496,
+        0.0
+      ],
+      "max": [
+        10.884214121979802,
+        -3.7271635379401156,
+        8.089669180386572
+      ]
+    },
+    {
+      "min": [
+        -20.322279023380986,
+        -47.04590210100609,
+        0.0
+      ],
+      "max": [
+        -14.482098870446805,
+        -42.383852256969874,
+        8.602401703373534
+      ]
+    },
+    {
+      "min": [
+        7.6164610168484135,
+        10.841992098541741,
+        0.0
+      ],
+      "max": [
+        12.973238697728055,
+        15.515610663330246,
+        7.959533906625543
+      ]
+    },
+    {
+      "min": [
+        6.539367831199842,
+        37.0231603967523,
+        0.0
+      ],
+      "max": [
+        10.142253931885874,
+        42.71227423036541,
+        6.684060841604074
+      ]
+    },
+    {
+      "min": [
+        21.510373013895588,
+        -0.8094569528856859,
+        0.0
+      ],
+      "max": [
+        25.351896050804513,
+        3.234495253728486,
+        8.769092155199703
+      ]
+    },
+    {
+      "min": [
+        -40.87853158321895,
+        -40.69301122929615,
+        0.0
+      ],
+      "max": [
+        -35.49158463637729,
+        -34.80538282504544,
+        6.001845921475809
+      ]
+    },
+    {
+      "min": [
+        -36.1879310618188,
+        36.13019579510724,
+        0.0
+      ],
+      "max": [
+        -32.693351186561586,
+        42.01278879239379,
+        7.086253756004573
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "t": 0.0,
+      "attacker_pos": [
+        -17.039819717407227,
+        -55.042213439941406,
+        1.0
+      ],
+      "defender_pos": [
+        -4.582667350769043,
+        -63.39801025390625,
+        1.0
+      ],
+      "asset_pos": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "inactive",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": false,
+      "reachable_emergency_brake": false
+    },
+    {
+      "t": 0.5,
+      "attacker_pos": [
+        -17.113460540771484,
+        -48.44095993041992,
+        1.0
+      ],
+      "defender_pos": [
+        -5.7138352394104,
+        -50.0,
+        2.4865882396698
+      ],
+      "asset_pos": [
+        0.44694942235946655,
+        -0.7796589732170105,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "obstacle",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 1.0,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        -8.687908172607422,
+        -49.885826110839844,
+        4.407029151916504
+      ],
+      "asset_pos": [
+        1.0058541297912598,
+        -2.1926205158233643,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 1.1107649934270853e-16,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 1.5,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        -12.596420288085938,
+        -50.0,
+        6.655740737915039
+      ],
+      "asset_pos": [
+        1.1239159107208252,
+        -0.9438804388046265,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "defender",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 2.0,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        -17.19317626953125,
+        -50.0,
+        8.891395568847656
+      ],
+      "asset_pos": [
+        -0.2198481559753418,
+        -1.317575454711914,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 2.5,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        -22.307819366455078,
+        -50.0,
+        10.709640502929688
+      ],
+      "asset_pos": [
+        -0.42772188782691956,
+        -1.9182398319244385,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 3.0,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        -27.79275894165039,
+        -50.0,
+        11.976052284240723
+      ],
+      "asset_pos": [
+        -0.5114055275917053,
+        -1.041069746017456,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 3.5,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        -33.539817810058594,
+        -50.0,
+        12.722515106201172
+      ],
+      "asset_pos": [
+        -1.4725298881530762,
+        -0.9925335049629211,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 4.0,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        -39.471858978271484,
+        -50.0,
+        13.056859970092773
+      ],
+      "asset_pos": [
+        -0.48920005559921265,
+        -0.7051507830619812,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 4.5,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        -45.533973693847656,
+        -50.0,
+        13.103793144226074
+      ],
+      "asset_pos": [
+        -0.5316375494003296,
+        -0.4243725836277008,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 5.0,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        -50.0,
+        -50.0,
+        12.972647666931152
+      ],
+      "asset_pos": [
+        -0.46691805124282837,
+        -1.2095235586166382,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 5.5,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        -48.08293151855469,
+        -50.0,
+        12.770615577697754
+      ],
+      "asset_pos": [
+        0.1524801254272461,
+        -0.06003749370574951,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 6.0,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        -44.30757141113281,
+        -50.0,
+        12.50560474395752
+      ],
+      "asset_pos": [
+        -1.0326277017593384,
+        -0.6013136506080627,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 6.5,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        -38.82209777832031,
+        -50.0,
+        12.188992500305176
+      ],
+      "asset_pos": [
+        -0.9711443781852722,
+        -0.2549419701099396,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 7.0,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        -32.014366149902344,
+        -50.0,
+        11.839692115783691
+      ],
+      "asset_pos": [
+        -1.6827778816223145,
+        -1.1970685720443726,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 7.5,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        -24.592838287353516,
+        -50.0,
+        11.48307991027832
+      ],
+      "asset_pos": [
+        -1.4535757303237915,
+        -1.3433828353881836,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "defender",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 8.0,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        -17.150558471679688,
+        -50.0,
+        11.13753604888916
+      ],
+      "asset_pos": [
+        -1.5644288063049316,
+        -0.8439118266105652,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 8.5,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        -10.04332160949707,
+        -50.0,
+        10.817864418029785
+      ],
+      "asset_pos": [
+        -1.612336277961731,
+        -0.7413854598999023,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 9.0,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        -3.1682419776916504,
+        -50.0,
+        10.556126594543457
+      ],
+      "asset_pos": [
+        -1.850456953048706,
+        -0.3802625834941864,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 9.5,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        3.546879768371582,
+        -50.0,
+        10.385969161987305
+      ],
+      "asset_pos": [
+        -1.8573315143585205,
+        -0.6912353038787842,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 10.0,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        10.151727676391602,
+        -50.0,
+        10.308115005493164
+      ],
+      "asset_pos": [
+        -1.5093251466751099,
+        -0.40529027581214905,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 10.5,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        16.680740356445312,
+        -50.0,
+        10.296442985534668
+      ],
+      "asset_pos": [
+        -0.9853107333183289,
+        -1.0146440267562866,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 11.0,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        23.157756805419922,
+        -50.0,
+        10.32285213470459
+      ],
+      "asset_pos": [
+        -1.3875007629394531,
+        -1.9544357061386108,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 11.5,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        29.599166870117188,
+        -50.0,
+        10.366623878479004
+      ],
+      "asset_pos": [
+        -1.4238512516021729,
+        -1.363466739654541,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 12.0,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        36.016197204589844,
+        -50.0,
+        10.414803504943848
+      ],
+      "asset_pos": [
+        -1.7414984703063965,
+        -2.2352542877197266,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 12.5,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        42.41653060913086,
+        -50.0,
+        10.46025276184082
+      ],
+      "asset_pos": [
+        -1.815958023071289,
+        -2.3382625579833984,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 13.0,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        48.805423736572266,
+        -50.0,
+        10.499645233154297
+      ],
+      "asset_pos": [
+        -1.9587023258209229,
+        -2.8700666427612305,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 13.5,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        50.0,
+        -50.0,
+        10.531938552856445
+      ],
+      "asset_pos": [
+        -1.3396594524383545,
+        -2.292473077774048,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 14.0,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        48.02256774902344,
+        -49.93828582763672,
+        10.271055221557617
+      ],
+      "asset_pos": [
+        -0.16552519798278809,
+        -2.699317693710327,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 14.5,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        44.06785202026367,
+        -49.793880462646484,
+        9.721186637878418
+      ],
+      "asset_pos": [
+        0.15003973245620728,
+        -3.175623893737793,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 15.0,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        38.13771438598633,
+        -49.58157730102539,
+        8.866199493408203
+      ],
+      "asset_pos": [
+        1.2088971138000488,
+        -4.325257778167725,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 15.5,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        30.23751449584961,
+        -49.31084060668945,
+        7.671443462371826
+      ],
+      "asset_pos": [
+        1.2586028575897217,
+        -4.858964443206787,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 16.0,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        21.343761444091797,
+        -48.9964714050293,
+        6.328944683074951
+      ],
+      "asset_pos": [
+        1.8626031875610352,
+        -5.369904041290283,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 16.5,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        12.43453598022461,
+        -48.66398620605469,
+        5.098031044006348
+      ],
+      "asset_pos": [
+        2.216529369354248,
+        -7.51967191696167,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 17.0,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        3.5631017684936523,
+        -49.048980712890625,
+        3.6319360733032227
+      ],
+      "asset_pos": [
+        1.6082251071929932,
+        -6.982796669006348,
+        0.0
+      ],
+      "defender_observable": false,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 17.5,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        -5.3846435546875,
+        -49.0252799987793,
+        2.6637940406799316
+      ],
+      "asset_pos": [
+        1.3936535120010376,
+        -7.540254592895508,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 18.0,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        -14.384605407714844,
+        -49.051429748535156,
+        2.6637940406799316
+      ],
+      "asset_pos": [
+        2.5182723999023438,
+        -7.106564998626709,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "defender",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    },
+    {
+      "t": 18.5,
+      "attacker_pos": [
+        -17.13450050354004,
+        -47.84132766723633,
+        1.0
+      ],
+      "defender_pos": [
+        -15.892766952514648,
+        -49.05581283569336,
+        2.798089027404785
+      ],
+      "asset_pos": [
+        2.664135217666626,
+        -6.929981708526611,
+        0.0
+      ],
+      "defender_observable": true,
+      "intervention_source": "none",
+      "cbf_qp_status": "emergency_brake",
+      "executor_velocity_error": 0.0,
+      "physical_safety_infeasible": true,
+      "reachable_emergency_brake": true
+    }
+  ],
+  "what_to_look_for": "Prompt-5 obstacle-collision case, FIXED under Prompt 6: resolves to defender interception instead of an obstacle collision.",
+  "schema": "a1_cbf_defender_cbf_v3_visualizer_trajectory/1"
+}
