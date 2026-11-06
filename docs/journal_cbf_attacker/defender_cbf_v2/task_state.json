@@ -1,0 +1,43 @@
+{
+  "stage": "journal_cbf_attacker / defender_cbf_v2 (Prompt 5: hierarchical obstacle-vs-defender CBF priority)",
+  "branch": "research/cbf-attacker",
+  "starting_head": "9f2a103650767d57c611da733bfbe3f3737f54c6",
+  "motivation": "Prompt 4's SHARED-slack joint CBF-QP allowed tactical defender avoidance to trade against physical obstacle safety under severe joint conflict, producing 3/200 obstacle collisions in the Prompt-4 stress set. This stage replaces the shared slack with a strict priority hierarchy: obstacle safety (Priority 1, hard) > velocity limits (Priority 2, hard) > defender avoidance (Priority 3, soft via a dedicated non-negative slack delta_D).",
+  "frozen_parameters_unchanged": [
+    "kp=1.0", "velocity dynamics", "0.1s CBF substeps", "C2 static clutter",
+    "viability-conditioned initialization", "visibility-graph/A* planner", "obstacle clearance 2.0m",
+    "static CBF alpha=1.0", "defender observation gate 25m", "defender safety radius 3.5m",
+    "physical intercept radius 2.5m", "defender alpha=1.0", "defender velocity estimator", "SLSQP solver settings"
+  ],
+  "qp_change": {
+    "old_prompt4": "single joint hard QP (obstacle+defender+bounds); on infeasibility, SHARED soft-slack QP relaxing BOTH obstacle and defender constraints via one scalar delta.",
+    "new_prompt5": "Step 1: obstacle+bounds-only hard feasibility check (defender ignored). If infeasible: priority_classification='obstacle_safety_infeasible', fall back to the existing Prompt-2/3 obstacle-only hard->soft->emergency chain (defender dropped entirely, never used to help obstacle safety). If feasible: Step 2a tries obstacle+defender+bounds ALL hard (warm-started from Step 1's solution); if feasible, status='hard'. If Step 2a infeasible (genuine priority conflict): Step 2b solves min 0.5||v-v_nom||^2 + 1e4*delta_D^2 s.t. obstacle hard, defender soft via delta_D>=0, bounds hard; status='soft_fallback' if delta_D>0."
+  },
+  "results_summary": {
+    "collision_reproduction_3_cases": {
+      "630069": "FIXED - now soldier_caught, 0 collisions. Confirmed genuine priority-conflict case (priority_conflict=True, defender_slack=13.29 observed at the conflict step); hierarchy correctly absorbed conflict via defender slack while keeping obstacle hard throughout.",
+      "630123": "STILL COLLIDES (enemy_static_obstacle_collision at step 2). Root-caused: NOT a priority-structure violation (obstacle_constraints_hard=True, obstacle residual ~0 confirmed throughout) -- a pre-existing limitation of the frozen velocity-space-only stopping-margin CBF formula, exposed by the mere presence of a defender hard-constraint diluting the acceleration budget across axes not critical to the obstacle escape. Confirmed via defender_cbf_enabled=False on the identical starting kinematic state: survives safely.",
+      "630203": "STILL COLLIDES, same root cause as 630123."
+    },
+    "stress_200_hierarchical": {"obstacle_collisions": 2, "numerical_failures": 0, "emergency_brake_episodes": 7, "soft_qp_episodes": 49, "defender_interceptions": 65, "asset_captures": 131, "qp_hard_or_soft_success_fraction": 0.965},
+    "stress_200_prompt4_shared_slack_baseline": {"obstacle_collisions": 3, "numerical_failures": 0, "emergency_brake_episodes": 3, "soft_qp_episodes": 50},
+    "primary_1000_greedy_hierarchical": {"obstacle_collision": 0, "numerical_failures": 0, "route_errors": 0, "asset_capture": 0.049, "defender_interception": 0.951, "emergency_brake_episodes": 1, "qp_hard_or_soft_success_fraction": 0.999},
+    "primary_1000_greedy_prompt4_shared_slack_baseline": {"obstacle_collision": 0, "asset_capture": 0.049, "defender_interception": 0.951, "qp_hard_or_soft_success_fraction": 1.0},
+    "c0_a0_regression": {"seeds_checked": 1000, "mismatches": 0, "identical": true},
+    "static_clutter_regression": {"episodes": 500, "obstacle_collision": 0, "gate_passed": true}
+  },
+  "acceptance_gate_brief_section_11": {
+    "primary_1000_greedy": {"obstacle_collisions_0": true, "numerical_failures_0": true, "route_errors_0": true, "status": "PASS"},
+    "stress_200": {"obstacle_collisions_0": false, "actual": 2, "numerical_failures_0": true, "status": "FAIL"},
+    "historical": {"c0_a0_bit_identical": true, "static_cbf_regression_passes": true, "status": "PASS"},
+    "tactical_no_catastrophic_loss": {"greedy_capture_change_pp": 0.0, "pn_rmpc_benefits_preserved": "pending generalization retest", "status": "PASS (Greedy identical to Prompt 4)"},
+    "overall": "FAIL -- 200-case stress set does not meet the explicit zero-obstacle-collision requirement"
+  },
+  "verdict": "C - HIERARCHICAL CBF FAILS - DO NOT FREEZE ATTACKER",
+  "next_steps_not_authorized_here": [
+    "Acceleration-reachability-aware CBF-QP constraint (would need to add ||v-v_current||<=max_accel*dt_sub directly into the QP, not just the stopping-margin formula)",
+    "Collision-cone CBF reformulation",
+    "Longer-horizon defender prediction",
+    "Any tuning of obstacle clearance, alpha, active_range, or defender radius/alpha"
+  ]
+}

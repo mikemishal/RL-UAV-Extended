@@ -1,0 +1,494 @@
+{
+  "kalman_greedy": {
+    "obstacle_only_metrics": {
+      "mission": {
+        "episodes_total": 200,
+        "episodes_valid": 200,
+        "scenario_generation_failures": 0,
+        "asset_capture": 0.03,
+        "defender_interception": 0.97,
+        "obstacle_collision": 0,
+        "obstacle_collision_rate": 0.0,
+        "endurance_exhausted": 0.0,
+        "timeout": 0.0,
+        "mean_duration_s": 5.5925,
+        "nonfinite": 0
+      },
+      "defender_interaction": {
+        "min_separation_median_m": 2.500000004697572,
+        "min_separation_mean_m": 2.5470177057619954,
+        "first_observation_time_mean_s": null,
+        "defender_visible_fraction_mean": 0.0,
+        "defender_cbf_activation_rate_mean": 0.0,
+        "mean_defender_constraint_residual": 0.0,
+        "min_h_d": null,
+        "unsafe_radius_steps_total": 228,
+        "interception_radius_steps_total": 98
+      },
+      "navigation": {
+        "mean_path_length_m": 56.70570559536916,
+        "mean_path_excess": 0.923117673453542,
+        "mean_duration_s": 5.5925,
+        "total_route_replans": 165,
+        "total_route_errors": 0
+      },
+      "joint_safety": {
+        "mean_hard_step_fraction": 0.7267293319425673,
+        "mean_soft_step_fraction": 0.0,
+        "mean_emergency_step_fraction": 0.0,
+        "qp_hard_or_soft_success_fraction": 1.0,
+        "joint_constraint_fraction_mean": 0.0,
+        "total_steps": 2237,
+        "intervention_source_step_totals": {
+          "none": 1589,
+          "obstacle": 648,
+          "defender": 0,
+          "joint": 0
+        }
+      }
+    },
+    "full_metrics": {
+      "mission": {
+        "episodes_total": 200,
+        "episodes_valid": 200,
+        "scenario_generation_failures": 0,
+        "asset_capture": 0.04,
+        "defender_interception": 0.96,
+        "obstacle_collision": 0,
+        "obstacle_collision_rate": 0.0,
+        "endurance_exhausted": 0.0,
+        "timeout": 0.0,
+        "mean_duration_s": 6.11,
+        "nonfinite": 0
+      },
+      "defender_interaction": {
+        "min_separation_median_m": 2.4999999969263755,
+        "min_separation_mean_m": 2.637485054671747,
+        "first_observation_time_mean_s": 4.08,
+        "defender_visible_fraction_mean": 0.4149245106888296,
+        "defender_cbf_activation_rate_mean": 0.4149245106888296,
+        "mean_defender_constraint_residual": 0.0031538005565000266,
+        "min_h_d": -8.723554238317789,
+        "unsafe_radius_steps_total": 274,
+        "interception_radius_steps_total": 102
+      },
+      "navigation": {
+        "mean_path_length_m": 54.19951168354377,
+        "mean_path_excess": 0.8819030878343248,
+        "mean_duration_s": 6.11,
+        "total_route_replans": 166,
+        "total_route_errors": 0
+      },
+      "joint_safety": {
+        "mean_hard_step_fraction": 0.8195061756269186,
+        "mean_soft_step_fraction": 0.00041666666666666664,
+        "mean_emergency_step_fraction": 0.0,
+        "qp_hard_or_soft_success_fraction": 1.0,
+        "joint_constraint_fraction_mean": 0.3458341484367026,
+        "total_steps": 2444,
+        "intervention_source_step_totals": {
+          "none": 1048,
+          "obstacle": 538,
+          "defender": 763,
+          "joint": 95
+        }
+      }
+    },
+    "effect": {
+      "n_matched": 200,
+      "interception_obstacle_only": 0.97,
+      "interception_full": 0.96,
+      "interception_reduction_pp": 1.0000000000000009,
+      "capture_obstacle_only": 0.03,
+      "capture_full": 0.04,
+      "capture_change_pp": 1.0000000000000002,
+      "median_separation_obstacle_only_m": 2.500000004697572,
+      "median_separation_full_m": 2.4999999969263755,
+      "separation_increase_m": -7.771196575134809e-09,
+      "n_non_immediate": 200,
+      "bootstrap_ci_beneficial_direction": {
+        "observed_diff": 0.01,
+        "ci_lo": -0.01,
+        "ci_hi": 0.03,
+        "n": 200,
+        "n_boot": 10000
+      },
+      "checks": {
+        "interception_reduction": false,
+        "bootstrap_ci_excludes_zero_beneficial": false,
+        "separation_increase": false,
+        "capture_tradeoff": true
+      },
+      "passed": false
+    }
+  },
+  "pn": {
+    "obstacle_only_metrics": {
+      "mission": {
+        "episodes_total": 200,
+        "episodes_valid": 200,
+        "scenario_generation_failures": 0,
+        "asset_capture": 0.05,
+        "defender_interception": 0.95,
+        "obstacle_collision": 0,
+        "obstacle_collision_rate": 0.0,
+        "endurance_exhausted": 0.0,
+        "timeout": 0.0,
+        "mean_duration_s": 5.6075,
+        "nonfinite": 0
+      },
+      "defender_interaction": {
+        "min_separation_median_m": 2.500000011916187,
+        "min_separation_mean_m": 2.5584205013183037,
+        "first_observation_time_mean_s": null,
+        "defender_visible_fraction_mean": 0.0,
+        "defender_cbf_activation_rate_mean": 0.0,
+        "mean_defender_constraint_residual": 0.0,
+        "min_h_d": null,
+        "unsafe_radius_steps_total": 229,
+        "interception_radius_steps_total": 92
+      },
+      "navigation": {
+        "mean_path_length_m": 57.05859774755445,
+        "mean_path_excess": 0.9288682808830783,
+        "mean_duration_s": 5.6075,
+        "total_route_replans": 166,
+        "total_route_errors": 0
+      },
+      "joint_safety": {
+        "mean_hard_step_fraction": 0.7272872788975729,
+        "mean_soft_step_fraction": 0.0,
+        "mean_emergency_step_fraction": 0.0,
+        "qp_hard_or_soft_success_fraction": 1.0,
+        "joint_constraint_fraction_mean": 0.0,
+        "total_steps": 2243,
+        "intervention_source_step_totals": {
+          "none": 1594,
+          "obstacle": 649,
+          "defender": 0,
+          "joint": 0
+        }
+      }
+    },
+    "full_metrics": {
+      "mission": {
+        "episodes_total": 200,
+        "episodes_valid": 200,
+        "scenario_generation_failures": 0,
+        "asset_capture": 0.38,
+        "defender_interception": 0.62,
+        "obstacle_collision": 0,
+        "obstacle_collision_rate": 0.0,
+        "endurance_exhausted": 0.0,
+        "timeout": 0.0,
+        "mean_duration_s": 6.905,
+        "nonfinite": 0
+      },
+      "defender_interaction": {
+        "min_separation_median_m": 2.5000001182490603,
+        "min_separation_mean_m": 3.1877438090625536,
+        "first_observation_time_mean_s": 4.08,
+        "defender_visible_fraction_mean": 0.4689961229001476,
+        "defender_cbf_activation_rate_mean": 0.4689961229001476,
+        "mean_defender_constraint_residual": 2.1431957156739727e-08,
+        "min_h_d": -8.723554238317789,
+        "unsafe_radius_steps_total": 198,
+        "interception_radius_steps_total": 68
+      },
+      "navigation": {
+        "mean_path_length_m": 57.025628442583795,
+        "mean_path_excess": 0.9285190226195664,
+        "mean_duration_s": 6.905,
+        "total_route_replans": 169,
+        "total_route_errors": 0
+      },
+      "joint_safety": {
+        "mean_hard_step_fraction": 0.837733893192291,
+        "mean_soft_step_fraction": 0.0,
+        "mean_emergency_step_fraction": 0.0,
+        "qp_hard_or_soft_success_fraction": 1.0,
+        "joint_constraint_fraction_mean": 0.3926022545136322,
+        "total_steps": 2762,
+        "intervention_source_step_totals": {
+          "none": 1297,
+          "obstacle": 543,
+          "defender": 824,
+          "joint": 98
+        }
+      }
+    },
+    "effect": {
+      "n_matched": 200,
+      "interception_obstacle_only": 0.95,
+      "interception_full": 0.62,
+      "interception_reduction_pp": 32.99999999999999,
+      "capture_obstacle_only": 0.05,
+      "capture_full": 0.38,
+      "capture_change_pp": 33.0,
+      "median_separation_obstacle_only_m": 2.500000011916187,
+      "median_separation_full_m": 2.5000001182490603,
+      "separation_increase_m": 1.0633287317318718e-07,
+      "n_non_immediate": 200,
+      "bootstrap_ci_beneficial_direction": {
+        "observed_diff": 0.33,
+        "ci_lo": 0.26,
+        "ci_hi": 0.4,
+        "n": 200,
+        "n_boot": 10000
+      },
+      "checks": {
+        "interception_reduction": true,
+        "bootstrap_ci_excludes_zero_beneficial": true,
+        "separation_increase": false,
+        "capture_tradeoff": true
+      },
+      "passed": false
+    }
+  },
+  "lead": {
+    "obstacle_only_metrics": {
+      "mission": {
+        "episodes_total": 200,
+        "episodes_valid": 200,
+        "scenario_generation_failures": 0,
+        "asset_capture": 0.03,
+        "defender_interception": 0.97,
+        "obstacle_collision": 0,
+        "obstacle_collision_rate": 0.0,
+        "endurance_exhausted": 0.0,
+        "timeout": 0.0,
+        "mean_duration_s": 5.59,
+        "nonfinite": 0
+      },
+      "defender_interaction": {
+        "min_separation_median_m": 2.500000029893366,
+        "min_separation_mean_m": 2.542996028552128,
+        "first_observation_time_mean_s": null,
+        "defender_visible_fraction_mean": 0.0,
+        "defender_cbf_activation_rate_mean": 0.0,
+        "mean_defender_constraint_residual": 0.0,
+        "min_h_d": null,
+        "unsafe_radius_steps_total": 228,
+        "interception_radius_steps_total": 91
+      },
+      "navigation": {
+        "mean_path_length_m": 56.772372353606805,
+        "mean_path_excess": 0.9243428817250907,
+        "mean_duration_s": 5.59,
+        "total_route_replans": 165,
+        "total_route_errors": 0
+      },
+      "joint_safety": {
+        "mean_hard_step_fraction": 0.7266423992673993,
+        "mean_soft_step_fraction": 0.0,
+        "mean_emergency_step_fraction": 0.0,
+        "qp_hard_or_soft_success_fraction": 1.0,
+        "joint_constraint_fraction_mean": 0.0,
+        "total_steps": 2236,
+        "intervention_source_step_totals": {
+          "none": 1588,
+          "obstacle": 648,
+          "defender": 0,
+          "joint": 0
+        }
+      }
+    },
+    "full_metrics": {
+      "mission": {
+        "episodes_total": 200,
+        "episodes_valid": 200,
+        "scenario_generation_failures": 0,
+        "asset_capture": 0.05,
+        "defender_interception": 0.95,
+        "obstacle_collision": 0,
+        "obstacle_collision_rate": 0.0,
+        "endurance_exhausted": 0.0,
+        "timeout": 0.0,
+        "mean_duration_s": 6.1725,
+        "nonfinite": 0
+      },
+      "defender_interaction": {
+        "min_separation_median_m": 2.500000021352373,
+        "min_separation_mean_m": 2.6420373378138176,
+        "first_observation_time_mean_s": 4.08,
+        "defender_visible_fraction_mean": 0.4199900120304532,
+        "defender_cbf_activation_rate_mean": 0.4199900120304532,
+        "mean_defender_constraint_residual": 0.002044485799030901,
+        "min_h_d": -8.723554238317789,
+        "unsafe_radius_steps_total": 281,
+        "interception_radius_steps_total": 90
+      },
+      "navigation": {
+        "mean_path_length_m": 54.33681403788097,
+        "mean_path_excess": 0.8839906504883291,
+        "mean_duration_s": 6.1725,
+        "total_route_replans": 166,
+        "total_route_errors": 0
+      },
+      "joint_safety": {
+        "mean_hard_step_fraction": 0.820858209192768,
+        "mean_soft_step_fraction": 0.00035714285714285714,
+        "mean_emergency_step_fraction": 0.0,
+        "qp_hard_or_soft_success_fraction": 1.0,
+        "joint_constraint_fraction_mean": 0.35024725478769597,
+        "total_steps": 2469,
+        "intervention_source_step_totals": {
+          "none": 1068,
+          "obstacle": 539,
+          "defender": 767,
+          "joint": 95
+        }
+      }
+    },
+    "effect": {
+      "n_matched": 200,
+      "interception_obstacle_only": 0.97,
+      "interception_full": 0.95,
+      "interception_reduction_pp": 2.0000000000000018,
+      "capture_obstacle_only": 0.03,
+      "capture_full": 0.05,
+      "capture_change_pp": 2.0000000000000004,
+      "median_separation_obstacle_only_m": 2.500000029893366,
+      "median_separation_full_m": 2.500000021352373,
+      "separation_increase_m": -8.540992801897573e-09,
+      "n_non_immediate": 200,
+      "bootstrap_ci_beneficial_direction": {
+        "observed_diff": 0.02,
+        "ci_lo": -0.005,
+        "ci_hi": 0.05,
+        "n": 200,
+        "n_boot": 10000
+      },
+      "checks": {
+        "interception_reduction": false,
+        "bootstrap_ci_excludes_zero_beneficial": false,
+        "separation_increase": false,
+        "capture_tradeoff": true
+      },
+      "passed": false
+    }
+  },
+  "rmpc": {
+    "obstacle_only_metrics": {
+      "mission": {
+        "episodes_total": 200,
+        "episodes_valid": 200,
+        "scenario_generation_failures": 0,
+        "asset_capture": 0.25,
+        "defender_interception": 0.75,
+        "obstacle_collision": 0,
+        "obstacle_collision_rate": 0.0,
+        "endurance_exhausted": 0.0,
+        "timeout": 0.0,
+        "mean_duration_s": 5.7525,
+        "nonfinite": 0
+      },
+      "defender_interaction": {
+        "min_separation_median_m": 2.500000050701672,
+        "min_separation_mean_m": 2.9973408403047186,
+        "first_observation_time_mean_s": null,
+        "defender_visible_fraction_mean": 0.0,
+        "defender_cbf_activation_rate_mean": 0.0,
+        "mean_defender_constraint_residual": 0.0,
+        "min_h_d": null,
+        "unsafe_radius_steps_total": 187,
+        "interception_radius_steps_total": 82
+      },
+      "navigation": {
+        "mean_path_length_m": 58.114199880570766,
+        "mean_path_excess": 0.9465478632124745,
+        "mean_duration_s": 5.7525,
+        "total_route_replans": 169,
+        "total_route_errors": 0
+      },
+      "joint_safety": {
+        "mean_hard_step_fraction": 0.731407490600215,
+        "mean_soft_step_fraction": 0.0,
+        "mean_emergency_step_fraction": 0.0,
+        "qp_hard_or_soft_success_fraction": 1.0,
+        "joint_constraint_fraction_mean": 0.0,
+        "total_steps": 2301,
+        "intervention_source_step_totals": {
+          "none": 1650,
+          "obstacle": 651,
+          "defender": 0,
+          "joint": 0
+        }
+      }
+    },
+    "full_metrics": {
+      "mission": {
+        "episodes_total": 200,
+        "episodes_valid": 200,
+        "scenario_generation_failures": 0,
+        "asset_capture": 0.63,
+        "defender_interception": 0.37,
+        "obstacle_collision": 0,
+        "obstacle_collision_rate": 0.0,
+        "endurance_exhausted": 0.0,
+        "timeout": 0.0,
+        "mean_duration_s": 7.3375,
+        "nonfinite": 0
+      },
+      "defender_interaction": {
+        "min_separation_median_m": 3.20771374115343,
+        "min_separation_mean_m": 3.8726017283963383,
+        "first_observation_time_mean_s": 4.08,
+        "defender_visible_fraction_mean": 0.5053975727967012,
+        "defender_cbf_activation_rate_mean": 0.5053975727967012,
+        "mean_defender_constraint_residual": 1.545328716355454e-08,
+        "min_h_d": -5.678431264474436,
+        "unsafe_radius_steps_total": 140,
+        "interception_radius_steps_total": 42
+      },
+      "navigation": {
+        "mean_path_length_m": 58.9546612730316,
+        "mean_path_excess": 0.9602928689051801,
+        "mean_duration_s": 7.3375,
+        "total_route_replans": 171,
+        "total_route_errors": 0
+      },
+      "joint_safety": {
+        "mean_hard_step_fraction": 0.850815860947095,
+        "mean_soft_step_fraction": 0.0,
+        "mean_emergency_step_fraction": 0.0,
+        "qp_hard_or_soft_success_fraction": 1.0,
+        "joint_constraint_fraction_mean": 0.4290153006570761,
+        "total_steps": 2935,
+        "intervention_source_step_totals": {
+          "none": 1451,
+          "obstacle": 544,
+          "defender": 842,
+          "joint": 98
+        }
+      }
+    },
+    "effect": {
+      "n_matched": 200,
+      "interception_obstacle_only": 0.75,
+      "interception_full": 0.37,
+      "interception_reduction_pp": 38.0,
+      "capture_obstacle_only": 0.25,
+      "capture_full": 0.63,
+      "capture_change_pp": 38.0,
+      "median_separation_obstacle_only_m": 2.500000050701672,
+      "median_separation_full_m": 3.20771374115343,
+      "separation_increase_m": 0.707713690451758,
+      "n_non_immediate": 200,
+      "bootstrap_ci_beneficial_direction": {
+        "observed_diff": 0.38,
+        "ci_lo": 0.29,
+        "ci_hi": 0.47,
+        "n": 200,
+        "n_boot": 10000
+      },
+      "checks": {
+        "interception_reduction": true,
+        "bootstrap_ci_excludes_zero_beneficial": true,
+        "separation_increase": false,
+        "capture_tradeoff": true
+      },
+      "passed": false
+    }
+  }
+}

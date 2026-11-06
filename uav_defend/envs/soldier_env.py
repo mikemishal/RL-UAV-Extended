@@ -2790,6 +2790,16 @@ class SoldierEnv(gym.Env):
             "joint_constraint_count": int(max_active_obstacle_count + (1 if defender_observable else 0)),
             "simultaneous_obstacle_defender_constraints": bool(cbf_diag.get("simultaneous_obstacle_defender_substeps", 0) > 0),
             "intervention_source": cbf_diag.get("intervention_source", "none"),
+            # ---- Hierarchical-priority diagnostics (journal_cbf_attacker, defender_cbf_v2 / Prompt 5, brief section 6) ----
+            "defender_slack": float(cbf_diag.get("max_defender_slack_over_substeps", cbf_diag.get("defender_slack", 0.0))),
+            "defender_constraint_satisfied_without_slack": bool(cbf_diag.get("defender_constraint_satisfied_without_slack", True)),
+            "defender_constraint_violation_with_slack": float(cbf_diag.get("defender_constraint_violation_with_slack", 0.0)),
+            "obstacle_constraints_hard": bool(cbf_diag.get("obstacle_constraints_hard", True)),
+            "obstacle_min_residual": float(cbf_diag.get("obstacle_min_residual", 0.0) or 0.0),
+            "defender_min_residual": float(cbf_diag.get("defender_min_residual", 0.0)),
+            "priority_conflict": bool(cbf_diag.get("priority_conflict_substeps", 0) > 0) if "priority_conflict_substeps" in cbf_diag else bool(cbf_diag.get("priority_conflict", False)),
+            "priority_classification": cbf_diag.get("priority_classification"),
+            "obstacle_safety_infeasible": bool(cbf_diag.get("obstacle_safety_infeasible_substeps", 0) > 0) if "obstacle_safety_infeasible_substeps" in cbf_diag else bool(cbf_diag.get("priority_classification") == "obstacle_safety_infeasible"),
         }
 
     def _cbf_info(self) -> dict:
@@ -2843,6 +2853,15 @@ class SoldierEnv(gym.Env):
             "joint_constraint_count": d.get("joint_constraint_count", 0),
             "simultaneous_obstacle_defender_constraints": d.get("simultaneous_obstacle_defender_constraints", False),
             "intervention_source": d.get("intervention_source", "none"),
+            "defender_slack": d.get("defender_slack", 0.0),
+            "defender_constraint_satisfied_without_slack": d.get("defender_constraint_satisfied_without_slack", True),
+            "defender_constraint_violation_with_slack": d.get("defender_constraint_violation_with_slack", 0.0),
+            "obstacle_constraints_hard": d.get("obstacle_constraints_hard", True),
+            "obstacle_min_residual": d.get("obstacle_min_residual", 0.0),
+            "defender_min_residual": d.get("defender_min_residual", 0.0),
+            "priority_conflict": d.get("priority_conflict", False),
+            "priority_classification": d.get("priority_classification", None),
+            "obstacle_safety_infeasible": d.get("obstacle_safety_infeasible", False),
         }
 
     def _enemy_dynamics_limits(self) -> DynamicsLimits:
