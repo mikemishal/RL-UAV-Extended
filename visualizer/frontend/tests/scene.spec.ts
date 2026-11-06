@@ -684,7 +684,7 @@ test('renders the no-episode battlefield, supports camera reset, and keeps Phase
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   await mockCatalog(page);
-  await page.goto('/');
+  await page.goto('/legacy');
   await expect(page.getByRole('heading', { name: 'No episode loaded' })).toBeVisible();
   const viewport = page.getByTestId('battlefield-viewport');
   await expect(viewport).toBeVisible();
@@ -768,7 +768,7 @@ test('plays real-schema frames, scrubs exactly, maps entities and obstacles, and
   await mockCatalog(page);
   const ids = [fixtureReplayId, 'e'.repeat(32)];
   await mockFixtureEpisodes(page, ids);
-  await page.goto('/');
+  await page.goto('/legacy');
   await openAnalysis(page);
   await page.locator(`[data-replay-id="${fixtureReplayId}"]`).click();
   const rendered = page.getByTestId('rendered-replay-state');
@@ -821,7 +821,7 @@ test('synchronizes the decision inspector and charts, and masks privileged field
   page.on('pageerror', error => errors.push(error.message));
   await mockCatalog(page);
   await mockFixtureEpisodes(page, [fixtureReplayId]);
-  await page.goto('/');
+  await page.goto('/legacy');
   await openAnalysis(page);
   await page.locator(`[data-replay-id="${fixtureReplayId}"]`).click();
   await expect(page.getByText(/command applies during step 0 → 1/)).toBeVisible();
@@ -870,7 +870,7 @@ test('synchronizes the decision inspector and charts, and masks privileged field
 test('keeps Kalman estimates separate from privileged truth and masks estimates before detection', async ({ page }) => {
   await mockCatalog(page);
   await mockFixtureEpisodes(page, [fixtureReplayId], kalmanFixtureEpisode);
-  await page.goto('/');
+  await page.goto('/legacy');
     await openAnalysis(page);
     await page.locator(`[data-replay-id="${fixtureReplayId}"]`).click();
   await expect(page.getByText(/Policy-visible target estimate unavailable before detection/)).toBeVisible();
@@ -940,7 +940,7 @@ test('submits a compatible learned selection and shows actual job progress and r
     return route.fulfill({ json: item });
   });
 
-  await page.goto('/');
+  await page.goto('/legacy');
   await openAnalysis(page);
   await page.getByLabel('Defender architecture').selectOption('lr_ppo');
   await page.getByLabel('Defender generation').selectOption('d1');
@@ -1008,7 +1008,7 @@ test('semantics selector defaults to V1, sends V2 explicitly, and the replay sho
   }));
   await mockFixtureEpisodes(page, [replayId], v2Episode);
 
-  await page.goto('/');
+  await page.goto('/legacy');
   await expect(page.getByLabel('Simulation semantics')).toHaveValue('V1');
   await page.getByLabel('Simulation semantics').selectOption('V2');
   await page.getByLabel('Starting evaluation seed').fill('130000');
@@ -1025,7 +1025,7 @@ test('semantics selector defaults to V1, sends V2 explicitly, and the replay sho
 test('semantics badge and attacker readout: V1 for legacy replays, V2 detail only in ground-truth mode', async ({ page }) => {
   await mockCatalog(page);
   await mockFixtureEpisodes(page, [replayId], v2Episode);
-  await page.goto('/');
+  await page.goto('/legacy');
   await openAnalysis(page);
   await page.getByRole('button', { name: 'Watch Recorded Episode' }).click();
   await expect(page.getByTestId('semantics-badge')).toHaveText('Semantics: V2');
@@ -1041,7 +1041,7 @@ test('semantics badge and attacker readout: V1 for legacy replays, V2 detail onl
 test('a replay recorded before the selector existed is labelled V1', async ({ page }) => {
   await mockCatalog(page);
   await mockFixtureEpisodes(page, [replayId]);
-  await page.goto('/');
+  await page.goto('/legacy');
   await openAnalysis(page);
   await page.getByRole('button', { name: 'Watch Recorded Episode' }).click();
   await expect(page.getByTestId('semantics-badge')).toHaveText('Semantics: V1');
@@ -1050,11 +1050,11 @@ test('a replay recorded before the selector existed is labelled V1', async ({ pa
 
 test('URL presets open the requested semantics, clutter and seed without changing the V1 default', async ({ page }) => {
   await mockCatalog(page);
-  await page.goto('/?semantics=V2&clutter=C2&seed=130065');
+  await page.goto('/legacy?semantics=V2&clutter=C2&seed=130065');
   await expect(page.getByLabel('Simulation semantics')).toHaveValue('V2');
   await expect(page.getByLabel('Clutter level')).toHaveValue('C2');
   await expect(page.getByLabel('Starting evaluation seed')).toHaveValue('130065');
-  await page.goto('/?semantics=bogus&clutter=C9&seed=-3');
+  await page.goto('/legacy?semantics=bogus&clutter=C9&seed=-3');
   await expect(page.getByLabel('Simulation semantics')).toHaveValue('V1');
   await expect(page.getByLabel('Clutter level')).toHaveValue('C0');
   await expect(page.getByLabel('Starting evaluation seed')).toHaveValue('0');
@@ -1092,7 +1092,7 @@ test('passive preset selects the passive defender and the endurance status is sh
     json: { ...policies, defenders: [...policies.defenders, passiveDefender] },
   }));
   await mockFixtureEpisodes(page, [replayId], enduranceEpisode);
-  await page.goto('/?semantics=V2&clutter=C3&seed=130017&defender=passive');
+  await page.goto('/legacy?semantics=V2&clutter=C3&seed=130017&defender=passive');
   await expect(page.getByLabel('Defender architecture')).toHaveValue('passive');
   await expect(page.getByLabel('Simulation semantics')).toHaveValue('V2');
   await expect(page.getByLabel('Starting evaluation seed')).toHaveValue('130017');
@@ -1113,7 +1113,7 @@ test('shows actionable submission and service errors without invented results', 
     status: 409,
     json: { error: { code: 'REPLAY_JOB_BUSY', message: 'Another replay batch is running; retry when it finishes.' } },
   }));
-  await page.goto('/');
+  await page.goto('/legacy');
   await page.getByRole('button', { name: 'Run Episode', exact: true }).click();
   await expect(page.getByRole('alert')).toContainText('Another replay batch is running');
   await openAnalysis(page);
@@ -1122,7 +1122,7 @@ test('shows actionable submission and service errors without invented results', 
 
 test('backend outage is visible without inventing episode results', async ({ page }) => {
   await page.route('**/api/health', route => route.abort());
-  await page.goto('/');
+  await page.goto('/legacy');
   await expect(page.getByRole('status')).toContainText('Backend unavailable');
   await expect(page.getByRole('heading', { name: 'No episode loaded' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Run Episode', exact: true })).toBeDisabled();
@@ -1134,7 +1134,7 @@ test('unconfigured research data root is visible', async ({ page }) => {
   await page.route('**/api/health', route => route.fulfill({
     json: { service: 'counter-uas-visualizer', phase: 3, status: 'degraded', data_root: 'not_configured', simulation_enabled: false },
   }));
-  await page.goto('/');
+  await page.goto('/legacy');
   await expect(page.getByRole('status')).toContainText('research data root not configured');
 });
 
@@ -1145,7 +1145,7 @@ test('reports WebGL loss and clears the warning after actual context restoration
   await page.route('**/api/policies', route => route.fulfill({ json: policies }));
   await page.route('**/api/scenarios', route => route.fulfill({ json: scenarios }));
   await page.route('**/api/replays?limit=100', route => route.fulfill({ json: { replays: [], warnings: [] } }));
-  await page.goto('/');
+  await page.goto('/legacy');
   await expect(page.getByTestId('battlefield-viewport')).toBeVisible();
   const extension = await page.locator('canvas').evaluateHandle(element => {
     if (!(element instanceof HTMLCanvasElement)) throw new Error('Expected canvas');
@@ -1168,7 +1168,7 @@ test('loads and scrubs all four existing real replay cases, including the 974-fr
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   const replayListResponse = page.waitForResponse(response => response.url().includes('/api/replays?limit=100'));
-  await page.goto('/');
+  await page.goto('/legacy');
   const listResponse = await replayListResponse;
   await openAnalysis(page);
   expect(listResponse.ok()).toBe(true);
@@ -1329,7 +1329,7 @@ test('captures Phase 5 diagnostics from the four existing local replay artifacts
     } });
   });
 
-  await page.goto('/');
+  await page.goto('/legacy');
   const rendered = page.getByTestId('rendered-replay-state');
   const greedy = artifactCases[0];
   expect(bundles[0].episodes[0].frames).toHaveLength(greedy.frames);
@@ -1401,7 +1401,7 @@ test('verifies synchronized comparison against live API replays in Chromium', as
       pageErrors.push(`API HTTP ${response.status()} ${response.url()}`);
     }
   });
-  await page.goto('/');
+  await page.goto('/legacy');
   await page.getByRole('button', { name: 'Compare policies' }).click();
   const pairStatus = page.locator('.comparison-pair .pair-status');
   await expect(pairStatus).toHaveText(/exploratory|matched/, { timeout: 60_000 });
@@ -1479,7 +1479,7 @@ test('verifies synchronized comparison against live API replays in Chromium', as
 test('generates only missing requested comparison replays sequentially through the live job API', async ({ page }) => {
   test.skip(process.env.VISUALIZER_ENABLE_LIVE_COMPARISON_GENERATION !== '1', 'Set VISUALIZER_ENABLE_LIVE_COMPARISON_GENERATION=1 to run the three minimum missing seed-0 real rollouts.');
   test.setTimeout(540_000);
-  await page.goto('/');
+  await page.goto('/legacy');
   await page.getByRole('button', { name: 'Compare policies' }).click();
   await expect(page.locator('.comparison-pair')).toBeVisible();
   const choices = page.locator('.comparison-policy-choice');
@@ -1518,7 +1518,7 @@ test('generates only missing requested comparison replays sequentially through t
 test('captures requested side-by-side screenshots from validated real replay pairs', async ({ page }) => {
   test.skip(process.env.VISUALIZER_ENABLE_COMPARISON_SCREENSHOTS !== '1', 'Set VISUALIZER_ENABLE_COMPARISON_SCREENSHOTS=1 to capture validated local replay comparisons.');
   test.setTimeout(300_000);
-  await page.goto('/');
+  await page.goto('/legacy');
   await page.getByRole('button', { name: 'Compare policies' }).click();
   const choices = page.locator('.comparison-policy-choice');
   const choose = async (side: number, policy: string, generation?: string, trainingSeed?: number) => {
